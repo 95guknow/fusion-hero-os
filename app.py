@@ -25,8 +25,8 @@ from collections import deque
 import zipfile, datetime, re, subprocess, sys, os, io, contextlib, time
 import numpy as np
 from nicegui import ui, run
-import heroic_core_mainframe as hc
-import agents as ag
+from engine import mainframe as hc          # QUBO-Solver-Engine (Parallel-SA, Audit-Layer)
+from orchestration import agents as ag      # Multi-Agenten-Orchestrierung (Supervisor/Worker)
 
 ROOT = Path(__file__).parent
 EXT_LANG = {".md": "Markdown", ".py": "Python", ".json": "JSON",
@@ -797,15 +797,32 @@ chat_messages = []          # [{"role": "user"|"agent"|"system", "text": str}]
 agent_view = {"open": True}
 
 
+def _cpu_task_executor(agent, task):
+    """Echter CPU-Task statt sleep: ein kleiner QUBO-Solve über den nogil-Kernel.
+
+    Der Kernel gibt den GIL frei, daher lasten die Worker-Threads die Kerne wirklich
+    aus — so wird Hyperthreading im Schwarm tatsächlich aktiv (und im Monitor sichtbar)."""
+    seed = int(task.payload.get("i", 0)) + 1
+    n = 256
+    r = np.random.default_rng(seed)
+    M = r.normal(0, 2.0, (n, n))
+    Qf = np.ascontiguousarray(((M + M.T) / 2.0).astype(np.float64))
+    _x, e, _t = hc._anneal_one(Qf, 150_000, 2.0, n, seed, 4)
+    return {"worker": agent.name, "task": task.name, "energy": float(e)}
+
+
 def _run_agent_batch(prompt: str, n_tasks: int):
     """Läuft auf einem Worker-Thread: startet den Hauptagenten (Supervisor) auf dem
     persistenten Bus, reiht n Teilaufgaben ein, wartet bis abgearbeitet und liefert den
-    Abschlussreport. Der Live-Monitor liest derweil Bus + summarize()."""
+    Abschlussreport. Der Live-Monitor liest derweil Bus + summarize().
+
+    Die Worker führen echte CPU-Arbeit aus (_cpu_task_executor) → Mehrkern-Last."""
     tq = ag.TaskQueue()
     sup = ag.Supervisor(name="hauptagent", bus=AGENT_BUS, task_queue=tq,
+                        executor=_cpu_task_executor,
                         min_workers=1, max_workers=os.cpu_count() or 4,
                         scale_up_threshold=3, idle_rounds_before_fire=3,
-                        tick_interval=0.03, worker_work_seconds=0.05, heartbeat_interval=0.12)
+                        tick_interval=0.03, worker_work_seconds=0.0, heartbeat_interval=0.12)
     label = (prompt[:24] + "…") if len(prompt) > 24 else prompt
     for i in range(n_tasks):
         tq.put(ag.Task(name=f"{label}#{i + 1}", payload={"i": i, "prompt": prompt}))
@@ -881,6 +898,16 @@ _WSTATE_COL = {"running": "text-emerald-400", "busy": "text-amber-400",
 
 def refresh_live():
     """Pollt den Bus: Hauptagent-Monitor (Belegschaft + Ereignisse) und Pipeline-Uhr."""
+    # Live-Kern-Auslastung (zeigt, dass Hyperthreading wirklich greift)
+    try:
+        import psutil
+        per = psutil.cpu_percent(percpu=True)
+        active = sum(1 for c in per if c > 40.0)
+        ht_lbl.text = f"⚡ Kerne aktiv: {active}/{len(per)}"
+        ht_lbl.classes(replace="text-[11px] font-mono " +
+                       ("text-emerald-400" if active >= 3 else "text-[#94a3b8]"))
+    except Exception:  # noqa: BLE001
+        pass
     sup = agent_state["supervisor"]
     summ = None
     if sup is not None:
@@ -1034,6 +1061,8 @@ with ui.column().classes("w-full h-screen flex-nowrap gap-0 p-0"):
                                         "text-xs font-bold text-[#00d4aa]")
                                     mon_metrics = ui.label("○ Hauptagent bereit") \
                                         .classes("text-[11px] font-mono text-[#94a3b8]")
+                                    ht_lbl = ui.label("⚡ Kerne: —").classes(
+                                        "text-[11px] font-mono text-[#94a3b8]")
                                     ui.label("BELEGSCHAFT").classes(
                                         "text-[10px] font-bold text-[#475569] tracking-wider mt-1")
                                     roster_col = ui.column().classes("w-full gap-0")
