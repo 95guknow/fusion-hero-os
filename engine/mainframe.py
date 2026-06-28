@@ -20,6 +20,18 @@ from abc import ABC, abstractmethod
 # Globaler Zufallsgenerator für deterministische Heuristiken
 rng = np.random.default_rng(7)
 
+# Wiederverwendbarer Thread-Pool je Worker-Anzahl: spart den Thread-Spawn-Overhead
+# bei vielen kleinen Läufen (GUI/Sweep/Auto-Feeder). Schließt sich beim Prozessende.
+_POOL = {}
+
+
+def _get_pool(workers):
+    ex = _POOL.get(workers)
+    if ex is None:
+        ex = ThreadPoolExecutor(max_workers=workers, thread_name_prefix="anneal")
+        _POOL[workers] = ex
+    return ex
+
 # =====================================================================
 # STUFE 1: DOMÄNEN-ENTITÄTEN (domain/*.py)
 # =====================================================================
@@ -210,9 +222,9 @@ def parallel_anneal(Q, steps=8000, T0=2.0, n_restarts=None, n_samples=60,
     seeds = [base_seed + k for k in range(n_restarts)]
 
     t0 = time.time()
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        results = list(ex.map(
-            lambda s: _anneal_one(Qf, steps, T0, n, s, n_samples), seeds))
+    ex = _get_pool(workers)  # wiederverwendeter Pool statt Neuanlage pro Aufruf
+    results = list(ex.map(
+        lambda s: _anneal_one(Qf, steps, T0, n, s, n_samples), seeds))
     runtime = time.time() - t0
 
     energies = [float(e) for _, e, _ in results]

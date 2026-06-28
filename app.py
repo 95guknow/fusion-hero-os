@@ -42,7 +42,8 @@ buffers: dict[Path, dict] = {}
 pipeline = {"name": None, "steps": [], "current": -1, "running": False, "cancel": False}
 last_Q = {"Q": None}        # zuletzt erzeugte Matrix (für 'wiederverwenden')
 pipe_ctx = {}               # Zwischenergebnisse zwischen Pipeline-Schritten
-conv_chart = heat_chart = metrics_chart = sweep_chart = None  # ui.echart-Refs
+conv_chart = heat_chart = metrics_chart = sweep_chart = surf3d_chart = None  # ui.echart-Refs
+auto_state = {"on": False, "rounds": 0}  # autonome Hintergrundaufgaben
 
 PALETTE = ['#00d4aa', '#8b5cf6', '#f59e0b', '#22d3ee', '#ef4444', '#10b981',
            '#eab308', '#3b82f6', '#ec4899', '#14b8a6', '#a78bfa', '#f97316']
@@ -522,6 +523,45 @@ def set_sweep(chart, xs, emins, rts):
     chart.update()
 
 
+def build_surface3d_chart():
+    """Live-3D-Surface der QUBO-Heuristik: x=Schritt, y=Restart, z=beste Energie.
+    Die rechteckigen Konvergenz-Traces (n_restarts × n_samples) bilden direkt das Gitter."""
+    return ui.echart({
+        "backgroundColor": "transparent",
+        "tooltip": {},
+        "visualMap": {"show": False, "dimension": 2, "min": -1, "max": 1,
+                      "inRange": {"color": ["#00d4aa", "#22d3ee", "#3b82f6",
+                                            "#8b5cf6", "#ec4899", "#ef4444"]}},
+        "xAxis3D": {"type": "value", "name": "Schritt", "nameTextStyle": {"color": _MUTED},
+                    "axisLabel": {"color": _MUTED}},
+        "yAxis3D": {"type": "value", "name": "Restart", "nameTextStyle": {"color": _MUTED},
+                    "axisLabel": {"color": _MUTED}},
+        "zAxis3D": {"type": "value", "name": "Energie", "nameTextStyle": {"color": _MUTED},
+                    "axisLabel": {"color": _MUTED}},
+        "grid3D": {"boxWidth": 100, "boxDepth": 80,
+                   "axisLine": {"lineStyle": {"color": _AXIS}},
+                   "splitLine": {"lineStyle": {"color": _GRID}},
+                   "viewControl": {"autoRotate": True, "autoRotateSpeed": 8, "distance": 200},
+                   "light": {"main": {"intensity": 1.2}, "ambient": {"intensity": 0.4}}},
+        "series": [{"type": "surface", "shading": "color",
+                    "wireframe": {"show": True, "lineStyle": {"opacity": 0.25}},
+                    "data": []}],
+    }, enable_3d=True).classes("w-full h-64")
+
+
+def set_surface3d(chart, trace_steps, traces):
+    if chart is None or not traces:
+        return
+    zmin = min(min(t) for t in traces)
+    zmax = max(max(t) for t in traces)
+    data = [[int(s), int(i), float(e)]
+            for i, tr in enumerate(traces) for s, e in zip(trace_steps, tr)]
+    chart.options["visualMap"]["min"] = zmin
+    chart.options["visualMap"]["max"] = zmax
+    chart.options["series"][0]["data"] = data
+    chart.update()
+
+
 # =========================================================================
 # Pipelines (Workflow-Runner) — ein await pro Schritt, run.io_bound für CPU
 # =========================================================================
@@ -573,6 +613,7 @@ async def _a_quellen():
 async def _a_evidenz():
     res = pipe_ctx["res"]
     set_convergence(conv_chart, res["trace_steps"], res["traces"], res["best_restart"])
+    set_surface3d(surf3d_chart, res["trace_steps"], res["traces"])
     _set_detail(f"Spread {min(res['energies']):.2f} … {max(res['energies']):.2f}")
 
 
@@ -624,9 +665,10 @@ async def _b_solve():
 async def _b_viz():
     res, Q = pipe_ctx["res"], pipe_ctx["Q"]
     set_convergence(conv_chart, res["trace_steps"], res["traces"], res["best_restart"])
+    set_surface3d(surf3d_chart, res["trace_steps"], res["traces"])
     x = np.asarray(res["solution"], dtype=np.float64)
     set_heatmap(heat_chart, np.outer(x, x) * Q, "Beitrags-Matrix xᵢ·xⱼ·Qᵢⱼ")
-    _set_detail("Konvergenz + Beitrags-Heatmap aktualisiert")
+    _set_detail("Konvergenz + 3D-Surface + Beitrags-Heatmap aktualisiert")
 
 
 async def _b_report():
@@ -865,6 +907,25 @@ async def chat_send():
     render_chat()
 
 
+async def auto_tick():
+    """Selbstständige Zuordnung: ist 'Auto-Hintergrund' aktiv und der Schwarm frei,
+    ordnet der Hauptagent sich eigenständig eine kleine Charge echter Aufgaben zu."""
+    if not auto_state["on"] or agent_state["running"]:
+        return
+    auto_state["rounds"] += 1
+    n = 6
+    chat_messages.append({"role": "system",
+                          "text": f"Auto-Runde {auto_state['rounds']}: {n} Hintergrundaufgaben selbst zugeordnet."})
+    render_chat()
+    agent_state["running"] = True
+    try:
+        await run.io_bound(_run_agent_batch, f"auto r{auto_state['rounds']}", n)
+    except Exception:  # noqa: BLE001
+        pass
+    finally:
+        agent_state["running"] = False
+
+
 def render_chat():
     chat_col.clear()
     with chat_col:
@@ -1063,6 +1124,9 @@ with ui.column().classes("w-full h-screen flex-nowrap gap-0 p-0"):
                                         .classes("text-[11px] font-mono text-[#94a3b8]")
                                     ht_lbl = ui.label("⚡ Kerne: —").classes(
                                         "text-[11px] font-mono text-[#94a3b8]")
+                                    ui.checkbox("Auto-Hintergrundaufgaben",
+                                                on_change=lambda e: auto_state.update(on=bool(e.value))) \
+                                        .props("dense").classes("text-[11px]")
                                     ui.label("BELEGSCHAFT").classes(
                                         "text-[10px] font-bold text-[#475569] tracking-wider mt-1")
                                     roster_col = ui.column().classes("w-full gap-0")
@@ -1124,6 +1188,7 @@ with ui.column().classes("w-full h-screen flex-nowrap gap-0 p-0"):
                         "w-full h-28 bg-[#05050a] text-[#cbd5e1] text-xs rounded p-2 mt-1")
                 with ui.column().classes("gap-2 overflow-auto").style("flex:1 1 0; min-width:0; max-height:62vh"):
                     conv_chart = build_convergence_chart()
+                    surf3d_chart = build_surface3d_chart()
                     heat_chart = build_heatmap_chart()
                     sweep_chart = build_sweep_chart()
                     metrics_chart = build_metrics_chart()
@@ -1144,6 +1209,7 @@ refresh_live()
 update_metrics()
 ui.timer(2.0, update_metrics)
 ui.timer(0.3, refresh_live)       # Hauptagent-Monitor + Pipeline-Uhr live
+ui.timer(8.0, auto_tick)          # autonome Hintergrundaufgaben (wenn aktiviert)
 ui.timer(0.1, _warmup, once=True)
 
 if __name__ in {"__main__", "__mp_main__"}:
