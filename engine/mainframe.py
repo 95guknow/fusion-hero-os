@@ -3,10 +3,13 @@
 HEROIC CORE MAINFRAME — INTEGRAL VERSION (v5.25)
 ================================================
 Zusammenführung von:
-  1. High-Performance Solver Engine (qb_qubo.py via Numba/NumPy)
-  2. Epistemischer Gateway-Architektur (ClassicalBackend in classical.py)
-  3. Core Sicherheits-Layer (SelfModify, GenerationalEvolution, MetaAnalysis)
-  4. Immutable Foundations (AuditAgent & EudaimoniaGuard Protokolle)
+  1. High-Performance Solver Engine (SA-Kernel via Numba/NumPy)
+  2. ClassicalBackend mit Pre-/Post-Solve-Audit-Hooks (hier definiert)
+  3. Hook-/Stub-Layer (SelfModify, GenerationalEvolution, MetaAnalysis) —
+     derzeit PLATZHALTER (Generationen-Zähler / Vorschlags-Liste / Wort-Check),
+     KEIN laufendes Selbst-Modifikations- oder Evolutionssystem.
+  4. AuditAgent-Gateway; "EudaimoniaGuard" = einfache Grenzwertprüfung der
+     Matrix/Energie (NaN/Inf + Betragsschwellen), keine inhaltliche Garantie.
 """
 
 import time
@@ -335,6 +338,9 @@ class ClassicalBackend(SolverBackend):
 # =====================================================================
 
 class SelfModifyCoreModule:
+    """PLATZHALTER-STUB. Registriert Audit-Hooks und kann Modifikations-
+    Vorschläge in einer Liste sammeln. Wendet NICHTS an — es findet keine
+    echte Selbst-Modifikation des Codes statt (bewusst, aus Sicherheitsgründen)."""
     def __init__(self):
         self.modification_history = []
         self.audit_hooks = {}
@@ -343,6 +349,8 @@ class SelfModifyCoreModule:
         self.audit_hooks[name] = func
 
 class GenerationalEvolutionProtocolCoreModule:
+    """PLATZHALTER-STUB. Zählt nur Generationen hoch. Kein Fitness, keine
+    Selektion, keine Population — noch kein echter evolutionärer Algorithmus."""
     def __init__(self):
         self.generation = 0
 
@@ -351,6 +359,8 @@ class GenerationalEvolutionProtocolCoreModule:
         return {"generation": self.generation, "status": "active"}
 
 class CriticalMetaAnalysisCoreModule:
+    """PLATZHALTER-STUB. Prüft per Substring auf "immer"/"nie" als grobe
+    Heuristik. Keine echte Meta-Analyse — nur ein einfacher Wort-Check."""
     def analyze(self, text: str) -> list:
         issues = []
         if "immer" in text.lower() or "nie" in text.lower():
