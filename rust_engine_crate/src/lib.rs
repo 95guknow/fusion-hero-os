@@ -12,6 +12,7 @@
 // (anderer PRNG: SplitMix64; Akzeptanz-Float wird lazy gezogen). Vergleiche zwischen
 // den Backends über Energie-Qualität/Verteilung, nicht über exakte Werte.
 
+use numpy::PyReadonlyArray2;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use rayon::prelude::*;
@@ -130,14 +131,16 @@ fn anneal_one(
     (best_x, best_e, trace)
 }
 
-/// Multi-Start SA über alle Kerne (rayon). `q` ist die flach (row-major)
-/// übergebene n×n-Matrix. Rückgabe entspricht dem Python-Dict-Vertrag:
-/// (best_x, best_e, energies, best_restart, traces).
+/// Multi-Start SA über alle Kerne (rayon). `q` wird als numpy-Array (n×n, float64)
+/// über das Buffer-Protokoll übergeben — KEINE Python-Listen-Konvertierung (das wäre
+/// für große n der Flaschenhals: jedes Element einzeln als PyObject zu entpacken ist
+/// O(n²) mit hohem Konstantfaktor; ein Buffer-Memcpy ist um Größenordnungen schneller).
+/// Rückgabe entspricht dem Python-Dict-Vertrag: (best_x, best_e, energies, best_restart, traces).
 #[pyfunction]
 #[pyo3(signature = (q, n, steps, t0, n_restarts, n_samples, base_seed=0))]
 fn parallel_anneal(
     py: Python<'_>,
-    q: Vec<f64>,
+    q: PyReadonlyArray2<'_, f64>,
     n: usize,
     steps: usize,
     t0: f64,
@@ -152,16 +155,21 @@ fn parallel_anneal(
     if n_restarts == 0 {
         return Err(PyValueError::new_err("n_restarts must be >= 1"));
     }
-    let expected = n
-        .checked_mul(n)
+    n.checked_mul(n)
         .ok_or_else(|| PyValueError::new_err("n too large (n*n overflows usize)"))?;
-    if q.len() != expected {
+    let q_view = q.as_array();
+    if q_view.shape() != [n, n] {
         return Err(PyValueError::new_err(format!(
-            "q has {} elements, expected n*n = {}",
-            q.len(),
-            expected
+            "q has shape {:?}, expected ({n}, {n})",
+            q_view.shape()
         )));
     }
+    // Bulk-Kopie via ndarray (memcpy-artig, falls C-contiguous; sonst Fallback-Iteration).
+    // Läuft noch unter dem GIL, bevor py.allow_threads() startet.
+    let q: Vec<f64> = match q_view.as_slice() {
+        Some(s) => s.to_vec(),
+        None => q_view.iter().copied().collect(),
+    };
     if q.iter().any(|v| !v.is_finite()) {
         return Err(PyValueError::new_err("q contains non-finite values (NaN/inf)"));
     }

@@ -6,7 +6,11 @@ und der Aufrufer fällt auf den numba-Kernel zurück (import-sicher, kein Crash)
 
 Bauen (sobald eine Rust-Toolchain vorhanden ist):
     pip install maturin
-    cd rust_engine && maturin develop --release
+    cd rust_engine_crate && maturin build --release   # erzeugt ein Wheel (kein venv nötig)
+    pip install target/wheels/rust_engine-*.whl
+
+Die Matrix wird als numpy-Array (Buffer-Protokoll) übergeben, NICHT als Python-Liste —
+das Entpacken jedes Elements als eigenes PyObject wäre für große n der Flaschenhals.
 """
 from __future__ import annotations
 
@@ -40,7 +44,7 @@ def parallel_anneal_rust(Q, steps=8000, T0=2.0, n_restarts=None, n_samples=60, b
 
     t0 = time.time()
     best_x, best_e, energies, best_restart, traces = _re.parallel_anneal(
-        Q.ravel().tolist(), n, int(steps), float(T0),
+        Q, n, int(steps), float(T0),
         int(n_restarts), int(n_samples), int(base_seed),
     )
     runtime = time.time() - t0
