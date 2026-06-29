@@ -8,6 +8,9 @@ venv/
 # Numba JIT-Cache
 .numba_cache/
 
+# Rust-Build-Artefakte (PyO3-Crate)
+rust_engine_crate/target/
+
 # Generierte Artefakte / Pipeline-Output
 Archiv_*.zip
 00_Uebersicht.md

@@ -203,16 +203,36 @@ def _anneal_one(Qf, steps, T0, n, seed, n_samples):
 
 
 def parallel_anneal(Q, steps=8000, T0=2.0, n_restarts=None, n_samples=60,
-                    base_seed=0, workers=None):
+                    base_seed=0, workers=None, backend="numba"):
     """Multi-Start Simulated Annealing über alle logischen Kerne (Hyperthreading).
 
     Startet `n_restarts` unabhängige SA-Läufe parallel in Threads (echte
     Mehrkern-Nutzung dank `nogil`) und behält die beste Lösung. Liefert zusätzlich
     pro Restart einen Energie-Konvergenz-Trace für die Visualisierung.
 
+    backend: "numba" (Default), "rust" (PyO3-Kernel, falls gebaut) oder "auto"
+    (rust wenn verfügbar, sonst numba).
+
     Rückgabe: dict mit solution, energy, energies[], traces[][], trace_steps[],
-    best_restart, n_restarts, workers, runtime_seconds.
+    best_restart, n_restarts, workers, runtime_seconds (+ ggf. backend).
     """
+    if backend in ("rust", "auto"):
+        rb = None
+        try:
+            from engine import rust_backend as rb  # importiert als Paket
+        except Exception:  # noqa: BLE001
+            try:
+                import rust_backend as rb           # falls als Skript aus engine/ gestartet
+            except Exception:  # noqa: BLE001
+                rb = None
+        if rb is not None and getattr(rb, "AVAILABLE", False):
+            return rb.parallel_anneal_rust(Q, steps=steps, T0=T0, n_restarts=n_restarts,
+                                           n_samples=n_samples, base_seed=base_seed)
+        if backend == "rust":
+            raise RuntimeError("backend='rust' angefordert, aber 'rust_engine' ist nicht gebaut "
+                               "(cd rust_engine && maturin develop --release).")
+        # backend == "auto": still auf numba zurückfallen
+
     n = Q.shape[0]
     Qf = np.ascontiguousarray(Q.astype(np.float64))
     if n_restarts is None:
