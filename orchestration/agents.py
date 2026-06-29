@@ -466,6 +466,10 @@ class Supervisor(Agent):
         self.fires = 0
         self.peak_workforce = 0
         self._idle_rounds = 0
+        # IDs aller je angestellten Worker (auch bereits entlassener). Wird in
+        # report() genutzt, damit die Task-Summe nur DIESEN Supervisor zaehlt —
+        # auch wenn der Bus ueber mehrere Laeufe hinweg wiederverwendet wird.
+        self._hired_ids: set = set()
 
     # ---- Hilfen -------------------------------------------------------
 
@@ -477,6 +481,7 @@ class Supervisor(Agent):
             work_seconds=self.worker_work_seconds,
         )
         self.hires += 1
+        self._hired_ids.add(worker.id)
         return worker
 
     def _fire_one_idle(self) -> bool:
@@ -614,12 +619,14 @@ class Supervisor(Agent):
 
     def report(self) -> Dict[str, Any]:
         """Erstellt den Abschlussreport (Tasks done, Peak-Belegschaft, Hires, Fires)."""
-        # Tasks done summieren wir aus dem letzten bekannten Status der (ehemaligen) Worker.
+        # Tasks done summieren wir aus dem letzten bekannten Status der (ehemaligen)
+        # Worker — aber NUR fuer die von DIESEM Supervisor angestellten (``_hired_ids``).
+        # Sonst wuerde ein wiederverwendeter Bus die Zahlen frueherer Laeufe mitzaehlen.
         statuses = self.bus.all_status()
         worker_done = sum(
             int(s.get("tasks_done", 0))
             for aid, s in statuses.items()
-            if s.get("role") == "worker"
+            if aid in self._hired_ids
         )
         return {
             "tasks_done": worker_done,
