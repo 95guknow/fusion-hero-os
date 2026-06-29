@@ -5,9 +5,11 @@ HEROIC CORE MAINFRAME — INTEGRAL VERSION (v5.25)
 Zusammenführung von:
   1. High-Performance Solver Engine (SA-Kernel via Numba/NumPy)
   2. ClassicalBackend mit Pre-/Post-Solve-Audit-Hooks (hier definiert)
-  3. Hook-/Stub-Layer (SelfModify, GenerationalEvolution, MetaAnalysis) —
-     derzeit PLATZHALTER (Generationen-Zähler / Vorschlags-Liste / Wort-Check),
-     KEIN laufendes Selbst-Modifikations- oder Evolutionssystem.
+  3. Hook-/Stub-Layer:
+       * SelfModify, MetaAnalysis — weiterhin PLATZHALTER (Vorschlags-Liste /
+         Wort-Check), KEIN echtes Selbst-Modifikationssystem.
+       * GenerationalEvolution — ECHTE (μ+λ)-Evolution über SA-Solver-Configs,
+         bewertet via parallel_anneal (Fitness = -energy), elitär & monoton.
   4. AuditAgent-Gateway; "EudaimoniaGuard" = einfache Grenzwertprüfung der
      Matrix/Energie (NaN/Inf + Betragsschwellen), keine inhaltliche Garantie.
 """
@@ -349,14 +351,152 @@ class SelfModifyCoreModule:
         self.audit_hooks[name] = func
 
 class GenerationalEvolutionProtocolCoreModule:
-    """PLATZHALTER-STUB. Zählt nur Generationen hoch. Kein Fitness, keine
-    Selektion, keine Population — noch kein echter evolutionärer Algorithmus."""
-    def __init__(self):
-        self.generation = 0
+    """ECHTE (μ+λ)-Evolution über SA-Solver-Konfigurationen.
 
+    Genom = (steps, T0, n_restarts) — die Stellschrauben von `parallel_anneal`.
+    Fitness eines Genoms = -energy des besten parallel_anneal-Laufs auf einem
+    FESTEN, symmetrischen Ziel-QUBO (erzeugt via `make_Q`, das genau die vom
+    SA-Kernel mit Faktor 2.0 erwarteten symmetrischen Matrizen liefert).
+    Negatives Vorzeichen, weil parallel_anneal MINIMIERT (niedrigere Energie =
+    besser), die Evolution aber MAXIMIERT.
+
+    Selektion: elitäres (μ+λ). Pro Generation werden λ mutierte Nachkommen
+    bewertet, mit den μ Eltern (deren Fitness gecacht ist) zusammengeführt und
+    die besten μ behalten. Da die Eltern mit ihrem gecachten Fitnesswert im Pool
+    bleiben, ist die beste Fitness über die Generationen MONOTON NICHT-FALLEND —
+    die Elite kann nie schlechter werden.
+
+    Import-sicher: keine Top-Level-Seiteneffekte; das Ziel-QUBO und die
+    Startpopulation werden erst beim ersten `run_generation()` lazy erzeugt.
+    """
+
+    # Genom-Grenzen (min, max) je Gen — Mutationen werden hierauf geclippt.
+    BOUNDS = {
+        "steps": (200, 20000),
+        "T0": (0.1, 8.0),
+        "n_restarts": (1, max(1, os.cpu_count() or 4)),
+    }
+
+    def __init__(self, target_Q=None, n=14, mu=4, lam=8, seed=12345, init_genome=None):
+        self.mu = int(mu)
+        self.lam = int(lam)
+        self.generation = 0
+        self.fitness_history = []        # beste Fitness je Generation (monoton ↑)
+        self.mean_fitness_history = []   # mittlere Elite-Fitness je Generation
+        self.best_genome = None
+        self.best_fitness = -np.inf
+        # Eigener, reproduzierbarer RNG — entkoppelt vom Modul-globalen `rng`.
+        self._rng = np.random.default_rng(seed)
+        self._n = int(n)
+        self._target_Q = None if target_Q is None else np.asarray(target_Q, dtype=np.float64)
+        # Optionales Seeding: Startpopulation um dieses Genom herum (sonst zufällig).
+        self._init_genome = None if init_genome is None else self._clip(dict(init_genome))
+        self.population = None           # lazy: Liste[(genome_dict, fitness)]
+
+    # ---------- Genom-Helfer ----------
+    def _clip(self, genome):
+        s_lo, s_hi = self.BOUNDS["steps"]
+        t_lo, t_hi = self.BOUNDS["T0"]
+        r_lo, r_hi = self.BOUNDS["n_restarts"]
+        genome["steps"] = int(np.clip(round(float(genome["steps"])), s_lo, s_hi))
+        genome["T0"] = float(np.clip(float(genome["T0"]), t_lo, t_hi))
+        genome["n_restarts"] = int(np.clip(round(float(genome["n_restarts"])), r_lo, r_hi))
+        return genome
+
+    def _random_genome(self):
+        s_lo, s_hi = self.BOUNDS["steps"]
+        t_lo, t_hi = self.BOUNDS["T0"]
+        r_lo, r_hi = self.BOUNDS["n_restarts"]
+        return self._clip({
+            "steps": int(self._rng.integers(s_lo, s_hi + 1)),
+            "T0": float(self._rng.uniform(t_lo, t_hi)),
+            "n_restarts": int(self._rng.integers(r_lo, r_hi + 1)),
+        })
+
+    def _mutate(self, parent):
+        """Gauß-Rauschen relativ zur Spannweite je Gen, anschließend geclippt."""
+        child = dict(parent)
+        s_lo, s_hi = self.BOUNDS["steps"]
+        t_lo, t_hi = self.BOUNDS["T0"]
+        r_lo, r_hi = self.BOUNDS["n_restarts"]
+        child["steps"] += self._rng.normal(0.0, 0.15 * (s_hi - s_lo))
+        child["T0"] += self._rng.normal(0.0, 0.15 * (t_hi - t_lo))
+        child["n_restarts"] += self._rng.normal(0.0, 0.15 * (r_hi - r_lo))
+        return self._clip(child)
+
+    def _target(self):
+        """Festes, symmetrisches Ziel-QUBO (einmalig erzeugt, dann gecacht)."""
+        if self._target_Q is None:
+            self._target_Q = make_Q(self._n, submodular=False, scale=2.0)
+        return self._target_Q
+
+    def _fitness(self, genome):
+        """Fitness = -energy des besten parallel_anneal-Laufs für dieses Genom.
+
+        Festes Q + fester base_seed => deterministisch je Genom, damit Fitness
+        über Generationen vergleichbar bleibt."""
+        out = parallel_anneal(self._target(), steps=genome["steps"], T0=genome["T0"],
+                              n_restarts=genome["n_restarts"], n_samples=2, base_seed=0)
+        return -float(out["energy"])
+
+    def _init_population(self):
+        if self._init_genome is not None:
+            genomes = [dict(self._init_genome)]
+            genomes += [self._mutate(self._init_genome) for _ in range(self.mu - 1)]
+        else:
+            genomes = [self._random_genome() for _ in range(self.mu)]
+        self.population = [(g, self._fitness(g)) for g in genomes]
+        self.population.sort(key=lambda gf: gf[1], reverse=True)
+
+    # ---------- Evolutionsschleife ----------
     def run_generation(self):
+        """Führt EINE echte (μ+λ)-Generation aus und schreibt fitness_history fort."""
+        if self.population is None:
+            self._init_population()
+
+        # λ Nachkommen aus zufällig gewählten Eltern erzeugen und bewerten.
+        offspring = []
+        for _ in range(self.lam):
+            pidx = int(self._rng.integers(0, len(self.population)))
+            child = self._mutate(self.population[pidx][0])
+            offspring.append((child, self._fitness(child)))
+
+        # (μ+λ): Eltern (gecachte Fitness) + Nachkommen, beste μ behalten.
+        combined = self.population + offspring
+        combined.sort(key=lambda gf: gf[1], reverse=True)
+        self.population = combined[:self.mu]
+
+        # Buchführung
+        self.best_genome, self.best_fitness = self.population[0]
         self.generation += 1
-        return {"generation": self.generation, "status": "active"}
+        self.fitness_history.append(self.best_fitness)
+        elite_mean = float(np.mean([f for _, f in self.population]))
+        self.mean_fitness_history.append(elite_mean)
+
+        return {
+            "generation": self.generation,
+            "status": "active",
+            "best_fitness": self.best_fitness,
+            "best_genome": dict(self.best_genome),
+            "elite_mean_fitness": elite_mean,
+        }
+
+    def evolve(self, n_generations=10, verbose=False):
+        """Bequeme Mehrgenerationen-Schleife. Liefert eine Zusammenfassung."""
+        for _ in range(n_generations):
+            status = self.run_generation()
+            if verbose:
+                g = status["best_genome"]
+                print(f"  Gen {status['generation']:>2}: best_fitness={status['best_fitness']:.4f} "
+                      f"(E={-status['best_fitness']:.4f}) | elite_mean={status['elite_mean_fitness']:.4f} "
+                      f"| Genom steps={g['steps']}, T0={g['T0']:.3f}, restarts={g['n_restarts']}")
+        return {
+            "generations": self.generation,
+            "best_fitness": self.best_fitness,
+            "best_genome": dict(self.best_genome) if self.best_genome else None,
+            "fitness_history": list(self.fitness_history),
+            "mean_fitness_history": list(self.mean_fitness_history),
+        }
 
 class CriticalMetaAnalysisCoreModule:
     """PLATZHALTER-STUB. Prüft per Substring auf "immer"/"nie" als grobe
@@ -383,6 +523,10 @@ class QUBOIntegrationCoreModule:
         self.evolution = GenerationalEvolutionProtocolCoreModule()
         self.meta_analyzer = CriticalMetaAnalysisCoreModule()
         self.audit_agent = ExecutableAuditAgent()
+        # Leichter Lauf-Zähler nur für die Anzeige — bewusst ENTKOPPELT von der
+        # evolutionären Optimierung (self.evolution.evolve(...)), damit ein
+        # gesicherter Solve nicht versehentlich eine ganze (μ+λ)-Generation auslöst.
+        self._run_index = 0
 
         # Injektion der Abhängigkeiten in das Backend
         self.backend = ClassicalBackend(
@@ -425,9 +569,13 @@ class QUBOIntegrationCoreModule:
         self.audit_agent.execute_hook = lambda name, data: self.self_modify.audit_hooks[name](data)
 
     def execute_secure_run(self, problem_matrix, config=None):
-        """Führt einen geschützten Optimierungszyklus innerhalb der aktuellen Generation aus."""
-        gen_status = self.evolution.run_generation()
-        print(f"\n[CORE MAINFRAME] Starte Evolutionäre Generation {gen_status['generation']}...")
+        """Führt einen geschützten, auditierten Solver-Lauf aus.
+
+        Hinweis: Das ist EIN einzelner Solve durch die Audit-Layer — nicht die
+        evolutionäre Optimierung. Die echte (μ+λ)-Evolution liegt in
+        self.evolution.evolve(...)."""
+        self._run_index += 1
+        print(f"\n[CORE MAINFRAME] Starte gesicherten Lauf {self._run_index}...")
 
         if config is None:
             config = QUBOSolverConfig(backend="simulated_annealing", steps=5000)
@@ -444,9 +592,9 @@ class QUBOIntegrationCoreModule:
         für die Visualisierung — und durchläuft dieselben Layer-1/3-Audits wie
         execute_secure_run.
         """
-        gen_status = self.evolution.run_generation()
+        self._run_index += 1
         n_eff = n_restarts or os.cpu_count() or 4
-        print(f"\n[CORE MAINFRAME] Starte parallele Generation {gen_status['generation']} "
+        print(f"\n[CORE MAINFRAME] Starte parallelen Lauf {self._run_index} "
               f"({n_eff} Restarts / {os.cpu_count()} Kerne)...")
         Q = np.asarray(problem_matrix, dtype=np.float64)
 
@@ -491,3 +639,31 @@ if __name__ == "__main__":
     print(f"Validierte minimale Energie E: {execution_result.energy:.6f}")
     print(f"Laufzeit der Engine:           {execution_result.runtime_seconds * 1000:.2f} ms")
     print("=" * 80)
+
+    # 5. ECHTE (mu+lambda)-Evolution ueber SA-Solver-Konfigurationen
+    print("\n" + "=" * 80)
+    print("GENERATIONELLE EVOLUTION  ((mu+lambda) ueber SA-Configs, Fitness = -energy)")
+    print("=" * 80)
+    # Groesseres Ziel-QUBO (n=120): hier zahlt die Solver-Konfiguration wirklich --
+    # schwache Configs (wenig steps/restarts) finden das Optimum NICHT. Start von einer
+    # bewusst BILLIGEN Config (steps=300, restarts=1), damit die Evolution sichtbar
+    # staerkere Configs hochzuechtet, statt direkt im Optimum zu starten.
+    evo = GenerationalEvolutionProtocolCoreModule(
+        n=120, mu=4, lam=8, seed=2025,
+        init_genome={"steps": 300, "T0": 0.4, "n_restarts": 1},
+    )
+    summary = evo.evolve(n_generations=10, verbose=True)
+
+    hist = summary["fitness_history"]
+    print("-" * 80)
+    print(f"Fitness-Verlauf (beste je Generation): {[round(f, 4) for f in hist]}")
+    g = summary["best_genome"]
+    print(f"Bestes Genom:  steps={g['steps']}, T0={g['T0']:.3f}, n_restarts={g['n_restarts']}")
+    print(f"Beste Fitness: {summary['best_fitness']:.6f}  (min. Energie E={-summary['best_fitness']:.6f})")
+
+    # Verifikation: elitaere Selektion => beste Fitness darf nie zurueckfallen.
+    monoton = all(hist[i + 1] >= hist[i] for i in range(len(hist) - 1))
+    print(f"Monoton nicht-fallende Elite-Fitness ueber {len(hist)} Generationen: "
+          f"{'JA (verifiziert)' if monoton else 'NEIN -- REGRESSION!'}")
+    print("=" * 80)
+    assert monoton, "Elite-Fitness ist zurueckgefallen -- (mu+lambda)-Elitismus verletzt!"
