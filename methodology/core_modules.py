@@ -5,7 +5,7 @@ core_modules.py — Lauffaehige Methoden-Module der Heroic Methodology
 
 Dieses Modul giesst jene konzeptuellen Bausteine aus ``HEROIC_SKILL.md`` in
 echte, importsichere Python-Klassen, die *noch nicht* in
-``heroic_core_mainframe.py`` codiert sind. Die im Mainframe bereits
+``engine/mainframe.py`` codiert sind. Die im Mainframe bereits
 vorhandenen Module (SelfModifyCoreModule, GenerationalEvolutionProtocolCoreModule,
 CriticalMetaAnalysisCoreModule, QUBO-Engine) werden hier bewusst NICHT
 dupliziert.
@@ -542,7 +542,7 @@ def _selbsttest() -> None:
     arch = AutomaticArchivingCoreModule()
     plan = arch.build_plan(
         "Session 2026",
-        artefakte=["app.py", "heroic_core_mainframe.py", "core_modules.py"],
+        artefakte=["app.py", "engine/mainframe.py", "core_modules.py"],
         entscheidungen=["ECharts statt plotly", "numba nogil + ThreadPool"],
         outputs=["core_modules.py"],
         offene_punkte=["Connector-Tests"],
