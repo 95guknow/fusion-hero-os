@@ -1,0 +1,28 @@
+[
+  {
+    "index": 0,
+    "timestamp": 1782674973.9313693,
+    "data": {
+      "genesis": "QuboCoin PoC"
+    },
+    "previous_hash": "0",
+    "hash": "a991796b34a0033950eee545de43aaca629fdf31f8feae76728c82f2efe6e998"
+  },
+  {
+    "index": 1,
+    "timestamp": 1782674983.5579128,
+    "data": {
+      "problem_id": "prob_1782674982904_8586",
+      "address": "qbc16c22e4141312da117416418d2f8c07babf02234a",
+      "energy": -11.442286256557995,
+      "proof": "4d257c7bedd5423406804b13eef6f06b89d977d8fc14f4c794ea4f4d93a62276",
+      "nonce": 27295,
+      "pow_hash": "000532c65552901863dc3c127abef5ffff01ddd81225ed6341503df1efd14eba",
+      "time": 0.615,
+      "difficulty": 78,
+      "reward": 1.0
+    },
+    "previous_hash": "a991796b34a0033950eee545de43aaca629fdf31f8feae76728c82f2efe6e998",
+    "hash": "eef1b786329c67bbbd8678675783a47c072f42d0c843d96d65b1d750c28f0aea"
+  }
+]
