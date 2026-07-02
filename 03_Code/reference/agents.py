@@ -422,6 +422,23 @@ class Agent:
                 task.result = self.executor(self, task)
             except Exception as exc:  # Executor-Fehler werden als Ergebnis vermerkt.
                 task.result = {"error": repr(exc)}
+
+            # Globale Kontrollfunktion (Post-Check via MessageBus-Alternative)
+            if os.getenv("FUSION_AGENT_CONTROL", "1") == "1":
+                try:
+                    import sys as _sys
+                    _core = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "core"))
+                    if _core not in _sys.path:
+                        _sys.path.insert(0, _core)
+                    from agent_control import post_dispatch  # type: ignore
+                    payload = task.payload if isinstance(task.payload, dict) else {}
+                    ctrl_task = dict(payload)
+                    ctrl_task["assigned_agent"] = self.name
+                    ctrl_task["task_id"] = task.task_id
+                    post_dispatch(ctrl_task, task.result)
+                except Exception:
+                    pass
+
             task.done = True
             self.tasks_done += 1
             self.state = "running"

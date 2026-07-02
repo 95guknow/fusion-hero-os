@@ -1,12 +1,14 @@
 """
-Co-Evolutionary Closure (CEC) - v7.12
+Co-Evolutionary Closure (CEC) - v8
 
-Rekursiver Feedback-Loop als Stabilitäts-Invariant.
+Rekursiver Feedback-Loop als Stabilitäts-Invariant im Fusion-Hero-OS.
 Implementiert die rekursive Selbstkorrektur des MasterSeeds
-mit Umwelt-Feedback (Theorie + Embodiment).
+mit Umwelt-Feedback (Theorie + Embodiment + PMS Execution Layer).
+
+Teil der 02_architecture Schicht.
 """
 
-from typing import Any, Callable
+from typing import Any
 
 
 class CoEvolutionaryClosure:
@@ -14,7 +16,7 @@ class CoEvolutionaryClosure:
     CEC als rekursiver Operator auf dem MasterSeed.
     
     Formel:  M_{n+1} = R_CEC(M_n, E_n)
-    wobei E_n der Umwelt-Input (Theorie, Embodiment, Field-Tests) ist.
+    wobei E_n der Umwelt-Input (Theorie, Embodiment, Field-Tests, PMS-Chains) ist.
     """
 
     def __init__(self, contraction_rate: float = 0.92):

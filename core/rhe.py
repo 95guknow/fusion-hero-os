@@ -1,10 +1,12 @@
 """
-Rust Hybrid Embodiment (RHE) - v7.12
+Rust Hybrid Embodiment (RHE) - v8
 
 Hardware-Horkrux-Schnittstelle zwischen physischer Praxis und Core.
 
 Vollständige Rust-Implementierung folgt später.
 Dieses Modul dient als Interface + Konzept.
+
+Teil der 02_architecture / 04_execution Schicht.
 """
 
 from dataclasses import dataclass

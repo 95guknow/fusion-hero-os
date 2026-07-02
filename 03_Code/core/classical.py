@@ -1,8 +1,15 @@
+import sys
+import time
+from pathlib import Path
+
 from backends.base import SolverBackend
 from domain.qubo_problem import QUBOProblem
 from domain.solver_result import SolverResult
 from domain.config import QUBOSolverConfig
-import time
+
+_ROOT = Path(__file__).resolve().parents[2]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 class ClassicalBackend(SolverBackend):
     """Classical QUBO solver backend using qb_qubo.py functions."""

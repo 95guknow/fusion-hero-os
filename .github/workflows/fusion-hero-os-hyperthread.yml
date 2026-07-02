@@ -1,10 +1,15 @@
-name: Fusion Hero OS - Heroic Core CI
+name: Fusion Hero OS - Heroic Core CI (Hyperthreading aware)
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+      - develop
+      - 'feature/**'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+      - develop
 
 jobs:
   heroic-core-ci:
@@ -39,12 +44,11 @@ jobs:
             exit 1
           fi
 
-          # Check for critical sections
           REQUIRED_SECTIONS=(
             "Zielarchitektur"
             "Rollback-Plan"
-            "Technische Schutzma\u00dfnahmen"
-            "Risiken & Gegenma\u00dfnahmen"
+            "Technische Schutzmaßnahmen"
+            "Risiken & Gegenmaßnahmen"
           )
 
           for section in "${REQUIRED_SECTIONS[@]}"; do
@@ -58,8 +62,15 @@ jobs:
         run: |
           echo "===================================="
           echo "ALTE_Frau_95g Heroic Core CI - SUCCESS"
-          echo "Version: v7.12"
+          echo "Version: v8"
+          echo "Branch: ${{ github.ref_name }}"
           echo "Core Structure: Validated"
           echo "Python Syntax: OK"
-          echo "Migration Concept: Checked"
           echo "===================================="
+
+      - name: Branch Model Compliance Check
+        run: |
+          echo "Checking branch model compliance..."
+          if [[ "${{ github.ref_name }}" == main* ]]; then
+            echo "Direct push to main detected - ensure it came via develop + review"
+          fi

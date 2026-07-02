@@ -18,7 +18,7 @@ Verbesserungen ggü. v1.0:
 Neu in v2.1:
 - Visualisierung via ui.echart (Konvergenz, Q-/Beitrags-Heatmap, CPU/RAM-Verlauf, Sweep)
 - Pipelines-Panel: 4 Workflows (Erkenntnis-Lauf 5-Stufen, Parallel-Solve, Review&Archive, Sweep)
-- Hyperthreading: paralleles Multi-Start-SA über alle Kerne (mainframe.parallel_anneal)
+- Hyperthreading: paralleles Multi-Start-SA über alle Kerne (mainframe.parallel_anneal), Restarts=CPU-Anzahl per Default, aber frei einstellbar (1..64)
 """
 from pathlib import Path
 from collections import deque
@@ -128,17 +128,17 @@ def on_edit(e):
     update_status()
 
 
-def save():
+def save() -> bool:
     path = state["current"]
     if not path:
         ui.notify("Keine Datei geöffnet", type="warning")
-        return
+        return False
     buf = buffers[path]
     try:
         path.write_text(buf["content"], encoding="utf-8")
     except Exception as exc:  # noqa: BLE001
         ui.notify(f"Speichern fehlgeschlagen: {exc}", type="negative")
-        return
+        return False
     buf["saved"] = buf["content"]
     buf["dirty"] = False
     saved.text = f"Gespeichert {datetime.datetime.now():%H:%M:%S}"
@@ -146,6 +146,7 @@ def save():
     render_files()
     update_status()
     ui.notify(f"✓ {path.name}", type="positive")
+    return True
 
 
 def new_file():
@@ -229,8 +230,9 @@ async def run_current():
     if path.suffix != ".py":
         ui.notify("Ausführen nur für .py-Dateien", type="warning")
         return
-    if buffers[path]["dirty"]:
-        save()  # auf Platte schreiben, damit der aktuelle Stand läuft
+    if buffers[path]["dirty"] and not save():
+        ui.notify("Ausführung abgebrochen: Speichern fehlgeschlagen", type="negative")
+        return
     console_exp.open()
     console.clear()
     console.push(f"$ python {path.name}")
@@ -583,7 +585,11 @@ async def _a_kritik():
     for line in audit.splitlines():
         if line.strip():
             pipe_log.push(line)
-    _set_detail("Audit Layer 1+3 ausgefuehrt; keine Schwellenwarnung gemeldet (gleiche Q wie Stufe 2)")
+    warnings = [l for l in audit.splitlines() if "[WARN]" in l or "[ALERT]" in l]
+    if warnings:
+        _set_detail(f"Audit Layer 1+3: {len(warnings)} Warnung(en) im Log (gleiche Q wie Stufe 2)")
+    else:
+        _set_detail("Audit Layer 1+3: keine WARN/ALERT-Marker im Log (gleiche Q wie Stufe 2)")
 
 
 async def _a_synthese():
@@ -631,7 +637,9 @@ async def _b_viz():
 
 async def _b_report():
     res = pipe_ctx["res"]
-    note = " ⚠ Meta-Analyse: divergent" if res["energy"] > 1e6 else ""
+    # Spiegelt den Schwellwert aus heroic_core_mainframe.py's "eudaimonischer Korridor"-
+    # Check (kein Meta-Analyse-Ergebnis, nur ein grober Betrags-Sentinel).
+    note = " ⚠ Energie > 1e6 (Divergenz-Sentinel)" if res["energy"] > 1e6 else ""
     x = res["solution"].tolist() if hasattr(res["solution"], "tolist") else res["solution"]
     pipe_log.push(f"best x = {x}")
     pipe_log.push(f"E_min = {res['energy']:.4f} · Restarts {res['n_restarts']} · "
@@ -703,7 +711,7 @@ PIPELINES = {
     ],
     "Parallel-Solve & Visualize": [
         ("Matrix erzeugen/wiederverwenden", _b_matrix),
-        ("Parallel-Solve (alle Kerne)", _b_solve),
+        ("Parallel-Solve (Restarts=Default CPU-Anzahl)", _b_solve),
         ("Visualisieren (Konvergenz + Heatmap)", _b_viz),
         ("Ergebnis-Report", _b_report),
     ],

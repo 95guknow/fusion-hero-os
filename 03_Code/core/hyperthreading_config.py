@@ -61,6 +61,12 @@ def status() -> Dict[str, Any]:
                 })
         except:
             pass
+    try:
+        from gpu_memory_allocator import get_gpu_allocator
+        alloc = get_gpu_allocator().status().get("allocator", {})
+        base["gpu_allocator"] = alloc
+    except Exception:
+        pass
     return base
 
 def enable(enabled: bool = True) -> Dict[str, Any]:
@@ -73,8 +79,18 @@ def enable(enabled: bool = True) -> Dict[str, Any]:
 def disable() -> Dict[str, Any]:
     return enable(False)
 
-def parallel_workers() -> int:
+def is_hyperthreading_enabled() -> bool:
+    return _enabled
+
+
+def logical_cpu_count() -> int:
+    return _logical_cpus
+
+
+def parallel_workers(override: int | None = None) -> int:
     """Number of parallel workers / HT tracks to use."""
+    if override is not None and override > 0:
+        return override
     return _workers
 
 def get_virtual_gpu_ht_cache():

@@ -1,42 +1,31 @@
-# sv
+# fusion-hero-os
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+**ALTE_Frau_95g Heroic Core v8 – Fusion Hero OS + Full Native Hyperthreading**
 
-## Creating a project
+Ein selbst-modifizierendes, heroic Framework für Rekonstruktivistischen Eudaimonismus und maximale intellektuelle Präzision.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Aktueller Stand
+- Version: v8 (Fusion Hero OS + Full Native Hyperthreading + OptimizerInsights Consolidation)
+- MasterSeed: M_0''''
+- Struktur: Verbessert (siehe docs/v8/PROJECT_STRUCTURE_v8.md)
+- Branches: Neu geordnet (siehe docs/v8/BRANCH_STRATEGY_v8.md)
 
-```sh
-# create a new project
-npx sv create my-app
+## Branch Model (kurz)
+- **main** → Stabile v8-Releases (protected)
+- **develop** → Aktive Integration (wird angelegt)
+- **feature/*** → Kurzlebige Aufgaben-Branches
+- Historie → Tags + archive/-Ordner
+
+Weitere Details: docs/v8/BRANCH_STRATEGY_v8.md
+
+## Schnellstart
+```bash
+git clone https://github.com/95guknow/fusion-hero-os.git
+cd fusion-hero-os
+# Aktueller Stand auf main (v8 stable)
 ```
 
-To recreate this project with the same configuration:
+## Core
+Der unified ALTE_Frau_95g Heroic Core wird automatisch top-down geladen.
 
-```sh
-# recreate this project
-npx sv@0.16.1 create --template minimal --types jsdoc --no-install .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+**Identity Preservation Score: 100**

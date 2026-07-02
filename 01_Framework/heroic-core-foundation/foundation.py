@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
 Heroic Core Foundation — Layer 0 Enforcement
-Lightweight, dependency-free utilities for validating outputs against the immutable foundation.
+Lightweight, dependency-free heuristic text linter: flags metaphor-as-proof,
+modal collapse, and unlabeled conclusions via regex, and counts explicit
+Geltungskategorie labels. It does not enforce immutability of anything —
+it only scores a given text against these heuristics.
 """
 
 from __future__ import annotations
@@ -140,7 +143,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         text = path.read_text(encoding="utf-8", errors="replace")
         name = path.name
 
-    report = check_foundation_gate(text, require_explicit=strict or True)
+    report = check_foundation_gate(text, require_explicit=strict)
 
     print(f"\n=== Heroic Core Foundation Gate ===")
     print(f"Input: {name}")

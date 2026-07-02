@@ -1,0 +1,24 @@
+{
+  "id": "geisteskrankheiten_4d_v7",
+  "version": "7.0",
+  "source": "v6 + heroismus_edition_history_0.6_0.7",
+  "updated_ts": 1782930089.5957377,
+  "edition_sources": {
+    "zip": "C:\\Users\\Admin\\Downloads\\Heroismus_Edition_History.zip",
+    "extracted": "C:\\Users\\Admin\\fusion-hero-os\\03_Code\\core\\knowledge\\_heroismus_edition_history",
+    "v0.6": "Heroismus_v0.6_2026-07-01.pdf",
+    "v0.7_current": "Heroismus_Kritische_Gesamtedition_current.pdf"
+  },
+  "new_sections": [
+    "25_edition_history",
+    "26_mapping_mer",
+    "27_sieben_teile",
+    "28_pipeline",
+    "29_vermerk"
+  ],
+  "chars": 88119,
+  "desktop": {
+    "md": "C:\\Users\\Admin\\Desktop\\Geisteskrankheiten_4D_Matrix_v7_vollstaendig.md",
+    "pdf": "C:\\Users\\Admin\\Desktop\\Geisteskrankheiten_4D_Matrix_v7_vollstaendig.pdf"
+  }
+}

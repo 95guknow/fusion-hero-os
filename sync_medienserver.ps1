@@ -38,15 +38,16 @@ if ($LASTEXITCODE -ge 8) {
 }
 
 $manifest = @{
-    version = "v1.2"
-    core = "v7.5"
+    version = "v8"
+    core = "v8"
     synced_at = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
     github = "https://github.com/95guknow/fusion-hero-os"
     grok_online = @{
         repo = "95guknow/fusion-hero-os"
         branch = "main"
         health_local = "http://127.0.0.1:8000/api/health"
-        workspace_local = "http://127.0.0.1:8080"
+        gui_local = "http://127.0.0.1:8000"
+        nicegui_legacy = "http://127.0.0.1:8080"
     }
     medienserver_path = $Target
 } | ConvertTo-Json -Depth 4

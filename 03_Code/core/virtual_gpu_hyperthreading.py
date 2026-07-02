@@ -24,22 +24,114 @@ class VirtualGPUHTCache:
 
         print(f"[VirtualGPUHT] Initialized: GPU={self.use_gpu}, state_size={self.state_size}, max={self.max_threads}")
 
-    def _has_gpu(self):
+    def _has_gpu(self) -> bool:
         try:
             import torch
-            return torch.cuda.is_available()
-        except:
-            return False
+            if torch.cuda.is_available():
+                return True
+        except Exception:
+            pass
+        try:
+            import cupy as cp
+            return cp.cuda.is_available()
+        except Exception:
+            pass
+        return False
+
+    def _alloc_device_state(self):
+        try:
+            import torch
+            if torch.cuda.is_available():
+                return torch.zeros(self.state_size, dtype=torch.float32, device="cuda")
+        except Exception:
+            pass
+        try:
+            import cupy as cp
+            if cp.cuda.is_available():
+                return cp.zeros(self.state_size, dtype=cp.float32)
+        except Exception:
+            pass
+        return np.zeros(self.state_size, dtype=np.float32)
+
+    def _is_device_tensor(self, state) -> bool:
+        try:
+            import torch
+            if isinstance(state, torch.Tensor):
+                return state.is_cuda
+        except Exception:
+            pass
+        try:
+            import cupy as cp
+            if isinstance(state, cp.ndarray):
+                return True
+        except Exception:
+            pass
+        return False
 
     def status(self):
-        used = sum(s.nbytes for s in self.vram.values()) / (1024*1024)  # MB
+        device_bytes = 0
+        host_bytes = 0
+        for state in self.vram.values():
+            nbytes = getattr(state, "nbytes", None)
+            if nbytes is None:
+                try:
+                    nbytes = state.numel() * state.element_size()
+                except Exception:
+                    nbytes = len(state) * 4 if hasattr(state, "__len__") else 0
+            if self._is_device_tensor(state):
+                device_bytes += nbytes
+            else:
+                host_bytes += nbytes
         return {
             "active_virtual_threads": len(self.vram),
-            "vram_used_mb": round(used, 2),
+            "vram_used_mb": round(device_bytes / (1024 * 1024), 2),
+            "host_used_mb": round(host_bytes / (1024 * 1024), 2),
             "max_threads": self.max_threads,
             "state_size": self.state_size,
             "gpu_mode": self.use_gpu,
-            "ssd_spill_enabled": self.ssd_cache is not None
+            "ssd_spill_enabled": self.ssd_cache is not None,
+            "policy": "dedicated_vram_first",
+        }
+
+    def rebalance_to_dedicated_vram(self, target_ratio: float = 0.92, snap: dict | None = None) -> dict:
+        """Migrate host states to dedicated VRAM; spill overflow to SSD not RAM."""
+        migrated = 0
+        spilled = 0
+        if not self.use_gpu:
+            self.use_gpu = True
+        for tid, state in list(self.vram.items()):
+            if self._is_device_tensor(state):
+                continue
+            host_arr = np.asarray(state, dtype=np.float32)
+            try:
+                import torch
+                if torch.cuda.is_available():
+                    self.vram[tid] = torch.from_numpy(host_arr).cuda()
+                    migrated += 1
+                    continue
+            except Exception:
+                pass
+            if self.ssd_cache:
+                self.ssd_cache.store(f"vthread_{tid}", host_arr)
+                del self.vram[tid]
+                spilled += 1
+        added = 0
+        if snap and snap.get("dedicated_vram", {}).get("free_mb", 0) > 0:
+            free_mb = snap["dedicated_vram"]["free_mb"]
+            bytes_per = max(self.state_size * 4, 1024)
+            batch = min(512, int((free_mb * 0.75 * 1024 * 1024) / bytes_per))
+            self.max_threads = max(self.max_threads, len(self.vram) + batch)
+            for _ in range(batch):
+                tid = self.allocate_virtual_thread()
+                if tid is None:
+                    break
+                added += 1
+        return {
+            "migrated_to_vram": migrated,
+            "spilled_to_ssd": spilled,
+            "threads_added": added,
+            "active": len(self.vram),
+            "max_threads": self.max_threads,
         }
 
     def allocate_virtual_thread(self):
@@ -50,13 +142,7 @@ class VirtualGPUHTCache:
             return None
         tid = self.next_tid
         self.next_tid += 1
-        state = np.zeros(self.state_size, dtype=np.float32)
-        if self.use_gpu:
-            try:
-                import torch
-                state = torch.from_numpy(state).cuda()
-            except:
-                pass  # fallback to cpu array
+        state = self._alloc_device_state() if self.use_gpu else np.zeros(self.state_size, dtype=np.float32)
         self.vram[tid] = state
         return tid
 

@@ -1,57 +1,23 @@
 """
-Fusion Hero OS Workspace (Core-Integrated Version) - v7.12
+Dashboard Workspace - v8
 
-Dies ist die in den Core integrierte Version des Dashboards.
-Ursprünglich aus dem dashboard-Repo, nun als native Komponente des MasterSeeds.
+Verantwortlich für Workspace-Management und State-Handling im Dashboard.
 
-Enthält:
-- Task Management & Auto-Assignment
-- Agent Orchestration
-- Hyperthreading Control
-- Auto-Save & Git Push
+Teil der 04_execution Schicht.
 """
 
-from typing import Any
-
-
-class WorkspaceCore:
-    """
-    Kern-Logik des Dashboards als Teil des Heroic Cores.
-    """
-
+class Workspace:
     def __init__(self):
-        self.tasks: list[dict] = []
-        self.autonomous_mode: bool = False
+        self.state = {}
 
-    def create_task(self, query: str, geltung: str = "model", dom: str = "General") -> dict:
-        task = {
-            "id": len(self.tasks) + 1,
-            "query": query,
-            "geltung": geltung,
-            "dom": dom,
-            "status": "pending"
-        }
-        self.tasks.append(task)
-        return task
+    def set(self, key: str, value):
+        self.state[key] = value
 
-    def assign_task(self, task_id: int, agent: str):
-        for task in self.tasks:
-            if task["id"] == task_id:
-                task["status"] = "zugeordnet"
-                task["assigned_agent"] = agent
-                return True
-        return False
+    def get(self, key: str):
+        return self.state.get(key)
 
-    def toggle_autonomous(self, enabled: bool):
-        self.autonomous_mode = enabled
-
-    def get_status(self) -> dict:
-        return {
-            "total_tasks": len(self.tasks),
-            "autonomous": self.autonomous_mode,
-            "pending": len([t for t in self.tasks if t["status"] == "pending"])
-        }
+    def clear(self):
+        self.state.clear()
 
 
-# Globale Instanz für Core-Integration
-global_workspace = WorkspaceCore()
+global_workspace = Workspace()

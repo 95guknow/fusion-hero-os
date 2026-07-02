@@ -9,13 +9,27 @@ Optimierungen:
   4. local_search: Energie-Delta-Analytik (O(n) pro Iteration statt O(n^2))
   5. simulated_annealing: Integer-Operationen, fewer copies
   6. qubo_to_ising: unveraendert (bereits vektorisiert)
+
+Supersymmetrie-Erweiterung (coevolutionär mit v2-beta Pipeline + MasterSeed Propagation + Timespace Geometry, Stand 29.06.2026):
+Zukünftig: gepaarte Variablen / Superpartner-Modi (z.B. Stabilitäts-Modus ↔ Evolutions-Modus) in der Energy-Funktion,
+sodass QUBO-Lösungen supersymmetrisch invariant unter Partner-Transformation bleiben (Erhalt von Eudaimonia / Fidelity).
+Erste Implementierung in nächster Iteration via erweiterte make_Q oder Post-Processing.
 """
+import os
+import time
 import numpy as np
 import itertools
+from concurrent.futures import ThreadPoolExecutor
 from numba import jit
 
 
 rng = np.random.default_rng(7)
+
+
+def _parallel_workers(override=None):
+    if override is not None and override > 0:
+        return override
+    return os.cpu_count() or 4 if os.getenv("FUSION_HYPERTHREADING", "1") != "0" else 1
 
 
 @jit(nopython=True, cache=True, fastmath=True)
@@ -121,8 +135,10 @@ def greedy_fix(Q, order):
     return x.astype(np.int64), final_e
 
 
-def local_search(Q, x0, iters=500):
+def local_search(Q, x0=None, iters=500):
     """Single-Bit-Flip mit Energie-Delta (O(n) pro Iteration statt O(n^2))."""
+    if x0 is None:
+        x0 = rng.integers(0, 2, Q.shape[0])
     x = np.array(x0, dtype=np.int64).copy()
     Qf = Q.astype(np.float64)
     Qx = (Qf @ x.astype(np.float64))            # (Qx)_i = sum_j Q_{ij} x_j
@@ -145,28 +161,133 @@ def local_search(Q, x0, iters=500):
     return x.astype(np.int64), float(e)
 
 
-def simulated_annealing(Q, steps=4000, T0=2.0):
-    """SA mit Integer-Vektor, fewer copies."""
-    n = Q.shape[0]
-    x = rng.integers(0, 2, n).astype(np.int64)
-    Qf = Q.astype(np.float64)
-    Qx = Qf @ x.astype(np.float64)
-    e = float(x @ Qx)
-    best_x, best_e = x.copy(), e
-
+@jit(nopython=True, cache=True, fastmath=True)
+def _simulated_annealing_kernel(Qf, steps, T0, n, initial_x, random_indices, random_floats):
+    """JIT SA-Core: O(n) Delta-Evaluation pro Flip."""
+    x = initial_x.copy()
+    Qx = np.zeros(n, dtype=np.float64)
+    e = 0.0
+    for i in range(n):
+        acc = 0.0
+        for j in range(n):
+            acc += Qf[i, j] * x[j]
+        Qx[i] = acc
+        e += acc * x[i]
+    best_x = x.copy()
+    best_e = e
     for t in range(steps):
         T = T0 * (1.0 - t / steps) + 1e-3
-        i = int(rng.integers(0, n))
+        i = random_indices[t]
         delta_x = 1 - 2 * x[i]
-        delta_e = 2.0 * delta_x * Qx[i] + Q[i, i] * delta_x * delta_x
-        if delta_e < 0 or rng.random() < float(np.exp(-delta_e / T)):
+        delta_e = 2.0 * delta_x * Qx[i] + Qf[i, i] * delta_x * delta_x
+        if delta_e < 0 or random_floats[t] < np.exp(-delta_e / T):
             x[i] ^= 1
             e += delta_e
-            Qx += Qf[:, i] * delta_x
+            for j in range(n):
+                Qx[j] += Qf[j, i] * delta_x
             if e < best_e:
                 best_e = e
-                best_x = x.copy()
-    return best_x.astype(np.int64), float(best_e)
+                for j in range(n):
+                    best_x[j] = x[j]
+    return best_x, best_e
+
+
+@jit(nopython=True, nogil=True, cache=True, fastmath=True)
+def _sa_kernel_trace(Qf, steps, T0, n, initial_x, random_indices, random_floats,
+                     trace_steps, trace_out):
+    x = initial_x.copy()
+    Qx = np.zeros(n, dtype=np.float64)
+    e = 0.0
+    for i in range(n):
+        acc = 0.0
+        for j in range(n):
+            acc += Qf[i, j] * x[j]
+        Qx[i] = acc
+        e += acc * x[i]
+    best_x = x.copy()
+    best_e = e
+    n_samples = trace_steps.shape[0]
+    sidx = 0
+    for t in range(steps):
+        T = T0 * (1.0 - t / steps) + 1e-3
+        i = random_indices[t]
+        delta_x = 1 - 2 * x[i]
+        delta_e = 2.0 * delta_x * Qx[i] + Qf[i, i] * delta_x * delta_x
+        if delta_e < 0 or random_floats[t] < np.exp(-delta_e / T):
+            x[i] ^= 1
+            e += delta_e
+            for j in range(n):
+                Qx[j] += Qf[j, i] * delta_x
+            if e < best_e:
+                best_e = e
+                for j in range(n):
+                    best_x[j] = x[j]
+        while sidx < n_samples and trace_steps[sidx] == t:
+            trace_out[sidx] = best_e
+            sidx += 1
+    while sidx < n_samples:
+        trace_out[sidx] = best_e
+        sidx += 1
+    return best_x, best_e
+
+
+def simulated_annealing(Q, steps=4000, T0=2.0):
+    """SA mit jittetem Kernel und O(n) Energie-Delta-Updates."""
+    n = Q.shape[0]
+    Qf = Q.astype(np.float64)
+    initial_x = rng.integers(0, 2, n).astype(np.int64)
+    random_indices = rng.integers(0, n, steps).astype(np.int64)
+    random_floats = rng.random(steps).astype(np.float64)
+    bx, be = _simulated_annealing_kernel(Qf, steps, T0, n, initial_x, random_indices, random_floats)
+    return bx.astype(np.int64), float(be)
+
+
+def _anneal_one(Qf, steps, T0, n, seed, n_samples):
+    r = np.random.default_rng(seed)
+    initial_x = r.integers(0, 2, n).astype(np.int64)
+    random_indices = r.integers(0, n, steps).astype(np.int64)
+    random_floats = r.random(steps).astype(np.float64)
+    trace_steps = np.linspace(0, max(steps - 1, 0), n_samples).astype(np.int64)
+    trace_out = np.empty(n_samples, dtype=np.float64)
+    bx, be = _sa_kernel_trace(Qf, steps, T0, n, initial_x, random_indices,
+                              random_floats, trace_steps, trace_out)
+    return bx, be, trace_out
+
+
+def parallel_anneal(Q, steps=8000, T0=2.0, n_restarts=None, n_samples=60,
+                    base_seed=0, workers=None):
+    """Multi-Start SA über alle logischen Kerne (Hyperthreading, nogil)."""
+    n = Q.shape[0]
+    Qf = np.ascontiguousarray(Q.astype(np.float64))
+    n_restarts = n_restarts or _parallel_workers()
+    workers = workers or _parallel_workers()
+    seeds = [base_seed + k for k in range(n_restarts)]
+    t0 = time.time()
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        results = list(ex.map(lambda s: _anneal_one(Qf, steps, T0, n, s, n_samples), seeds))
+    runtime = time.time() - t0
+    energies = [float(e) for _, e, _ in results]
+    best_idx = int(np.argmin(energies))
+    best_x, best_e, _ = results[best_idx]
+    trace_steps = np.linspace(0, max(steps - 1, 0), n_samples).astype(np.int64)
+    return {
+        "solution": np.asarray(best_x, dtype=np.int64),
+        "energy": float(best_e),
+        "energies": energies,
+        "best_restart": best_idx,
+        "traces": [t.tolist() for _, _, t in results],
+        "trace_steps": trace_steps.tolist(),
+        "n_restarts": n_restarts,
+        "workers": workers,
+        "runtime_seconds": runtime,
+    }
+
+
+def warmup_kernels():
+    Q = make_Q(4, scale=1.0)
+    simulated_annealing(Q, steps=50, T0=1.0)
+    parallel_anneal(Q, steps=50, n_restarts=2, n_samples=4)
+    return True
 
 
 def qubo_to_ising(Q):

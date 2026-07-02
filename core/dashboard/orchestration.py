@@ -1,7 +1,9 @@
 """
-Orchestration Layer für das Dashboard (Core-Integrated) - v7.12
+Dashboard Orchestration Layer - v8
 
-Extrahierte und bereinigte Orchestrierungslogik aus dem ursprünglichen Dashboard.
+Verantwortlich für die Koordination von Agenten und Aufgaben innerhalb des Dashboards.
+
+Teil der 04_execution Schicht.
 """
 
 from typing import List, Dict

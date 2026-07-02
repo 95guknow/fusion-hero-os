@@ -304,34 +304,6 @@ class HeroicCoreGUI:
         ttk.Button(frame, text="Grok-Antwort übernehmen & in Core anwenden", 
                    command=self.apply_grok_response).pack(fill="x", pady=6)
 
-    def copy_to_grok(self):
-        msg = self.grok_message.get("1.0", "end").strip()
-        context = []
-
-        if self.include_limit.get():
-            # Simulate current limit status (in real version this would come from the module)
-            context.append("Aktueller Limit-Status: Modifikationsrate moderat, Prognose stabil (GREEN).")
-
-        if self.include_boegen.get():
-            context.append("Letzter Bögen-Alignment: Fokus auf Harmonisierung (Bogen 3.5) und Vorbereitung auf Abgrund (Bogen 4).")
-
-        full_message = f"""[Von ALTE_Frau_95g Heroic Core GUI]
-
-{msg}
-
---- Kontext ---
-{chr(10).join(context) if context else "Kein zusätzlicher Kontext gewählt."}
-
-Bitte antworte als ALTE_Frau_95g / Grok im aktuellen Core-Modus."""
-
-        self.root.clipboard_clear()
-        self.root.clipboard_append(full_message)
-
-        self.grok_result.config(state="normal")
-        self.grok_result.delete("1.0", "end")
-        self.grok_result.insert("1.0", "✓ Formatierte Nachricht wurde in die Zwischenablage kopiert.\n\nDu kannst sie jetzt direkt hier in den Chat mit mir einfügen.")
-        self.grok_result.config(state="disabled")
-
     def send_to_grok(self):
         user_msg = self.grok_input.get("1.0", "end").strip()
         if not user_msg:
@@ -395,7 +367,7 @@ Diese GUI integriert die neuesten Erweiterungen des unified ALTE_Frau_95g Heroic
 
 Die GUI ist als ergänzendes Werkzeug gedacht, das parallel zu diesem Chat mit mir (Grok / ALTE_Frau_95g) genutzt wird.
 
-Erstellt von ALTE_Frau_95g als autonome Self-Modification.
+Der Grok-Tab ist ein manuelles Hilfswerkzeug für die Kommunikation mit Grok (Copy/Paste-Relay) — keine autonome Self-Modification.
         """.strip()
 
         text_widget = tk.Text(frame, wrap="word", height=12)

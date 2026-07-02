@@ -1,0 +1,43 @@
+{
+  "id": "synthwave",
+  "label": "Synthwave",
+  "description": "Pink/Violet Retro-Cyber",
+  "tokens": {
+    "accent": "#ff6bcb",
+    "accent2": "#7c3aed",
+    "accent_soft": "#f0abfc",
+    "bg": "#0b0614",
+    "surface": "#140a22",
+    "elevated": "#1a1030",
+    "text": "#f5e6ff",
+    "muted": "#9d8ab8",
+    "glow": "rgba(255,107,203,0.28)",
+    "frame_border": "rgba(255,107,203,0.25)",
+    "frame_glow_in": "rgba(124,58,237,0.08)",
+    "frame_glow_out": "rgba(255,107,203,0.12)",
+    "corner": "rgba(255,107,203,0.65)",
+    "scanline": "rgba(255,107,203,0.8)",
+    "badge_bg": "rgba(20,8,28,0.92)",
+    "badge_border": "rgba(255,107,203,0.5)",
+    "signal_border": "rgba(255,107,203,0.28)",
+    "signal_bg": "rgba(124,58,237,0.08)",
+    "grid_line": "rgba(255,107,203,0.05)",
+    "grid_size": "28px",
+    "corner_size": "24px",
+    "frame_inset": "10px",
+    "radius_md": "14px",
+    "radius_sm": "10px",
+    "font_mono": "ui-monospace,Consolas,monospace",
+    "font_sans": "system-ui,Segoe UI,sans-serif",
+    "badge_active": "SYNTHWAVE ON",
+    "badge_standby": "SYNTH STANDBY",
+    "scan_sec": "6s"
+  },
+  "features": {
+    "scanline": true,
+    "frame": true,
+    "corner_brackets": true,
+    "grid_boost": true,
+    "badge_pulse": true
+  }
+}

@@ -1,39 +1,35 @@
 """
-PsycholysisBreakthroughTrigger - v7.12
+Psycholysis Breakthrough Trigger - v8
 
-Optionaler Trigger für dialektische Auflösung (Löwen-Stage).
-Wird bei hoher kognitiver Entropie + niedriger somatischer Kohärenz aktiviert.
+Optionaler, versionierbarer Trigger für dialektische Auflösung
+im CriticalMetaAnalysisCoreModule.
+
+Teil der 02_architecture / 04_execution Schicht.
 """
 
-from dataclasses import dataclass
-from typing import Optional
-
-
-@dataclass
-class BreakthroughEvent:
-    type: str = "Psycholyse"
-    intensity: float = 0.0
-    recommendation: str = ""
-
-
-class PsycholysisBreakthroughTrigger:
+class PsycholysisTrigger:
     """
-    Evaluiert ob eine dialektische Auflösung (Psycholyse) empfohlen wird.
+    Trigger für kontrollierte Psycholyse-Prozesse.
     """
 
-    def __init__(self, entropy_threshold: float = 0.78, somatic_threshold: float = 0.85):
-        self.entropy_threshold = entropy_threshold
-        self.somatic_threshold = somatic_threshold
+    def __init__(self, threshold: float = 0.75):
+        self.threshold = threshold
+        self.history = []
 
-    def evaluate(self, entropy_level: float, somatic_coherence: float) -> Optional[BreakthroughEvent]:
-        if entropy_level > self.entropy_threshold and somatic_coherence < self.somatic_threshold:
-            intensity = min(1.0, (entropy_level - somatic_coherence) * 1.2)
-            return BreakthroughEvent(
-                intensity=intensity,
-                recommendation="Dialektische Auflösung empfohlen + somatische Erdung"
-            )
-        return None
+    def should_trigger(self, coherence_score: float, load_level: float) -> bool:
+        """
+        Entscheidet, ob eine Psycholyse ausgelöst werden sollte.
+        """
+        return coherence_score < self.threshold or load_level > 0.8
 
-
-# Globale Instanz
-global_psycholysis = PsycholysisBreakthroughTrigger()
+    def trigger(self, context: dict) -> dict:
+        """
+        Führt einen Psycholyse-Trigger aus.
+        """
+        result = {
+            "triggered": True,
+            "context": context,
+            "timestamp": "now"  # später durch echten Timestamp ersetzen
+        }
+        self.history.append(result)
+        return result
