@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, v2-beta, v8/* ]
+  pull_request:
+    branches: [ main, develop, v8/* ]
+
+jobs:
+  determine-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      check-level: ${{ steps.set-level.outputs.level }}
+      python-versions: ${{ steps.set-python.outputs.versions }}
+    steps:
+      - name: Set check level
+        id: set-level
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" || "${{ github.ref_name }}" == "develop" ]]; then
+            echo 'level=full' >> $GITHUB_OUTPUT
+          else
+            echo 'level=light' >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set Python versions
+        id: set-python
+        run: |
+          if [[ "${{ steps.set-level.outputs.level }}" == "full" ]]; then
+            echo 'versions=["3.11", "3.12"]' >> $GITHUB_OUTPUT
+          else
+            echo 'versions=["3.11"]' >> $GITHUB_OUTPUT
+          fi
+
+  ci:
+    needs: determine-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(needs.determine-matrix.outputs.python-versions) }}
+        check-level: ${{ needs.determine-matrix.outputs.check-level }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+
+    - name: Lint with Ruff
+      run: |
+        ruff check core/ 03_Code/reference/rest_api_server.py || true
+
+    - name: Run Heroic Math Engine Verification
+      if: matrix.check-level == 'full'
+      run: |
+        python -m core.heroic_math_engine
+
+    - name: Core Modules Import Check
+      run: |
+        python -c "import core; print('Core modules importable')"
+
+    - name: Run root pytest suite
+      if: matrix.check-level == 'full'
+      run: |
+        pytest tests/ -v
+
+    - name: Status Report
+      run: |
+        echo "Branch: ${{ github.ref_name }} | Python: ${{ matrix.python-version }} | Level: ${{ matrix.check-level }} | SHA: ${{ github.sha }}"

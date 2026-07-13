@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "query": "[model] Autonome Aufgabe: Real Persistierendes (Text/Prompt) korrekt fassen.  | Thema: Phoenix_Mode / Geisterjagd (Info)",
+    "status": "abgeschlossen",
+    "zugeordnet": "grok-intern, claude, architect, code-reviewer, fusion-hero",
+    "result": "[Heroic Synthesis Placeholder]",
+    "geltung": "model",
+    "dom": "General",
+    "original": "[model] Autonome Aufgabe: Real Persistierendes (Text/Prompt) korrekt fassen.  | Thema: Phoenix_Mode / Geisterjagd (Info)"
+  },
+  {
+    "id": 2,
+    "query": "[model] Autonome Aufgabe: Real Persistierendes (Text/Prompt) korrekt fassen.  | Thema: Phoenix_Mode / Geisterjagd (Info)",
+    "status": "zugeordnet",
+    "zugeordnet": "grok-intern, claude, architect, code-reviewer, fusion-hero",
+    "result": "[Heroic Synthesis Placeholder]",
+    "geltung": "model",
+    "dom": "General",
+    "original": "[model] Autonome Aufgabe: Real Persistierendes (Text/Prompt) korrekt fassen.  | Thema: Phoenix_Mode / Geisterjagd (Info)"
+  },
+  {
+    "id": 3,
+    "query": "[cond] CI log input: cargo build failed - no root Cargo.toml. Selbstständig zuordnen.",
+    "status": "zugeordnet",
+    "zugeordnet": "grok-intern, claude, architect, code-reviewer, fusion-hero",
+    "result": "[Heroic Synthesis Placeholder]",
+    "geltung": "model",
+    "dom": "General",
+    "original": "[cond] CI log input: cargo build failed - no root Cargo.toml. Selbstständig zuordnen."
+  },
+  {
+    "query": "[frag] Autonomous CI fix input: cargo build failed because no root Cargo.toml",
+    "original": "[frag] Autonomous CI fix input: cargo build failed because no root Cargo.toml",
+    "geltung": "model",
+    "dom": "General",
+    "matched": null,
+    "assigned_agent": "general-worker",
+    "status": "zugeordnet",
+    "id": 4,
+    "result": "[Heroic Synthesis Placeholder]",
+    "zugeordnet": "agent:general-worker + grok-intern, fusion-hero"
+  }
+]

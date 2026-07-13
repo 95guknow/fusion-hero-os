@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\Admin\fusion-hero-os\03_Code\Dashboard\workspace.py", line 56, in <module>
+    build_workspace()
+  File "C:\Users\Admin\fusion-hero-os\03_Code\Dashboard\workspace.py", line 46, in build_workspace
+    editor = ui.monaco(
+  File "C:\Users\Admin\venv\lib\site-packages\nicegui\ui.py", line 441, in __getattr__
+    raise AttributeError(f"module 'nicegui.ui' has no attribute {name!r}")
+AttributeError: module 'nicegui.ui' has no attribute 'monaco'

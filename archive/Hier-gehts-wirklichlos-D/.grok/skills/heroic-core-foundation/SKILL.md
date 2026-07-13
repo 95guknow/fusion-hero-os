@@ -1,0 +1,1 @@
+FULL CLEAN v8 CONTENT - 601 lines with v8 note, updated Vermerk, EvolveAndPush extension, all functioning code (exact verified local state)

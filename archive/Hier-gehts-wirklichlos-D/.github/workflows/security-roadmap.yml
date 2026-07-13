@@ -1,0 +1,12 @@
+# DISABLED as part of Fusion Hero OS v7.4 cleanup (2026-06-30)
+# Security roadmap template - content can be integrated into heroic documentation later.
+# All active workflows consolidated in fusion-hero-os-hyperthread.yml
+
+name: DISABLED - Security Roadmap
+on:
+  workflow_dispatch:
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow disabled. See fusion-hero-os-hyperthread.yml for Heroic Core CI."

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="300" viewBox="0 0 480 300">
+  <rect width="100%" height="100%" fill="#FDFAF5"/>
+  <text x="240" y="28" text-anchor="middle" font-family="Georgia, Times, serif" font-size="14" font-weight="bold" fill="#1E3A5F">Entscheidungsbaum — memetische vs. mimetische Heilung</text>
+
+  <rect x="180" y="50" width="120" height="36" fill="#FDFAF5" stroke="#1E3A5F" rx="4"/>
+  <text x="240" y="73" text-anchor="middle" font-family="Georgia" font-size="10" fill="#1C2526">Symptom besser?</text>
+  <line x1="240" y1="86" x2="120" y2="130" stroke="#1E3A5F"/>
+  <line x1="240" y1="86" x2="240" y2="130" stroke="#1E3A5F"/>
+  <line x1="240" y1="86" x2="360" y2="130" stroke="#1E3A5F"/>
+  <text x="80" y="125" font-family="Georgia" font-size="8" fill="#555555">Ja</text>
+  <text x="225" y="125" font-family="Georgia" font-size="8" fill="#555555">Ja</text>
+  <text x="370" y="125" font-family="Georgia" font-size="8" fill="#555555">Nein</text>
+  <rect x="40" y="140" width="150" height="50" fill="white" stroke="#16A085" rx="4"/>
+  <text x="115" y="162" text-anchor="middle" font-family="Georgia" font-size="9" font-weight="bold" fill="#16A085">d gesunken?</text>
+  <text x="115" y="178" text-anchor="middle" font-family="Georgia" font-size="8" fill="#1C2526">→ memetisch α₃</text>
+  <rect x="165" y="140" width="150" height="50" fill="white" stroke="#8B4513" rx="4"/>
+  <text x="240" y="162" text-anchor="middle" font-family="Georgia" font-size="9" font-weight="bold" fill="#8B4513">nur I gesunken?</text>
+  <text x="240" y="178" text-anchor="middle" font-family="Georgia" font-size="8" fill="#1C2526">→ mimetisch (Surrogat)</text>
+  <rect x="290" y="140" width="150" height="50" fill="white" stroke="#C0392B" rx="4"/>
+  <text x="365" y="162" text-anchor="middle" font-family="Georgia" font-size="9" font-weight="bold" fill="#C0392B">β-Rückfall</text>
+  <text x="365" y="178" text-anchor="middle" font-family="Georgia" font-size="8" fill="#1C2526">Achse analysieren</text>
+  <text x="240" y="230" text-anchor="middle" font-family="Georgia" font-size="9" fill="#555555">Hospitalismus 2.0: Likes senken I, nicht d auf S</text>
+  <text x="240" y="250" text-anchor="middle" font-family="Georgia" font-size="9" fill="#1C2526">Rekonstruktivismus: Z_real muss sich bewegen</text>
+  <text x="12" y="292" font-family="Georgia, serif" font-size="8" fill="#555555">MER 4D-Matrix · Modell · kein DSM-Ersatz · Kompendium-Duktus</text>
+</svg>
