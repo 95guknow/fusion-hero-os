@@ -1,0 +1,36 @@
+name: Fusion-Hero-OS CI v8
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install numpy ruff
+
+    - name: Lint with Ruff
+      run: |
+        ruff check .
+
+    - name: Run Heroic Math Engine Verification
+      run: |
+        python -m core.heroic_math_engine
+
+    - name: Check import of core modules
+      run: |
+        python -c "import core; print('Core modules importable')"

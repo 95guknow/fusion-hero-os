@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 dc05d5be0284e19864c1547b40b6b44bb298dc25 Admin <admin@local> 1782380318 +0200	commit (initial): feat: initial dashboard commit
+dc05d5be0284e19864c1547b40b6b44bb298dc25 a1873cdbc1170ceb3e7ec63ffe5bd459114f6c20 Admin <admin@local> 1782382644 +0200	commit: fix(app): add BASE path and /api/events POST endpoint
+a1873cdbc1170ceb3e7ec63ffe5bd459114f6c20 3aadbc537ef5cfb35e6040164edb6bebb9e4735c Admin <admin@local> 1782384559 +0200	commit: feat: add wallet tracking and donation page with real ETH address
+3aadbc537ef5cfb35e6040164edb6bebb9e4735c 68df1dbc35c85b03e1bec1f3732eae780ac12a23 Admin <admin@local> 1782412032 +0200	commit: feat: add /about route, about.html, optimize index links, add heroic page
