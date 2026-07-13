@@ -1,0 +1,243 @@
+# ============================================================================
+# PROOF REGISTRY — einzige autoritative Quelle fuer System-Claims
+# ============================================================================
+# Regel (Code-Honesty, maschinell erzwungen durch scripts/check_proof_registry.py):
+#   * status: BEWIESEN  -> MUSS >=1 existierenden pytest-Knoten in proofs listen.
+#                          Der Checker verifiziert die Existenz via pytest-Collection;
+#                          die CI fuehrt die Suite aus -> gruen == Claim gedeckt.
+#   * status: OFFEN     -> Hypothese. proofs darf leer sein. Docs duerfen den
+#                          Claim NUR als offen/Hypothese zitieren.
+#   * status: WIDERLEGT -> Gegenbeispiel dokumentieren (notes), proofs zeigt
+#                          auf den Test, der das Gegenbeispiel verankert.
+# Herkunft: Idee 4 des Repo-Sweeps 2026-07-05, formalisiert nach
+# Gemini-Synthese v9 (docs/01_vision/GEMINI_SYNTHESIS_v9_REVIEW.md).
+# ============================================================================
+version: 1
+
+claims:
+  # ---- Mathematischer Kern (Knoten-Saetze) ---------------------------------
+  # 2026-07-06 auf tatsaechlichen Stand synchronisiert (Honesty-Rewrite der
+  # test_heroic_math_engine.py): frueher als "universell bewiesen" behauptete
+  # Knoten sind auf Fragment-/Modell-Status bzw. OFFEN zurueckgestuft.
+  - id: K1-KOMMUTATOR
+    statement: "Kommutator [Q,B] = -[B,Q] ist antisymmetrisch (reine lineare Algebra, keine Sonderbehauptung)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_heroic_math_engine.py::test_commutator_is_antisymmetric
+
+  - id: K16
+    statement: "Reziprozitaet (Knoten 16) gilt NUR im trivialen Fall Q1==Q2 — es gibt KEINE universelle Reziprozitaet (FRAGMENT-Status, per Gegenbeispiel belegt)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_heroic_math_engine.py::test_reciprocity_holds_only_in_trivial_case
+
+  - id: K17
+    statement: "Projektor-Eigenschaften (Knoten 17) sind im Modul NICHT implementiert (kein Code, kein Test) — bewusst offen statt behauptet."
+    status: OFFEN
+    proofs: []
+    notes: "Frueher als BEWIESEN behauptet; der zugehoerige Test wurde im Honesty-Rewrite entfernt, das Modul markiert Knoten 17 als nicht implementiert."
+
+  - id: K19
+    statement: "Monotone Fusion (Knoten 19) haelt im dokumentierten Beispiel, ist aber KEIN universelles Gesetz — per Sweep ~5-60 % Verletzungen (MODELL-Status)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_heroic_math_engine.py::test_monotonicity_documented_example_holds
+      - tests/test_heroic_math_engine.py::test_monotonicity_is_not_a_universal_law
+
+  - id: K20
+    statement: "Banach-Fixpunkt (Knoten 20) ist im Modul NICHT implementiert (kein Code, kein Test) — bewusst offen statt behauptet."
+    status: OFFEN
+    proofs: []
+    notes: "Wie K17: frueherer Test entfernt; Modul markiert Knoten 20 als nicht implementiert."
+
+  - id: MATH-DOCSTRING-HONESTY
+    statement: "Der Modul-Docstring von heroic_math_engine behauptet die vier Knoten NICHT pauschal als erledigt und markiert Knoten 17/20 explizit als nicht implementiert (Waechter gegen Ueberclaim-Rueckfall)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_heroic_math_engine.py::test_module_docstring_does_not_reclaim_all_four_nodes
+
+  - id: ISING-BRIDGE
+    statement: "qubo_to_ising/ising_energy: E_QUBO(x) == E_Ising(s) fuer symmetrische Q unter x=(1+s)/2."
+    status: BEWIESEN
+    proofs:
+      - tests/test_qubo_ising_bridge.py::test_ising_bridge_energy_identity_property_sweep
+      - tests/test_qubo_ising_bridge.py::test_ising_bridge_exhaustive_small_n
+
+  - id: QBQUBO-KOPIEN-SYNC
+    statement: "Die drei qb_qubo.py-Kopien (root, 02_Mathematik, 03_Code/tools) sind byte-identisch (Konsolidierung 2026-07-05)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_qubo_ising_bridge.py::test_all_three_copies_are_content_identical
+      - tests/test_qubo_ising_bridge.py::test_make_q_submodular_offdiagonal_nonpositive
+
+  # ---- Solver / Engine ------------------------------------------------------
+  - id: SOLVER-KORREKT
+    statement: "parallel_anneal erreicht auf kleinen Instanzen das Brute-Force-Optimum; Diagonal-QUBOs exakt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_solver.py::test_parallel_anneal_matches_bruteforce
+      - tests/test_solver.py::test_diagonal_ground_state_is_exact
+
+  - id: EVO-MONOTONIE
+    statement: "(mu+lambda)-Evolution: best_fitness ist ueber Generationen monoton nicht-fallend (Elitismus)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_dispatcher.py::test_generational_evolution_fitness_is_monotonic_non_decreasing
+
+  - id: SA-SINGLE-EVAL
+    statement: "internal_llm-SA: score_fn wird exakt 1x pro Schritt aufgerufen; Metropolis-Delta gegen current_score (Fix 2026-07-05)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_internal_llm_sa.py::test_sa_calls_score_fn_exactly_once_per_step
+      - tests/test_internal_llm_sa.py::test_sa_best_score_is_max_of_all_evaluations
+
+  # ---- Sync / CRDT-Kern -----------------------------------------------------
+  - id: SYNC-MONOTONIE
+    statement: "mutual_sync: beide Seiten enden bei max(f_A,f_B); keine Seite wird schlechter."
+    status: BEWIESEN
+    proofs:
+      - tests/test_masterseed_sync.py::test_mutual_sync_never_degrades_either_side_property_sweep
+      - tests/test_masterseed_sync.py::test_sync_evolutions_mutually_improves_both_sides
+
+  - id: SYNC-IDENTITY
+    statement: "Sync veraendert nie die Seed-Identitaet (state_hash konstant, Identity-Score 100)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_masterseed_sync.py::test_mutual_sync_preserves_identity_hashes
+      - tests/test_masterseed_sync.py::test_identity_score_drops_below_100_after_tamper
+
+  - id: SYNC-FAILCLOSED
+    statement: "Manipulierte Partner werden fail-closed abgewiesen (ValueError, kein Merge)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_masterseed_sync.py::test_mutual_sync_fail_closed_on_tampered_side
+
+  - id: SYNC-SEMILATTICE
+    statement: "Der Sync-Merge ist ein Join-Halbverband auf der Elite-Fitness: kommutativ, assoziativ, idempotent (CvRDT-Kern, paarweise)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_masterseed_semilattice.py::test_join_is_commutative_property_sweep
+      - tests/test_masterseed_semilattice.py::test_join_is_idempotent
+      - tests/test_masterseed_semilattice.py::test_join_is_associative_via_pairwise_chaining
+      - tests/test_masterseed_semilattice.py::test_join_payload_follows_the_winning_fitness
+
+  # ---- Sicherheits-/Architektur-Entscheidungen als Claims --------------------
+  - id: SELFMOD-PROPOSAL-ONLY
+    statement: "SelfModify wendet NIE selbst an, sondern registriert nur Vorschlaege (Sicherheitsentscheidung)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_dispatcher.py::test_self_modify_never_applies_only_records_proposal
+
+  - id: CONNECTOR-DRYRUN
+    statement: "Externe Connectoren sind per Default dry-run (kein ungefragter Netz-/Geldeffekt)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_mining_qubo.py::test_excavator_connector_is_dry_run_by_default
+
+  # ---- Inference-Scheduling + MCP (Peer-Review-Iteration 2026-07-05) ---------
+  - id: SCHED-QUBO-ENCODING-EXAKT
+    statement: "Scheduling-QUBO: x^T Q x + offset == H(x) (Einzelkosten + CPU/NPU-Contention) fuer alle Zuweisungen; Q symmetrisch (Solver-Kontrakt)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_inference_scheduler_qubo.py::test_qubo_encoding_matches_direct_cost_property_sweep
+      - tests/test_inference_scheduler_qubo.py::test_qubo_encoding_exhaustive_small_n
+
+  - id: SCHED-QUBO-NIE-SCHLECHTER-GREEDY
+    statement: "solve_schedule ist BY CONSTRUCTION nie schlechter als die Greedy-Supervisor-Heuristik (waehlt min(SA, Greedy)); strikte Verbesserungen kommen vor, sind aber nicht garantiert."
+    status: BEWIESEN
+    proofs:
+      - tests/test_inference_scheduler_qubo.py::test_solver_never_worse_than_greedy_property_sweep
+      - tests/test_inference_scheduler_qubo.py::test_sa_reaches_bruteforce_optimum_small_n
+      - tests/test_inference_scheduler_qubo.py::test_sa_strictly_beats_greedy_on_some_instances
+
+  - id: MCP-SPEC-KONFORM
+    statement: "fhero_mcp_server nutzt ausschliesslich Spec-Methoden (initialize, tools/list, tools/call, ping); tools/register existiert nicht und wird mit -32601 abgelehnt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_fhero_mcp_server.py::test_initialize_handshake_is_spec_conform
+      - tests/test_fhero_mcp_server.py::test_tools_register_does_not_exist
+      - tests/test_fhero_mcp_server.py::test_tools_list_exposes_tools_with_input_schema
+      - tests/test_fhero_mcp_server.py::test_tools_call_layer0_verify_reports_registry
+
+  # ---- Quantenkognition / QPT (Grok-Export v8, 2026-07-05) -------------------
+  - id: QPT-BORN-COMPLETENESS
+    statement: "Bornsche Regel: p_i = ||P_i psi||^2 einer vollstaendigen orthogonalen Projektor-Familie summiert zu 1 (Pythagoras)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_quantum_cognition.py::test_born_rule_probabilities_sum_to_one_property_sweep
+
+  - id: QPT-QQ-EQUALITY
+    statement: "QQ-Equality (Wang/Busemeyer): p(AyBy)+p(AnBn) = p(ByAy)+p(BnAn) fuer ALLE Zustaende und Projektorpaare — einzelne Ordnungseffekte bleiben dabei i.A. != 0."
+    status: BEWIESEN
+    proofs:
+      - tests/test_quantum_cognition.py::test_qq_equality_holds_for_all_states_and_projectors_property_sweep
+      - tests/test_quantum_cognition.py::test_individual_order_effects_are_generally_nonzero_control
+
+  - id: QPT-ORDER-COMMUTE
+    statement: "Kommutierende Projektoren haben exakt 0 Ordnungseffekt fuer jeden Zustand."
+    status: BEWIESEN
+    proofs:
+      - tests/test_quantum_cognition.py::test_commuting_projectors_have_zero_order_effect_property_sweep
+
+  - id: QPT-INTERFERENZ-ZERLEGUNG
+    statement: "Exakte Interferenz-Zerlegung: p_direkt - p_klassisch = 2*sum Re-Kreuzterme; delta = 0 wenn F mit der Partition kommutiert (klassischer Grenzfall)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_quantum_cognition.py::test_interference_decomposition_is_exact_property_sweep
+      - tests/test_quantum_cognition.py::test_interference_vanishes_when_final_commutes_with_partition
+
+  - id: QPT-2LEVEL-OSZILLATION
+    statement: "2-Level-Oszillator H=omega*X: U(t)=cos(wt)I - i sin(wt)X (unitaer), Uebergangswahrscheinlichkeit exakt sin^2(wt)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_quantum_cognition.py::test_two_level_closed_form_matches_spectral_and_is_unitary_property_sweep
+      - tests/test_quantum_cognition.py::test_two_level_transition_probability_is_sin_squared
+
+  - id: PSYCHOLYSE-SOMATIC-PFLICHT
+    statement: "psycholysis_trigger v8.1: Session-Abschluss ist ohne vollstaendige somatische Integrationsphase unmoeglich (Pflichtphase aus v8-Integrationsdokument)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_psycholysis_trigger.py::test_complete_session_blocked_until_somatic_phase_done
+
+  # ---- OFFENE Hypothesen (Gemini-Synthese v9 + Ideen-Backlog) ----------------
+  - id: QPT-SISYPHOS-FIT
+    statement: "QPT-Modelle (Oszillation/Interferenz) beschreiben reale Sisyphos-Zyklen bzw. Psycholyse-Uebergaenge empirisch besser als klassische Markov-Modelle."
+    status: OFFEN
+    proofs: []
+    notes: "Die QPT-Mathematik ist bewiesen (QPT-*), ihre PSYCHOLOGISCHE Passung nicht — braeuchte Entscheidungs-/Verlaufsdaten (z.B. Juenger-Feldexperiment) + Modellvergleich (AIC/BIC gegen Markov-Basislinie). Ohne Daten bleibt der Claim offen."
+
+  - id: GOSSIP-LOGN
+    statement: "N-Knoten-Gossip ueber mutual_sync konvergiert in erwartet O(log N) Runden zum globalen Fitness-Max."
+    status: OFFEN
+    proofs: []
+    notes: "Wird erst BEWIESEN mit fusion_hero_os/core/horkrux_gossip.py + Property-Test (Rundenzaehlung vs. log2(N)-Schranke). Paarweiser Kern ist via SYNC-SEMILATTICE gedeckt."
+
+  - id: BFT-ROBUSTHEIT
+    statement: "Das Sync-Netz ist robust gegen byzantinische Knoten (Aequivokation/Omission)."
+    status: OFFEN
+    proofs: []
+    notes: "Gemini-Claim, HERUNTERGESTUFT: CRDT-Monotonie allein ist KEIN BFT. Bewiesen ist nur fail-closed gegen Hash-Manipulation (SYNC-FAILCLOSED). Volle Aussage braeuchte Signaturen + eigenes Adversarial-Testmodell."
+
+  - id: QUBO-SCHEDULER-NUTZEN
+    statement: "QUBO-basierte Task-Zuweisung schlaegt die Supervisor-Heuristik messbar (Durchsatz/Wartezeit auf synthetischen Workloads)."
+    status: OFFEN
+    proofs: []
+    notes: "Pipeline Supervisor -> TaskGraph -> QUBO-Builder -> parallel_anneal. Kein Quanten-Backend: parallel_anneal ist SA (numba/Rust) — die D-Wave/QPU-Passagen der Gemini-Synthese gelten hier NICHT. Teilfortschritt 2026-07-05: inference_scheduler_qubo.py liefert exakte Kodierung + Nie-schlechter-als-Greedy (SCHED-QUBO-*) auf SYNTHETISCHEN Kostenmodellen; der Claim hier bleibt OFFEN, bis reale Workload-Messungen (Latenz/Durchsatz) vorliegen."
+
+  - id: ORACLE-PREDICT
+    statement: "Ein aus Benchmarks gefittetes Kostenmodell prognostiziert parallel_anneal-Laufzeiten gut genug fuer die Backend-Wahl (numba vs. rust)."
+    status: OFFEN
+    proofs: []
+    notes: "Start mit log-linearer Regression auf (n, steps, restarts, backend); CNN/GP-Surrogate aus der Gemini-Synthese erst pruefen, wenn die einfache Basislinie nachweislich nicht reicht."
+
+  - id: TIMESPACE-QUBO
+    statement: "Kontext-/Token-Auswahl als MMR-QUBO (E = -lambda*Nutzen + (1-lambda)*Redundanz) liefert besseren Kontext als Recency-Heuristik."
+    status: OFFEN
+    proofs: []
+    notes: "Formel deckungsgleich mit make_diversity_qubo-Struktur; Benchmark-Design noetig (Cache-Hit vs. Kosten). Grok-Export weiterhin ausstehend — bei Eingang gegeneinander benchmarken."
+
+  - id: LORA-F1
+    statement: "LoRA/SFT auf QUBO-selektierten Samples hebt Token-F1 von ~2% auf >=10%."
+    status: OFFEN
+    proofs: []
+    notes: "Depriorisiert bis Daten-Pipeline steht: versionierter Datensatz, deterministische Eval, versiegeltes Holdout (SHA-256). Reihenfolge aus Gemini-Synthese v9 uebernommen — deckt sich mit Audit-Prio."

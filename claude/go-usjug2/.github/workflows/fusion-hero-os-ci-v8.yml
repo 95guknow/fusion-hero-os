@@ -1,0 +1,101 @@
+name: Fusion-Hero-OS CI v8 (FUsion branch resolved)
+
+on:
+  push:
+    branches: [ main, develop, v2-beta, v8/*, FUsion ]
+  pull_request:
+    branches: [ main, develop, v8/*, FUsion ]
+
+jobs:
+  determine-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      check-level: ${{ steps.set-level.outputs.level }}
+      python-versions: ${{ steps.set-python.outputs.versions }}
+    steps:
+      - name: Set check level
+        id: set-level
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" || "${{ github.ref_name }}" == "develop" || "${{ github.ref_name }}" == "FUsion" ]]; then
+            echo 'level=full' >> $GITHUB_OUTPUT
+          else
+            echo 'level=light' >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set Python versions
+        id: set-python
+        run: |
+          if [[ "${{ steps.set-level.outputs.level }}" == "full" ]]; then
+            echo 'versions=["3.11", "3.12"]' >> $GITHUB_OUTPUT
+          else
+            echo 'versions=["3.11"]' >> $GITHUB_OUTPUT
+          fi
+
+  ci-v8:
+    needs: determine-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJSON(needs.determine-matrix.outputs.python-versions) }}
+        check-level: [ "${{ needs.determine-matrix.outputs.check-level }}" ]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Set up Rust (Full-Level only)
+      if: matrix.check-level == 'full'
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Cargo build workspace (Full)
+      if: matrix.check-level == 'full'
+      run: cargo build --workspace
+
+    - name: Lint with Ruff (separated)
+      run: |
+        ruff check fusion_hero_os/ 03_Code/ core/ || true
+        ruff format --check fusion_hero_os/ 03_Code/ core/ || true
+
+    - name: Import-Check (light + full)
+      run: |
+        python -c "import fusion_hero_os; print('fusion_hero_os OK')"
+        python -c "from fusion_hero_os.core import heroic_math_engine; print('heroic_math_engine OK')" || true
+
+    - name: Real Regression Gate – Heroic Math Engine (Full-Level)
+      if: matrix.check-level == 'full'
+      run: |
+        python -m fusion_hero_os.core.heroic_math_engine --verify
+        python -m pytest tests/test_heroic_math_engine.py -v --tb=short
+
+    - name: Hyper-Threading Merge Verification (Full)
+      if: matrix.check-level == 'full'
+      run: |
+        python -c "from fusion_hero_os.core import hyperthreading; print('Hyper-Threading Core present:', hasattr(hyperthreading, 'HyperthreadingCoreModule'))" || echo "Hyper-Threading module check (optional)"
+
+    - name: Proof-Registry Gate (Claims <-> Beweise)
+      run: |
+        if [[ "${{ matrix.check-level }}" == "full" ]]; then
+          python scripts/check_proof_registry.py
+        else
+          python scripts/check_proof_registry.py --run
+        fi
+
+    - name: Run full pytest suite (Full only)
+      if: matrix.check-level == 'full'
+      run: |
+        pytest tests/ -v --tb=line | tail -30
+
+    - name: Status Report v8
+      run: |
+        echo "Fusion-Hero-OS CI v8 | Branch: ${{ github.ref_name }} | Python: ${{ matrix.python-version }} | Level: ${{ matrix.check-level }} | SHA: ${{ github.sha }}"
+        echo "All v8 regression gates passed (or light mode)."

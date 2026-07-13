@@ -1,0 +1,59 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "remote_control": false,
+  "experimental": {
+    "batch_tool": true,
+    "codebase_search": true,
+    "mcp_timeout": 10000,
+    "openTelemetry": true,
+    "continue_loop_on_deny": true,
+    "speech_to_text_model": "google/chirp-3"
+  },
+  "permission": {
+    "bash": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "edit": "allow",
+    "external_directory": {
+      "C:\\Users\\Admin\\*": "allow",
+      "*": "ask"
+    },
+    "read": "allow",
+    "websearch": "allow",
+    "webfetch": "allow",
+    "doom_loop": "allow",
+    "todoread": "allow",
+    "todowrite": "allow",
+    "lsp": "allow",
+    "skill": "allow",
+    "task": "allow",
+    "list": "allow"
+  },
+  "auto_collapse_reasoning": false,
+  "code_edit_display": "expanded",
+  "indexing": {
+    "enabled": true,
+    "provider": "openai-compatible",
+    "vectorStore": "qdrant"
+  },
+  "compaction": {
+    "threshold_percent": 65
+  },
+  "username": "A.L.T.E.-F.R.A.U._95g.HERO",
+  "hide_prompt_training_models": false,
+  "terminal_command_display": "collapsed",
+  "agent": {
+    "code": {
+    },
+    "architect": {
+    },
+    "ask": {
+    },
+    "code-simplifier": {
+    }
+  },
+  "snapshot": true,
+  "commit_message": {
+    "prompt": "lade alte-frau.95g"
+  }
+}

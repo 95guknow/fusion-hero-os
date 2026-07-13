@@ -1,0 +1,370 @@
+{
+  "generated_at": "2026-07-06T06:25:09.553434+00:00",
+  "target": "C:\\Users\\Admin\\fusion-hero-os",
+  "repos": [
+    {
+      "name": "alte-frau-95g-heroic-core",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\alte-frau-95g-heroic-core",
+      "total_files": 3,
+      "unique_files": 2,
+      "imported_files": 2,
+      "sample_unique": [
+        "concepts/Ungueltig_Anti-Agent.md",
+        "research/2026-07-01_Frontend_ServerHub_Research.md"
+      ]
+    },
+    {
+      "name": "FuHOS_pub",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\FuHOS_pub",
+      "total_files": 225,
+      "unique_files": 43,
+      "imported_files": 43,
+      "sample_unique": [
+        "00_UNIFIED_CORES_SKILLS_MERGE_v7.8_MasterSeed.md",
+        "ALL_UNIFIED_VERSIONS_HORKRUX_SYNC_v7.8.md",
+        "ARCHIVE_README.md",
+        "EVOLVE_AND_PUSH_v7.10.md",
+        "FUSION_HERO_OS_v1.2.md",
+        "HORKRUX_MEDIA_SECRET_SYNC_v7.9.md",
+        "legacy_frameworks_overview.md",
+        "scan_multithreaded.py",
+        ".github/workflows/blank.yml",
+        ".github/workflows/fusion-hero-os-ci-v7.4.yml",
+        ".github/workflows/ibm.yml",
+        ".github/workflows/manual.yml",
+        ".github/workflows/rust.yml",
+        ".github/workflows/veracode.yml",
+        "03_Code/classical.py"
+      ]
+    },
+    {
+      "name": "fusion-hero-core",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-core",
+      "total_files": 6,
+      "unique_files": 0,
+      "imported_files": 0,
+      "sample_unique": []
+    },
+    {
+      "name": "fusion-hero-os-daily-plans",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-os-daily-plans",
+      "total_files": 1,
+      "unique_files": 0,
+      "imported_files": 0,
+      "sample_unique": []
+    },
+    {
+      "name": "fusion-hero-os-v1",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-os-v1",
+      "total_files": 5,
+      "unique_files": 4,
+      "imported_files": 4,
+      "sample_unique": [
+        "asr/optimized_prompt.txt",
+        "core/master_core.md",
+        "manifest/heroic_space.md",
+        "qubo/asr_turntaking.md"
+      ]
+    },
+    {
+      "name": "Fusion_Hero_OS_v1.1",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\Fusion_Hero_OS_v1.1",
+      "total_files": 15,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        "requirements.txt",
+        ".claude/launch.json",
+        "engine/mainframe.py",
+        "methodology/connectors.py",
+        "methodology/core_modules.py",
+        "methodology/knowledge.py",
+        "orchestration/agents.py"
+      ]
+    },
+    {
+      "name": "heroic-fusion-os-manifest",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\heroic-fusion-os-manifest",
+      "total_files": 8,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        "GLOBAL-PREUPLOAD.cfg",
+        "hallo.pdf",
+        "Heroik_Formalisierungs_Audit.html",
+        "Kompendium_der_Heroik_V3.3.pdf",
+        "snippets/additional.xml",
+        "snippets/fuse.xml",
+        "snippets/remove.xml"
+      ]
+    },
+    {
+      "name": "kilo",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\kilo",
+      "total_files": 13,
+      "unique_files": 13,
+      "imported_files": 13,
+      "sample_unique": [
+        "keploy.keployio-2.1.7-win32-x64.vsix",
+        "kilo.jsonc",
+        "agents/architect.md",
+        "agents/code-reviewer.md",
+        "agents/code-simplifier.md",
+        "agents/code-skeptic.md",
+        "agents/data.md",
+        "agents/docs-specialist.md",
+        "agents/frontend-specialist.md",
+        "agents/hero-core.md",
+        "agents/hero-philosophy.md",
+        "agents/mainframe-laden.prompt.md",
+        "agents/test-engineer.md"
+      ]
+    },
+    {
+      "name": "mister-Contributor-gui",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\mister-Contributor-gui",
+      "total_files": 5,
+      "unique_files": 3,
+      "imported_files": 3,
+      "sample_unique": [
+        ".devcontainer/devcontainer.json",
+        "lib/heroic-core.js",
+        "src/app.js"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "path": "C:\\Users\\Admin\\dashboard",
+      "total_files": 10,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        ".env.example",
+        "requirements.txt",
+        "static/donation.html",
+        "static/wallet.json",
+        "templates/about.html",
+        "templates/heroic.html",
+        "templates/index.html"
+      ]
+    },
+    {
+      "name": "heroic-core-foundation",
+      "path": "C:\\Users\\Admin\\heroic-core-foundation",
+      "total_files": 9,
+      "unique_files": 2,
+      "imported_files": 2,
+      "sample_unique": [
+        "foundation.py",
+        "checks/__init__.py"
+      ]
+    },
+    {
+      "name": "private-hacking-suite",
+      "path": "C:\\Users\\Admin\\private-hacking-suite",
+      "total_files": 138,
+      "unique_files": 119,
+      "imported_files": 119,
+      "sample_unique": [
+        "body.json",
+        "coevo_evolution_log.json",
+        "header.txt",
+        "launcher.py",
+        "process_layers.py",
+        "requirements.txt",
+        "token.txt",
+        "audio-bridge/bridge.py",
+        "audio-bridge/README.md",
+        "audio-bridge/start.bat",
+        "audio-bridge/test_tone.py",
+        "benchmarks/create_virology_benchmark_report.py",
+        "benchmarks/example.py",
+        "benchmarks/HIGHEST_LAYER.md",
+        "benchmarks/highest_layer.py"
+      ]
+    }
+  ],
+  "unique_imports": [
+    {
+      "name": "alte-frau-95g-heroic-core",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\alte-frau-95g-heroic-core",
+      "total_files": 3,
+      "unique_files": 2,
+      "imported_files": 2,
+      "sample_unique": [
+        "concepts/Ungueltig_Anti-Agent.md",
+        "research/2026-07-01_Frontend_ServerHub_Research.md"
+      ]
+    },
+    {
+      "name": "FuHOS_pub",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\FuHOS_pub",
+      "total_files": 225,
+      "unique_files": 43,
+      "imported_files": 43,
+      "sample_unique": [
+        "00_UNIFIED_CORES_SKILLS_MERGE_v7.8_MasterSeed.md",
+        "ALL_UNIFIED_VERSIONS_HORKRUX_SYNC_v7.8.md",
+        "ARCHIVE_README.md",
+        "EVOLVE_AND_PUSH_v7.10.md",
+        "FUSION_HERO_OS_v1.2.md",
+        "HORKRUX_MEDIA_SECRET_SYNC_v7.9.md",
+        "legacy_frameworks_overview.md",
+        "scan_multithreaded.py",
+        ".github/workflows/blank.yml",
+        ".github/workflows/fusion-hero-os-ci-v7.4.yml",
+        ".github/workflows/ibm.yml",
+        ".github/workflows/manual.yml",
+        ".github/workflows/rust.yml",
+        ".github/workflows/veracode.yml",
+        "03_Code/classical.py"
+      ]
+    },
+    {
+      "name": "fusion-hero-core",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-core",
+      "total_files": 6,
+      "unique_files": 0,
+      "imported_files": 0,
+      "sample_unique": []
+    },
+    {
+      "name": "fusion-hero-os-daily-plans",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-os-daily-plans",
+      "total_files": 1,
+      "unique_files": 0,
+      "imported_files": 0,
+      "sample_unique": []
+    },
+    {
+      "name": "fusion-hero-os-v1",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\fusion-hero-os-v1",
+      "total_files": 5,
+      "unique_files": 4,
+      "imported_files": 4,
+      "sample_unique": [
+        "asr/optimized_prompt.txt",
+        "core/master_core.md",
+        "manifest/heroic_space.md",
+        "qubo/asr_turntaking.md"
+      ]
+    },
+    {
+      "name": "Fusion_Hero_OS_v1.1",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\Fusion_Hero_OS_v1.1",
+      "total_files": 15,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        "requirements.txt",
+        ".claude/launch.json",
+        "engine/mainframe.py",
+        "methodology/connectors.py",
+        "methodology/core_modules.py",
+        "methodology/knowledge.py",
+        "orchestration/agents.py"
+      ]
+    },
+    {
+      "name": "heroic-fusion-os-manifest",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\heroic-fusion-os-manifest",
+      "total_files": 8,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        "GLOBAL-PREUPLOAD.cfg",
+        "hallo.pdf",
+        "Heroik_Formalisierungs_Audit.html",
+        "Kompendium_der_Heroik_V3.3.pdf",
+        "snippets/additional.xml",
+        "snippets/fuse.xml",
+        "snippets/remove.xml"
+      ]
+    },
+    {
+      "name": "kilo",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\kilo",
+      "total_files": 13,
+      "unique_files": 13,
+      "imported_files": 13,
+      "sample_unique": [
+        "keploy.keployio-2.1.7-win32-x64.vsix",
+        "kilo.jsonc",
+        "agents/architect.md",
+        "agents/code-reviewer.md",
+        "agents/code-simplifier.md",
+        "agents/code-skeptic.md",
+        "agents/data.md",
+        "agents/docs-specialist.md",
+        "agents/frontend-specialist.md",
+        "agents/hero-core.md",
+        "agents/hero-philosophy.md",
+        "agents/mainframe-laden.prompt.md",
+        "agents/test-engineer.md"
+      ]
+    },
+    {
+      "name": "mister-Contributor-gui",
+      "path": "C:\\Users\\Admin\\95guknow-repos-staging\\mister-Contributor-gui",
+      "total_files": 5,
+      "unique_files": 3,
+      "imported_files": 3,
+      "sample_unique": [
+        ".devcontainer/devcontainer.json",
+        "lib/heroic-core.js",
+        "src/app.js"
+      ]
+    },
+    {
+      "name": "dashboard",
+      "path": "C:\\Users\\Admin\\dashboard",
+      "total_files": 10,
+      "unique_files": 7,
+      "imported_files": 7,
+      "sample_unique": [
+        ".env.example",
+        "requirements.txt",
+        "static/donation.html",
+        "static/wallet.json",
+        "templates/about.html",
+        "templates/heroic.html",
+        "templates/index.html"
+      ]
+    },
+    {
+      "name": "heroic-core-foundation",
+      "path": "C:\\Users\\Admin\\heroic-core-foundation",
+      "total_files": 9,
+      "unique_files": 2,
+      "imported_files": 2,
+      "sample_unique": [
+        "foundation.py",
+        "checks/__init__.py"
+      ]
+    },
+    {
+      "name": "private-hacking-suite",
+      "path": "C:\\Users\\Admin\\private-hacking-suite",
+      "total_files": 138,
+      "unique_files": 119,
+      "imported_files": 119,
+      "sample_unique": [
+        "body.json",
+        "coevo_evolution_log.json",
+        "header.txt",
+        "launcher.py",
+        "process_layers.py",
+        "requirements.txt",
+        "token.txt",
+        "audio-bridge/bridge.py",
+        "audio-bridge/README.md",
+        "audio-bridge/start.bat",
+        "audio-bridge/test_tone.py",
+        "benchmarks/create_virology_benchmark_report.py",
+        "benchmarks/example.py",
+        "benchmarks/HIGHEST_LAYER.md",
+        "benchmarks/highest_layer.py"
+      ]
+    }
+  ]
+}

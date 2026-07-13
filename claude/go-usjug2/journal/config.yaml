@@ -1,0 +1,37 @@
+# ASR initial prompt (cherry-picked from fusion-hero-os-v1)
+asr_prompt_file: ../docs/v8/seeds/asr_optimized_prompt.txt
+
+# Themen-Konfiguration fuer das Voice-Journal.
+# Klassifikation ist rein lokal (Keyword-Scoring) — kein LLM-Call, keine Cloud.
+# Reihenfolge = Reihenfolge der Abschnitte im Tagebuch.
+themes:
+  - name: Gesundheit & Koerper
+    keywords: [schlaf, muede, müde, kopfschmerz, schmerz, sport, laufen, essen,
+               medikament, arzt, therapie, energie, erschoepft, erschöpft, fit]
+  - name: Projekt & Code
+    keywords: [qubo, code, bug, commit, dashboard, agent, solver, test, ci,
+               repo, python, api, server, supabase, grok, deploy, refactor,
+               fusion, heroic, pipeline]
+  - name: Ideen & Erkenntnisse
+    keywords: [idee, erkenntnis, einfall, konzept, vision, was waere wenn,
+               was wäre wenn, hypothese, theorie, gedanke, einsicht, aha]
+  - name: Familie & Soziales
+    keywords: [familie, freund, mutter, vater, bruder, schwester, treffen,
+               telefonat, gespraech, gespräch, besuch, verabredet]
+  - name: Organisation & Termine
+    keywords: [termin, todo, to do, erledigen, einkaufen, anruf, frist,
+               deadline, morgen, uhr, planen, liste, amt, formular]
+  - name: Finanzen
+    keywords: [geld, euro, rechnung, konto, bezahlen, kosten, budget,
+               ueberweisung, überweisung, miete, vertrag]
+
+# Notizen ohne Keyword-Treffer landen hier:
+fallback_theme: Sonstiges
+
+# Tagesabschnitte (Stunde inklusive Start, exklusiv Ende; Nacht wickelt ueber Mitternacht)
+day_segments:
+  - {name: Morgen,     start: 5,  end: 11}
+  - {name: Mittag,     start: 11, end: 14}
+  - {name: Nachmittag, start: 14, end: 18}
+  - {name: Abend,      start: 18, end: 23}
+  - {name: Nacht,      start: 23, end: 5}

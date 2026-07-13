@@ -1,0 +1,27 @@
+{
+  "id": "geisteskrankheiten_4d_v2",
+  "version": "2.0",
+  "source": "claude_science_review",
+  "updated_ts": 1783568998.6922638,
+  "domains": [
+    "psychiatry",
+    "mer",
+    "science",
+    "4d_matrix"
+  ],
+  "key_insights": [
+    "I(Z) triangulation operationalized",
+    "komorbidity matrix section 7",
+    "autism i_variabel masking",
+    "schizophrenia salience network",
+    "therapy paths memetic_vs_mimetic",
+    "evidence grades A/B/C"
+  ],
+  "clusters": [
+    "N-primär",
+    "S-primär",
+    "G-primär",
+    "K-primär"
+  ],
+  "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\03_Code\\core\\knowledge\\Geisteskrankheiten_4D_Matrix_v2_claude_science.md"
+}

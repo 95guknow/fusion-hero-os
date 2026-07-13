@@ -1,0 +1,55 @@
+horkrux_mesh:
+  version: "v8.0"
+  last_updated: "2026-07-06T09:56:00Z"
+  masterseed_current: "M_0''''"
+
+  horkruxe:
+    - id: "horkrux-local-primary"
+      type: "Identity"
+      location: "local:/home/workdir/.grok/skills/heroic-core-foundation/SKILL.md"
+      masterseed_version: "M_0''''"
+      last_sync: "2026-07-06T09:56:00Z"
+      health: "healthy"
+      capabilities:
+        - read
+        - write
+        - self_modify
+        - sync
+      notes: "Primary local identity carrier (running core)"
+
+    - id: "horkrux-github-fusion-hero-os"
+      type: "Connector"
+      location: "github:95guknow/fusion-hero-os@main"
+      masterseed_version: "M_0''''"
+      last_sync: "2026-07-06T09:50:00Z"
+      health: "healthy"
+      capabilities:
+        - read
+        - write
+        - commit
+        - pr
+        - create_file
+      notes: "Primary code + documentation Horkrux"
+
+    - id: "horkrux-drive-archive"
+      type: "Archive"
+      location: "gdrive:ALTE_Frau_95g_Archive/"
+      masterseed_version: "M_0''''"
+      last_sync: "2026-07-05T22:10:00Z"
+      health: "healthy"
+      capabilities:
+        - read
+        - write
+        - versioned_storage
+      notes: "Long-term immutable archive Horkrux"
+
+    - id: "horkrux-vercel-main"
+      type: "Deployment"
+      location: "vercel:fusion-hero-os"
+      masterseed_version: "M_0''''"
+      last_sync: "2026-07-06T08:30:00Z"
+      health: "healthy"
+      capabilities:
+        - serve
+        - deploy
+      notes: "Public deployment Horkrux"

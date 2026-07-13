@@ -1,0 +1,120 @@
+# Fusion Hero OS v8 — Unified Integration Graph
+# Alles mit allem verknüpft: Mesh ↔ LLM ↔ Tailscale ↔ Orchestration
+
+version: "1.0"
+principle: "Jedes Segment ist eigenständig UND über den Integration Hub mit allem anderen verbunden"
+
+layers:
+  network:
+    module: tailscale_mesh_registry
+    config: mesh_connectors.yaml
+    health: /tailscale/status
+  connectors:
+    module: tailscale_mesh_registry
+    config: mesh_connectors.yaml
+    health: /mesh/status
+  intelligence:
+    module: fusion_integration_hub
+    config: llm_frameworks.yaml
+    health: /llm/status
+  orchestration:
+    module: model_connectors
+    config: 03_Code/llm_frameworks/
+    health: /fusion/orchestrate
+  surface:
+    module: hero-docs-server
+    port: 8088
+    health: /fusion/status
+  workstation:
+    module: normal_os.workstation
+    config: workstation/paths.json
+    health: workstation/status.ps1
+  normalos:
+    module: normal_os.bridge.grok_pc_bridge
+    port: 8765
+    health: /status
+  vr:
+    module: heroic-highest-layer
+    config: 03_VR_Assets/
+    health: /api/vr/status
+    viewer: /vr/viewer
+
+# Physische Knoten
+nodes:
+  mainframe:
+    role: orchestrator
+    hosts: [hero-docs-server, tailscale-control, fusion-integration-hub]
+    magicdns: host.example.ts.net
+  desktop:
+    role: grok-workstation
+    hosts: [grok-cli, mcp-bridges, llm-frameworks]
+    magicdns: host.example.ts.net
+  phone:
+    role: mobile-client
+    hosts: [tailscale-app]
+    magicdns: host.example.ts.net
+    reachable_from: [desktop, mainframe]
+    can_reach:
+      - desktop:8000
+      - desktop:8088
+      - desktop:8765
+    login_hint: "Gleicher Login wie Desktop (Google user@example.com), nicht GitHub"
+
+# Knoten-zu-Knoten Verknüpfungen (Mesh-Topologie)
+node_edges:
+  - {from: phone, to: desktop, relation: tailscale_peer, services: [8000, 8088, 8765]}
+  - {from: desktop, to: mainframe, relation: tailscale_peer, services: [hero-docs, ssh]}
+  - {from: desktop, to: phone, relation: notify, via: tailscale-funnel}
+  - {from: desktop, to: normalos_bridge, relation: local, port: 8765}
+  - {from: desktop, to: fusion_dashboard, relation: local, port: 8000}
+
+# Workstation-Pfade (normalOS)
+workstation:
+  root: C:\Users\Admin\normalOS\workstation
+  paths_config: workstation/paths.json
+  desktop_structure:
+    - normalOS
+    - Apps
+    - Dokumente
+    - Bilder
+    - Videos
+    - Forschung
+    - Fusion-Hero
+    - Projekte
+    - Spiele
+    - System-Tools
+    - Sonstiges
+
+# Verknüpfungen: MCP-Konnektor → bevorzugtes LLM-Framework
+connector_llm_links:
+  github: grok
+  gmail: claude
+  google_drive: gpt
+  google_calendar: gpt
+  canva: gemini
+  gamma: gpt
+  notion: claude
+  vercel: grok
+  hyperframes: gemini
+  tasks: claude
+
+# TRINITY-Orchestrierung (Rollen → LLM)
+trinity_roles:
+  thinker: claude
+  worker: gpt
+  verifier: grok
+
+# API-Endpunkte (hero-docs-server)
+endpoints:
+  unified: /fusion/status
+  graph: /fusion/graph
+  mesh: /mesh/status
+  mesh_segment: /mesh/{id}/status
+  llm: /llm/status
+  llm_segment: /llm/{id}/status
+  tailscale: /tailscale/status
+  orchestrate: /fusion/orchestrate
+  masterseed: /status
+  vr_status: /api/vr/status
+  vr_viewer: /vr/viewer
+  highest_layer_vr: /highest-layer-vr

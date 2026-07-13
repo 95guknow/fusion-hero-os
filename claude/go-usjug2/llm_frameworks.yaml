@@ -1,0 +1,93 @@
+# Fusion Hero OS v8 — LLM Framework Registry
+# Jeder LLM-Provider = eigenes Framework mit eigener API-Key-Konfiguration
+
+version: "1.0"
+principle: "Je LLM ein eigenständiges Framework — kein Monolith"
+
+frameworks:
+  grok:
+    module: "03_Code/llm_frameworks/grok.py"
+    display_name: "Grok (xAI)"
+    api_key_env: ["XAI_API_KEY", "GROK_API_KEY"]
+    model_env: "FUSION_GROK_MODEL"
+    default_model: "grok-2-latest"
+    base_url: "https://api.x.ai/v1"
+    mesh_id: "mesh-llm-grok"
+    trinity: true
+    role_default: "verifier"
+
+  claude:
+    module: "03_Code/llm_frameworks/claude.py"
+    display_name: "Claude (Anthropic)"
+    api_key_env: ["ANTHROPIC_API_KEY"]
+    model_env: "FUSION_CLAUDE_MODEL"
+    default_model: "claude-3-5-sonnet-20241022"
+    base_url: "https://api.anthropic.com"
+    mesh_id: "mesh-llm-claude"
+    trinity: true
+    role_default: "thinker"
+
+  gpt:
+    module: "03_Code/llm_frameworks/gpt.py"
+    display_name: "GPT (OpenAI)"
+    api_key_env: ["OPENAI_API_KEY"]
+    model_env: "FUSION_GPT_MODEL"
+    default_model: "gpt-4o-mini"
+    base_url: "https://api.openai.com/v1"
+    mesh_id: "mesh-llm-gpt"
+    trinity: true
+    role_default: "worker"
+
+  gemini:
+    module: "03_Code/llm_frameworks/gemini.py"
+    display_name: "Gemini (Google)"
+    api_key_env: ["GOOGLE_API_KEY", "GEMINI_API_KEY"]
+    model_env: "FUSION_GEMINI_MODEL"
+    default_model: "gemini-2.0-flash"
+    base_url: "https://generativelanguage.googleapis.com/v1beta"
+    mesh_id: "mesh-llm-gemini"
+    trinity: false
+    role_default: "worker"
+
+  openrouter:
+    module: "03_Code/llm_frameworks/openrouter.py"
+    display_name: "OpenRouter (Gateway)"
+    api_key_env: ["OPENROUTER_API_KEY"]
+    model_env: "FUSION_OPENROUTER_MODEL"
+    default_model: "openai/gpt-4o-mini"
+    base_url: "https://openrouter.ai/api/v1"
+    mesh_id: "mesh-llm-openrouter"
+    trinity: false
+    role_default: "fallback"
+
+  ollama:
+    module: "03_Code/llm_frameworks/ollama.py"
+    display_name: "Ollama (Local)"
+    api_key_env: []
+    host_env: "OLLAMA_HOST"
+    model_env: "FUSION_OLLAMA_MODEL"
+    default_model: "llama3.2"
+    base_url: "http://127.0.0.1:11434"
+    mesh_id: "mesh-llm-ollama"
+    trinity: false
+    role_default: "thinker"
+
+trinity_order: ["grok", "claude", "gpt"]
+health_endpoint: "/llm/status"
+per_provider: "/llm/{provider}/status"
+unified_endpoint: "/fusion/status"
+integration_hub: fusion_integration_hub.py
+unified_config: fusion_unified.yaml
+
+# Verknüpfung MCP-Konnektor → LLM (Primary)
+connector_links:
+  github: grok
+  gmail: claude
+  google_drive: gpt
+  google_calendar: gpt
+  canva: gemini
+  gamma: gpt
+  notion: claude
+  vercel: grok
+  hyperframes: gemini
+  tasks: claude

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="420" viewBox="0 0 500 420">
+  <rect width="100%" height="100%" fill="#FDFAF5"/>
+  <text x="250" y="28" text-anchor="middle" font-family="Georgia, Times, serif" font-size="14" font-weight="bold" fill="#1E3A5F">Projektion Π_KG — Körper × Geist</text>
+
+  <!-- Achsen -->
+  <line x1="80" y1="350" x2="440" y2="350" stroke="#CCCCCC" stroke-width="1"/>
+  <line x1="80" y1="350" x2="80" y2="50" stroke="#CCCCCC" stroke-width="1"/>
+  <line x1="80" y1="200.0" x2="440" y2="200.0" stroke="#1E3A5F" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="260.0" y1="350" x2="260.0" y2="50" stroke="#1E3A5F" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="260" y="372" text-anchor="middle" font-family="Georgia" font-size="11" fill="#C9A227">G Geist  →</text>
+  <text x="68" y="200" text-anchor="middle" font-family="Georgia" font-size="11" fill="#1E3A5F" transform="rotate(-90,68,200)">K Körper ↑</text>
+  <text x="260.0" y="192.0" text-anchor="middle" font-family="Georgia" font-size="10" font-weight="bold" fill="#C9A227">Z*</text>
+  <text x="98.0" y="362" font-family="Georgia" font-size="8" fill="#555555">−</text>
+  <text x="413.0" y="362" font-family="Georgia" font-size="8" fill="#555555">+</text>
+  <text x="62" y="327.5" font-family="Georgia" font-size="8" fill="#555555">−</text>
+  <text x="62" y="72.5" font-family="Georgia" font-size="8" fill="#555555">+</text>
+  <text x="368.0" y="117.5" font-family="Georgia" font-size="8" fill="#C0392B" opacity="0.7">R₂ Hoch-G/K</text>
+  <text x="170.0" y="275.0" font-family="Georgia" font-size="8" fill="#6B8E9F" opacity="0.7">R₁ Niedrig</text>
+  <circle cx="386.0" cy="110.0" r="5" fill="#C0392B"/>
+  <text x="394.0" y="114.0" font-family="Georgia" font-size="8" fill="#1C2526">GAD</text>
+  <circle cx="413.0" cy="80.0" r="5" fill="#C0392B"/>
+  <text x="421.0" y="84.0" font-family="Georgia" font-size="8" fill="#1C2526">Manie</text>
+  <circle cx="278.0" cy="87.5" r="5" fill="#C0392B"/>
+  <text x="286.0" y="91.5" font-family="Georgia" font-size="8" fill="#1C2526">Panik</text>
+  <circle cx="395.0" cy="125.0" r="5" fill="#8E6B4A"/>
+  <text x="403.0" y="129.0" font-family="Georgia" font-size="8" fill="#1C2526">OCD</text>
+  <circle cx="377.0" cy="147.5" r="5" fill="#C0392B"/>
+  <text x="385.0" y="151.5" font-family="Georgia" font-size="8" fill="#1C2526">ADHS</text>
+  <circle cx="206.0" cy="275.0" r="5" fill="#6B8E9F"/>
+  <text x="214.0" y="279.0" font-family="Georgia" font-size="8" fill="#1C2526">Depression</text>
+  <circle cx="224.0" cy="140.0" r="5" fill="#D35400"/>
+  <text x="232.0" y="144.0" font-family="Georgia" font-size="8" fill="#1C2526">Substanz</text>
+  <circle cx="170.0" cy="245.0" r="5" fill="#7D6B8A"/>
+  <text x="178.0" y="249.0" font-family="Georgia" font-size="8" fill="#1C2526">Vermeidung</text>
+  <text x="12" y="412" font-family="Georgia, serif" font-size="8" fill="#555555">MER 4D-Matrix · Modell · kein DSM-Ersatz · Kompendium-Duktus</text>
+</svg>

@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-07-09T14:56:34.697249",
+  "root": "C:\\Users\\Admin\\fusion-hero-os",
+  "summary": {
+    "total": 4,
+    "present": 4,
+    "missing": 0,
+    "insufficient": 0,
+    "needs_generation": 0
+  },
+  "present": [
+    {
+      "id": "vr_mister_Contributor_hero_equirectangular",
+      "category": "vr",
+      "path": "C:\\Users\\Admin\\fusion-hero-os\\03_VR_Assets\\vr_mister_Contributor_hero_equirectangular.jpg",
+      "rel_path": "03_VR_Assets/vr_mister_Contributor_hero_equirectangular.jpg",
+      "min_bytes": 50000,
+      "size_bytes": 78715
+    },
+    {
+      "id": "heroic_evolution_fractal",
+      "category": "vr",
+      "path": "C:\\Users\\Admin\\fusion-hero-os\\03_VR_Assets\\heroic_evolution_fractal.jpg",
+      "rel_path": "03_VR_Assets/heroic_evolution_fractal.jpg",
+      "min_bytes": 20000,
+      "size_bytes": 28769
+    },
+    {
+      "id": "95g_Hacker_PrimarySeed_2026-07-04",
+      "category": "visual_seeds",
+      "path": "C:\\Users\\Admin\\fusion-hero-os\\visual_seeds\\95g_Hacker_PrimarySeed_2026-07-04.jpg",
+      "rel_path": "visual_seeds/95g_Hacker_PrimarySeed_2026-07-04.jpg",
+      "min_bytes": 40000,
+      "size_bytes": 50328
+    },
+    {
+      "id": "masterseed_visual",
+      "category": "memes",
+      "path": "C:\\Users\\Admin\\fusion-hero-os\\memes\\cyberpunk_campfire\\masterseed_visual.png",
+      "rel_path": "memes/cyberpunk_campfire/masterseed_visual.png",
+      "min_bytes": 4500,
+      "size_bytes": 5498
+    }
+  ],
+  "missing": [],
+  "insufficient": []
+}

@@ -1,0 +1,6 @@
+[workspace]
+resolver = "2"
+members = [
+    "pms_rust_kernel_crate",
+    "rust_engine_crate",
+]

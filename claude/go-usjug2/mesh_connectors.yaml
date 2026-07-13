@@ -1,0 +1,136 @@
+# Fusion Hero OS — Mesh Connector Registry
+# Prinzip: Jeder Konnektor ist ein eigenständiges Mesh-Segment.
+# Kein Monolith — jede Verbindung hat eigene Identität, Health-Probe und Routing.
+
+mesh_version: "1.0"
+tailnet: example.ts.net
+principle: "Jeder Konnektor = ein einzelnes Teil des Mesh (eigene ID, Host, Health, Tag)"
+
+# Physische Mesh-Knoten (Tailscale Devices)
+nodes:
+  mainframe:
+    role: orchestrator
+    hostname: mainframe
+    magicdns: host.example.ts.net
+    platform: linux
+    tailscale_tag: tag:fusion-node-mainframe
+    services:
+      - hero-docs-server
+      - tailscale-control
+
+  desktop:
+    role: grok-workstation
+    hostname: desktop-kpki9e4
+    magicdns: host.example.ts.net
+    platform: windows
+    tailscale_tag: tag:fusion-node-desktop
+    services:
+      - grok-cli
+      - mcp-bridges
+
+  phone:
+    role: mobile-client
+    hostname: phone-node
+    magicdns: host.example.ts.net
+    platform: android
+    tailscale_tag: tag:fusion-node-phone
+    services:
+      - tailscale-app
+      - phone-link-bridge
+
+# MCP-Konnektoren — jeweils eigenes Mesh-Segment (logisch isoliert)
+connectors:
+  github:
+    mesh_id: mesh-connector-github
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/github/status
+    tailscale_tag: tag:fusion-connector-github
+    description: "GitHub MCP — Repos, PRs, Issues"
+
+  gmail:
+    mesh_id: mesh-connector-gmail
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/gmail/status
+    tailscale_tag: tag:fusion-connector-gmail
+    description: "Gmail MCP — E-Mail Bridge"
+
+  google_drive:
+    mesh_id: mesh-connector-google-drive
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/google_drive/status
+    tailscale_tag: tag:fusion-connector-google-drive
+    description: "Google Drive MCP — Datei-Sync"
+
+  google_calendar:
+    mesh_id: mesh-connector-google-calendar
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/google_calendar/status
+    tailscale_tag: tag:fusion-connector-google-calendar
+    description: "Google Calendar MCP — Termine"
+
+  canva:
+    mesh_id: mesh-connector-canva
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/canva/status
+    tailscale_tag: tag:fusion-connector-canva
+    description: "Canva MCP — Design-Assets"
+
+  gamma:
+    mesh_id: mesh-connector-gamma
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/gamma/status
+    tailscale_tag: tag:fusion-connector-gamma
+    description: "Gamma MCP — Präsentationen"
+
+  notion:
+    mesh_id: mesh-connector-notion
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/notion/status
+    tailscale_tag: tag:fusion-connector-notion
+    description: "Notion MCP — Wissensbasis"
+
+  vercel:
+    mesh_id: mesh-connector-vercel
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/vercel/status
+    tailscale_tag: tag:fusion-connector-vercel
+    description: "Vercel MCP — Deployments"
+
+  hyperframes:
+    mesh_id: mesh-connector-hyperframes
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/hyperframes/status
+    tailscale_tag: tag:fusion-connector-hyperframes
+    description: "HyperFrames by HeyGen MCP — Video"
+
+  tasks:
+    mesh_id: mesh-connector-tasks
+    type: mcp
+    host_node: desktop
+    health_path: /mesh/tasks/status
+    tailscale_tag: tag:fusion-connector-tasks
+    description: "Tasks MCP — Aufgabenverwaltung"
+
+# Routing-Schema (Funnel + MagicDNS)
+routing:
+  base_url: "https://host.example.ts.net"
+  unified: "/fusion/status"
+  fusion_graph: "/fusion/graph"
+  mesh_overview: "/mesh/status"
+  per_connector: "/mesh/{connector_id}/status"
+  llm_overview: "/llm/status"
+  per_llm: "/llm/{provider}/status"
+  tailscale_overview: "/tailscale/status"
+
+# Verknüpfung mit LLM-Frameworks (siehe fusion_unified.yaml)
+integration_hub: fusion_integration_hub.py
+unified_config: fusion_unified.yaml

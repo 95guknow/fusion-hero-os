@@ -1,0 +1,16 @@
+# Private Hacking Suite - Local LLM Config
+model_path: models/Llama-3.2-1B-Instruct-Q4_K_M.gguf
+data_path: data.jsonl
+output_path: ./output
+epochs: 2
+batch_size: 8
+ctx_len: 512
+max_gen_tokens: 128
+n_gpu_layers: 20
+quantization: Q4_K_M
+algorithm: qubo_annealing_v1
+
+system_prompt: >
+  Du bist ein privates Hacking-Assistenz-Modell.
+  Antworte präzise und technisch zu QUBO-Optimierung, GPU-Hacks,
+  lokalen LLMs, Benchmarks und System-Optimierungen.

@@ -1,0 +1,43 @@
+{
+  "id": "cyber_neon",
+  "label": "Cyber Neon",
+  "description": "Standard Fusion — Teal/Violet HUD",
+  "tokens": {
+    "accent": "#00ffd5",
+    "accent2": "#a855f7",
+    "accent_soft": "#5eead4",
+    "bg": "#020208",
+    "surface": "#0a0a12",
+    "elevated": "#101018",
+    "text": "#e4eaf4",
+    "muted": "#7a8aa3",
+    "glow": "rgba(0,255,213,0.22)",
+    "frame_border": "rgba(0,255,213,0.18)",
+    "frame_glow_in": "rgba(0,255,213,0.04)",
+    "frame_glow_out": "rgba(168,85,247,0.08)",
+    "corner": "rgba(0,255,213,0.55)",
+    "scanline": "rgba(0,255,213,0.7)",
+    "badge_bg": "rgba(2,18,16,0.88)",
+    "badge_border": "rgba(0,255,213,0.45)",
+    "signal_border": "rgba(0,255,213,0.2)",
+    "signal_bg": "rgba(0,255,213,0.05)",
+    "grid_line": "rgba(0,255,213,0.05)",
+    "grid_size": "24px",
+    "corner_size": "28px",
+    "frame_inset": "8px",
+    "radius_md": "12px",
+    "radius_sm": "8px",
+    "font_mono": "ui-monospace,'Cascadia Mono',Consolas,monospace",
+    "font_sans": "system-ui,-apple-system,'Segoe UI',Roboto,sans-serif",
+    "badge_active": "OPTIMIZATION ACTIVE",
+    "badge_standby": "CYBER STANDBY",
+    "scan_sec": "5s"
+  },
+  "features": {
+    "scanline": true,
+    "frame": true,
+    "corner_brackets": true,
+    "grid_boost": true,
+    "badge_pulse": true
+  }
+}

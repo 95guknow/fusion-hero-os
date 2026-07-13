@@ -1,0 +1,9 @@
+{
+  "count": 465,
+  "sources": [
+    "C:\\Users\\Admin\\fusion-hero-os",
+    "C:\\Users\\Admin\\heroic-core-foundation",
+    "C:\\Users\\Admin\\.grok\\skills\\fusion-hero-os"
+  ],
+  "output": "C:\\Users\\Admin\\internal_llm\\data.jsonl"
+}

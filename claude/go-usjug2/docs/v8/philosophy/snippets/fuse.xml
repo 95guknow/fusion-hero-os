@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote  name="github"
+           fetch="https://github.com/" />
+
+  <remote  name="gitlab"
+           fetch="https://gitlab.com/" />
+
+  <remote  name="fusion"
+           fetch="https://github.com/Fusion-OS"
+           revision="fourteen" />
+
+  <project path="manifest" name="manifest" remote="fusion" />
+  <project path="bionic" name="bionic" remote="fusion"/>
+  <project path="build/make" name="build" remote="fusion" >
+    <copyfile src="core/root.mk" dest="Makefile" />
+    <linkfile src="CleanSpec.mk" dest="build/CleanSpec.mk" />
+    <linkfile src="buildspec.mk.default" dest="build/buildspec.mk.default" />
+    <linkfile src="core" dest="build/core" />
+    <linkfile src="envsetup.sh" dest="build/envsetup.sh" />
+    <linkfile src="target" dest="build/target" />
+    <linkfile src="tools" dest="build/tools" />
+  </project>
+  <project path="build/soong" name="build_soong" remote="fusion" >
+    <linkfile src="root.bp" dest="Android.bp" />
+    <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
+  </project>
+
+   <!-- Packages -->
+  <project path="packages/apps/Settings" name="packages_apps_Settings" remote="fusion" />
+  <project path="packages/modules/Bluetooth" name="packages_modules_Bluetooth" remote="fusion" />
+  <project path="packages/modules/Wifi" name="packages_modules_Wifi" remote="fusion" />
+  <project path="packages/apps/Launcher3" name="packages_apps_Launcher3" remote="fusion" />
+  <project path="packages/apps/ThemePicker" name="packages_apps_ThemePicker" remote="fusion" />
+  <project path="packages/apps/SettingsIntelligence" name="packages_apps_SettingsIntelligence" remote="fusion" />
+
+  <!-- Fuse Sepolicy -->
+  <project path="device/fuse/sepolicy" name="device_fuse_sepolicy" remote="fusion" revision="fourteen" />
+
+  <!-- External -->
+  <project path="external/selinux" name="external_selinux" groups="pdk" remote="fusion" />
+  <project path="external/libnl" name="external_libnl" groups="pdk" remote="fusion" />
+  <project path="external/tinycompress" name="external_tinycompress" groups="pdk" remote="fusion" />
+  <project path="external/tinyxml" name="platform/external/tinyxml" groups="pdk" remote="aosp" revision="refs/tags/android-11.0.0_r46" />
+  <project path="external/mockito-kotlin" name="platform/external/mockito-kotlin" groups="pdk" remote="aosp" revision="refs/heads/main" />
+
+  <!-- Hardware -->
+  <project path="hardware/interfaces" name="hardware_interfaces" groups="pdk" remote="fusion" />
+  <project path="hardware/libhardware" name="hardware_libhardware" groups="pdk" remote="fusion" />
+
+  <!-- vendor repos -->
+  <project path="vendor/fuse" name="vendor_fuse" remote="fusion" />
+  <project path="vendor/SystemUIClocks" name="vendor_SystemUIClocks" remote="fusion" />
+
+  <!-- System -->
+  <project path="system/core" name="system_core" remote="fusion" />
+  <project path="system/sepolicy" name="system_sepolicy" groups="pdk" remote="fusion" />
+  <project path="system/update_engine" name="system_update_engine" remote="fusion" />
+
+  <!-- recovery -->
+  <project path="bootable/recovery" name="bootable_recovery" remote="fusion" />
+
+  <!-- Frameworks -->
+  <project path="frameworks/native" name="frameworks_native" groups="pdk" remote="fusion" />
+  <project path="frameworks/base" name="frameworks_base" remote="fusion" />
+  <project path="frameworks/opt/telephony" name="frameworks_opt_telephony" remote="fusion" />
+  <project path="frameworks/opt/net/ims" name="frameworks_opt_net_ims" remote="fusion" />
+
+</manifest>

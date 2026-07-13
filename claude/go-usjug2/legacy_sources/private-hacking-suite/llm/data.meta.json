@@ -1,0 +1,10 @@
+{
+  "count": 494,
+  "sources": [
+    "C:\\Users\\Admin\\private-hacking-suite",
+    "C:\\Users\\Admin\\qubo_miner"
+  ],
+  "output": "C:\\Users\\Admin\\internal_llm\\data.jsonl",
+  "claude_samples_added": 29,
+  "claude_samples_date": "2026-07-02"
+}

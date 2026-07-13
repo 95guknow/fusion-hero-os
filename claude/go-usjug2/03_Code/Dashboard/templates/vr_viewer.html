@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fusion Hero OS — VR 360° Viewer</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #0a0a12; color: #e2e8f0; }
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 12px 16px; background: rgba(10,10,18,0.85);
+      border-bottom: 1px solid #1e293b; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+    }
+    #hud a { color: #40e0d0; text-decoration: none; }
+    #hud label { font-size: 12px; opacity: 0.85; }
+    #hud input[type=range] { width: 120px; vertical-align: middle; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: #00ff9f22; color: #00ff9f; border: 1px solid #00ff9f44; }
+  </style>
+</head>
+<body>
+  <div id="hud">
+    <a href="/">← Dashboard</a>
+    <a href="/highest-layer-vr">Highest Layer VR</a>
+    <span class="badge">A-Frame 360°</span>
+    <label>Overlay-Deckkraft <input id="overlayOpacity" type="range" min="0" max="100" value="35"></label>
+    <label>Gyro <input id="gyroToggle" type="checkbox" checked></label>
+  </div>
+
+  <a-scene vr-mode-ui="enabled: true" embedded style="height: 100vh; margin-top: 48px;">
+    <a-assets>
+      <img id="pano" crossorigin="anonymous" src="{{PANORAMA_URL}}">
+      <img id="overlay" crossorigin="anonymous" src="{{OVERLAY_URL}}">
+    </a-assets>
+
+    <a-sky id="sky" src="#pano" rotation="0 -90 0"></a-sky>
+
+    <a-entity id="overlaySphere" geometry="primitive: sphere; radius: 480" material="src: #overlay; transparent: true; opacity: 0.35; side: back" rotation="0 90 0"></a-entity>
+
+    <a-entity id="camRig" position="0 1.6 0">
+      <a-camera id="cam" look-controls wasd-controls="enabled: false" fov="80">
+        <a-cursor fuse="false" raycaster="objects: .clickable"></a-cursor>
+      </a-camera>
+    </a-entity>
+
+    <a-text value="Heroic Layer 4 — Generational VR" align="center" color="#00ff9f" width="6" position="0 2.2 -3" look-at="#cam"></a-text>
+  </a-scene>
+
+  <script>
+    const opacitySlider = document.getElementById('overlayOpacity');
+    const overlayEl = document.getElementById('overlaySphere');
+    const gyroToggle = document.getElementById('gyroToggle');
+    const cam = document.getElementById('cam');
+
+    opacitySlider.addEventListener('input', () => {
+      const v = opacitySlider.value / 100;
+      overlayEl.setAttribute('material', 'opacity', v);
+    });
+
+    gyroToggle.addEventListener('change', () => {
+      cam.setAttribute('look-controls', 'magicWindowTrackingEnabled', gyroToggle.checked);
+    });
+  </script>
+</body>
+</html>

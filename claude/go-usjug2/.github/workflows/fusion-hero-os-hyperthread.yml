@@ -1,0 +1,113 @@
+name: Fusion Hero OS - Intelligent CI (Hyperthreading + Smart Routing v2)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - ascension
+      - 'feature/**'
+      - 'heroic/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+      - ascension
+
+jobs:
+  branch-routing-decision:
+    runs-on: ubuntu-latest
+    name: Branch Routing Decision
+    outputs:
+      target_track: ${{ steps.decide.outputs.track }}
+      recommended_action: ${{ steps.decide.outputs.action }}
+
+    steps:
+      - name: Decide best path (Hyperthreading)
+        id: decide
+        run: |
+          BRANCH="${{ github.ref_name }}"
+
+          if [[ "$BRANCH" == "main" ]]; then
+            echo "track=main"
+            echo "action=blocked_direct_push"
+          elif [[ "$BRANCH" == "develop" ]]; then
+            echo "track=option_a_develop"
+            echo "action=full_ci_then_pr_to_main"
+          elif [[ "$BRANCH" == "ascension" ]]; then
+            echo "track=option_b_ascension"
+            echo "action=full_ci_then_pr_to_main_or_isolated"
+          else
+            echo "track=feature"
+            echo "action=ci_then_merge_to_develop_or_ascension"
+          fi
+
+          echo "track=$track" >> $GITHUB_OUTPUT
+          echo "action=$action" >> $GITHUB_OUTPUT
+
+  # HARDENED: Block direct pushes to main
+  main-protection:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Block direct push to main
+        run: |
+          echo "::error::Direct pushes to main are not allowed."
+          echo "Use Pull Request from 'develop' (Option A) or 'ascension' (Option B)."
+          exit 1
+
+  heroic-core-ci:
+    runs-on: ubuntu-latest
+    name: Heroic Core Validation
+    needs: branch-routing-decision
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Smart Context
+        run: |
+          echo "Track: ${{ needs.branch-routing-decision.outputs.target_track }}"
+          echo "Action: ${{ needs.branch-routing-decision.outputs.recommended_action }}"
+
+      - name: Core Structure Validation
+        run: |
+          echo "Validating core directories..."
+          if [ ! -d "fusion_hero_os/core" ]; then
+            echo "::error::fusion_hero_os/core missing!"
+            exit 1
+          fi
+
+      - name: Python Syntax (All Tracks)
+        run: |
+          find fusion_hero_os ascension_os -name "*.py" -print0 2>/dev/null | while IFS= read -r -d '' file; do
+            python3 -m py_compile "$file" || exit 1
+          done
+
+      # Track-specific checks (Option A vs Option B)
+      - name: Option A Track Checks (develop)
+        if: needs.branch-routing-decision.outputs.target_track == 'option_a_develop'
+        run: |
+          echo "Running Option A (Evolutionary) specific checks..."
+          echo "- Standard integration & grounding validation"
+          # Hier können später weitere A-spezifische Checks kommen
+
+      - name: Option B Track Checks (ascension)
+        if: needs.branch-routing-decision.outputs.target_track == 'option_b_ascension'
+        run: |
+          echo "Running Option B (Strong Ascension) specific checks..."
+          echo "- Stricter AscensionOS structure validation"
+          if [ ! -d "ascension_os" ]; then
+            echo "::error::ascension_os/ directory missing on ascension branch!"
+            exit 1
+          fi
+          if [ ! -f "ascension_os/core/ascension_core.py" ]; then
+            echo "::warning::ascension_os/core/ascension_core.py not found yet"
+          fi
+          echo "AscensionOS strong track structure validated"
+
+      - name: Final Recommendation
+        run: |
+          echo "===================================="
+          echo "Recommended next step:"
+          echo "${{ needs.branch-routing-decision.outputs.recommended_action }}"
+          echo "===================================="

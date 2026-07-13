@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Denkprozess Monitor</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: '#080a12',
+        surface: 'rgba(18, 22, 36, 0.82)',
+        border: 'rgba(255, 255, 255, 0.09)',
+        accent: '#40e0d0',
+        accent2: '#8b5cf6',
+        warn: '#f4c76b',
+        error: '#ef4444',
+        text: '#e8edf7',
+        muted: '#9aa7bd'
+      },
+      fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  
+  :root {
+    --bg: #080a12;
+    --panel: rgba(18, 22, 36, 0.82);
+    --line: rgba(255, 255, 255, 0.09);
+    --text: #e8edf7;
+    --muted: #9aa7bd;
+    --cyan: #40e0d0;
+    --violet: #8b5cf6;
+    --amber: #f4c76b;
+  }
+
+  * { box-sizing: border-box; }
+  body { 
+    background: var(--bg); 
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(64, 224, 208, 0.08), transparent 38%),
+      radial-gradient(circle at 82% 18%, rgba(139, 92, 246, 0.09), transparent 34%);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+  }
+  
+  .glass-panel {
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+  }
+  
+  .event-row {
+    animation: slideIn 0.3s ease-out;
+    border-left: 3px solid transparent;
+  }
+  .event-row:hover { background: rgba(255,255,255,0.02); }
+  
+  .type-token { border-color: #00d4aa; }
+  .type-step { border-color: #7c3aed; }
+  .type-system { border-color: #fbbf24; }
+  .type-error { border-color: #ef4444; }
+  .type-tool { border-color: #3b82f6; }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-12px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
+    50% { box-shadow: 0 0 20px 4px rgba(0, 212, 170, 0.15); }
+  }
+  
+  .live-indicator {
+    animation: pulse-glow 2s infinite;
+  }
+  
+  .timing-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #00d4aa, #7c3aed);
+    transition: width 0.4s ease;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 3px; 
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body class="min-h-screen p-4 md:p-6">
+
+<div class="max-w-7xl mx-auto space-y-5">
+  <!-- Header -->
+  <header class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight">
+        <span class="text-accent">Denkprozess</span> Monitor
+      </h1>
+      <p class="text-muted text-sm mt-0.5">Echtzeit-Visualisierung des KI-Denkflusses</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="statusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-surface border border-border">
+        <span class="w-2 h-2 rounded-full bg-muted"></span>
+        <span class="text-muted">Verbinde...</span>
+      </span>
+    <a href="/about" class="text-xs text-muted hover:text-accent transition-colors ml-2">About</a>
+    <a href="/foundation" class="text-xs text-muted hover:text-accent transition-colors ml-2">Foundation</a>
+    <a href="/highest-layer" class="text-xs text-muted hover:text-accent transition-colors ml-2">Highest Layer</a>
+    <a href="/highest-layer-vr" class="text-xs text-muted hover:text-accent transition-colors ml-2">Highest Layer + VR</a>
+    <a href="/heroic" class="text-xs text-muted hover:text-accent transition-colors ml-2">Heroic</a>
+    <span class="text-xs text-accent ml-2">Hardware Monitor (live)</span>
+    <button onclick="clearLogs()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-surface border border-border hover:border-accent/40 transition-colors">
+      Leeren
+    </button>
+    </div>
+  </header>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    <div class="glass-panel p-4">
+      <div class="text-muted text-xs font-medium uppercase tracking-wider">Events</div>
+      <div id="statTotal" class="text-2xl font-bold mt-1 font-mono">0</div>
+    </div>
+    <div class="glass-panel p-4">
+      <div class="text-muted text-xs font-medium uppercase tracking-wider">Rate</div>
+      <div id="statRate" class="text-2xl font-bold mt-1 font-mono text-accent">0<span class="text-sm text-muted">/min</span></div>
+    </div>
+    <div class="glass-panel p-4">
+      <div class="text-muted text-xs font-medium uppercase tracking-wider">Tool Calls</div>
+      <div id="statTools" class="text-2xl font-bold mt-1 font-mono text-accent2">0</div>
+    </div>
+    <div class="glass-panel p-4">
+      <div class="text-muted text-xs font-medium uppercase tracking-wider">Avg Time</div>
+      <div id="statAvg" class="text-2xl font-bold mt-1 font-mono"><span class="text-warn">0</span><span class="text-sm text-muted"> ms</span></div>
+    </div>
+    <div class="glass-panel p-4">
+      <div class="text-muted text-xs font-medium uppercase tracking-wider">Wallet</div>
+      <div class="flex items-baseline gap-2 mt-1">
+        <span id="walletBalance" class="text-2xl font-bold font-mono text-accent">0,00</span>
+        <span class="text-sm text-muted">€</span>
+      </div>
+      <div class="mt-2 h-2 bg-border rounded-full overflow-hidden">
+        <div id="walletBar" class="h-full bg-gradient-to-r from-accent to-accent2 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    
+    <!-- Event Stream -->
+    <div class="lg:col-span-2 glass-panel flex flex-col" style="height: 520px;">
+      <div class="px-4 py-3 border-b border-border flex items-center justify-between">
+        <h2 class="font-semibold text-sm">Event Stream</h2>
+        <div class="flex gap-2 text-xs">
+          <span class="px-2 py-0.5 rounded bg-accent/10 text-accent">token</span>
+          <span class="px-2 py-0.5 rounded bg-accent2/10 text-accent2">step</span>
+          <span class="px-2 py-0.5 rounded bg-warn/10 text-warn">system</span>
+          <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400">tool</span>
+        </div>
+      </div>
+      <div id="eventStream" class="flex-1 overflow-y-auto scrollbar-thin px-2 py-2 space-y-1 font-mono text-xs">
+        <div class="text-muted text-center py-8">Warte auf Events...</div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="space-y-4">
+      <!-- Timing Visualization -->
+      <div class="glass-panel p-4">
+        <h3 class="font-semibold text-sm mb-3">Timing (letzte Events)</h3>
+        <div id="timingChart" class="space-y-2 font-mono text-xs">
+          <div class="text-muted text-center py-3">Keine Daten</div>
+        </div>
+      </div>
+
+      <!-- Type Distribution -->
+      <div class="glass-panel p-4">
+        <h3 class="font-semibold text-sm mb-3">Verteilung</h3>
+        <div id="typeChart" class="space-y-2">
+          <div class="text-muted text-center py-3 text-xs">Warte auf Daten...</div>
+        </div>
+      </div>
+
+      <!-- Token Counter -->
+      <div class="glass-panel p-4">
+        <h3 class="font-semibold text-sm mb-2">Tokenfluss</h3>
+        <div class="flex items-end gap-2">
+          <span id="tokenCount" class="text-3xl font-bold font-mono text-accent">0</span>
+          <span class="text-muted text-sm mb-1">Tokens total</span>
+        </div>
+        <div class="mt-2 h-1.5 bg-border rounded-full overflow-hidden">
+          <div id="tokenBar" class="h-full bg-gradient-to-r from-accent to-accent2 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hardware Monitor: Parallel graphische Überwachung 
+       Stil angepasst an Grok-erstellte Heroic Bilder (Root / heroic.html) -->
+  <div class="mt-6" id="hw-section" style="background: var(--panel, rgba(18,22,36,0.82)); border: 1px solid var(--line, rgba(255,255,255,0.09)); border-radius: 20px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.35);">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <div style="display:inline-flex; gap:8px; align-items:center; color:#f4c76b; font-size:11px; letter-spacing:0.15em; text-transform:uppercase;">
+          CYBER LAYER · HARDWARE
+        </div>
+        <h2 style="margin:4px 0 0; font-size:18px; line-height:1; font-weight:600; letter-spacing:-0.02em;">Hardware Monitor</h2>
+        <div style="color:#9aa7bd; font-size:13px;">Parallel · Echtzeit · Graphische Prozess-Überwachung</div>
+      </div>
+      <div style="text-align:right;">
+        <span id="hw-status" style="font-size:10px; padding:3px 10px; border-radius:999px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:#9aa7bd;">LIVE</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3" style="margin-bottom:20px;">
+      <!-- CPU -->
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; background:rgba(255,255,255,0.02);">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+          <span style="color:#40e0d0;">CPU</span>
+          <span id="cpu-total-val" style="font-family:monospace; color:#40e0d0; font-weight:600;">0%</span>
+        </div>
+        <div id="cpu-cores" style="display:flex; flex-wrap:wrap; gap:3px; min-height:28px;"></div>
+        <div style="margin-top:8px; font-size:10px; color:#9aa7bd;">Per-Core (parallel)</div>
+      </div>
+
+      <!-- RAM -->
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; background:rgba(255,255,255,0.02);">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+          <span style="color:#8b5cf6;">RAM</span>
+          <span id="ram-val" style="font-family:monospace;">0%</span>
+        </div>
+        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden;">
+          <div id="ram-bar" style="height:6px; background:linear-gradient(90deg,#40e0d0,#8b5cf6); transition:all .2s;"></div>
+        </div>
+        <div id="ram-text" style="margin-top:6px; font-size:10px; font-family:monospace; color:#9aa7bd;">0 / 0 GB</div>
+      </div>
+
+      <!-- GPU -->
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; background:rgba(255,255,255,0.02);">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+          <span style="color:#f4c76b;">GPU</span>
+          <span id="gpu-val" style="font-family:monospace; font-size:11px;">n/a</span>
+        </div>
+        <div id="gpu-info" style="font-size:11px; line-height:1.35; color:#9aa7bd; min-height:32px;">
+          GPU / VRAM (AMD &amp; NVIDIA)
+        </div>
+      </div>
+
+      <!-- Processes -->
+      <div style="border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px; background:rgba(255,255,255,0.02);">
+        <div style="font-size:12px; color:#9aa7bd; margin-bottom:4px;">Top Hardware-Prozesse</div>
+        <div id="hw-procs" style="font-family:monospace; font-size:10px; line-height:1.35; max-height:72px; overflow:auto; color:#e8edf7;"></div>
+      </div>
+    </div>
+
+    <!-- Live History Graphs – Grok / Heroic Root Style -->
+    <div style="margin-top:8px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
+        <div>
+          <div style="font-size:11px; color:#40e0d0; margin-bottom:4px; letter-spacing:0.5px;">CPU HISTORY</div>
+          <canvas id="cpu-chart" height="70" style="width:100%; background:#080a12; border-radius:10px; border:1px solid rgba(64,224,208,0.15);"></canvas>
+        </div>
+        <div>
+          <div style="font-size:11px; color:#8b5cf6; margin-bottom:4px; letter-spacing:0.5px;">RAM HISTORY</div>
+          <canvas id="ram-chart" height="70" style="width:100%; background:#080a12; border-radius:10px; border:1px solid rgba(139,92,246,0.15);"></canvas>
+        </div>
+        <div>
+          <div style="font-size:11px; color:#f4c76b; margin-bottom:4px; letter-spacing:0.5px;">GPU / VR HISTORY</div>
+          <canvas id="gpu-chart" height="70" style="width:100%; background:#080a12; border-radius:10px; border:1px solid rgba(244,199,107,0.15);"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px; font-size:10px; color:#9aa7bd; opacity:0.7;">
+      Parallel-Updates · Läuft neben Highest Layer (mit VR) &amp; Denkprozess · Stil: Grok Heroic Root
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const WS_URL = "ws://127.0.0.1:8000/ws";
+const ws = new WebSocket(WS_URL);
+let totalTokens = 0;
+let eventTimes: number[] = [];
+
+ws.onopen = () => {
+  const badge = document.getElementById("statusBadge");
+  badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-accent live-indicator"></span><span class="text-accent">Live</span>';
+};
+
+ws.onmessage = (ev) => {
+  try {
+    const data = JSON.parse(ev.data);
+    if (data.type === "pong") return;
+    if (data.type === "welcome") {
+      document.getElementById("eventStream").innerHTML = "";
+      return;
+    }
+    if (data.type === "hardware") {
+      handleHardware(data);
+      return;
+    }
+    addEvent(data);
+    if (typeof updateStats === 'function') updateStats(data);
+  } catch (e) {}
+};
+
+ws.onclose = () => {
+  const badge = document.getElementById("statusBadge");
+  badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-error"></span><span class="text-error">Offline</span>';
+  setTimeout(reconnect, 2000);
+};
+
+ws.onerror = () => ws.close();
+
+function reconnect() {
+  location.reload();
+}
+
+const TYPE_ICONS = {
+  token: "⟨t⟩",
+  step: "⟨s⟩",
+  system: "⟨!⟩",
+  error: "⟨✕⟩",
+  tool: "⟨⚙⟩"
+};
+
+function addEvent(ev) {
+  const stream = document.getElementById("eventStream");
+  
+  // Remove placeholder
+  if (stream.querySelector('.text-center')) stream.innerHTML = "";
+  
+  const row = document.createElement("div");
+  row.className = `event-row type-${ev.type} px-3 py-2 rounded-r-md`;
+  
+  const time = new Date(ev.ts * 1000).toLocaleTimeString("de", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  const icon = TYPE_ICONS[ev.type] || "⟨?⟩";
+  const msg = ev.msg || ev.type;
+  
+  row.innerHTML = `
+    <div class="flex items-start gap-2">
+      <span class="text-muted shrink-0">${time}</span>
+      <span class="text-accent/70 shrink-0">${icon}</span>
+      <span class="break-all leading-relaxed">${escapeHtml(msg)}</span>
+    </div>
+  `;
+  
+  stream.appendChild(row);
+  while (stream.children.length > 200) stream.removeChild(stream.firstChild);
+  stream.scrollTop = stream.scrollHeight;
+  
+  updateStats(ev);
+}
+
+function escapeHtml(s) {
+  const d = document.createElement("div");
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function updateStats(ev) {
+  const now = time.time ? time.time() : Date.now() / 1000;
+  eventTimes.push(now);
+  while (eventTimes.length && eventTimes[0] < now - 60) eventTimes.shift();
+  
+  if (ev.type === "token") {
+    const n = parseInt(ev.count || ev.msg?.match(/\d+/)?.[0] || 0);
+    totalTokens += (isNaN(n) ? 1 : n);
+    document.getElementById("tokenCount").textContent = totalTokens.toLocaleString();
+    document.getElementById("tokenBar").style.width = Math.min(totalTokens / 50, 100) + "%";
+  }
+  
+  fetch("/api/stats").then(r => r.json()).then(s => {
+    document.getElementById("statTotal").textContent = s.total;
+    document.getElementById("statRate").innerHTML = `${s.rate_per_min}<span class="text-sm text-muted">/min</span>`;
+    document.getElementById("statTools").textContent = (s.by_type?.tool || 0);
+    
+    // Type distribution
+    const tc = document.getElementById("typeChart");
+    const colors = { token: "bg-accent", step: "bg-accent2", system: "bg-warn", error: "bg-error", tool: "bg-blue-500" };
+    const labels = { token: "Tokens", step: "Schritte", system: "System", error: "Fehler", tool: "Tools" };
+    let html = "";
+    for (const [type, count] of Object.entries(s.by_type || {})) {
+      const pct = s.total ? Math.round(count / s.total * 100) : 0;
+      html += `
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-muted w-20 truncate">${labels[type] || type}</span>
+          <div class="flex-1 h-2 bg-border rounded-full overflow-hidden">
+            <div class="${colors[type] || 'bg-muted'} h-full rounded-full" style="width:${pct}%"></div>
+          </div>
+          <span class="text-xs font-mono w-8 text-right">${count}</span>
+        </div>
+      `;
+    }
+    tc.innerHTML = html || '<div class="text-muted text-center py-3 text-xs">Keine Daten...</div>';
+  });
+}
+
+function clearLogs() {
+  fetch("/api/events", { method: "DELETE" }).catch(() => {});
+  document.getElementById("eventStream").innerHTML = '<div class="text-muted text-center py-8">Gelöscht...</div>';
+}
+
+setInterval(updateWallet, 3000);
+
+function updateWallet() {
+  fetch("/api/wallet").then(r => r.json()).then(w => {
+    const b = parseFloat(w.balance || 0);
+    const cap = parseFloat(w.cap || 10000);
+    const pct = Math.min((b / cap) * 100, 100);
+    document.getElementById("walletBalance").textContent = b.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById("walletBar").style.width = pct + "%";
+  }).catch(() => {});
+}
+
+// Auto-refresh stats every 2s
+setInterval(() => {
+  if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ action: "ping" }));
+}, 5000);
+
+setTimeout(() => fetch("/api/stats").then(r => r.json()).then(s => {
+  document.getElementById("statTotal").textContent = s.total;
+  document.getElementById("statRate").innerHTML = `${s.rate_per_min}<span class="text-sm text-muted">/min</span>`;
+}), 1000);
+
+// ---------- Parallel Graphical Hardware Monitor ----------
+let cpuChart, ramChart, gpuChart;
+let cpuHistory = [], ramHistory = [], gpuHistory = [];
+const MAX_HISTORY = 45;
+
+function initHardwareCharts() {
+  // Heroic Root / Grok image style colors
+  const HEROIC_CYAN = '#40e0d0';
+  const HEROIC_VIOLET = '#8b5cf6';
+  const HEROIC_AMBER = '#f4c76b';
+
+  const commonOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { display: false, grid: { color: 'rgba(255,255,255,0.06)' } },
+      y: { min: 0, max: 100, ticks: { stepSize: 25, color: '#9aa7bd', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.06)' } }
+    },
+    plugins: { 
+      legend: { display: false }, 
+      tooltip: { mode: 'index', backgroundColor: 'rgba(8,10,18,0.9)', borderColor: 'rgba(255,255,255,0.1)' } 
+    },
+    elements: { line: { tension: 0.25, borderWidth: 2.5 }, point: { radius: 0, hoverRadius: 3 } },
+    animation: { duration: 180 }
+  };
+
+  const cpuCtx = document.getElementById('cpu-chart');
+  if (cpuCtx) {
+    cpuChart = new Chart(cpuCtx, {
+      type: 'line',
+      data: { 
+        labels: [], 
+        datasets: [{ 
+          label: 'CPU', 
+          data: cpuHistory, 
+          borderColor: HEROIC_CYAN, 
+          borderWidth: 2.5,
+          tension: 0.3
+        }] 
+      },
+      options: commonOpts
+    });
+  }
+
+  const ramCtx = document.getElementById('ram-chart');
+  if (ramCtx) {
+    ramChart = new Chart(ramCtx, {
+      type: 'line',
+      data: { 
+        labels: [], 
+        datasets: [{ 
+          label: 'RAM', 
+          data: ramHistory, 
+          borderColor: HEROIC_VIOLET, 
+          borderWidth: 2.5,
+          tension: 0.3
+        }] 
+      },
+      options: commonOpts
+    });
+  }
+
+  const gpuCtx = document.getElementById('gpu-chart');
+  if (gpuCtx) {
+    gpuChart = new Chart(gpuCtx, {
+      type: 'line',
+      data: { 
+        labels: [], 
+        datasets: [{ 
+          label: 'GPU/VR', 
+          data: gpuHistory, 
+          borderColor: HEROIC_AMBER, 
+          borderWidth: 2.5,
+          tension: 0.3
+        }] 
+      },
+      options: commonOpts
+    });
+  }
+}
+
+function updateHardwareCharts(cpuPct, ramPct, gpuPct) {
+  const now = Date.now();
+  cpuHistory.push(cpuPct); if (cpuHistory.length > MAX_HISTORY) cpuHistory.shift();
+  ramHistory.push(ramPct); if (ramHistory.length > MAX_HISTORY) ramHistory.shift();
+  gpuHistory.push(gpuPct ?? 0); if (gpuHistory.length > MAX_HISTORY) gpuHistory.shift();
+
+  const labels = cpuHistory.map((_,i) => i);
+
+  if (cpuChart) {
+    cpuChart.data.labels = labels;
+    cpuChart.data.datasets[0].data = cpuHistory;
+    cpuChart.update('none');
+  }
+  if (ramChart) {
+    ramChart.data.labels = labels;
+    ramChart.data.datasets[0].data = ramHistory;
+    ramChart.update('none');
+  }
+  if (gpuChart) {
+    gpuChart.data.labels = labels;
+    gpuChart.data.datasets[0].data = gpuHistory;
+    gpuChart.update('none');
+  }
+}
+
+function renderPerCoreBars(cores) {
+  const container = document.getElementById('cpu-cores');
+  if (!container || !cores || !cores.length) return;
+  container.innerHTML = '';
+  const cyan = '#40e0d0';
+  cores.forEach((val, idx) => {
+    const pct = Math.max(0, Math.min(100, Math.round(val)));
+    const bar = document.createElement('div');
+    bar.style.cssText = 'height:22px; flex:1; min-width:11px; background:rgba(255,255,255,0.07); border-radius:6px; overflow:hidden; position:relative; border:1px solid rgba(64,224,208,0.2)';
+    bar.innerHTML = `
+      <div style="height:100%; background:${cyan}; transition:all .2s; width:${pct}%"></div>
+      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:7px; font-family:monospace; color:#080a12; opacity:0.65; font-weight:600;">${idx}</div>
+    `;
+    container.appendChild(bar);
+  });
+}
+
+function updateHardwareUI(data) {
+  if (!data || data.error) {
+    const status = document.getElementById('hw-status');
+    if (status) status.textContent = 'Error';
+    return;
+  }
+
+  // CPU
+  const cpuVal = document.getElementById('cpu-total-val');
+  if (cpuVal) cpuVal.textContent = (data.cpu_total || 0).toFixed(0) + '%';
+  renderPerCoreBars(data.cpu_per_core || []);
+
+  // RAM
+  const ramVal = document.getElementById('ram-val');
+  const ramBar = document.getElementById('ram-bar');
+  const ramText = document.getElementById('ram-text');
+  if (ramVal) ramVal.textContent = (data.ram_pct || 0).toFixed(0) + '%';
+  if (ramBar) ramBar.style.width = (data.ram_pct || 0) + '%';
+  if (ramText) ramText.textContent = `${data.ram_used_gb || 0} / ${data.ram_total_gb || 0} GB`;
+
+  // GPU
+  const gpuEl = document.getElementById('gpu-val');
+  const gpuInfo = document.getElementById('gpu-info');
+  if (gpuEl && gpuInfo) {
+    if (data.gpu && data.gpu.available) {
+      const g = data.gpu;
+      gpuEl.textContent = `${g.util || 0}%`;
+      let html = `${g.name || 'GPU'}<br>${g.vram_used_mb || 0}/${g.vram_total_mb || 0} MB`;
+      if (g.temp) html += ` • ${g.temp}°C`;
+      gpuInfo.innerHTML = html;
+    } else {
+      gpuEl.textContent = 'AMD / n/a';
+      gpuInfo.textContent = data.gpu?.note || 'GPU monitoring limited (erweiterbar)';
+    }
+  }
+
+  // Top Processes (styled to match Grok heroic)
+  const procContainer = document.getElementById('hw-procs');
+  if (procContainer) {
+    procContainer.innerHTML = '';
+    (data.top_processes || []).slice(0,6).forEach(p => {
+      const div = document.createElement('div');
+      div.style.cssText = 'display:flex; justify-content:space-between; padding:1px 0; border-bottom:1px solid rgba(255,255,255,0.04);';
+      div.innerHTML = `
+        <span style="color:#e8edf7; opacity:0.9;">${p.name}</span>
+        <span style="color:#40e0d0;">${p.cpu}%</span>
+        <span style="color:#8b5cf6;">${p.mem_pct}%</span>
+        <span style="color:#9aa7bd; opacity:0.7;">${p.mem_mb}M</span>
+      `;
+      procContainer.appendChild(div);
+    });
+  }
+
+  // Update charts with heroic colors
+  const gpuPct = (data.gpu && data.gpu.available) ? (data.gpu.util || 0) : null;
+  updateHardwareCharts(data.cpu_total || 0, data.ram_pct || 0, gpuPct);
+}
+
+function handleHardware(ev) {
+  if (ev.type === 'hardware' && ev.data) {
+    updateHardwareUI(ev.data);
+  }
+}
+
+// Init charts after load
+setTimeout(() => {
+  initHardwareCharts();
+  // Initial fetch
+  fetch('/api/hardware').then(r => r.json()).then(d => updateHardwareUI(d)).catch(()=>{});
+}, 1200);
+
+// Hardware handler is called directly from the main onmessage above.
+
+</script>
+</body>
+</html>

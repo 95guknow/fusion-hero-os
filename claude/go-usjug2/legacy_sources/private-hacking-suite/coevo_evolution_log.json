@@ -1,0 +1,58 @@
+[
+  {
+    "springloop_energy": 0.0,
+    "emerged": 3,
+    "dist": 0.01014,
+    "layer": "00_middle",
+    "timestamp": "2026-07-05T14:58:23.496021"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 4,
+    "dist": 0.0032,
+    "layer": "01_foundation",
+    "timestamp": "2026-07-05T14:58:23.656759"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 3,
+    "dist": 0.00162,
+    "layer": "02_qubo",
+    "timestamp": "2026-07-05T14:58:23.843988"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 4,
+    "dist": 0.00877,
+    "layer": "03_gpu",
+    "timestamp": "2026-07-05T14:58:24.011477"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 3,
+    "dist": 0.00446,
+    "layer": "04_llm",
+    "timestamp": "2026-07-05T14:58:24.176114"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 2,
+    "dist": 0.0,
+    "layer": "05_fusion",
+    "timestamp": "2026-07-05T14:58:24.345234"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 3,
+    "dist": 0.0,
+    "layer": "06_execution",
+    "timestamp": "2026-07-05T14:58:24.503404"
+  },
+  {
+    "springloop_energy": 0.0,
+    "emerged": 2,
+    "dist": 0.0,
+    "layer": "07_highest",
+    "timestamp": "2026-07-05T14:58:24.659858"
+  }
+]

@@ -1,0 +1,33 @@
+# PMS-Minimal-Modell v1 — Validierungsgrundlage fuer pms_rust_kernel.
+#
+# Umfang (ehrlich): Dieses Modell definiert die Quad-Domains, die zugelassenen
+# Execution-Domains und den maschinell validierbaren Operator-Katalog des
+# EIGENEN Minimal-Kernels (pms_rust_kernel_crate/). Die Operatoren entsprechen
+# den vier BEWIESENEN Knoten-Saetzen der heroic_math_engine. Das externe
+# Projekt tz-dev/PMS-RUST ist hiermit NICHT eingebunden.
+version: 1
+model: PMS-Minimal
+domains: [MYTHOS, GRUND, BEWEIS, GESTALT]
+execution_domains: [BEWEIS, GESTALT]
+
+operators:
+  OP_TRANSPOSE_RECIPROCITY:
+    domains: [BEWEIS, GESTALT]
+    params: {q1: matrix, b1: matrix, q2: matrix, b2: matrix}
+  OP_PROJECTOR_CHECK:
+    domains: [BEWEIS]
+    params: {basis: matrix}
+  OP_BANACH_FIXPOINT:
+    domains: [BEWEIS, GESTALT]
+    params: {a: matrix, c: vector}
+  OP_MONOTONE_FUSION:
+    domains: [BEWEIS]
+    params: {a: number, b: number, c: number, d: number, lambda: number}
+  OP_Q_B_CIRC:
+    domains: [GESTALT]
+    params: {action: string}
+
+chains:
+  # Delta-Psi-Beweiskette: strukturell validierbar via --validate-chain
+  CHAIN_DELTA_PSI_PROOF: [OP_TRANSPOSE_RECIPROCITY, OP_PROJECTOR_CHECK, OP_BANACH_FIXPOINT]
+  CHAIN_GESTALT_MINIMAL: [OP_Q_B_CIRC]

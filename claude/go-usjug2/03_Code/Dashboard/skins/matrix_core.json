@@ -1,0 +1,43 @@
+{
+  "id": "matrix_core",
+  "label": "Matrix Core",
+  "description": "Grüner Terminal-Substrat-Look",
+  "tokens": {
+    "accent": "#00ff41",
+    "accent2": "#22c55e",
+    "accent_soft": "#86efac",
+    "bg": "#010a04",
+    "surface": "#041208",
+    "elevated": "#071a0c",
+    "text": "#d1fae5",
+    "muted": "#6b8f71",
+    "glow": "rgba(0,255,65,0.25)",
+    "frame_border": "rgba(0,255,65,0.22)",
+    "frame_glow_in": "rgba(0,255,65,0.06)",
+    "frame_glow_out": "rgba(34,197,94,0.1)",
+    "corner": "rgba(0,255,65,0.6)",
+    "scanline": "rgba(0,255,65,0.75)",
+    "badge_bg": "rgba(2,20,8,0.9)",
+    "badge_border": "rgba(0,255,65,0.5)",
+    "signal_border": "rgba(0,255,65,0.25)",
+    "signal_bg": "rgba(0,255,65,0.06)",
+    "grid_line": "rgba(0,255,65,0.06)",
+    "grid_size": "20px",
+    "corner_size": "32px",
+    "frame_inset": "6px",
+    "radius_md": "4px",
+    "radius_sm": "3px",
+    "font_mono": "ui-monospace,Consolas,'Courier New',monospace",
+    "font_sans": "system-ui,Segoe UI,sans-serif",
+    "badge_active": "MATRIX ACTIVE",
+    "badge_standby": "MATRIX IDLE",
+    "scan_sec": "4s"
+  },
+  "features": {
+    "scanline": true,
+    "frame": true,
+    "corner_brackets": true,
+    "grid_boost": true,
+    "badge_pulse": true
+  }
+}

@@ -1,0 +1,11 @@
+# Private Hacking Suite - Core Requirements
+numpy
+pyyaml
+# For LLM:
+# llama-cpp-python  (optional, for GPU accel)
+# For QUBO/GPU:
+# cupy-cuda11x or cupy-cuda12x (match your CUDA)
+# For benchmarks etc: psutil
+
+# Install with: pip install -r requirements.txt
+# Heavy deps (cupy, llama-cpp) install manually as needed.

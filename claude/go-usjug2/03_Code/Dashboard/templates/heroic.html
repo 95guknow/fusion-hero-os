@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heroische Philosophie</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #080a12;
+    --panel: rgba(18, 22, 36, 0.82);
+    --line: rgba(255, 255, 255, 0.09);
+    --text: #e8edf7;
+    --muted: #9aa7bd;
+    --cyan: #40e0d0;
+    --violet: #8b5cf6;
+    --amber: #f4c76b;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(64, 224, 208, 0.10), transparent 34%),
+      radial-gradient(circle at 82% 18%, rgba(139, 92, 246, 0.12), transparent 30%),
+      linear-gradient(135deg, #080a12 0%, #101423 100%);
+    color: var(--text);
+  }
+
+  main {
+    width: min(1050px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 32px 0 48px;
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 18px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .topline a { color: var(--cyan); text-decoration: none; }
+
+  .banner {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    padding: 40px;
+    background: var(--panel);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .banner::after {
+    content: "";
+    position: absolute;
+    inset: auto -10% -45% 20%;
+    height: 180px;
+    background: linear-gradient(90deg, transparent, rgba(64, 224, 208, 0.18), rgba(139, 92, 246, 0.15), transparent);
+    filter: blur(22px);
+  }
+
+  .hero-mascot {
+    position: absolute;
+    right: 28px;
+    bottom: 18px;
+    width: 190px;
+    height: 210px;
+    opacity: 0.92;
+    pointer-events: none;
+  }
+
+  .hero-mascot svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.32));
+  }
+
+  .kicker {
+    display: inline-flex;
+    gap: 9px;
+    align-items: center;
+    margin-bottom: 16px;
+    color: var(--amber);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 760px;
+    margin: 0;
+    font-size: clamp(34px, 6vw, 66px);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+  }
+
+  .rotator {
+    margin-top: 22px;
+    max-width: 760px;
+    min-height: 70px;
+    color: var(--muted);
+    font-size: clamp(18px, 2.4vw, 25px);
+    line-height: 1.45;
+  }
+
+  .rotator span { display: none; }
+  .rotator span:nth-child(1) { animation: rotateText 6s infinite; }
+  .rotator span:nth-child(2) { animation: rotateText 6s infinite 2s; }
+  .rotator span:nth-child(3) { animation: rotateText 6s infinite 4s; }
+
+  @keyframes rotateText {
+    0%, 5% { display: inline; opacity: 0; }
+    8%, 28% { display: inline; opacity: 1; }
+    32%, 100% { display: none; opacity: 0; }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .card h2 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .card p, .card li {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  ul { margin: 0; padding-left: 18px; }
+
+  .wide { grid-column: span 2; }
+
+  .sources li { margin-bottom: 8px; }
+
+  .evidence-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .phase {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    background: rgba(64, 224, 208, 0.035);
+  }
+
+  .phase strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--amber);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .phase span {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .note {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+    .wide { grid-column: auto; }
+    .banner { padding: 24px; }
+    .evidence-strip { grid-template-columns: 1fr; }
+    .hero-mascot { position: relative; right: auto; bottom: auto; margin: 18px auto 0; width: 150px; height: 165px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="topline">
+    <span>Lokale Forschungsseite · keine Deepfakes · keine personenbezogene Veröffentlichung</span>
+    <a href="/">Zurück zum Dashboard</a>
+  </div>
+
+  <section class="banner" aria-label="Heroische Philosophie Banner">
+    <div class="kicker">Cyber Layer · Transformation · quellennah</div>
+    <h1>Heroische Philosophie als überprüfbare Transformation.</h1>
+    <p class="rotator" aria-live="polite">
+      <span>Deutsch: Aus verstreuten Arbeitsständen wird eine ruhige, prüfbare Struktur.</span>
+      <span>Francais: Des traces dispersees deviennent une structure calme et verifiable.</span>
+      <span>Espanol: De registros dispersos surge una estructura tranquila y verificable.</span>
+    </p>
+    <div class="hero-mascot" aria-hidden="true">
+      <svg viewBox="0 0 220 240" role="img">
+        <defs>
+          <linearGradient id="bodyGlow" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#40e0d0" stop-opacity="0.95"/>
+            <stop offset="1" stop-color="#8b5cf6" stop-opacity="0.92"/>
+          </linearGradient>
+        </defs>
+        <circle cx="110" cy="42" r="28" fill="#f4c76b"/>
+        <path d="M75 83 C86 67 134 67 145 83 L166 142 C171 157 160 171 145 166 L132 124 L132 208 L88 208 L88 124 L75 166 C60 171 49 157 54 142 Z" fill="url(#bodyGlow)"/>
+        <path d="M78 97 C94 118 126 118 142 97" fill="none" stroke="#080a12" stroke-width="7" stroke-linecap="round" opacity="0.42"/>
+        <path d="M57 139 C38 132 32 115 43 103 C52 93 66 99 68 113" fill="none" stroke="#40e0d0" stroke-width="18" stroke-linecap="round"/>
+        <path d="M163 139 C182 132 188 115 177 103 C168 93 154 99 152 113" fill="none" stroke="#8b5cf6" stroke-width="18" stroke-linecap="round"/>
+        <rect x="86" y="207" width="18" height="28" rx="8" fill="#40e0d0" opacity="0.85"/>
+        <rect x="116" y="207" width="18" height="28" rx="8" fill="#8b5cf6" opacity="0.85"/>
+        <circle cx="100" cy="41" r="3" fill="#080a12"/>
+        <circle cx="120" cy="41" r="3" fill="#080a12"/>
+        <path d="M99 55 C106 61 114 61 121 55" fill="none" stroke="#080a12" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </section>
+
+  <section class="evidence-strip" aria-label="Transformationsphasen">
+    <div class="phase"><strong>Phase 1</strong><span>Sammeln: Server, Dashboard, Mathematik, Rust-Prototyp.</span></div>
+    <div class="phase"><strong>Phase 2</strong><span>Trennen: Forschung sichtbar machen, private Daten ausschließen.</span></div>
+    <div class="phase"><strong>Phase 3</strong><span>Verdichten: klare Begriffe statt Überhöhung.</span></div>
+    <div class="phase"><strong>Phase 4</strong><span>Prüfen: nur belegte Aussagen werden übernommen.</span></div>
+  </section>
+
+  <section class="grid" aria-label="Wissenschaftlicher Kontext">
+    <article class="card wide">
+      <h2>Fokus</h2>
+      <p>
+        Diese Seite fasst die heroische Philosophie als wissenschaftlich lesbare Arbeitsnotiz zusammen:
+        Haltung, Verantwortung, Selbstbegrenzung und Quellennähe. Die Transformation wird stärker erzählt,
+        bleibt aber an lokale Belege und konkrete Arbeitsstände gebunden.
+      </p>
+    </article>
+
+    <article class="card">
+      <h2>Schutz</h2>
+      <p>
+        Keine echten Menschen als Figuren. Keine Deepfakes. Keine fremden Dateien. Keine automatische
+        Veröffentlichung privater Daten.
+      </p>
+    </article>
+
+    <article class="card">
+      <h2>Forschung</h2>
+      <p>
+        Bezug auf die letzten Wochen: Dashboard, Wallet-Anzeige, mathematische PDFs, QUBO-Sandbox,
+        Rust-Prototyp und lokale Serverstruktur werden als getrennte, korrelierbare Arbeitsstränge behandelt.
+      </p>
+    </article>
+
+    <article class="card">
+      <h2>Stil</h2>
+      <p>
+        Cyber-Layer ja. Verschwörungsvibes nein. Spannung entsteht durch sichtbare Übergänge:
+        Rohmaterial, Prüfung, Verdichtung, vorsichtige heroische Rahmung. Visuell darf es cartooniger
+        und sportlicher wirken, solange es abstrakt bleibt und keine echte Person abbildet.
+      </p>
+    </article>
+
+    <article class="card wide">
+      <h2>Quellen-Layer</h2>
+      <ul class="sources">
+        <li>Lokale Quelle: <code>dashboard/app.py</code> als FastAPI-Struktur.</li>
+        <li>Lokale Quelle: <code>templates/index.html</code> als Dashboard-Oberfläche.</li>
+        <li>Lokale Quelle: <code>Formale_Mathematik_*.pdf</code> als noch zu extrahierende Mathematikbasis.</li>
+        <li>Lokale Quelle: <code>qb_qubo.py</code> als QUBO-/Ising-Testfeld.</li>
+        <li>Lokale Quelle: Rust-Prototyp <code>alte_frau_rust</code> als Evolutionssimulation.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Aktueller Stand 2026-06-25</h2>
+      <ul>
+        <li>QUBO-Sandbox: Ising-Abbildung bestätigt, Pfadabhängigkeit gezeigt, Submodularität getestet.</li>
+        <li>Rust-Prototyp: Lokaler Git-Commit <code>9776040</code>, Evolutionssimulation lauffähig.</li>
+        <li>Dashboard: FastAPI-Server lokal auf <code>127.0.0.1:8000</code>, Wallet-API aktiv.</li>
+        <li>Mathematik: <code>hero-guide_geltungsstand.json</code> mit 15 Konzepten, Drift-Markierungen und Aufgaben.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <h2>Nächster Schritt</h2>
+      <p>
+        <code>/heroic</code> um QUBO-Visualisierung und Mathematik-Drift-Chart erweitern.
+        Kein Push ohne Remote, Authentifizierung und Inhaltsprüfung.
+      </p>
+    </article>
+
+    <article class="card wide" style="border-color:#40e0d0">
+      <h2>Heroic Core Foundation</h2>
+      <p>
+        <strong>Layer 0 — Immutable Foundation</strong> ist jetzt als dedizierte, saubere Referenz verfügbar.
+        Alle weiteren Module, Prozesse und Outputs müssen diese Grundregeln (Geltungskategorien, Epistemic Hygiene, 5-Dim-Gate) respektieren.
+      </p>
+      <p style="margin-top:10px">
+        <a href="/foundation" style="color:#40e0d0;font-weight:600">→ /foundation öffnen (Layer 0 Spec)</a><br>
+        <a href="/highest-layer" style="color:#40e0d0;font-weight:600">→ /highest-layer (ohne VR)</a> &nbsp;|&nbsp; <a href="/highest-layer-vr" style="color:#40e0d0;font-weight:600">/highest-layer-vr (mit VR)</a><br>
+        <span style="font-size:12px;opacity:.7">Pfad: ../heroic-highest-layer/ — pure logic, standalone, lokal, ohne VR</span>
+      </p>
+    </article>
+  </section>
+
+  <p class="note">Status: lokal, ruhig, wissenschaftlich. Keine externe Veröffentlichung durch diese Seite.</p>
+</main>
+</body>
+</html>

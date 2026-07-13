@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Symbolische Spende — Es grüßt der HELD</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: '#0a0a0f',
+        surface: '#12121a',
+        border: '#1e1e2e',
+        accent: '#00d4aa',
+        accent2: '#7c3aed',
+        warn: '#fbbf24',
+        error: '#ef4444',
+        text: '#e2e8f0',
+        muted: '#94a3b8'
+      },
+      fontFamily: {
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        sans: ['Inter', 'system-ui', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  
+  * { box-sizing: border-box; }
+  body { 
+    background: #0a0a0f; 
+    background-image: 
+      radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(0, 212, 170, 0.08) 0%, transparent 50%);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  
+  .hero-panel {
+    background: rgba(18, 18, 26, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 24px;
+    max-width: 640px;
+    width: 90%;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .percent-badge {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #00d4aa 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(0, 212, 170, 0.3);
+    animation: pulse-glow 3s infinite;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-top: 0.5rem;
+    color: #e2e8f0;
+  }
+  
+  .hero-sub {
+    font-size: 1.1rem;
+    color: #94a3b8;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+  
+  .held-badge {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.6rem 1.2rem;
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #a78bfa;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    margin: 2rem 0;
+  }
+  
+  .footer-note {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 1.5rem;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 212, 170, 0.25)); }
+    50% { filter: drop-shadow(0 0 35px rgba(124, 58, 237, 0.4)); }
+  }
+</style>
+</head>
+<body>
+  <div class="hero-panel">
+    <div class="percent-badge">1%</div>
+    <h1 class="hero-title">Symbolische Spende</h1>
+    <p class="hero-sub">
+      1 % des Vermögens — für den guten Zweck.<br>
+      Eine Geste, die zählt.
+    </p>
+    <div class="divider"></div>
+    <div class="held-badge">✨ es grüßt der HELD ✨</div>
+    <p class="footer-note">
+      Wallet-Zugang nur für den Eigentümer.<br>
+      Öffentliche Adresse: <code class="text-accent/90 break-all">0x9958adA543a9bFDAECa1c202a05Fa8BB81174982</code>
+    </p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+# Referenzierte Assets — Audit + Generierung (SD WebUI oder Pillow-Fallback)
+# min_bytes: Dateien darunter gelten als unzureichend vorhanden
+
+version: "1.0"
+sd_webui:
+  url: "http://127.0.0.1:7860"
+  timeout_seconds: 180
+
+categories:
+  vr:
+    label: "VR 360° / Textures"
+    assets:
+      - id: vr_mister_Contributor_hero_equirectangular
+        rel_path: "03_VR_Assets/vr_mister_Contributor_hero_equirectangular.jpg"
+        type: equirectangular
+        min_bytes: 50000
+        width: 1024
+        height: 512
+        sd_prompt: "equirectangular 360 panorama, cyberpunk campfire at night, heroic figure silhouette, neon green #00ff9f and magenta #ff3366 accents, dark urban operational mood, cinematic, seamless horizon"
+        negative: "blurry, watermark, text, logo, cropped, flat"
+
+      - id: heroic_evolution_fractal
+        rel_path: "03_VR_Assets/heroic_evolution_fractal.jpg"
+        type: texture
+        min_bytes: 20000
+        width: 512
+        height: 512
+        sd_prompt: "abstract fractal evolution spiral, generational fitness visualization, gold and teal on dark navy, mathematical beauty, heroic symbolism"
+        negative: "text, watermark, photo, face"
+
+  visual_seeds:
+    label: "Visual Identity Seeds"
+    assets:
+      - id: 95g_Hacker_PrimarySeed_2026-07-04
+        rel_path: "visual_seeds/95g_Hacker_PrimarySeed_2026-07-04.jpg"
+        type: portrait
+        min_bytes: 40000
+        width: 512
+        height: 768
+        sd_prompt: "cyberpunk hacker portrait, sharp operational gaze, urban night, neon green accent lighting, ALTE_Frau_95g heroic identity, photo-realistic, intense focus"
+        negative: "cartoon, blurry, watermark, deformed"
+
+  memes:
+    label: "Meme / MasterSeed Visuals"
+    assets:
+      - id: masterseed_visual
+        rel_path: "memes/cyberpunk_campfire/masterseed_visual.png"
+        type: icon
+        min_bytes: 4500
+        width: 256
+        height: 256
+        format: png
+        sd_prompt: "minimal icon, cyberpunk campfire symbol, neon green flame on dark background, master seed emblem, clean vector style"
+        negative: "text, watermark, busy background"
