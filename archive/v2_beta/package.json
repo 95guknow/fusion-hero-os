@@ -1,0 +1,14 @@
+{
+  "name": "fusion-hero-os-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Future tools for meme generation, roadmap visualization and cyberpunk-campfire assets (Yarn workspace)",
+  "scripts": {
+    "dev": "echo 'Future dev script for meme/roadmap tools'",
+    "build": "echo 'Future build for meme/roadmap tools'"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
