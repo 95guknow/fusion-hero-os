@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "description": "Strukturierte Datenbank der Knoten im Concept Space von 'Der heroische Mensch'. Jeder Eintrag enthält Positionierung, Relevanz und Erklärung (3-5 Sätze).",
+    "last_updated": "2026-06-15",
+    "format_version": "1.0",
+    "note": "Ergänzt um alle bedeutenden Philosophen von Weltrang seit Jesus (ca. 30 n. Chr.). Fokus auf chronologische Vollständigkeit + werkrelevante Knoten."
+  },
+  "nodes": [
+    {
+      "id": "plotinus",
+      "name": "Plotin",
+      "period": "ca. 204–270 n. Chr.",
+      "era": "Spätantike / Neoplatonismus",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Tr",
+        "D8": "De"
+      },
+      "relevance": "Plotin ist der große Systematiker des Neuplatonismus und die wichtigste Brücke zwischen antiker Philosophie und christlichem Denken. Er steht für die Rückkehr zum Einen durch Reinigung und Kontemplation. Für das Werk ist er der letzte große antike Denker vor der christlichen Wende und zeigt, wie stark die Transzendenzachse (D7) bereits vor Christus ausgeprägt war.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "augustinus",
+      "name": "Augustinus von Hippo",
+      "period": "354–430 n. Chr.",
+      "era": "Spätantike / Frühes Christentum",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Pe",
+        "D6": "Tu·Pf",
+        "D7": "Tr",
+        "D8": "De"
+      },
+      "relevance": "Augustinus verbindet Platonismus mit christlicher Offenbarung. Seine Confessiones sind die erste große Innenschau der westlichen Tradition. Er prägt die Vorstellung von Wille, Gnade und Zeit. Für das Werk ist er der erste große Knoten nach Christus und zeigt, wie die Passion (Hinterfragen mit Konsequenz) in persönliche Existenz übersetzt wird.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "thomas_von_aquin",
+      "name": "Thomas von Aquin",
+      "period": "1225–1274",
+      "era": "Mittelalter / Scholastik",
+      "concept_space": {
+        "D1": "~",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Sy",
+        "D6": "Tu·Pf",
+        "D7": "Tr",
+        "D8": "De"
+      },
+      "relevance": "Thomas von Aquin ist der große Synthetiker von Glaube und Vernunft. Er integriert Aristoteles in die christliche Theologie. Für das Werk steht er für die systematische Vermittlung zwischen empirischer Welt und transzendenter Ordnung — eine frühe Form von 'q∘b' im mittelalterlichen Gewand.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "avicenna",
+      "name": "Avicenna (Ibn Sina)",
+      "period": "980–1037",
+      "era": "Islamisches Goldene Zeitalter",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Tr",
+        "D8": "~"
+      },
+      "relevance": "Avicenna ist einer der einflussreichsten Philosophen und Mediziner des Mittelalters. Sein 'Buch der Heilung' und die 'Kanon der Medizin' prägten Europa. Er steht für die große Brücke zwischen antiker Philosophie und späterer europäischer Scholastik. Für das Werk ist er ein Beleg dafür, dass große Synthesearbeit auch außerhalb des lateinischen Westens stattfand.",
+      "status": "neu_ergaenzt",
+      "priority": "mittel"
+    },
+    {
+      "id": "averroes",
+      "name": "Averroes (Ibn Ruschd)",
+      "period": "1126–1198",
+      "era": "Islamisches Goldene Zeitalter",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Sy",
+        "D6": "Tu",
+        "D7": "~",
+        "D8": "De"
+      },
+      "relevance": "Averroes ist der große Kommentator des Aristoteles und Verteidiger der Vernunft gegen theologische Übergriffe. Sein 'Doppelte Wahrheit'-Konzept (Vernunft und Offenbarung können beide wahr sein) ist hochmodern. Für das Werk ist er ein früher Vertreter der Trennung von Ebenen (Vernunft vs. Glaube) und damit ein Vorläufer der späteren Säkularisierung.",
+      "status": "neu_ergaenzt",
+      "priority": "mittel"
+    },
+    {
+      "id": "spinoza",
+      "name": "Baruch Spinoza",
+      "period": "1632–1677",
+      "era": "Frühe Neuzeit / Rationalismus",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ma",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Im",
+        "D8": "De"
+      },
+      "relevance": "Spinoza ist der radikalste Determinist der Neuzeit und gleichzeitig einer der größten Ethiker. 'Deus sive Natura' — Gott oder Natur. Sein amor fati ist dem Werk extrem nah. Für das Werk ist er einer der wichtigsten Vorgänger von A.9 (Stoischer Determinismus) und zeigt, wie radikale Notwendigkeit in höchste Freiheit umschlagen kann.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "leibniz",
+      "name": "Gottfried Wilhelm Leibniz",
+      "period": "1646–1716",
+      "era": "Frühe Neuzeit / Rationalismus",
+      "concept_space": {
+        "D1": "Di",
+        "D2": "Ge",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Sy",
+        "D6": "Pf",
+        "D7": "Tr",
+        "D8": "De"
+      },
+      "relevance": "Leibniz ist der große Optimist und Systembauer (Monadenlehre, Theodizee, Differentialrechnung). Er steht für die Idee, dass wir in der besten aller möglichen Welten leben. Für das Werk ist er ein wichtiger Kontrastpunkt: sein rationaler Optimismus wird durch die drei Verneinungen (Descartes–Nietzsche–Derrida) später zerstört.",
+      "status": "neu_ergaenzt",
+      "priority": "mittel"
+    },
+    {
+      "id": "schopenhauer",
+      "name": "Arthur Schopenhauer",
+      "period": "1788–1860",
+      "era": "19. Jahrhundert",
+      "concept_space": {
+        "D1": "An",
+        "D2": "Ma",
+        "D3": "Em",
+        "D4": "Ko",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Im",
+        "D8": "De"
+      },
+      "relevance": "Schopenhauer ist der große Pessimist und der erste westliche Philosoph, der den Buddhismus ernst nimmt. Sein 'Wille' als blinde Kraft hinter allem ist eine der dunkelsten und ehrlichsten Diagnosen der Neuzeit. Für das Werk ist er ein wichtiger Brückenkopf zwischen deutschem Idealismus und existenziellem Denken (Nietzsche, Camus).",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "kierkegaard",
+      "name": "Søren Kierkegaard",
+      "period": "1813–1855",
+      "era": "19. Jahrhundert",
+      "concept_space": {
+        "D1": "~",
+        "D2": "~",
+        "D3": "Ve",
+        "D4": "Ko",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Tr",
+        "D8": "Fr"
+      },
+      "relevance": "Kierkegaard ist der Vater des Existenzialismus und der große Einzelne gegen das System. Sein 'Sprung in den Glauben' und die Stadien auf dem Lebensweg sind hochrelevant. Für das Werk ist er ein zentraler Vorgänger der existenziellen Linie und zeigt, wie radikale Subjektivität aussehen kann, ohne in Beliebigkeit zu kippen.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "husserl",
+      "name": "Edmund Husserl",
+      "period": "1859–1938",
+      "era": "20. Jahrhundert / Phänomenologie",
+      "concept_space": {
+        "D1": "An",
+        "D2": "~",
+        "D3": "Ve",
+        "D4": "Re",
+        "D5": "Pe",
+        "D6": "~",
+        "D7": "Im",
+        "D8": "~"
+      },
+      "relevance": "Husserl ist der Begründer der Phänomenologie: 'Zu den Sachen selbst!' Er will die Welt so beschreiben, wie sie sich dem Bewusstsein zeigt, ohne theoretische Vorannahmen. Für das Werk ist er wichtig als methodischer Vorläufer des genauen Hinsehens und des Verstehens als phänomenaler Akt.",
+      "status": "neu_ergaenzt",
+      "priority": "mittel"
+    },
+    {
+      "id": "heidegger",
+      "name": "Martin Heidegger",
+      "period": "1889–1976",
+      "era": "20. Jahrhundert / Existenzialismus",
+      "concept_space": {
+        "D1": "An",
+        "D2": "~",
+        "D3": "Ve",
+        "D4": "Ko",
+        "D5": "Pe",
+        "D6": "Tu",
+        "D7": "Im",
+        "D8": "~"
+      },
+      "relevance": "Heidegger ist der große Denker des Seins und der Zeitlichkeit. 'Sein und Zeit' und später die Kehre prägen das 20. Jahrhundert. Sein Begriff der 'Geworfenheit' und der 'Eigentlichkeit' sind dem Werk sehr nah. Gleichzeitig ist seine politische Verstrickung ein warnendes Beispiel für Loch 4 und COI-Probleme.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "wittgenstein",
+      "name": "Ludwig Wittgenstein",
+      "period": "1889–1951",
+      "era": "20. Jahrhundert / Sprachphilosophie",
+      "concept_space": {
+        "D1": "Di",
+        "D2": "~",
+        "D3": "Ve",
+        "D4": "Ko",
+        "D5": "Pe",
+        "D6": "~",
+        "D7": "Im",
+        "D8": "~"
+      },
+      "relevance": "Wittgenstein ist der vielleicht einflussreichste Philosoph des 20. Jahrhunderts. Der 'Tractatus' und die 'Philosophischen Untersuchungen' markieren zwei völlig unterschiedliche Phasen. Sein berühmtes 'Wovon man nicht sprechen kann, darüber muss man schweigen' ist eine extrem strenge Version von A.2 (Die Regeln der Quantisierung). Für das Werk ist er der präziseste Denker der Grenzen der Sprache.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    },
+    {
+      "id": "arendt",
+      "name": "Hannah Arendt",
+      "period": "1906–1975",
+      "era": "20. Jahrhundert / Politische Philosophie",
+      "concept_space": {
+        "D1": "~",
+        "D2": "~",
+        "D3": "Em",
+        "D4": "Re",
+        "D5": "Sy",
+        "D6": "Tu",
+        "D7": "Im",
+        "D8": "~"
+      },
+      "relevance": "Hannah Arendt ist die große Analytikerin von Totalitarismus, Macht und dem öffentlichen Raum. 'Vita activa' und 'Eichmann in Jerusalem' gehören zu den wichtigsten politischen Texten des 20. Jahrhunderts. Für das Werk ist sie zentral für Buch 3 (das System) und die Frage, wie Stamm und System auseinanderbrechen.",
+      "status": "neu_ergaenzt",
+      "priority": "hoch"
+    }
+  ]
+}
