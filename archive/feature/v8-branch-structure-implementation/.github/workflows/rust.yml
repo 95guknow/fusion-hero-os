@@ -1,0 +1,12 @@
+# DISABLED as part of Fusion Hero OS v7.4 cleanup (2026-06-30)
+# Original template for Rust projects - not applicable to the unified ALTE_Frau_95g Heroic Core.
+# All active workflows consolidated in fusion-hero-os-hyperthread.yml
+
+name: DISABLED - Rust
+on:
+  workflow_dispatch:
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow disabled. See fusion-hero-os-hyperthread.yml for Heroic Core CI."

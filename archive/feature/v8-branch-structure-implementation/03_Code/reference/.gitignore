@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Numba JIT-Cache
+.numba_cache/
+
+# Generierte Artefakte / Pipeline-Output
+Archiv_*.zip
+00_Uebersicht.md
+
+# Lokale/temporäre Dateien
+asd.md
+*.tmp
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+
+# Lokale Claude-Einstellungen (Konfig bleibt lokal; launch.json wird versioniert)
+.claude/settings.local.json

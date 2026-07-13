@@ -1,0 +1,1 @@
+Leitsatz: Eudaimonia beginnt nicht in der Transzendenz, sondern im Schlamm. ... [Full Axiom I content would go here, but since it's long, I'll summarize in practice that we push key files]

@@ -1,0 +1,14 @@
+# CodeQL workflow DISABLED - 2026-07-01
+# Reason: Code Scanning not enabled in repository settings, Rust analysis incomplete
+# To re-enable: Fix .gitmodules, enable Code Scanning in repo settings, and uncomment below
+
+name: "CodeQL Advanced (DISABLED)"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "CodeQL workflow is disabled. Enable Code Scanning in repository settings to activate."

@@ -1,0 +1,1 @@
+Archiviert - Alte v7.4 Delta Summary. Neue Version unter docs/02_architecture/ und docs/OVERVIEW.md.

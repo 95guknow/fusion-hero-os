@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="320" viewBox="0 0 500 320">
+  <rect width="100%" height="100%" fill="#FDFAF5"/>
+  <text x="250" y="28" text-anchor="middle" font-family="Georgia, Times, serif" font-size="14" font-weight="bold" fill="#1E3A5F">Trajektorie Z(t) — Bipolar I</text>
+
+  <line x1="70" y1="260" x2="450" y2="260" stroke="#CCCCCC"/>
+  <line x1="70" y1="260" x2="70" y2="40" stroke="#CCCCCC"/>
+  <text x="260" y="278" text-anchor="middle" font-family="Georgia" font-size="10" fill="#C9A227">G Geist</text>
+  <text x="62" y="150" text-anchor="middle" font-family="Georgia" font-size="10" fill="#1E3A5F" transform="rotate(-90,62,150)">K Körper</text>
+  <ellipse cx="279.0" cy="161.0" rx="120" ry="75" fill="none" stroke="#9B59B6" stroke-width="2" stroke-dasharray="8,5"/>
+  <circle cx="355.0" cy="216.0" r="6" fill="#C0392B"/>
+  <text x="366.40000000000003" y="227.0" font-family="Georgia" font-size="9" fill="#1C2526">Manie ★</text>
+  <circle cx="203.0" cy="95.0" r="6" fill="#6B8E9F"/>
+  <text x="214.4" y="110.39999999999998" font-family="Georgia" font-size="9" fill="#1C2526">Depression</text>
+  <path d="M 343.59999999999997 205.0 Q 298.0 150.0 222.0 106.0" fill="none" stroke="#C9A227" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <text x="260.0" y="35" text-anchor="middle" font-family="Georgia" font-size="11" font-weight="bold" fill="#1E3A5F">Bipolar I — Limit-Cycle in Π_KG</text>
+  <text x="260.0" y="52" text-anchor="middle" font-family="Georgia" font-size="9" fill="#555555">Heilung: Zyklus schrumpft · d_max pro Periode sinkt · q-Flug mit b-Abschluss</text>
+  <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#C9A227"/></marker></defs>
+  <text x="12" y="312" font-family="Georgia, serif" font-size="8" fill="#555555">MER 4D-Matrix · Modell · kein DSM-Ersatz · Kompendium-Duktus</text>
+</svg>
