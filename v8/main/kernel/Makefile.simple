@@ -1,0 +1,33 @@
+# Simplified Makefile - Fusion Hero OS
+# Works with available tools
+
+CC = gcc
+CFLAGS = -ffreestanding -fno-omit-frame-pointer -nostdlib
+LDFLAGS = -T linker.ld -nostdlib -static
+
+# Object files
+OBJS = kernel.o smp/smp.o management/monitor.o management/database.o \
+       ai/request_optimizer.o ai/hybrid_cognition.o ai/llm_merge.o \
+       management/persistent_db.o gui/gui_core.o ide/ide_shell.o
+
+# Default target
+all: kernel.bin
+
+# Compile all C files
+%.o: %.c
+	$(CC) $(CFLAGS) -I. -c -o $@ $<
+
+# Link
+kernel.bin: $(OBJS)
+	ld -r -o $@ $^
+
+# Clean
+clean:
+	rm -f *.o kernel.bin
+	rm -rf smp/*.o management/*.o ai/*.o gui/*.o ide/*.o
+
+# Quick test compile only
+test_compile: $(OBJS)
+	@echo "All files compiled successfully"
+
+.PHONY: all clean test_compile

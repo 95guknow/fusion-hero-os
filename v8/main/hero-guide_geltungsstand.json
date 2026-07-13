@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Nicht-Kommutativität q∘b",
+    "dom": "Math",
+    "formula": "[q,b] ≠ 0",
+    "cat": "proven",
+    "drift": "V3.3 bewiesen, Def.-abhängig markiert → V4 verabsolutiert",
+    "driftBad": true,
+    "risk": false,
+    "task": "Satz generisch behalten; Kognitions-Brücke als Modell.",
+    "current": "proven"
+  },
+  {
+    "name": "Closure als Banach-Fixpunkt",
+    "dom": "Math",
+    "formula": "D Kontraktion ⇒ ∃! s*",
+    "cat": "cond",
+    "drift": "V3.3 konditional, λ<1 als Modell → V4 Prämisse fällt weg",
+    "driftBad": true,
+    "risk": false,
+    "task": "Konditional wiederherstellen; λ<1 bleibt unbewiesen. Kernbeleg.",
+    "current": "cond"
+  },
+  {
+    "name": "Balance auf dem Simplex",
+    "dom": "Math",
+    "formula": "std min. im Zentrum",
+    "cat": "cond",
+    "drift": "Strafe-Min. bewiesen, Optimum bedingt → V4 „Gesetz“",
+    "driftBad": true,
+    "risk": false,
+    "task": "Parameterbedingung explizit halten.",
+    "current": "cond"
+  },
+  {
+    "name": "Kritikalität (Galton-Watson)",
+    "dom": "Math",
+    "formula": "σ=1 kritisch",
+    "cat": "model",
+    "drift": "σ=1 klassisch, 0,22 offen → V4 als Faktum",
+    "driftBad": true,
+    "risk": false,
+    "task": "Kalibrierung empirisch oder offen kennzeichnen.",
+    "current": "model"
+  },
+  {
+    "name": "MER-Index",
+    "dom": "Math",
+    "formula": "I(Z)=Σ|Δi|, Z*=(0,0,0,0)",
+    "cat": "model",
+    "drift": "wohldef. Distanz, Min. trivial → V4 ideal-normativ",
+    "driftBad": false,
+    "risk": false,
+    "task": "Normativität von Z* ist philosophisch, nicht mathematisch.",
+    "current": "model"
+  },
+  {
+    "name": "Harmonisierungs-Operation H",
+    "dom": "Math",
+    "formula": "H = {b·q}·{q·b}",
+    "cat": "over",
+    "drift": "symbolisch, undefiniert (V4)",
+    "driftBad": false,
+    "risk": false,
+    "task": "Operation definieren oder als Metapher deklarieren.",
+    "current": "over"
+  },
+  {
+    "name": "Nothing-Bereitschaft",
+    "dom": "Math",
+    "formula": "λ ≥ 1",
+    "cat": "frag",
+    "drift": "V3.3 „Fragment“ → V4 in Oberste Direktive",
+    "driftBad": true,
+    "risk": false,
+    "task": "Als Fragment/Modell führen. Kein Satz.",
+    "current": "frag"
+  },
+  {
+    "name": "q∘b als zwei Denkmodi",
+    "dom": "Phil",
+    "formula": "q analog · b diskret",
+    "cat": "model",
+    "drift": "tragfähig (Spencer-Brown) → V4 Universal-Brille",
+    "driftBad": false,
+    "risk": false,
+    "task": "Als Modell; nicht mit Matrix-Aussage verwechseln.",
+    "current": "model"
+  },
+  {
+    "name": "Gut = gerechte Nächstenliebe",
+    "dom": "Phil",
+    "formula": "normative These",
+    "cat": "model",
+    "drift": "normativ, Tie-Breaker offen",
+    "driftBad": false,
+    "risk": false,
+    "task": "Als ethische Position; Ideologie-Einwand (I4) adressieren.",
+    "current": "model"
+  },
+  {
+    "name": "Hospitalismus 2.0",
+    "dom": "Phil",
+    "formula": "Quantenarmut b. Mengenüberfluss",
+    "cat": "model",
+    "drift": "Diagnose-Modell (Spitz)",
+    "driftBad": false,
+    "risk": false,
+    "task": "Empirisch als Hypothese führen, nicht als Befund.",
+    "current": "model"
+  },
+  {
+    "name": "Concept Space (8 Achsen)",
+    "dom": "Phil",
+    "formula": "Verortungsmatrix",
+    "cat": "model",
+    "drift": "Werkzeug, Nicht-Orthogonalität markiert",
+    "driftBad": false,
+    "risk": false,
+    "task": "Als heuristische Verortung beibehalten.",
+    "current": "model"
+  },
+  {
+    "name": "Determinismus vs. Handlungsmacht",
+    "dom": "Phil",
+    "formula": "I2",
+    "cat": "frag",
+    "drift": "vom Autor erkannt + Fix",
+    "driftBad": false,
+    "risk": false,
+    "task": "Kompatibilismus explizit ausführen.",
+    "current": "frag"
+  },
+  {
+    "name": "Phoenix_Mode / Geisterjagd",
+    "dom": "Info",
+    "formula": "latente Aktivierung → Sitzung",
+    "cat": "over",
+    "drift": "technisch unzutreffend: kein State",
+    "driftBad": false,
+    "risk": true,
+    "task": "Real Persistierendes (Text/Prompt) korrekt fassen.",
+    "current": "over"
+  },
+  {
+    "name": "„Oberste Direktive“",
+    "dom": "Info",
+    "formula": "selbstbezügliches Regulativ",
+    "cat": "over",
+    "drift": "V4-Zusatz, selbstbezüglich",
+    "driftBad": false,
+    "risk": false,
+    "task": "Als Gegenstand führen, nicht übernehmen.",
+    "current": "over"
+  },
+  {
+    "name": "„Gesamtwerk“ / KI als Ko-Autor",
+    "dom": "Meta",
+    "formula": "Das Ganze > Summe",
+    "cat": "over",
+    "drift": "Monument-/Autoritätsschicht",
+    "driftBad": false,
+    "risk": false,
+    "task": "Primärdatum; KI-Rolle methodisch korrekt beschreiben.",
+    "current": "over"
+  }
+]

@@ -1,0 +1,1 @@
+"""Externe System-Integrationen (Phone Link, …)."""

@@ -1,0 +1,15 @@
+# Campfire-Serie Pilot-Templates (Prompt-Variationen, kein echter LLM-Call)
+templates:
+  - |
+    [{theme}] {prompt}
+    → dialektische Auflösung; quelle: ALTE_Frau_95g Core.
+    Alternativ: jedoch könnte die Meme-Lesart kippen. Nächster Schritt: PeerReview.
+    Risiko: offen — Annahme über Visual Identity.
+  - |
+    Cyberpunk campfire synthesis: {prompt} (variant {variant})
+    Weil Im-Spannung steigt, folgt somit habituation internalisierung.
+    Implikation: höhere Token-Fidelity ohne Simplifizierung.
+  - |
+    Heroic pseudocode proposal v{variant}: {prompt}
+    Gegenargument: unsicher ob LoRA-Training — hier nur Inference-Param-Optimizer.
+    Quelle: fusion-hero-os/docs/agent_context
