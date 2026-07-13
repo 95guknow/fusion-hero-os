@@ -1,0 +1,40 @@
+{
+  "id": "geisteskrankheiten_4d_v5",
+  "version": "5.0",
+  "source": "v4 + visual_pi_KG_SN + einzelfall_trajektorien",
+  "updated_ts": 1782932801.8368118,
+  "files": {
+    "v4_full": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v4_vollstaendig.md",
+    "v5_extension": "Geisteskrankheiten_4D_Visual_Trajektorien_v5.md",
+    "full": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v5_vollstaendig.md",
+    "pdf": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v5_vollstaendig.pdf"
+  },
+  "new_sections": [
+    "20_2d_projektionen_Pi_KG_Pi_SN",
+    "21_einzelfall_trajektorien_10_faelle"
+  ],
+  "key_concepts": [
+    "Pi_KG Koerper-Geist-Ebene",
+    "Pi_SN Seele-Natur-Ebene",
+    "Z_real vs Z_wahrgenommen 2D",
+    "Limit-Cycle Bipolar",
+    "Sprungfeld Borderline",
+    "Trauma-Attraktor PTBS",
+    "OCD lokale Schleife",
+    "Heilungs-Spirale alpha beta"
+  ],
+  "case_studies": [
+    "bipolar_I",
+    "borderline",
+    "ptbs",
+    "ocd",
+    "depression_endogen",
+    "schizophrenie",
+    "adhs",
+    "anorexie",
+    "substanz",
+    "autismus_masking"
+  ],
+  "chars": 66023,
+  "path": "C:\\Users\\Admin\\fusion-hero-os\\03_Code\\core\\knowledge\\Geisteskrankheiten_4D_Matrix_v5_vollstaendig.md"
+}

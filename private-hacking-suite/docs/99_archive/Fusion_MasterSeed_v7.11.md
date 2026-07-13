@@ -1,0 +1,1 @@
+Archiviert - Alte MasterSeed Version. Aktuelle Version unter docs/02_architecture/.

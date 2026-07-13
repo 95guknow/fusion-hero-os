@@ -1,0 +1,12 @@
+# DISABLED as part of Fusion Hero OS v7.4 cleanup (2026-06-30)
+# Original IBM Cloud / IKS deployment template - requires secrets and Dockerfile not present.
+# All active workflows consolidated in fusion-hero-os-hyperthread.yml
+
+name: DISABLED - IBM
+on:
+  workflow_dispatch:
+jobs:
+  disabled:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Workflow disabled. See fusion-hero-os-hyperthread.yml for Heroic Core CI."
