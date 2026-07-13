@@ -1,0 +1,65 @@
+name: Fusion Hero OS - Heroic Core CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  heroic-core-ci:
+    runs-on: ubuntu-latest
+    name: Heroic Core Validation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Repository Structure
+        run: |
+          echo "=== Checking Core vs Developer Separation ==="
+          if [ ! -d "core" ]; then
+            echo "::error::core/ directory is missing!"
+            exit 1
+          fi
+          echo "core/ directory exists"
+
+      - name: Validate Core Python Syntax
+        run: |
+          echo "=== Validating all Python files in core/ ==="
+          find core -name "*.py" -print0 | while IFS= read -r -d '' file; do
+            python3 -m py_compile "$file" || exit 1
+          done
+          echo "All core Python files have valid syntax"
+
+      - name: Validate Migration Concept
+        run: |
+          echo "=== Checking MIGRATION_KONZEPT completeness ==="
+          if [ ! -f "MIGRATION_KONZEPT_v7.12_HardFork.md" ]; then
+            echo "::error::MIGRATION_KONZEPT_v7.12_HardFork.md is missing!"
+            exit 1
+          fi
+
+          # Check for critical sections
+          REQUIRED_SECTIONS=(
+            "Zielarchitektur"
+            "Rollback-Plan"
+            "Technische Schutzma\u00dfnahmen"
+            "Risiken & Gegenma\u00dfnahmen"
+          )
+
+          for section in "${REQUIRED_SECTIONS[@]}"; do
+            if ! grep -q "$section" "MIGRATION_KONZEPT_v7.12_HardFork.md"; then
+              echo "::warning::Missing section in Migration Concept: $section"
+            fi
+          done
+          echo "Migration Concept check completed"
+
+      - name: Heroic Core Status Report
+        run: |
+          echo "===================================="
+          echo "ALTE_Frau_95g Heroic Core CI - SUCCESS"
+          echo "Version: v7.12"
+          echo "Core Structure: Validated"
+          echo "Python Syntax: OK"
+          echo "Migration Concept: Checked"
+          echo "===================================="
