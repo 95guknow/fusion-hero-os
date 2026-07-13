@@ -1,6 +1,6 @@
 [project]
 name = "ascension-os"
-version = "9.5.0"
+version = "8.3.0"
 description = "AscensionOS - Fusion Hero OS Coevolutionary Variant (CEC, Persistent Sisyphos, AscensionCore, Heroic Core, Kernel AI)"
 readme = "README.md"
 requires-python = ">=3.11"

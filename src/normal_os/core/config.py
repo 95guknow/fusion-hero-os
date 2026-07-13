@@ -13,8 +13,21 @@ Deepened configuration system that covers all layers:
 - TTS: Independent Voice App Integration
 - Framework: Skills, Heroic Core Foundation
 """
+from pathlib import Path
+
 from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
+
+
+def _platform_version() -> str:
+    """Plattform-Version aus der VERSION-Datei im Repo-Root (Quelle der Wahrheit,
+    siehe BRANCH_STRATEGY.md -> Versionierung). Fallback fuer installierte Pakete
+    ohne Repo-Kontext."""
+    version_file = Path(__file__).resolve().parents[3] / "VERSION"
+    try:
+        return version_file.read_text(encoding="utf-8").strip()
+    except OSError:
+        return "8.3.0"
 
 
 # ==================== CORE NORMALOS ====================
@@ -351,7 +364,7 @@ class StrengthRegistry(BaseModel):
 class AscensionOSConfig(BaseModel):
     """Root configuration for the entire AscensionOS system."""
     environment: str = "development"
-    version: str = "9.5.0"
+    version: str = Field(default_factory=_platform_version)
     
     # Core normalOS
     llm: LLMConfig = Field(default_factory=LLMConfig)
