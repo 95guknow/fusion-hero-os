@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""
+Der heroische Mensch — Interaktives Programm (Vollständige Erweiterte Version)
+- Mächtiger Quant mit Rückkopplungsschleife + Liebesquant
+- Interaktive Knotenkarte mit Timeline (Philosophiesinnmatrix) + Geographie
+- Exportfunktion für Quant-Ergebnisse und Timeline
+"""
+
+import json
+import os
+import sys
+from pathlib import Path
+from datetime import datetime
+
+BASE_DIR = Path(__file__).parent
+DATA_DIR = BASE_DIR / "data"
+EXPORT_DIR = BASE_DIR / "exports"
+PHILOSOPHERS_FILE = DATA_DIR / "philosophers_nodes.json"
+
+EXPORT_DIR.mkdir(exist_ok=True)
+
+
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_header(title: str):
+    print("\n" + "=" * 72)
+    print(f"  {title}")
+    print("=" * 72 + "\n")
+
+def print_section(title: str):
+    print(f"\n─── {title} ───\n")
+
+def ask_multiple_choice(question: str, options: list[str], allow_back: bool = True) -> int:
+    print(f"\n{question}\n")
+    for i, opt in enumerate(options[:5], 1):
+        print(f"  [{i}] {opt}")
+    if allow_back:
+        print("  [0] Zurück")
+    while True:
+        try:
+            choice = int(input("\nDeine Wahl: ").strip())
+            if allow_back and choice == 0:
+                return -1
+            if 1 <= choice <= min(5, len(options)):
+                return choice - 1
+            print("Bitte eine Zahl zwischen 1 und", min(5, len(options)), "eingeben.")
+        except ValueError:
+            print("Bitte eine Zahl eingeben.")
+
+def load_philosophers():
+    with open(PHILOSOPHERS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f).get("nodes", [])
+
+
+def export_to_markdown(title: str, content: str, filename_prefix: str = "quant"):
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+    filename = f"{filename_prefix}_{timestamp}.md"
+    filepath = EXPORT_DIR / filename
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(f"# {title}\n\n")
+        f.write(f"*Erstellt am {datetime.now().strftime('%d. %B %Y um %H:%M')}*\n\n")
+        f.write(content)
+    print(f"\n✅ Exportiert nach: {filepath}")
+    return filepath
+
+
+def run_quant_powerful():
+    clear_screen()
+    print_header("QUANT — Mächtiger Modus mit Rückkopplung")
+
+    print("Dieser Modus unterstützt iteratives Arbeiten (Rückkopplungsschleife).")
+    input("[Enter] starten...")
+
+    iteration = 1
+    previous_insights = ""
+    selected_field = ""
+    is_love_related = False
+
+    while True:
+        clear_screen()
+        print_header(f"QUANT — Iteration {iteration}")
+
+        if previous_insights:
+            print(f"Vorherige Erkenntnisse:\n{previous_insights[:350]}...\n")
+
+        if iteration == 1:
+            fields = [
+                "Körper & Embodiment",
+                "Sicherheit & Stabilität",
+                "Paarbindung / Romantische Liebe (Liebesquant)",
+                "Freundschaft & Stamm (Liebesquant)",
+                "Bewährung & Leistung",
+                "Ausdruck & Kreativität",
+                "Sinn & spirituelle Verbindung"
+            ]
+            field_idx = ask_multiple_choice("In welchem Bereich spürst du den stärksten Mangel?", fields)
+            if field_idx == -1: return
+            selected_field = fields[field_idx]
+            is_love_related = field_idx in [2, 3]
+        else:
+            print(f"Aktuelles Feld: {selected_field} (beibehalten)")
+
+        liebesquant_score = None
+        if is_love_related:
+            lq_options = [
+                "Sehr hoch — viele tiefe Verstehensmomente",
+                "Mittel — gelegentlich starke Momente",
+                "Niedrig — selten echte Verbindung",
+                "Sehr niedrig / fast nicht vorhanden"
+            ]
+            lq_idx = ask_multiple_choice("Wie hoch ist dein aktueller Liebesquant?", lq_options)
+            if lq_idx != -1:
+                liebesquant_score = lq_options[lq_idx]
+
+        states = ["Sehr schlecht", "Eher schlecht", "Mittel / schwankend", "Eher gut", "Sehr gut"]
+        state_idx = ask_multiple_choice("Wie ist dein aktueller Zustand?", states)
+        if state_idx == -1: return
+
+        blockers = [
+            "Zu wenig echte Verstehensmomente (Liebesquant)",
+            "Fehlendes Wissen / Unklarheit",
+            "Emotionale Blockade / Angst",
+            "Äußere Umstände / fehlende Ressourcen",
+            "Fehlender Stamm / Unterstützung"
+        ]
+        blocker_idx = ask_multiple_choice("Was blockiert dich am stärksten?", blockers)
+        if blocker_idx == -1: return
+
+        clear_screen()
+        print_header(f"Zusammenfassung — Iteration {iteration}")
+
+        summary = f"""**Bereich:** {selected_field}
+**Zustand:** {states[state_idx]}
+"""
+        if liebesquant_score:
+            summary += f"**Liebesquant:** {liebesquant_score}\n"
+        summary += f"""**Hauptblockade:** {blockers[blocker_idx]}
+
+**Empfehlung:**
+"""
+        if is_love_related:
+            summary += "Wähle eine konkrete Situation und praktiziere radikale Transparenz + echtes Hinsehen.\n"
+        else:
+            summary += "Definiere eine winzige, konkrete Handlung für die nächsten 48 Stunden.\n"
+
+        print(summary)
+
+        if ask_multiple_choice("Diese Iteration exportieren?", ["Ja", "Nein"]) == 0:
+            export_to_markdown(f"Quant Iteration {iteration}", summary, "quant")
+
+        next_action = ask_multiple_choice(
+            "Nächster Schritt?",
+            [
+                "Neue Iteration (Rückkopplung)",
+                "Quant abschließen",
+                "Zurück zum Hauptmenü"
+            ],
+            allow_back=False
+        )
+
+        if next_action == 0:
+            previous_insights = summary
+            iteration += 1
+            continue
+        elif next_action == 1:
+            print("\n✅ Quant mit Rückkopplung abgeschlossen.\n")
+            input("[Enter]...")
+            return
+        else:
+            return
+
+
+def explore_knotenkarte():
+    nodes = load_philosophers()
+
+    while True:
+        clear_screen()
+        print_header("INTERAKTIVE KNOTENKARTE (Philosophiesinnmatrix)")
+
+        options = [
+            "Nach Philosophen suchen",
+            "Timeline-Modus (Philosophiesinnmatrix)",
+            "Geographische / Kulturelle Cluster",
+            "Zurück zum Hauptmenü"
+        ]
+        choice = ask_multiple_choice("Was möchtest du tun?", options, allow_back=False)
+
+        if choice == 0:
+            search_philosophers(nodes)
+        elif choice == 1:
+            timeline_mode(nodes)
+        elif choice == 2:
+            geographical_clusters(nodes)
+        elif choice == 3:
+            return
+
+
+def search_philosophers(nodes):
+    clear_screen()
+    print_section("Suche in der Knotenkarte")
+    term = input("Suchbegriff: ").lower().strip()
+    if not term: return
+
+    results = [n for n in nodes if term in n['name'].lower() or term in n.get('era', '').lower()]
+    if not results:
+        print("Keine Treffer.")
+        input("[Enter]...")
+        return
+
+    for i, n in enumerate(results[:6], 1):
+        print(f"[{i}] {n['name']} ({n['period']})")
+
+    idx = ask_multiple_choice("Welchen Knoten genauer ansehen?", [n['name'] for n in results[:5]])
+    if idx != -1:
+        node = results[idx]
+        print_section(node['name'])
+        print(node['relevance'])
+        input("\n[Enter]...")
+
+
+def timeline_mode(nodes):
+    clear_screen()
+    print_header("TIMELINE — Philosophiesinnmatrix")
+
+    print("Strukturiert nach großen Epochen mit kollektiven Sinnstrahlen.\n")
+    input("[Enter] starten...")
+
+    eras = {
+        "Antike & Spätantike": ["plotinus", "aristoteles", "platon", "augustinus"],
+        "Mittelalter & Islamisches Goldenes Zeitalter": ["thomas_von_aquin", "avicenna", "averroes"],
+        "Frühe Neuzeit & Rationalismus": ["spinoza", "leibniz", "descartes"],
+        "Deutscher Idealismus & 19. Jahrhundert": ["hegel", "schopenhauer", "kierkegaard", "nietzsche"],
+        "20. Jahrhundert (Phänomenologie, Existenzialismus, Psychoanalyse)": ["husserl", "heidegger", "wittgenstein", "freud", "lacan", "arendt"]
+    }
+
+    for era_name, ids in eras.items():
+        clear_screen()
+        print_header(f"Epoche: {era_name}")
+
+        era_nodes = [n for n in nodes if n['id'] in ids]
+        print("Kollektiver Sinnstrahl dieser Epoche:\n")
+        for node in era_nodes:
+            print(f"• {node['name']}: {node['relevance'][:200]}...\n")
+
+        print("\n[Enter] = nächste Epoche   |   [q] = beenden")
+        if input().strip().lower() == 'q':
+            break
+
+    print("\n✅ Timeline abgeschlossen.")
+    if ask_multiple_choice("Timeline exportieren?", ["Ja", "Nein"]) == 0:
+        export_to_markdown("Philosophiesinnmatrix - Timeline", 
+                           "Timeline der Epochen mit Sinnstrahlen.",
+                           "timeline")
+
+
+def geographical_clusters(nodes):
+    clear_screen()
+    print_header("GEOGRAPHISCHE & KULTURELLE CLUSTER")
+
+    clusters = {
+        "Mediterrane Antike": ["plotinus", "aristoteles", "platon"],
+        "Christlich-Spätantike & Mittelalter": ["augustinus", "thomas_von_aquin"],
+        "Islamisches Goldenes Zeitalter": ["avicenna", "averroes"],
+        "Frühe Neuzeit (Rationalismus)": ["spinoza", "leibniz", "descartes"],
+        "Deutscher Idealismus & 19. Jh.": ["hegel", "schopenhauer", "kierkegaard", "nietzsche"],
+        "20. Jahrhundert (Phänomenologie & Existenzialismus)": ["husserl", "heidegger", "wittgenstein", "arendt"]
+    }
+
+    cluster_names = list(clusters.keys())
+    idx = ask_multiple_choice("Cluster auswählen:", cluster_names)
+    if idx == -1: return
+
+    selected = cluster_names[idx]
+    ids = clusters[selected]
+
+    print_section(selected)
+    for nid in ids:
+        node = next((n for n in nodes if n['id'] == nid), None)
+        if node:
+            print(f"• {node['name']} ({node['period']})")
+
+    input("\n[Enter]...")
+
+
+def main_menu():
+    while True:
+        clear_screen()
+        print_header("DER HEROISCHE MENSCH — Interaktives Programm")
+
+        options = [
+            "Theorie: Concept Space & Philosophie",
+            "Mächtiger Quant-Modus (mit Rückkopplung + Liebesquant)",
+            "Interaktive Knotenkarte (Timeline + Geographie)",
+            "Beenden"
+        ]
+        choice = ask_multiple_choice("Was möchtest du tun?", options, allow_back=False)
+
+        if choice == 0:
+            clear_screen()
+            print_header("Concept Space — Die vier Ebenen")
+            print("Meta • Intrapersonell • Interpersonell • Systemisch\nVerstehen = Verorten.")
+            input("[Enter]...")
+        elif choice == 1:
+            run_quant_powerful()
+        elif choice == 2:
+            explore_knotenkarte()
+        elif choice == 3:
+            print("\nDer Stein rollt weiter.\n")
+            sys.exit(0)
+
+
+if __name__ == "__main__":
+    try:
+        main_menu()
+    except KeyboardInterrupt:
+        print("\n\nProgramm unterbrochen.\n")
+        sys.exit(0)

@@ -1,0 +1,5 @@
+# Heroic Core Foundation
+# No hard runtime dependencies for the core enforcer.
+# Optional: for future richer checks
+# rich>=13
+# pydantic>=2

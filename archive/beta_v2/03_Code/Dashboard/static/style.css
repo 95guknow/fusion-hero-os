@@ -1,0 +1,33 @@
+/* ALTE_Frau Cyberpunk Theme */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #1e1e2e;
+  --text-primary: #e2e8f0;
+  --accent-teal: #00d4aa;
+  --accent-amber: #fbbf24;
+  --accent-purple: #7c3aed;
+  --accent-slate: #94a3b8;
+}
+
+body { 
+  background: var(--bg-primary); 
+  color: var(--text-primary); 
+  font-family: 'JetBrains Mono', monospace;
+  margin: 0;
+}
+
+.hud-panel {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #16161e 100%);
+  border: 1px solid var(--accent-teal);
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.1);
+}
+
+.status-online { color: var(--accent-teal); }
+.status-warning { color: var(--accent-amber); }
+.status-offline { color: var(--accent-slate); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.pulse { animation: pulse 2s infinite; }

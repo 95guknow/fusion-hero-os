@@ -1,0 +1,1 @@
+the full content of local SKILL.md here - but since long, summarize or use key parts; actually in practice I need to provide the full content
