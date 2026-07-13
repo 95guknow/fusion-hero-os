@@ -1,0 +1,39 @@
+{
+  "id": "geisteskrankheiten_4d_v4",
+  "version": "4.0",
+  "source": "v3 + heroische_mathematik + heroische_informatik + neurotheologie",
+  "updated_ts": 1782932801.8358126,
+  "files": {
+    "v3_full": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v3_vollstaendig.md",
+    "v4_extension": "Geisteskrankheiten_4D_Bruecken_v4.md",
+    "full": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v4_vollstaendig.md",
+    "pdf": "C:\\Users\\Admin\\Downloads\\Masterarchiv_Der_heroische_Mensch\\Geisteskrankheiten_4D_Matrix_v4_vollstaendig.pdf"
+  },
+  "new_sections": [
+    "16_heroische_mathematik_psi_Z",
+    "17_heroische_informatik_layer_qubo",
+    "18_neurotheologie_DMN",
+    "19_integrationsmatrix_v4"
+  ],
+  "key_concepts": [
+    "psi in H epistemischer Raum",
+    "psi triangler phi Habituation",
+    "S(psi) Stabilitaetsfunktion",
+    "q1b1 b2q2 Transformation",
+    "Ghost Fixing I(Z)",
+    "Layer0-4 Behandlungsstack",
+    "QUBO Triage",
+    "q o b Nicht-Kommutativitaet",
+    "DMN Default Mode Network",
+    "gerichtete Psycholyse",
+    "Verinnerlichungsgesetz"
+  ],
+  "geltungsstand": {
+    "psi_Z_isomorphie": "Modell",
+    "Banach_Z_star": "Bedingt",
+    "DMN_meditation": "Bedingt",
+    "weitere_Zeitdimension": "Fragment"
+  },
+  "chars": 50994,
+  "path": "C:\\Users\\Admin\\fusion-hero-os\\03_Code\\core\\knowledge\\Geisteskrankheiten_4D_Matrix_v4_vollstaendig.md"
+}

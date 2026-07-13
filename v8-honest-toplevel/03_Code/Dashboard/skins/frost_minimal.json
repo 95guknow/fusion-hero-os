@@ -1,0 +1,43 @@
+{
+  "id": "frost_minimal",
+  "label": "Frost Minimal",
+  "description": "Kühles Eis — weniger Glow, hohe Lesbarkeit",
+  "tokens": {
+    "accent": "#7dd3fc",
+    "accent2": "#38bdf8",
+    "accent_soft": "#bae6fd",
+    "bg": "#060a10",
+    "surface": "#0c1219",
+    "elevated": "#111a24",
+    "text": "#e8f4fc",
+    "muted": "#7a92a8",
+    "glow": "rgba(125,211,252,0.15)",
+    "frame_border": "rgba(125,211,252,0.14)",
+    "frame_glow_in": "rgba(125,211,252,0.03)",
+    "frame_glow_out": "rgba(56,189,248,0.06)",
+    "corner": "rgba(125,211,252,0.4)",
+    "scanline": "rgba(125,211,252,0.35)",
+    "badge_bg": "rgba(8,14,22,0.9)",
+    "badge_border": "rgba(125,211,252,0.35)",
+    "signal_border": "rgba(125,211,252,0.18)",
+    "signal_bg": "rgba(125,211,252,0.04)",
+    "grid_line": "rgba(125,211,252,0.03)",
+    "grid_size": "32px",
+    "corner_size": "20px",
+    "frame_inset": "12px",
+    "radius_md": "10px",
+    "radius_sm": "6px",
+    "font_mono": "ui-monospace,'Cascadia Mono',Consolas,monospace",
+    "font_sans": "system-ui,Segoe UI,sans-serif",
+    "badge_active": "FROST ACTIVE",
+    "badge_standby": "FROST IDLE",
+    "scan_sec": "8s"
+  },
+  "features": {
+    "scanline": false,
+    "frame": true,
+    "corner_brackets": true,
+    "grid_boost": false,
+    "badge_pulse": false
+  }
+}

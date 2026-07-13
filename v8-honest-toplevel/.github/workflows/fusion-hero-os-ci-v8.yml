@@ -1,0 +1,49 @@
+name: Fusion-Hero-OS CI v8
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -r requirements-dev.txt
+
+    - name: Lint with Ruff (v8 scope)
+      run: |
+        ruff check core/ 03_Code/reference/rest_api_server.py
+
+    - name: Run Heroic Math Engine Verification
+      # Echtes Gate seit dem Code-Honesty-Fix: run_sandbox_verification() asserted
+      # jetzt wirklich (Trivialfall-Reziprozität, dokumentiertes Monotonie-Beispiel,
+      # Sweep-Verletzungsrate 5-60%) statt nur Ergebnisse zu drucken. Ein echter
+      # Regressions-Bruch laesst diesen Schritt fehlschlagen, kein Smoke-Test mehr.
+      run: |
+        python -m core.heroic_math_engine
+
+    - name: Check import of core modules
+      run: |
+        python -c "import core; print('Core modules importable')"
+
+    - name: Run root pytest suite
+      # Deckt engine/orchestration/methodology-Pakete + heroic_math_engine-
+      # Regressionswaechter ab. Die 03_Code/scripts/test_*.py bleiben bewusst
+      # ausgeschlossen - sie brauchen ein lokal installiertes Llama-Modell und
+      # Windows-spezifische Binaerpfade, die auf einem generischen CI-Runner
+      # nicht vorhanden sind (kein Code-Fehler, sondern Umgebungsvoraussetzung).
+      run: |
+        pytest tests/ -v

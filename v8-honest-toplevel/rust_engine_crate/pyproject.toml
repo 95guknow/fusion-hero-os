@@ -1,0 +1,13 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "rust_engine"
+version = "0.1.0"
+description = "QUBO Simulated-Annealing-Kernel (Rust/PyO3) für Fusion Hero OS"
+requires-python = ">=3.10"
+
+[tool.maturin]
+# erzeugt eine cdylib-Python-Extension (import rust_engine)
+strip = true

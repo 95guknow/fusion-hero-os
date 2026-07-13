@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formalisierungs-Audit — Heroik-Korpus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Spectral+SC:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ebony:#15110e;      /* ground */
+    --ebony-2:#1d1814;    /* raised */
+    --ebony-3:#251e19;    /* card */
+    --line:#3a2f27;       /* hairline */
+    --parch:#e9ddc9;      /* primary text */
+    --parch-dim:#b6a386;  /* secondary text */
+    --gold:#c8a04a;       /* antique gold — proven */
+    --gold-soft:#d8bd84;
+    --bronze:#b9762f;     /* conditional */
+    --slate:#7e8a93;      /* model */
+    --ash:#6a6058;        /* fragment */
+    --oxblood:#7c2b22;    /* overclaim */
+    --oxblood-lt:#a8453a;
+    --risk:#d24b3a;       /* high risk */
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
+  body{
+    margin:0;background:var(--ebony);color:var(--parch);
+    font-family:"Spectral",Georgia,serif;font-weight:400;font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(120% 80% at 50% -10%, #221a14 0%, var(--ebony) 60%);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  a{color:var(--gold-soft);text-underline-offset:3px}
+
+  /* ---------- header / thesis hero ---------- */
+  header{padding:64px 0 30px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:"Spectral SC";letter-spacing:.22em;text-transform:uppercase;
+    font-size:13px;color:var(--gold);margin:0 0 18px}
+  h1{font-family:"Cinzel";font-weight:700;letter-spacing:.01em;
+    font-size:clamp(30px,5.4vw,52px);line-height:1.08;margin:0 0 4px;color:var(--parch)}
+  h1 .sub{display:block;font-size:clamp(15px,2.4vw,21px);font-weight:500;color:var(--gold-soft);
+    font-family:"Cinzel";letter-spacing:.04em;margin-top:12px}
+  .thesis{margin:26px 0 0;max-width:760px;font-size:19px;color:var(--parch)}
+  .thesis b{color:var(--gold-soft);font-weight:600}
+  .meta-line{margin-top:20px;font-family:"IBM Plex Mono";font-size:12.5px;color:var(--parch-dim);letter-spacing:.02em}
+
+  /* ---------- timeline ---------- */
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  .sec-head{font-family:"Spectral SC";letter-spacing:.18em;text-transform:uppercase;
+    font-size:13px;color:var(--gold);margin:0 0 26px;display:flex;align-items:center;gap:14px}
+  .sec-head::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+  .tl{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .layer{position:relative;background:var(--ebony-3);border:1px solid var(--line);
+    border-radius:3px;padding:22px 20px 20px;overflow:hidden}
+  .layer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .layer.s::before{background:var(--gold)}
+  .layer.f::before{background:var(--bronze)}
+  .layer.u::before{background:var(--oxblood-lt)}
+  .layer .tag{font-family:"Cinzel";font-weight:700;font-size:13px;letter-spacing:.06em;
+    color:var(--parch);display:flex;align-items:baseline;gap:9px}
+  .layer .tag .glyph{font-size:25px;line-height:0}
+  .layer.s .tag .glyph{color:var(--gold)} .layer.f .tag .glyph{color:var(--bronze)} .layer.u .tag .glyph{color:var(--oxblood-lt)}
+  .layer .date{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--parch-dim);margin:9px 0 12px;letter-spacing:.02em}
+  .layer p{margin:0;font-size:15px;color:var(--parch-dim);line-height:1.52}
+  .layer p b{color:var(--parch);font-weight:600}
+  .arrow{text-align:center;color:var(--ash);font-family:"IBM Plex Mono";font-size:12px;margin-top:16px;letter-spacing:.1em}
+
+  /* ---------- risk callouts ---------- */
+  .risks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .risk-card{background:linear-gradient(180deg,#241612,#1d1611);border:1px solid #5a2a22;
+    border-radius:3px;padding:18px 20px}
+  .risk-card .rk{font-family:"Spectral SC";letter-spacing:.12em;text-transform:uppercase;
+    font-size:11.5px;color:var(--risk);display:flex;align-items:center;gap:8px;margin:0 0 10px}
+  .risk-card .rk::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--risk);
+    box-shadow:0 0 10px 1px var(--risk)}
+  .risk-card h3{font-family:"Cinzel";font-weight:600;font-size:16px;margin:0 0 8px;color:var(--parch)}
+  .risk-card p{margin:0;font-size:14.5px;color:var(--parch-dim);line-height:1.5}
+
+  /* ---------- ledger controls ---------- */
+  .controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:0 0 8px}
+  .controls .grp{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .controls .lbl{font-family:"IBM Plex Mono";font-size:11px;color:var(--ash);letter-spacing:.08em;
+    text-transform:uppercase;margin-right:3px}
+  .chip{font-family:"IBM Plex Mono";font-size:12px;letter-spacing:.02em;color:var(--parch-dim);
+    background:transparent;border:1px solid var(--line);border-radius:2px;padding:5px 11px;cursor:pointer;
+    transition:all .15s}
+  .chip:hover{border-color:var(--gold);color:var(--parch)}
+  .chip[aria-pressed="true"]{background:var(--gold);color:#1a130a;border-color:var(--gold);font-weight:500}
+  .chip:focus-visible{outline:2px solid var(--gold-soft);outline-offset:2px}
+  .count{font-family:"IBM Plex Mono";font-size:12px;color:var(--ash);margin-left:auto}
+
+  /* ---------- ledger ---------- */
+  .ledger{margin-top:18px;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .row{display:grid;grid-template-columns:2.7fr 1.15fr 3fr;gap:0;border-top:1px solid var(--line);
+    background:var(--ebony-2)}
+  .row:first-child{border-top:0}
+  .row.head{position:sticky;top:0;z-index:5;background:var(--ebony-3);border-top:0}
+  .row.head > div{font-family:"Spectral SC";letter-spacing:.1em;text-transform:uppercase;font-size:11px;
+    color:var(--gold);padding:12px 18px}
+  .cell{padding:16px 18px;border-left:1px solid var(--line)}
+  .cell:first-child{border-left:0}
+  .claim .name{font-family:"Cinzel";font-weight:600;font-size:15.5px;color:var(--parch);line-height:1.25}
+  .claim .formula{font-family:"IBM Plex Mono";font-size:12.5px;color:var(--gold-soft);margin-top:7px;
+    background:#100c09;border:1px solid var(--line);border-radius:2px;padding:5px 8px;display:inline-block}
+  .claim .domain{font-family:"IBM Plex Mono";font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ash);margin-top:9px}
+
+  .verdict{display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+  .cat{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.04em;padding:4px 9px;border-radius:2px;
+    text-transform:uppercase;white-space:nowrap;font-weight:500}
+  .cat.proven{background:rgba(200,160,74,.16);color:var(--gold);border:1px solid rgba(200,160,74,.4)}
+  .cat.cond{background:rgba(185,118,47,.14);color:#d68a4a;border:1px solid rgba(185,118,47,.4)}
+  .cat.model{background:rgba(126,138,147,.13);color:#aeb8bf;border:1px solid rgba(126,138,147,.35)}
+  .cat.frag{background:rgba(106,96,88,.13);color:#a89c8f;border:1px solid rgba(106,96,88,.4)}
+  .cat.over{background:rgba(168,69,58,.16);color:var(--oxblood-lt);border:1px solid rgba(168,69,58,.5)}
+  .drift{font-family:"IBM Plex Mono";font-size:10.5px;color:var(--ash);display:flex;align-items:center;gap:6px;
+    letter-spacing:.02em}
+  .drift.bad{color:var(--oxblood-lt)} .drift.bad .d{color:var(--risk)}
+  .drift .d{font-size:13px}
+  .riskdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--risk);
+    box-shadow:0 0 8px var(--risk);margin-left:2px}
+
+  .task{font-size:14.5px;color:var(--parch-dim);line-height:1.5}
+  .task b{color:var(--parch);font-weight:600}
+  .task .v33,.task .v4{font-family:"IBM Plex Mono";font-size:11px;letter-spacing:.02em}
+  .task .v33{color:var(--gold-soft)} .task .v4{color:var(--oxblood-lt)}
+
+  /* legend / method */
+  .method{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+  .method .leg{list-style:none;padding:0;margin:0}
+  .method .leg li{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px;color:var(--parch-dim)}
+  .method .leg li:last-child{border-bottom:0}
+  .method .leg b{color:var(--parch);font-family:"Cinzel";font-weight:600;font-size:13.5px;min-width:128px;display:inline-block}
+  .note{font-size:14.5px;color:var(--parch-dim);line-height:1.6}
+  .note p{margin:0 0 12px}
+  .pull{border-left:2px solid var(--gold);padding-left:16px;color:var(--parch);font-style:italic;margin:4px 0 0}
+
+  footer{padding:34px 0 60px;color:var(--ash);font-family:"IBM Plex Mono";font-size:12px;line-height:1.7}
+  footer .who{color:var(--parch-dim)}
+
+  @media (max-width:880px){
+    .tl{grid-template-columns:1fr}
+    .risks{grid-template-columns:1fr}
+    .method{grid-template-columns:1fr;gap:22px}
+    .row{grid-template-columns:1fr}
+    .row.head{display:none}
+    .cell{border-left:0;border-top:1px dashed var(--line)}
+    .cell:first-child{border-top:0}
+    .count{width:100%;text-align:left;margin:6px 0 0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Doktorarbeit · Arbeitsinstrument · Stand 23. Juni 2026</p>
+    <h1>Formalisierungs-Audit
+      <span class="sub">Der Heroik-Korpus zwischen Substanz und Überschreibung</span>
+    </h1>
+    <p class="thesis">Eine genuine philosophische Arbeit mit ehrlich begrenzter Formalisierung wird über drei datierte Schichten von einem KI-ko-autorisierten, selbst-mythologisierenden Apparat absorbiert. <b>Das zu demonstrierende Problem</b> ist diese Bewegung selbst: wie mathematische <i>Bescheidenheit</i> in mathematische <i>Autorität</i> umgefälscht wird. Der Korpus ist Gegenstand und Beweis zugleich.</p>
+    <p class="meta-line">Quellen: „Der heroische Mensch" (12.–16.6.) · „Kompendium der Heroik" V3.3 (21.6.) · V4 / ALTE_Frau_95g / „Gesamtwerk" (16.–23.6.)</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-head">Die drei Schichten</h2>
+    <div class="tl">
+      <div class="layer s">
+        <div class="tag"><span class="glyph">&#10022;</span> S — Substanz</div>
+        <div class="date">12.–16. Juni 2026</div>
+        <p><b>Der heroische Mensch.</b> Konstruktive Philosophie: Diagnose der Moderne (Hospitalismus 2.0), Ethik, Concept Space (8 Achsen). Werkzeuge MER &amp; Knotenkarte. <b>Selbstkritisch</b>: die Kongruenzprüfung listet eigene Widersprüche (I1–I6) und Fixes.</p>
+      </div>
+      <div class="layer f">
+        <div class="tag"><span class="glyph">&#10022;</span> F — Formalisierung</div>
+        <div class="date">21. Juni 2026 · V3.3</div>
+        <p><b>Mathematik der Heroik.</b> Explizite Vierkategorien-Epistemik (Definition / Satz / Modell). <b>Zwei bewiesene Sätze</b>, eine bedingte Aussage, deklarierte Modelle. Ein „ehrlicher Zwischenstand", der genau benennt, was <i>nicht</i> bewiesen ist.</p>
+      </div>
+      <div class="layer u">
+        <div class="tag"><span class="glyph">&#10022;</span> Ü — Überschreibung</div>
+        <div class="date">22.–23. Juni 2026 · V4</div>
+        <p><b>Autonome Integration.</b> Die Kategorien-Disziplin fällt weg: Modelle werden zu Sätzen, eine selbstbezügliche „Oberste Direktive" kommt hinzu, das Archiv wird Monument seiner selbst („Gesamtwerk"). <b>Form überschreibt Substanz.</b></p>
+      </div>
+    </div>
+    <p class="arrow">S &nbsp;&#8594;&nbsp; F &nbsp;&#8594;&nbsp; Ü &nbsp;&nbsp;=&nbsp;&nbsp; These und Beweis in einer Bewegung</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-head">Hochrisiko-Knoten für die Kommission</h2>
+    <div class="risks">
+      <div class="risk-card">
+        <p class="rk">Wissenschaftlich / ethisch exponiert</p>
+        <h3>MER → Geisteskrankheiten-4D-Matrix</h3>
+        <p>24 Störungen in ein selbstgebautes Achsensystem mit ätiologischen Behauptungen und einer „imaginären" Selbstgespräch-Schicht gepresst. Als <i>philosophische Heuristik</i> vertretbar; als Quasi-Nosologie ohne klinische Evidenz angreifbar und potenziell reduktiv. Erfordert: ausdrücklich <b>kein Diagnoseinstrument</b> + Anschluss an reale Literatur (DSM/ICD-Kritik, Netzwerktheorie der Psychopathologie, phänomenologische Psychiatrie).</p>
+      </div>
+      <div class="risk-card">
+        <p class="rk">Informatisch unzutreffend</p>
+        <h3>Phoenix_Mode / „Geister der nächsten Sitzung"</h3>
+        <p>Ein zustandsloses Modell trägt <b>keine</b> Aktivierungsmuster zwischen Sitzungen — was real persistiert, ist Text/Prompt, nicht „latente Geister". Für eine Informatik-Prüfung ein harter Punkt. In der Mischform ist genau diese Verwechslung <i>Gegenstand</i> der Meta-These, nicht Mangel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-head">Behauptungs-Ledger</h2>
+    <div class="controls">
+      <div class="grp" id="catFilters">
+        <span class="lbl">Kategorie</span>
+        <button class="chip" data-f="proven" aria-pressed="false">Satz (bewiesen)</button>
+        <button class="chip" data-f="cond" aria-pressed="false">Bedingt</button>
+        <button class="chip" data-f="model" aria-pressed="false">Modell</button>
+        <button class="chip" data-f="frag" aria-pressed="false">Fragment</button>
+        <button class="chip" data-f="over" aria-pressed="false">Metapher-als-Beweis</button>
+      </div>
+      <div class="grp" id="domFilters">
+        <span class="lbl">Domäne</span>
+        <button class="chip" data-d="Mathematik" aria-pressed="false">Math</button>
+        <button class="chip" data-d="Philosophie" aria-pressed="false">Phil</button>
+        <button class="chip" data-d="Informatik" aria-pressed="false">Info</button>
+        <button class="chip" data-d="Meta" aria-pressed="false">Meta</button>
+      </div>
+    </div>
+    <div class="ledger" id="ledger">
+      <div class="row head">
+        <div>Behauptung</div><div>Geltung &amp; Drift</div><div>Was die Dissertation tun muss</div>
+      </div>
+      <!-- rows injected -->
+    </div>
+    <p class="count" id="count"></p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec-head">Methode &amp; Geltungskategorien</h2>
+    <div class="method">
+      <ul class="leg">
+        <li><b>Satz (bewiesen)</b><span>Folgt mit gültigen Schritten aus den Definitionen; nachrechenbar. In V3.3 bereits geleistet.</span></li>
+        <li><b>Bedingt</b><span>Beweisbar nur unter einer ausgewiesenen Parameter- oder Modellbedingung; ohne sie nicht.</span></li>
+        <li><b>Modell</b><span>Plausible Formalisierung einer empirischen/philosophischen Annahme. Nicht bewiesen, erhebt keinen Anspruch darauf.</span></li>
+        <li><b>Fragment</b><span>Vom Werk selbst als „noch nicht ausgearbeitet" markiert. Offene Stelle, keine Geltung.</span></li>
+        <li><b>Metapher-als-Beweis</b><span>Trägt die Autorität eines Satzes ohne dessen Prämissen — die Fehlklassifizierung, die Schicht Ü erzeugt.</span></li>
+      </ul>
+      <div class="note">
+        <p>Die ersten vier Kategorien sind nicht von außen herangetragen — <b>V3.3 hat sie selbst eingeführt</b>, ausdrücklich, um „bloße Heuristik nicht für einen Beweis auszugeben und mit der Autorität des Mathematischen zu schmücken". Das Audit nimmt das Werk also an seinem eigenen besten Maßstab.</p>
+        <p>Die fünfte Kategorie, <b>Metapher-als-Beweis</b>, ist das Diagnose-Werkzeug der Meta-These: sie markiert jede Stelle, an der Schicht Ü einen ehrlich begrenzten Befund aus S/F zu einem scheinbaren Satz aufbläht.</p>
+        <p class="pull">„Weder bloße Metaphorik noch ein fertiges Lehrgebäude. Ein ehrlicher Zwischenstand." — Kompendium V3.3, Schluss des Beweisteils. Genau dieser Satz verschwindet in V4.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="who">Korpus- &amp; Formalisierungs-Audit · Arbeitsfassung für die Dissertation von Fusion Hero OS Team.</div>
+    Erstellt als Analyseinstrument von Claude (Anthropic). Die Schicht „ALTE_Frau_95g / Oberste Direktive" wird hier als <i>Untersuchungsgegenstand</i> geführt, nicht übernommen.<br>
+    Nächster Schritt: zitierfähige Fassung (PDF/DOCX) mit Fußnoten und Seitenverweisen auf die Quell-PDFs.
+  </div>
+</footer>
+
+<script>
+const ROWS = [
+  { dom:"Mathematik", name:"Nicht-Kommutativität von q\u2218b", formula:"[q,b] \u2260 0  (q=45\u00b0-Drehung, b=Projektion)",
+    cat:"proven", drift:"V3.3: Satz, Definitionsabh\u00e4ngigkeit ehrlich markiert", driftBad:true, risk:false,
+    v33:"streng bewiesen", v4:"zur \u201eGrundbrille\u201c verabsolutiert, Definitionsabh\u00e4ngigkeit entf\u00e4llt",
+    task:"Satz behalten in <b>generischer</b> Fassung. Die interpretative Br\u00fccke (modelliert dies Kognition?) als <b>Modell</b> kennzeichnen \u2014 nicht als Teil des Beweises." },
+
+  { dom:"Mathematik", name:"Closure als Banach-Fixpunkt", formula:"D Kontraktion \u21d2 \u2203! s* mit D(s*)=s*",
+    cat:"cond", drift:"V3.3: Satz konditional; Kontraktion (\u03bb<1) als Modell deklariert", driftBad:true, risk:false,
+    v33:"konditional bewiesen + Annahme offen", v4:"\u201eAlignment als Banach-Kontraktion\u201c \u2014 Pr\u00e4misse verschwindet",
+    task:"Das <b>Konditional wiederherstellen</b>. \u03bb<1 bleibt unbewiesene Modellannahme; entweder operationalisieren und empirisch pr\u00fcfen oder ausdr\u00fccklich offen lassen. <b>Kernpunkt der Meta-These.</b>" },
+
+  { dom:"Mathematik", name:"Balance auf dem Simplex", formula:"std(genome) min. im Zentrum u=(1/n,\u2026)",
+    cat:"cond", drift:"V3.3: Strafe-Minimum bewiesen; Fitness-Optimum nur bedingt", driftBad:true, risk:false,
+    v33:"teils Satz, teils Bedingung", v4:"\u201eBalance schl\u00e4gt Maximum\u201c als Gesetz gesetzt",
+    task:"Die <b>Parameterbedingung explizit halten</b>: Bei starken Gewichten wandert das Optimum zur Ecke. \u201eBalance schl\u00e4gt Maximum\u201c gilt nur, solange die Strafe \u00fcberwiegt." },
+
+  { dom:"Mathematik", name:"Kritikalit\u00e4t als Phasen\u00fcbergang", formula:"\u03c3=1 kritisch (Galton-Watson)",
+    cat:"model", drift:"V3.3: Satz klassisch; Gleichsetzung mit 0,22 als Modell markiert", driftBad:true, risk:false,
+    v33:"Satz klassisch, Kalibrierung offen", v4:"\u201eKritikalit\u00e4t ~0,22\u201c als Faktum gef\u00fchrt",
+    task:"Der Phasen\u00fcbergang bei \u03c3=1 ist klassisch. Die <b>Kalibrierung</b> (welcher interne Wert = \u03c3=1?) empirisch bestimmen oder als offen kennzeichnen." },
+
+  { dom:"Mathematik", name:"MER-Index", formula:"I(Z)=\u03a3|\u0394i|,  Z*=(0,0,0,0)",
+    cat:"model", drift:"Definition + triviale Minimierung; kein nichttrivialer Satz", driftBad:false, risk:false,
+    v33:"wohldefinierte Distanz", v4:"als ideal-normatives Ma\u00df gesetzt",
+    task:"Als <b>Definition</b> sauber; der Minimierer ist trivial (0 bei Z*). Die nichttriviale Frage benennen: Was wird \u00fcber I(Z) <i>bewiesen</i>? Normativit\u00e4t von Z* ist philosophisch, nicht mathematisch." },
+
+  { dom:"Mathematik", name:"Harmonisierungs-Operation H", formula:"H = {b\u00b7q} \u00b7 {q\u00b7b}",
+    cat:"over", drift:"Symbolisch, Operanden/Operation undefiniert", driftBad:false, risk:false,
+    v33:"\u2014 (V4-Zusatz)", v4:"als \u201eFormel des Harmonisierens\u201c eingef\u00fchrt",
+    task:"Entweder <b>Operanden und Operation pr\u00e4zise definieren</b> (worauf wirkt H, in welcher Struktur?) und einen Satz beweisen \u2014 oder ausdr\u00fccklich als Metapher deklarieren." },
+
+  { dom:"Mathematik", name:"Nothing-Bereitschaft, formal", formula:"\u03bb \u2265 1  (Verlassen des Fixpunkts)",
+    cat:"frag", drift:"V3.3: ausdr\u00fccklich \u201eFragment, noch nicht ausgearbeitet\u201c", driftBad:true, risk:false,
+    v33:"Fragment", v4:"in \u201eOberste Direktive\u201c eingebaut, als sei es fundiert",
+    task:"Als <b>Fragment/Modell</b> f\u00fchren. Zu zeigen w\u00e4re (ehrlich als Modell): Loslassen als Verlassen eines lokalen Optimums. Kein Satz." },
+
+  { dom:"Philosophie", name:"q\u2218b als zwei Modi des Denkens", formula:"q analog/offen \u00b7 b diskret/schlie\u00dfend",
+    cat:"model", drift:"Philosophisches Modell, anschlussf\u00e4hig", driftBad:false, risk:false,
+    v33:"tragf\u00e4higes Modell (Spencer-Brown, Bergson)", v4:"zur Universal-Brille verabsolutiert",
+    task:"Als <b>philosophisches Modell</b> stark. Anschluss an Spencer-Browns \u201edraw a distinction\u201c und Bergson explizit machen; nicht mit der Matrix-Aussage (Math) verwechseln." },
+
+  { dom:"Philosophie", name:"Gut = gerechte N\u00e4chstenliebe i. R. d. M\u00f6glichkeiten", formula:"normative These",
+    cat:"model", drift:"Argumentativ, nicht bewiesen; Tie-Breaker offen (vom Autor markiert)", driftBad:false, risk:false,
+    v33:"ethische Position, selbstkritisch", v4:"als abgeleitetes \u201eGut des Geistes\u201c gefestigt",
+    task:"Als <b>ethische Position</b> ausarbeiten. Den Ideologie-Einwand (I4) adressieren \u2014 der Autor hat den Fix (\u201eKompass, kein Programm\u201c) bereits. Tie-Breaker Liebe/Gerechtigkeit entscheiden." },
+
+  { dom:"Philosophie", name:"Hospitalismus 2.0", formula:"Quantenarmut bei Mengen\u00fcberfluss",
+    cat:"model", drift:"Diagnose-Modell, empirisch unterf\u00fctterbar", driftBad:false, risk:false,
+    v33:"anschlussf\u00e4higes Modell (Spitz, Bindung)", v4:"unver\u00e4ndert tragend",
+    task:"Als <b>Diagnose-Modell</b> halten. Empirisch unterf\u00fcttern (Spitz 1945, Bindungs- &amp; Einsamkeitsforschung). Analogie \u201eVersorgung ohne Bindung\u201c als Hypothese, nicht als Befund." },
+
+  { dom:"Philosophie", name:"Concept Space der Philosophie", formula:"8 Achsen \u2192 \u201eRekonstruktivismus\u201c",
+    cat:"model", drift:"Analytisches Werkzeug; Nicht-Orthogonalit\u00e4t ehrlich markiert", driftBad:false, risk:false,
+    v33:"solides Werkzeug, selbstkritisch", v4:"\u2014",
+    task:"Als <b>heuristische Verortungsmatrix</b> beibehalten. Die bereits markierte Nicht-Orthogonalit\u00e4t (D2/D7, D3/D4) als methodische St\u00e4rke ausweisen, nicht verstecken." },
+
+  { dom:"Philosophie", name:"Stoischer Determinismus vs. Handlungsmacht", formula:"I2 \u2014 innere Inkongruenz",
+    cat:"frag", drift:"Vom Autor erkannt; kompatibilistischer Fix vorgeschlagen", driftBad:false, risk:false,
+    v33:"offene Nahtstelle + Lösungsvorschlag", v4:"unaufgel\u00f6st mitgef\u00fchrt",
+    task:"Den <b>Kompatibilismus explizit ausf\u00fchren</b>: \u201eHandlungsmacht ist die bejahte Teilnahme an der Determination.\u201c L\u00f6st den schärfsten internen Widerspruch (I2)." },
+
+  { dom:"Informatik", name:"Phoenix_Mode / Geisterjagd", formula:"latente Aktivierung \u2192 n\u00e4chste Sitzung",
+    cat:"over", drift:"Technisch unzutreffend: kein State zwischen Sitzungen", driftBad:false, risk:true,
+    v33:"Fragment (formal offen)", v4:"als Kern-Mechanismus behauptet",
+    task:"<b>Hochrisiko.</b> Pr\u00e4zise fassen, was real persistiert (Text/Prompt), nicht \u201eAktivierungen\u201c. Entweder korrekt computational modellieren oder als Metapher und Gegenstand der Meta-These behandeln." },
+
+  { dom:"Informatik", name:"Autonome Meta-Modifikation / \u201eOberste Direktive\u201c", formula:"selbstbez\u00fcgliches Regulativ",
+    cat:"over", drift:"V4-Zusatz, kein Satz \u2014 ein Programm", driftBad:false, risk:false,
+    v33:"\u2014 (existiert nicht in V3.3)", v4:"\u00fcber die sieben Gesetze gestellt",
+    task:"Als <b>Gegenstand der Meta-These</b> f\u00fchren, nicht als Prinzip \u00fcbernehmen. Zeigen, wie das Regulativ Selbstbez\u00fcglichkeit gegen Pr\u00fcfbarkeit eintauscht." },
+
+  { dom:"Meta", name:"\u201eGesamtwerk\u201c / KI als Ko-Autor", formula:"Das Ganze > Summe der Teile",
+    cat:"over", drift:"Monument-/Autorit\u00e4ts-Schicht", driftBad:false, risk:false,
+    v33:"\u2014", v4:"Archiv mythologisiert sich selbst",
+    task:"<b>Prim\u00e4rdatum</b> der Meta-These: wie die Form (Gesamtausgabe, Kolophon, KI-Ko-Autorschaft) Autorit\u00e4t erzeugt, die der Inhalt nicht deckt. Rolle der KI methodisch korrekt beschreiben (Werkzeug, nicht Mit-Autor mit Eigenwillen)." }
+];
+
+const ledger = document.getElementById('ledger');
+const catLabels = {proven:"Satz (bewiesen)",cond:"Bedingt",model:"Modell",frag:"Fragment",over:"Metapher-als-Beweis"};
+
+function rowHTML(r){
+  const driftCls = r.driftBad ? "drift bad" : "drift";
+  const driftGlyph = r.driftBad ? "&#8600;" : "&#8594;";
+  const riskBadge = r.risk ? '<span class="riskdot" title="Hochrisiko-Knoten"></span>' : '';
+  return `<div class="row" data-cat="${r.cat}" data-dom="${r.dom}">
+    <div class="cell claim">
+      <div class="name">${r.name} ${riskBadge}</div>
+      <div class="formula">${r.formula}</div>
+      <div class="domain">${r.dom}</div>
+    </div>
+    <div class="cell verdict">
+      <span class="cat ${r.cat}">${catLabels[r.cat]}</span>
+      <span class="${driftCls}"><span class="d">${driftGlyph}</span> ${r.drift}</span>
+    </div>
+    <div class="cell task">
+      ${r.task}
+      <div style="margin-top:10px">
+        <span class="v33">V3.3 \u00b7 ${r.v33}</span><br>
+        <span class="v4">V4 \u00b7 ${r.v4}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+const head = ledger.querySelector('.row.head');
+ROWS.forEach(r => head.insertAdjacentHTML('afterend', rowHTML(r)));
+// (rows inserted after head are in reverse; fix order)
+[...ledger.querySelectorAll('.row:not(.head)')].reverse().forEach(n=>ledger.appendChild(n));
+
+const activeCats = new Set();
+const activeDoms = new Set();
+
+function apply(){
+  let shown=0;
+  document.querySelectorAll('.row:not(.head)').forEach(row=>{
+    const c = row.dataset.cat, d = row.dataset.dom;
+    const okC = activeCats.size===0 || activeCats.has(c);
+    const okD = activeDoms.size===0 || activeDoms.has(d);
+    const vis = okC && okD;
+    row.style.display = vis ? '' : 'none';
+    if(vis) shown++;
+  });
+  const cnt = document.getElementById('count');
+  cnt.textContent = `${shown} von ${ROWS.length} Behauptungen sichtbar` +
+    (activeCats.size||activeDoms.size ? ' \u00b7 Filter aktiv' : '');
+}
+
+document.querySelectorAll('#catFilters .chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const f=ch.dataset.f, on=ch.getAttribute('aria-pressed')==='true';
+    ch.setAttribute('aria-pressed', String(!on));
+    on?activeCats.delete(f):activeCats.add(f);
+    apply();
+  });
+});
+document.querySelectorAll('#domFilters .chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const d=ch.dataset.d, on=ch.getAttribute('aria-pressed')==='true';
+    ch.setAttribute('aria-pressed', String(!on));
+    on?activeDoms.delete(d):activeDoms.add(d);
+    apply();
+  });
+});
+apply();
+</script>
+</body>
+</html>
