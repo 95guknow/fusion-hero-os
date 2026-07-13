@@ -1,0 +1,19 @@
+{
+  "protocol": "VR Visualization Protocol v1.0",
+  "assets_base": "03_VR_Assets/",
+  "assets": [
+    {
+      "id": "vr_mister_Contributor_hero_equirectangular",
+      "type": "equirectangular",
+      "description": "360° heroic identity base for VR immersion",
+      "use": "base scene for generational visualization"
+    },
+    {
+      "id": "heroic_evolution_fractal",
+      "type": "texture",
+      "description": "Visual mapping of fitness over generations",
+      "use": "overlay on VR sphere for track progress"
+    }
+  ],
+  "note": "Assets live on workstation. This file only references and defines usage in highest layer."
+}

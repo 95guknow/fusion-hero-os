@@ -1,0 +1,21 @@
+{
+  "tracks": [
+    {
+      "name": "Technical Core Optimization",
+      "focus": "Improve core modules, performance, traceability, foundation compliance"
+    },
+    {
+      "name": "Roadmap & Publishing Strategy",
+      "focus": "Milestone completion, long-term publication paths (book, clean reference releases)"
+    },
+    {
+      "name": "Self-Modification Efficiency",
+      "focus": "Faster, safer, better-audited evolution of the methodology itself"
+    },
+    {
+      "name": "Cross-Layer Coherence",
+      "focus": "Ensure Layer 0 rules propagate correctly through all higher layers"
+    }
+  ],
+  "note": "Visual / VR / meme / branding tracks are deliberately excluded in this ohne-VR build."
+}
