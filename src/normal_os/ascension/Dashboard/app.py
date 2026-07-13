@@ -1348,3 +1348,14 @@ try:
     app.include_router(_ascension_v9_router)
 except Exception as _asc_v9_err:
     print(f"[API] AscensionOS v9 routes note: {_asc_v9_err}")
+
+# === Local Infrastructure Kernel (RAM/Disk C:/Tailscale/Services, ok/warn/alert/critical) ===
+# Kernlogik: src/normal_os/core/local_infrastructure_kernel.py (siehe
+# workstation/contracts/local_infrastructure_kernel.v1.json). Diese Zeile ist
+# beim vorherigen main<->ascension-Merge-Konflikt in app.py verloren gegangen
+# (Datei blieb erhalten, Einhaengung nicht) - hiermit wiederhergestellt.
+try:
+    from resource_guardian_routes import router as _resource_guardian_router
+    app.include_router(_resource_guardian_router)
+except Exception as _rg_err:
+    print(f"[API] Resource Guardian routes note: {_rg_err}")
