@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300" viewBox="0 0 500 300">
+  <rect width="100%" height="100%" fill="#FDFAF5"/>
+  <text x="250" y="28" text-anchor="middle" font-family="Georgia, Times, serif" font-size="14" font-weight="bold" fill="#1E3A5F">Trajektorie Z(t) — PTBS (Trauma-Attraktor)</text>
+
+  <text x="250" y="55" text-anchor="middle" font-family="Georgia" font-size="10" fill="#555555">Alltag nahe Z* — Trigger → Trauma-Loch</text>
+  <circle cx="120" cy="150" r="10" fill="#C9A227"/>
+  <text x="120" y="175" text-anchor="middle" font-family="Georgia" font-size="9" fill="#C9A227">Z* Alltag</text>
+  <circle cx="350" cy="100" r="12" fill="#2C3E50"/>
+  <text x="350" y="125" text-anchor="middle" font-family="Georgia" font-size="9" fill="#1C2526">Flashback</text>
+  <path d="M 130 145 Q 200 80 340 105" fill="none" stroke="#2C3E50" stroke-width="2.5" marker-end="url(#arr4)"/>
+  <text x="235" y="95" font-family="Georgia" font-size="9" fill="#2C3E50">Trigger ↖</text>
+  <path d="M 340 115 Q 250 180 130 155" fill="none" stroke="#555555" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arr5)"/>
+  <text x="235" y="200" font-family="Georgia" font-size="9" fill="#555555">Recovery (I oft verzerrt)</text>
+  <rect x="60" y="220" width="380" height="55" fill="white" stroke="#1E3A5F" rx="4"/>
+  <text x="250" y="240" text-anchor="middle" font-family="Georgia" font-size="9" fill="#1C2526">α₁ S-Safe vor α₂ · EMDR formt Trauma-Geometrie um</text>
+  <text x="250" y="258" text-anchor="middle" font-family="Georgia" font-size="9" fill="#555555">[q,b]≠0: Reihenfolge S→G→K nicht vertauschen</text>
+  <defs>
+    <marker id="arr4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2C3E50"/></marker>
+    <marker id="arr5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#555555"/></marker>
+  </defs>
+  <text x="12" y="292" font-family="Georgia, serif" font-size="8" fill="#555555">MER 4D-Matrix · Modell · kein DSM-Ersatz · Kompendium-Duktus</text>
+</svg>

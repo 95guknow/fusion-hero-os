@@ -1,0 +1,21 @@
+{
+  "id": "geisteskrankheiten_4d_v6",
+  "version": "6.0",
+  "source": "v5 + dissertation + heroische_philosophie",
+  "updated_ts": 1782929990.59911,
+  "sources": [
+    "Von der Bescheidenheit zur Autoritaet (Dissertation Urban 2026-06-23)",
+    "Der heroische Mensch Masterstruktur",
+    "Concept_Space_of_Philosophy_v1.md"
+  ],
+  "new_sections": [
+    "22_dissertation_schichten_SFU",
+    "23_concept_space_philosophie",
+    "24_integrative_landkarte"
+  ],
+  "chars": 78899,
+  "desktop": {
+    "md": "C:\\Users\\Admin\\Desktop\\Geisteskrankheiten_4D_Matrix_v6_vollstaendig.md",
+    "pdf": "C:\\Users\\Admin\\Desktop\\Geisteskrankheiten_4D_Matrix_v6_vollstaendig.pdf"
+  }
+}

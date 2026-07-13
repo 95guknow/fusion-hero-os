@@ -1,0 +1,8 @@
+# qb_qubo.py + qubo_qdrant_cache.py – Abhängigkeiten
+# Installation:  python -m pip install -r requirements.txt
+
+numpy>=1.24
+numba>=0.59
+
+# Qdrant-Lösungs-Cache (lokal/in-memory, kein Server nötig)
+qdrant-client>=1.18

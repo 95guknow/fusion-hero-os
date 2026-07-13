@@ -1,0 +1,62 @@
+node_modules
+
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+*.lnk
+
+# Logs
+*.log
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Python (Fusion Hero OS Engine)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Numba JIT-Cache (.nbc/.nbi Kernel-Compile-Artefakte)
+*.nbc
+*.nbi
+
+# Rust-Build-Artefakte (PyO3-/Kernel-Crates)
+rust_engine_crate/target/
+pms_rust_kernel_crate/target/
+
+# Laufzeit-Audit-Log (pms-Kernel, waechst pro Lauf)
+pms_audit.jsonl
+
+# Generierte Pipeline-Artefakte
+Archiv_*.zip
+00_Uebersicht.md
+
+# Leerer Platzhalter
+asd.md
+
+# LLM-Modelle & Trainingsdaten
+*.gguf
+03_Code/internal_llm/models/
+03_Code/internal_llm/output/
+03_Code/internal_llm/data.jsonl
+.fusion/
+.wa_selenium_profile/

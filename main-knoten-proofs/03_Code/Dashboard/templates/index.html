@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fusion Hero OS v8 | Heroic Core Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css">
+  <style> @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap'); </style>
+</head>
+<body class="bg-[#0a0a0f] text-[#e2e8f0]">
+  <div class="dashboard-shell">
+    <header class="hud-panel dashboard-header m-4 p-4 campfire-glow">
+      <div class="dashboard-header-brand">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#00d4aa] to-[#f59e0b] flex items-center justify-center text-black font-bold text-xl shrink-0">A95</div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-[2px] sm:tracking-[3px]">ALTE_Frau_95g HEROIC CORE</h1>
+          <p class="text-xs text-[#94a3b8] header-subline">FUSION HERO OS v8 • PORT 8000 • HYPER-THREADING • LAYER 0-6</p>
+        </div>
+      </div>
+      <div class="dashboard-header-meta">
+        <div><span class="status-online">●</span> MAINFRAME ONLINE</div>
+        <div id="event-count" class="font-mono">--</div>
+        <a href="/watch" class="watch-header-btn" title="YouTube synchron PC + Handy">▶ WATCH</a>
+        <button type="button" id="settings-open-btn" class="settings-gear-btn" title="Einstellungen">⚙</button>
+        <div class="header-tagline text-[#f59e0b]">REKONSTRUKTIVISTISCHER EUDAIMONISMUS</div>
+        <div id="layout-mode-indicator" class="layout-mode-indicator" aria-live="polite">Layout: …</div>
+      </div>
+    </header>
+
+    <div id="dashboard-grid" class="dashboard-grid" data-responsive-grid>
+      <!-- System Metrics -->
+      <div class="hud-panel" data-panel-id="core-metrics" data-panel-zone="metrics">
+        <h2 class="text-[#00d4aa] text-sm mb-3 tracking-widest">CORE METRICS</h2>
+        <div class="grid grid-cols-2 gap-4 text-center">
+          <div><div class="text-3xl font-bold" id="cpu">--</div><div class="text-xs text-[#94a3b8]">CPU LOAD</div></div>
+          <div><div class="text-3xl font-bold" id="ram">--</div><div class="text-xs text-[#94a3b8]">RAM</div></div>
+          <div><div class="text-3xl font-bold" id="events">--</div><div class="text-xs text-[#94a3b8]">EVENTS</div></div>
+          <div><div class="text-3xl font-bold" id="ops">--</div><div class="text-xs text-[#94a3b8]">OPS/SEC</div></div>
+        </div>
+      </div>
+
+      <!-- Hyper-Threading Visualizer -->
+      <div class="hud-panel" data-panel-id="hyper-threading" data-panel-zone="metrics">
+        <h2 class="text-[#7c3aed] text-sm mb-3 tracking-widest flex items-center gap-2">
+          HYPER-THREADING SIM <span class="text-[10px] px-1.5 py-0.5 bg-[#7c3aed]/20 rounded">L0-6 PARALLEL</span>
+        </h2>
+        <div id="hyper-threads" class="hyper-thread-container"></div>
+        <p class="text-[10px] text-[#94a3b8] mt-2">MasterSeed contraction across 6 layers • Strict Contraction Property active</p>
+      </div>
+
+      <!-- Layer Status Grid -->
+      <div class="hud-panel" data-panel-id="layer-architecture" data-panel-zone="metrics">
+        <h2 class="text-[#00d4aa] text-sm mb-3 tracking-widest">LAYER ARCHITECTURE (0 → ω)</h2>
+        <div id="layer-grid" class="layer-grid"></div>
+        <div class="text-[10px] text-[#94a3b8] mt-3">Immutable Foundation L0 + Transfinite L5-L6 (Banach Fixed-Point)</div>
+      </div>
+
+      <!-- IPC Bridge Panel -->
+      <div class="hud-panel bridge-panel panel-output" id="bridge-panel" data-panel-id="bridge" data-panel-zone="integration">
+        <h2 class="text-[#38bdf8] text-sm mb-3 tracking-widest flex items-center gap-2 flex-wrap">
+          C↔PYTHON IPC BRIDGE
+          <span id="bridge-transport-badge" class="bridge-badge">--</span>
+          <span id="bridge-status-dot" class="status-offline">●</span>
+        </h2>
+        <div class="bridge-metrics">
+          <div><span class="bridge-metric-label">Module</span><span id="bridge-module-count" class="bridge-metric-value">--</span></div>
+          <div><span class="bridge-metric-label">Transport</span><span id="bridge-transport" class="bridge-metric-value">--</span></div>
+          <div><span class="bridge-metric-label">Ping</span><span id="bridge-ping" class="bridge-metric-value">--</span></div>
+        </div>
+        <div class="bridge-modules-wrap">
+          <div class="bridge-modules-label">Registrierte Module</div>
+          <div id="bridge-modules" class="bridge-modules"></div>
+        </div>
+        <div class="bridge-dispatch">
+          <label class="bridge-modules-label" for="bridge-module-select">Test-Dispatch</label>
+          <div class="bridge-dispatch-row">
+            <select id="bridge-module-select" class="bridge-select">
+              <option value="TimespaceTokenCoreModule">TimespaceTokenCoreModule</option>
+              <option value="HeroicLLMEAOrchestrator">HeroicLLMEAOrchestrator</option>
+              <option value="HeroicImageOrchestrator">HeroicImageOrchestrator</option>
+            </select>
+            <button type="button" id="bridge-dispatch-btn" class="bridge-btn">Dispatch</button>
+            <button type="button" id="bridge-refresh-btn" class="bridge-btn bridge-btn-secondary">Refresh</button>
+          </div>
+          <pre id="bridge-dispatch-result" class="bridge-result">Warte auf Bridge-Status…</pre>
+        </div>
+      </div>
+
+      <!-- Connectivity / Access Points -->
+      <div class="hud-panel connectivity-panel panel-output" id="connectivity-panel" data-panel-id="connectivity" data-panel-zone="integration">
+        <h2 class="text-[#34d399] text-sm mb-3 tracking-widest flex items-center gap-2 flex-wrap">
+          ACCESS POINTS
+          <span id="connectivity-status-badge" class="bridge-badge">--</span>
+          <span id="connectivity-status-dot" class="status-offline">●</span>
+        </h2>
+        <div class="bridge-metrics">
+          <div><span class="bridge-metric-label">LAN IP</span><span id="conn-lan-ip" class="bridge-metric-value">--</span></div>
+          <div><span class="bridge-metric-label">Gerät</span><span id="conn-device-id" class="bridge-metric-value">--</span></div>
+          <div><span class="bridge-metric-label">Port</span><span id="conn-port" class="bridge-metric-value">--</span></div>
+        </div>
+        <div class="connectivity-links">
+          <a id="conn-watch-link" href="/watch" class="watch-header-btn" target="_blank" rel="noopener">▶ Watch LAN</a>
+          <button type="button" id="conn-copy-lan-btn" class="bridge-btn bridge-btn-secondary">LAN kopieren</button>
+        </div>
+        <div id="conn-access-grid" class="conn-access-grid">Lade Access Points…</div>
+      </div>
+
+      <!-- Phone Link Panel -->
+      <div class="hud-panel phone-panel panel-output" id="phone-panel" data-panel-id="phone-link" data-panel-zone="integration">
+        <h2 class="text-[#a78bfa] text-sm mb-3 tracking-widest flex items-center gap-2 flex-wrap">
+          PHONE LINK
+          <span id="phone-status-badge" class="phone-badge">--</span>
+          <span id="phone-status-dot" class="status-offline">●</span>
+        </h2>
+        <div class="phone-metrics">
+          <div><span class="phone-metric-label">SMS</span><span id="phone-msg-count" class="phone-metric-value">--</span></div>
+          <div><span class="phone-metric-label">Chats</span><span id="phone-conv-count" class="phone-metric-value">--</span></div>
+          <div><span class="phone-metric-label">Ungelesen</span><span id="phone-unread" class="phone-metric-value">--</span></div>
+        </div>
+        <div class="phone-feed-label">Letzte Nachrichten (lokal gespiegelt)</div>
+        <div id="phone-feed" class="phone-feed">Warte auf Phone-Link-Status…</div>
+        <p class="phone-hint">Read-only via lokale SQLite — kein offizielles Microsoft-API.</p>
+      </div>
+
+      <!-- Event Stream -->
+      <div class="hud-panel panel-output" data-panel-id="event-stream" data-panel-zone="output">
+        <h2 class="text-[#fbbf24] text-sm mb-3 tracking-widest">LIVE EVENT STREAM</h2>
+        <div id="event-stream" class="output-surface font-mono text-xs leading-snug bg-[#111113] p-3 rounded overflow-auto"></div>
+      </div>
+
+      <!-- Geisterjagd + Banach Live Viz -->
+      <div class="hud-panel viz-panel-wide" data-panel-id="viz-banach" data-panel-zone="viz">
+        <h2 class="text-[#c084fc] text-sm mb-2 tracking-widest flex items-center gap-2 flex-wrap">
+          GEISTERJAGD &amp; BANACH-KONTRAKTION
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#7c3aed]/25 rounded text-[#e9d5ff]">HEURISTIK → EMERGENZ</span>
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#00d4aa]/15 rounded text-[#00d4aa]">λ &lt; 1 FIXPUNKT</span>
+        </h2>
+        <div class="viz-dual-grid">
+          <div class="viz-cell">
+            <div class="viz-label">Phoenix_Mode / Geisterjagd — latente → manifest</div>
+            <p id="gj-caption" class="viz-caption">Demo-Loop lädt…</p>
+            <div class="viz-canvas-wrap">
+              <canvas id="canvas-geisterjagd" class="viz-canvas" aria-label="Geisterjagd Demo"></canvas>
+            </div>
+            <div class="viz-metrics" id="metrics-geisterjagd">
+              <span>Ghosts: <b id="gj-ghosts">--</b></span>
+              <span>Emergenz: <b id="gj-emerged">--</b></span>
+              <span>Heuristik: <b id="gj-heuristic">--</b></span>
+            </div>
+          </div>
+          <div class="viz-cell">
+            <div class="viz-label">Banach-Kontraktion — d(s<sub>n</sub>, s*) → 0</div>
+            <p id="bn-caption" class="viz-caption">Demo-Loop lädt…</p>
+            <div class="viz-canvas-wrap">
+              <canvas id="canvas-banach" class="viz-canvas" aria-label="Banach Demo"></canvas>
+            </div>
+            <div class="viz-metrics" id="metrics-banach">
+              <span>λ: <b id="bn-lambda">--</b></span>
+              <span>d<sub>n</sub>: <b id="bn-distance">--</b></span>
+              <span>s*: <b id="bn-fixpoint">0, 0</b></span>
+            </div>
+          </div>
+        </div>
+        <p class="text-[10px] text-[#94a3b8] mt-2 viz-principle-text">
+          <strong class="text-[#c084fc]">Geisterjagd:</strong> Latente Spuren sammeln sich im Heuristik-Feld, akkumulieren Aktivierung und emergieren manifest (Phoenix_Mode).
+          <strong class="text-[#00d4aa] ml-2">Banach:</strong> Jeder Schritt zieht s<sub>n</sub> mit λ&nbsp;&lt;&nbsp;1 zum Fixpunkt s* — der Abstand schrumpft garantiert.
+        </p>
+      </div>
+    </div>
+
+    <footer class="text-center text-[10px] text-[#94a3b8] py-4">ALTE_Frau_95g Unified Heroic Core • Rekonstruktivistischer Eudaimonismus • Sisyphos-Cycle Stable • Coal Canary Warning Active</footer>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-overlay" class="settings-overlay" hidden>
+    <div class="settings-modal" role="dialog" aria-labelledby="settings-title">
+      <header class="settings-header">
+        <h2 id="settings-title" class="settings-title">EINSTELLUNGEN</h2>
+        <p class="settings-subtitle">Binäre und diskrete Optionen für alle Fusion-Funktionen</p>
+        <button type="button" id="settings-close-btn" class="settings-close-btn" aria-label="Schließen">✕</button>
+      </header>
+      <nav id="settings-tabs" class="settings-tabs"></nav>
+      <div id="settings-body" class="settings-body">Lade Schema…</div>
+      <footer class="settings-footer">
+        <span id="settings-status" class="settings-status"></span>
+        <div class="settings-footer-actions">
+          <button type="button" id="settings-reset-btn" class="settings-btn settings-btn-secondary">Standard</button>
+          <button type="button" id="settings-cancel-btn" class="settings-btn settings-btn-secondary">Abbrechen</button>
+          <button type="button" id="settings-save-btn" class="settings-btn settings-btn-primary">Speichern</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="/static/responsive_layout.js"></script>
+  <script src="/static/viz_demo_loop.js"></script>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

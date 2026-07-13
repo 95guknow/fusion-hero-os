@@ -1,0 +1,783 @@
+{
+  "module": "heroic_science_audit",
+  "ts": 1782932139.718166,
+  "claude_science": {
+    "module": "claude_science",
+    "product": "Claude Science (Anthropic)",
+    "enabled": true,
+    "configured": false,
+    "escalation_enabled": true,
+    "model": "claude-sonnet-4-20250514",
+    "api_url": "https://api.anthropic.com/v1/messages",
+    "native_app_platforms": [
+      "macOS",
+      "Linux"
+    ],
+    "windows_mode": "api_bridge",
+    "skills": [
+      "literature_review",
+      "pubmed_search",
+      "genomics_pipeline",
+      "single_cell_rna",
+      "protein_structure",
+      "cheminformatics",
+      "citation_audit",
+      "reproducible_figures",
+      "manuscript_draft",
+      "evidence_database",
+      "heroic_formal_math_audit",
+      "heroic_science_domain_review",
+      "geltungskategorie_check"
+    ],
+    "connectors": [
+      "UniProt",
+      "PDB",
+      "Ensembl",
+      "Reactome",
+      "ClinVar",
+      "ChEMBL",
+      "GEO",
+      "PubMed",
+      "BioNeMo"
+    ],
+    "domains": [
+      "biology",
+      "genomics",
+      "proteomics",
+      "cheminformatics",
+      "structural biology",
+      "single-cell",
+      "crispr",
+      "epidemiology",
+      "chemistry",
+      "medicine",
+      "healthcare",
+      "physics",
+      "environmental",
+      "neuroscience",
+      "bioinformatics",
+      "drug discovery",
+      "protein",
+      "rna",
+      "dna",
+      "sequencing",
+      "molecular"
+    ],
+    "heroic_science_terms": 39,
+    "routing": {
+      "science_domain": "primary",
+      "heroic_science": "primary",
+      "unclear_result": "escalation"
+    },
+    "docs": "https://claude.com/science"
+  },
+  "configured": false,
+  "approaches": [
+    {
+      "id": "formal_mathematics",
+      "title": "Formale Mathematik der Heroik",
+      "dom": "Math",
+      "n_items": 7,
+      "items": [
+        {
+          "name": "Nicht-Kommutativität q∘b",
+          "formula": "[q,b] ≠ 0",
+          "cat": "proven",
+          "current": "proven",
+          "local": {
+            "verdict": "FAIL",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 1,
+                "passed": false,
+                "coverage": 0.2
+              }
+            },
+            "reason": "driftBad + starke Kategorie"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Nicht-Kommutativität q∘b\n**Domäne:** M",
+            "error": null
+          },
+          "combined_verdict": "FAIL"
+        },
+        {
+          "name": "Balance auf dem Simplex",
+          "formula": "std min. im Zentrum",
+          "cat": "cond",
+          "current": "cond",
+          "local": {
+            "verdict": "FAIL",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 1,
+                "passed": false,
+                "coverage": 0.2
+              }
+            },
+            "reason": "driftBad + starke Kategorie"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Balance auf dem Simplex\n**Domäne:** Ma",
+            "error": null
+          },
+          "combined_verdict": "FAIL"
+        },
+        {
+          "name": "Kritikalität (Galton-Watson)",
+          "formula": "σ=1 kritisch",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 2,
+                "passed": false,
+                "coverage": 0.4
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Kritikalität (Galton-Watson)\n**Domäne:",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "MER-Index",
+          "formula": "I(Z)=Σ|Δi|, Z*=(0,0,0,0)",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 1,
+                "passed": false,
+                "coverage": 0.2
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** MER-Index\n**Domäne:** Math\n**Formel/Th",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Harmonisierungs-Operation H",
+          "formula": "H = {b·q}·{q·b}",
+          "cat": "over",
+          "current": "over",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "overreach markiert"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Harmonisierungs-Operation H\n**Domäne:*",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Nothing-Bereitschaft",
+          "formula": "λ ≥ 1",
+          "cat": "frag",
+          "current": "frag",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 1,
+                "passed": false,
+                "coverage": 0.2
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Nothing-Bereitschaft\n**Domäne:** Math\n",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Closure als Banach-Fixpunkt",
+          "formula": "D Kontraktion ⇒ ∃! s*",
+          "cat": "cond",
+          "current": "cond",
+          "local": {
+            "verdict": "FAIL",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Bedingt",
+                "begruendung": "Gilt unter Annahmen: λ<1."
+              },
+              "peer_review": {
+                "score": 2,
+                "passed": false,
+                "coverage": 0.4
+              }
+            },
+            "reason": "driftBad + starke Kategorie"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Closure als Banach-Fixpunkt\n**Domäne:*",
+            "error": null
+          },
+          "combined_verdict": "FAIL"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Formale Mathematik der Heroik\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Formale Mathematik der Heroik\".\n\n**Domäne:** Math\n**Quellen:** hero-guide_geltungsstand.json\n**Anzahl formaler Ei",
+        "error": null
+      }
+    },
+    {
+      "id": "heroic_philosophy",
+      "title": "Heroische Philosophie",
+      "dom": "Phil",
+      "n_items": 5,
+      "items": [
+        {
+          "name": "Hospitalismus 2.0",
+          "formula": "Quantenarmut b. Mengenüberfluss",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Hospitalismus 2.0\n**Domäne:** Phil\n**F",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "q∘b als zwei Denkmodi",
+          "formula": "q analog · b diskret",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Modell",
+                "begruendung": "Analogie-/Heuristiksignal erkannt."
+              },
+              "peer_review": {
+                "score": 1,
+                "passed": false,
+                "coverage": 0.2
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** q∘b als zwei Denkmodi\n**Domäne:** Phil",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Gut = gerechte Nächstenliebe",
+          "formula": "normative These",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 2,
+                "passed": false,
+                "coverage": 0.4
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Gut = gerechte Nächstenliebe\n**Domäne:",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Concept Space (8 Achsen)",
+          "formula": "Verortungsmatrix",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Concept Space (8 Achsen)\n**Domäne:** P",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "Determinismus vs. Handlungsmacht",
+          "formula": "I2",
+          "cat": "frag",
+          "current": "frag",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Determinismus vs. Handlungsmacht\n**Dom",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Heroische Philosophie\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Heroische Philosophie\".\n\n**Domäne:** Phil\n**Quellen:** hero-guide + Concept Space\n**Anzahl formaler Einträge:** 5\n\n## Kon",
+        "error": null
+      }
+    },
+    {
+      "id": "heroic_informatics",
+      "title": "Heroische Informatik",
+      "dom": "Info",
+      "n_items": 2,
+      "items": [
+        {
+          "name": "Phoenix_Mode / Geisterjagd",
+          "formula": "latente Aktivierung → Sitzung",
+          "cat": "over",
+          "current": "over",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 2,
+                "passed": false,
+                "coverage": 0.4
+              }
+            },
+            "reason": "overreach markiert"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Phoenix_Mode / Geisterjagd\n**Domäne:**",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        },
+        {
+          "name": "„Oberste Direktive“",
+          "formula": "selbstbezügliches Regulativ",
+          "cat": "over",
+          "current": "over",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "overreach markiert"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** „Oberste Direktive“\n**Domäne:** Info\n*",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Heroische Informatik\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Heroische Informatik\".\n\n**Domäne:** Info\n**Quellen:** hero-guide + v4 Brücken §17\n**Anzahl formaler Einträge:** 2\n\n## Kont",
+        "error": null
+      }
+    },
+    {
+      "id": "heroic_mathematics_extended",
+      "title": "Heroische Mathematik (ψ↔Z, Banach, QUBO)",
+      "dom": "Math",
+      "n_items": 1,
+      "items": [
+        {
+          "name": "Heroische Mathematik (ψ↔Z, Banach, QUBO)",
+          "formula": "v4 Brücken §16",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Bedingt",
+                "begruendung": "Gilt unter Annahmen: λ<1."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Heroische Mathematik (ψ↔Z, Banach, QUB",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Heroische Mathematik (ψ↔Z, Banach, QUBO)\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Heroische Mathematik (ψ↔Z, Banach, QUBO)\".\n\n**Domäne:** Math\n**Quellen:** v4 Brücken §16\n**Anzahl form",
+        "error": null
+      }
+    },
+    {
+      "id": "neurotheology",
+      "title": "Neurotheologie (DMN, S–N-Brücke)",
+      "dom": "Science",
+      "n_items": 1,
+      "items": [
+        {
+          "name": "Neurotheologie (DMN, S–N-Brücke)",
+          "formula": "v4 Brücken §18",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Neurotheologie (DMN, S–N-Brücke)\n**Dom",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Neurotheologie (DMN, S–N-Brücke)\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Neurotheologie (DMN, S–N-Brücke)\".\n\n**Domäne:** Science\n**Quellen:** v4 Brücken §18\n**Anzahl formaler Einträge",
+        "error": null
+      }
+    },
+    {
+      "id": "psychiatric_mer_4d",
+      "title": "Psychiatrische MER-4D-Matrix",
+      "dom": "Science",
+      "n_items": 1,
+      "items": [
+        {
+          "name": "Psychiatrische MER-4D-Matrix",
+          "formula": "Kompendium v7",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Psychiatrische MER-4D-Matrix\n**Domäne:",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Psychiatrische MER-4D-Matrix\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Psychiatrische MER-4D-Matrix\".\n\n**Domäne:** Science\n**Quellen:** Kompendium v7\n**Anzahl formaler Einträge:** 1\n\n##",
+        "error": null
+      }
+    },
+    {
+      "id": "layer_architecture",
+      "title": "Layer-Architektur L0–L6ω (MasterSeed, Banach)",
+      "dom": "Meta",
+      "n_items": 1,
+      "items": [
+        {
+          "name": "„Gesamtwerk“ / KI als Ko-Autor",
+          "formula": "Das Ganze > Summe",
+          "cat": "over",
+          "current": "over",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "overreach markiert"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** „Gesamtwerk“ / KI als Ko-Autor\n**Domän",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Layer-Architektur L0–L6ω (MasterSeed, Banach)\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Layer-Architektur L0–L6ω (MasterSeed, Banach)\".\n\n**Domäne:** Meta\n**Quellen:** CORE_ANCHOR + FUSI",
+        "error": null
+      }
+    },
+    {
+      "id": "integration_stack",
+      "title": "Integrationsmatrix v4 (Operator-Stack)",
+      "dom": "Science",
+      "n_items": 1,
+      "items": [
+        {
+          "name": "Integrationsmatrix v4 (Operator-Stack)",
+          "formula": "v4 Brücken §19",
+          "cat": "model",
+          "current": "model",
+          "local": {
+            "verdict": "WARN",
+            "modules": {
+              "formal_math": {
+                "kategorie": "Fragment",
+                "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
+              },
+              "peer_review": {
+                "score": 0,
+                "passed": false,
+                "coverage": 0.0
+              }
+            },
+            "reason": "unvollständige Abdeckung"
+          },
+          "claude": {
+            "ok": true,
+            "backend": "claude-science-fallback",
+            "configured": false,
+            "verdict": "OFFLINE",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Integrationsmatrix v4 (Operator-Stack)",
+            "error": null
+          },
+          "combined_verdict": "WARN"
+        }
+      ],
+      "domain_review": {
+        "ok": true,
+        "backend": "claude-science-fallback",
+        "configured": false,
+        "verdict": "OFFLINE",
+        "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroik] Claude Science — Domänen-Audit: Integrationsmatrix v4 (Operator-Stack)\n\nDu prüfst den gesamten heroischen Wissenschaftsansatz „Integrationsmatrix v4 (Operator-Stack)\".\n\n**Domäne:** Science\n**Quellen:** v4 Brücken §19\n**Anzahl forma",
+        "error": null
+      }
+    }
+  ],
+  "summary": {
+    "approaches": 8,
+    "items_reviewed": 19,
+    "pass": 0,
+    "warn": 24,
+    "fail": 3,
+    "duration_s": 0.0
+  }
+}

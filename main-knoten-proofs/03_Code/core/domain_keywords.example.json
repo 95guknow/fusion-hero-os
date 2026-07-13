@@ -1,0 +1,8 @@
+{
+  "__comment": "Laufzeit-Override fuer Domaenen/Modus-Erkennung (heroic_orchestration.get_domain_keywords). Diese Datei nach <FUSION_META_STATE>/domain_keywords.json kopieren (Default ~/.fusion-hero-os/domain_keywords.json) ODER Pfad via env FUSION_DOMAIN_KEYWORDS_FILE setzen. Keywords werden lowercased mit den Builtins gemerged (dedupliziert). Neue Modi sind erlaubt.",
+  "__replace__": false,
+  "Math": ["stochastik", "differentialgleichung", "eigenwert"],
+  "Phil": ["metaphysik", "erkenntnistheorie"],
+  "Info": ["datenquelle", "zitat", "primaerquelle"],
+  "Code": ["python", "funktion", "bug", "refactor", "kompiliere", "function", "compile"]
+}

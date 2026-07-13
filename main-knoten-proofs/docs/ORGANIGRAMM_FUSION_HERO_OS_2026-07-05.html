@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Organigramm — ALTE_Frau_95g Core v3.6 / Fusion Hero OS v8 (2026-07-05)</title>
+<style>
+  :root{
+    --bg:#0f1420; --panel:#1a2233; --panel2:#151c2b; --line:#2e3b55;
+    --txt:#e8edf7; --dim:#9db0cf; --acc:#5aa2ff;
+    --ok:#2ecc71; --part:#f1c40f; --open:#95a5a6; --miss:#e74c3c;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--txt);font-family:"Segoe UI",Arial,sans-serif;
+       margin:0;padding:28px;font-size:13.5px;line-height:1.45}
+  h1{font-size:21px;margin:0 0 2px}
+  .sub{color:var(--dim);margin-bottom:18px;font-size:12.5px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;background:var(--panel2);
+          border:1px solid var(--line);border-radius:8px;padding:8px 14px;margin-bottom:22px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;color:var(--dim);font-size:12px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .d-ok{background:var(--ok)} .d-part{background:var(--part)}
+  .d-open{background:var(--open)} .d-miss{background:var(--miss)}
+
+  .root{max-width:1500px;margin:0 auto}
+  .node{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:12px 16px;margin-bottom:10px}
+  .top{border-color:var(--acc);border-width:2px;text-align:center;padding:16px}
+  .top h2{margin:0;font-size:18px}
+  .top .sub{margin:4px 0 0}
+
+  .gov{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 6px}
+  .gov .node{margin:0}
+
+  .connector{height:22px;border-left:2px solid var(--line);margin-left:50%;width:0}
+
+  .columns{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+  @media(max-width:1100px){.columns{grid-template-columns:1fr}}
+  .col-title{font-weight:600;font-size:14.5px;color:var(--acc);
+             border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
+  .box{background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+       padding:10px 12px;margin-bottom:10px}
+  .box h4{margin:0 0 4px;font-size:13.5px;display:flex;align-items:center;gap:7px}
+  .box .path{color:var(--acc);font-family:Consolas,monospace;font-size:11px;word-break:break-all}
+  .box ul{margin:6px 0 0;padding-left:18px;color:var(--dim)}
+  .box li{margin:2px 0}
+  .claim{font-family:Consolas,monospace;font-size:10.5px;background:#0c1120;
+         border:1px solid var(--line);border-radius:4px;padding:0 5px;color:#8fd3a8}
+  .claim.open{color:#c6ccd4}
+  .badge{font-size:10px;border-radius:10px;padding:1px 8px;font-weight:600;white-space:nowrap}
+  .b-ok{background:rgba(46,204,113,.15);color:var(--ok);border:1px solid var(--ok)}
+  .b-part{background:rgba(241,196,15,.12);color:var(--part);border:1px solid var(--part)}
+  .b-open{background:rgba(149,165,166,.12);color:var(--open);border:1px solid var(--open)}
+  .b-miss{background:rgba(231,76,60,.12);color:var(--miss);border:1px solid var(--miss)}
+  .foot{color:var(--dim);font-size:11.5px;margin-top:20px;border-top:1px solid var(--line);padding-top:10px}
+  .arrowline{color:var(--dim);font-size:11.5px;text-align:center;margin:2px 0 12px}
+</style>
+</head>
+<body>
+<div class="root">
+
+<h1>Organigramm — ALTE_Frau_95g Core v3.6 / Fusion Hero OS v8</h1>
+<div class="sub">Stand: 2026-07-05 · Branch <b>main-knoten-proofs</b> (HEAD 85e3990) · GitHub: 95guknow/fusion-hero-os · Ehrlichkeits-Prinzip: jeder Status entspricht Registry/Tests, keine Überclaims</div>
+
+<div class="legend">
+  <span><span class="dot d-ok"></span> BEWIESEN / getestet &amp; aktiv</span>
+  <span><span class="dot d-part"></span> aktiv, teilweise / mit Einschränkungen</span>
+  <span><span class="dot d-open"></span> Konzept / OFFENE Hypothese</span>
+  <span><span class="dot d-miss"></span> fehlt / blockiert</span>
+  <span>Suite: <b>112 Tests grün</b></span>
+  <span>Registry: <b>31 Claims — 24 BEWIESEN · 7 OFFEN · 0 WIDERLEGT</b></span>
+</div>
+
+<!-- ============ SPITZE ============ -->
+<div class="node top">
+  <h2>FUSION HERO OS — Unified ALTE_Frau_95g Heroic Core</h2>
+  <div class="sub">Lokales Arbeitsrepo (C:\…\ALTE_Frau_95g_Core_v3.6) &nbsp;⇄&nbsp; GitHub-Monorepo fusion-hero-os (main / develop / v8-honest-toplevel / 21 Archiv-Branches) &nbsp;·&nbsp; Grok-Exporte laufen über main</div>
+</div>
+
+<!-- ============ GOVERNANCE ============ -->
+<div class="gov">
+  <div class="node">
+    <h4><span class="dot d-ok"></span> Beweis-Registry (Governance-Kern)</h4>
+    <div class="path">proof_registry.yaml · scripts/check_proof_registry.py</div>
+    <ul>
+      <li>Einzige autoritative Quelle für System-Claims</li>
+      <li>BEWIESEN ⇒ muss reale pytest-Knoten listen (maschinell erzwungen)</li>
+      <li>In CI eingehängt (Gate) — grün == Claim gedeckt</li>
+    </ul>
+  </div>
+  <div class="node">
+    <h4><span class="dot d-ok"></span> Test-Suite</h4>
+    <div class="path">tests/ (16 Dateien, 112 Tests)</div>
+    <ul>
+      <li>Property-Sweeps mit 0 erlaubten Verletzungen</li>
+      <li>Brute-Force-Gegenproben auf kleinen Instanzen</li>
+      <li>Negativ-Kontrollen (Nicht-Trivialität der Sätze)</li>
+    </ul>
+  </div>
+  <div class="node">
+    <h4><span class="dot d-part"></span> CI / Hintergrund-Automation</h4>
+    <div class="path">.github/workflows/ · auto_save/sync-Skripte</div>
+    <ul>
+      <li>Registry-Gate + pytest in CI</li>
+      <li>⚠ Auto-Commit/Branch-Switch-Skripte lokal aktiv</li>
+      <li>Issue #26 (CI-FUsion): nicht umsetzbar, YAML fehlt</li>
+    </ul>
+  </div>
+</div>
+
+<div class="connector"></div>
+
+<!-- ============ 6 SÄULEN ============ -->
+<div class="columns">
+
+  <!-- SÄULE 1: LAYER 0 -->
+  <div>
+    <div class="col-title">SÄULE 1 · Layer 0 — Mathematischer Kern</div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Heroic Math Engine <span class="badge b-ok">4 SÄTZE</span></h4>
+      <div class="path">fusion_hero_os/core/heroic_math_engine.py</div>
+      <ul>
+        <li>K16 Transpositions-Reziprozität <span class="claim">K16</span></li>
+        <li>K17 Orthogonalprojektor <span class="claim">K17</span></li>
+        <li>K19 bedingte Fusions-Monotonie (η=0!) <span class="claim">K19</span></li>
+        <li>K20 Banach-Fixpunkt (MasterSeed-Basis) <span class="claim">K20</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Quantenkognition (Busemeyer-QPT) <span class="badge b-ok">NEU 07-05</span></h4>
+      <div class="path">fusion_hero_os/core/quantum_cognition.py</div>
+      <ul>
+        <li>Bornsche Regel/Vollständigkeit <span class="claim">QPT-BORN-COMPLETENESS</span></li>
+        <li>QQ-Equality (Wang/Busemeyer) <span class="claim">QPT-QQ-EQUALITY</span></li>
+        <li>Ordnungs-Invarianz bei Kommutativität <span class="claim">QPT-ORDER-COMMUTE</span></li>
+        <li>Exakte Interferenz-Zerlegung <span class="claim">QPT-INTERFERENZ-ZERLEGUNG</span></li>
+        <li>2-Level-Oszillator sin²(ωt) <span class="claim">QPT-2LEVEL-OSZILLATION</span></li>
+        <li>Empirische Sisyphos-Passung: <span class="claim open">QPT-SISYPHOS-FIT (OFFEN)</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> QUBO-Kern &amp; Solver</h4>
+      <div class="path">qb_qubo.py (3 byte-identische Kopien: root · 02_Mathematik · 03_Code/tools)</div>
+      <ul>
+        <li>parallel_anneal: Multi-Start-SA, numba/nogil <span class="claim">SOLVER-KORREKT</span></li>
+        <li>Ising-Brücke E_QUBO==E_Ising <span class="claim">ISING-BRIDGE</span></li>
+        <li>Kopien-Sync <span class="claim">QBQUBO-KOPIEN-SYNC</span></li>
+        <li>Rust-Backend optional (engine/rust_backend.py)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SÄULE 2: CORE / ORCHESTRIERUNG -->
+  <div>
+    <div class="col-title">SÄULE 2 · Core-Module &amp; Orchestrierung</div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Inference-Scheduling-QUBO <span class="badge b-ok">NEU 07-05</span></h4>
+      <div class="path">fusion_hero_os/core/inference_scheduler_qubo.py</div>
+      <ul>
+        <li>CPU/NPU-Zuweisung, Layer/Batch-Granularität</li>
+        <li>Exakte Kodierung xᵀQx+offset==H(x) <span class="claim">SCHED-QUBO-ENCODING-EXAKT</span></li>
+        <li>Nie schlechter als Greedy (by construction) <span class="claim">SCHED-QUBO-NIE-SCHLECHTER-GREEDY</span></li>
+        <li>Realer Workload-Nutzen: <span class="claim open">QUBO-SCHEDULER-NUTZEN (OFFEN)</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> MasterSeed-Sync (CRDT-Kern)</h4>
+      <div class="path">fusion_hero_os/core/ (masterseed / sync)</div>
+      <ul>
+        <li>Monotonie, Identitätserhalt, fail-closed <span class="claim">SYNC-MONOTONIE</span> <span class="claim">SYNC-IDENTITY</span> <span class="claim">SYNC-FAILCLOSED</span></li>
+        <li>Join-Halbverband (paarweise) <span class="claim">SYNC-SEMILATTICE</span></li>
+        <li>N-Knoten-Gossip O(log N): <span class="claim open">GOSSIP-LOGN (OFFEN)</span></li>
+        <li>BFT-Robustheit: <span class="claim open">BFT-ROBUSTHEIT (OFFEN, heruntergestuft)</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Psycholyse-Trigger v8.1 <span class="badge b-ok">NEU 07-05</span></h4>
+      <div class="path">fusion_hero_os/core/psycholysis_trigger.py</div>
+      <ul>
+        <li>Pflicht-Somatikphase (4 Checklist-Punkte, Abschluss sonst unmöglich) <span class="claim">PSYCHOLYSE-SOMATIC-PFLICHT</span></li>
+        <li>Echte ISO-Timestamps + Somatik-Log</li>
+        <li>Keine Wirksamkeits-Claims (Logging-Struktur)</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Sicherheits-Architektur</h4>
+      <div class="path">03_Code/core/SelfModifyCoreModule.py · connectors</div>
+      <ul>
+        <li>SelfModify: nur Vorschläge, wendet NIE an <span class="claim">SELFMOD-PROPOSAL-ONLY</span></li>
+        <li>Connectoren dry-run per Default <span class="claim">CONNECTOR-DRYRUN</span></li>
+        <li>internal_llm-SA: Metropolis-Fix <span class="claim">SA-SINGLE-EVAL</span></li>
+        <li>Evolution monoton (Elitismus) <span class="claim">EVO-MONOTONIE</span></li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-part"></span> Agenten &amp; Hyperthreading</h4>
+      <div class="path">03_Code/core/heroic_orchestration · dynamic_orchestration_core.py</div>
+      <ul>
+        <li>Agent-Klassifikation + Auto-Load funktional</li>
+        <li>⚠ Dashboard-Eventstream ist SIMULATOR (Demo-Events, ehrlich dokumentiert)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SÄULE 3: SCHNITTSTELLEN -->
+  <div>
+    <div class="col-title">SÄULE 3 · Schnittstellen (Layer 6)</div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> MCP-Server <span class="badge b-ok">NEU 07-05</span></h4>
+      <div class="path">fusion_hero_os/mcp/fhero_mcp_server.py</div>
+      <ul>
+        <li>Spec-korrekt: initialize · tools/list · tools/call · ping <span class="claim">MCP-SPEC-KONFORM</span></li>
+        <li>tools/register ⇒ -32601 (Review-Korrektur verankert)</li>
+        <li>Tool: fhero_layer0_verify (Registry-Stand)</li>
+        <li>Tool: fhero_schedule_qubo (Scheduler)</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-part"></span> Dashboard-App</h4>
+      <div class="path">03_Code/Dashboard/app.py (FastAPI + WebSocket) · gui/ · static/</div>
+      <ul>
+        <li>QUBO-API + GUI-Panels aktiv</li>
+        <li>⚠ Live-Eventstream = randomisierter Demo-Simulator</li>
+        <li>Grok-Bridge, Worker, Boot-Optimizer</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-miss"></span> Supabase-Anbindung</h4>
+      <div class="path">03_Code/Dashboard/supabase_client.py · supabase_store.py</div>
+      <ul>
+        <li>Projekt swmmoxhdzarmoupyssqe konfiguriert</li>
+        <li>🔴 Schema NICHT angewendet — Tabellen fehlen</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-open"></span> Independent Voice Layer (TTS)</h4>
+      <div class="path">tts/tts_router.py · INDEPENDENT_VOICE_APP_INTEGRATION_v1.md</div>
+      <ul>
+        <li>Router-Skelett + Voice-Profile vorhanden</li>
+        <li>⚪ WS-Endpunkt /ws/voice, QUBO-Voice-Parameter: Konzept</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SÄULE 4: VOICE-JOURNAL -->
+  <div>
+    <div class="col-title">SÄULE 4 · Voice-Journal-Pipeline <span class="badge b-ok">NEU 07-05</span></div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Handy-Erfassung (3 Wege)</h4>
+      <div class="path">journal/phone/termux_voice_loop.sh · journal/PHONE_SETUP.md</div>
+      <ul>
+        <li>A: Termux-STT-Loop (quasi-kontinuierlich, Offline-Puffer)</li>
+        <li>B: MacroDroid/Tasker → HTTP POST (alltagstauglich)</li>
+        <li>C: JSONL-Inbox ganz ohne Server</li>
+        <li>⚠ Ehrlich: kein echtes Always-On ohne eigene App; §201 StGB bei Dritten</li>
+      </ul>
+    </div>
+    <div class="arrowline">▼ HTTP + X-Journal-Token ▼</div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Ingest-Server</h4>
+      <div class="path">journal/server.py (FastAPI, Port 8787)</div>
+      <ul>
+        <li>POST /journal/note · GET /journal/today · /health</li>
+        <li>Token-Pflicht — ohne JOURNAL_TOKEN kein Betrieb</li>
+      </ul>
+    </div>
+    <div class="arrowline">▼</div>
+
+    <div class="box">
+      <h4><span class="dot d-ok"></span> Pipeline &amp; Tagebuch</h4>
+      <div class="path">journal/pipeline.py · config.yaml → journal/tagebuch/JJJJ-MM-TT.md</div>
+      <ul>
+        <li>Keyword-Klassifikation lokal (7 Themen, kein LLM/Cloud)</li>
+        <li>Tagesabschnitte Morgen…Nacht (Mitternachts-Wrap)</li>
+        <li>Dedup per Text-Hash; MANUELL-Abschnitt bleibt erhalten</li>
+        <li>10 Tests grün</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SÄULE 5: WISSEN & DOKU -->
+  <div>
+    <div class="col-title">SÄULE 5 · Wissens- &amp; Doku-Ebene</div>
+
+    <div class="box">
+      <h4><span class="dot d-part"></span> Grok-Exporte v8 (2026-07-05)</h4>
+      <div class="path">docs/v8/ (6 Dokumente, von GitHub main gemerged)</div>
+      <ul>
+        <li>Erkenntnisse letzte Tage + April/Mai/Juni-Integrationen</li>
+        <li>Empirical/Mathematical Anchors (Insula, QPT, Somatik)</li>
+        <li>✅ Roadmap-Punkte 2+3 als Code umgesetzt (QPT, Somatikphase)</li>
+        <li>⚪ Punkte 1,4,5,6 offen (EudaimoniaGuard-Metriken, Meme-Module, Dashboard-Tracking, Knowledge-Templates)</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-part"></span> Ideen-Backlog &amp; Reviews</h4>
+      <div class="path">docs/01_vision/IDEEN_BACKLOG.md · GEMINI_SYNTHESIS_v9_REVIEW.md</div>
+      <ul>
+        <li>Sektion E: E1+E2 umgesetzt, E3–E8 offen mit Registry-Claims</li>
+        <li>Gemini-Überclaims (QPU/D-Wave, CNN, BFT) explizit ABGELEHNT</li>
+        <li>Peer-Review QUBO/bitnet/MCP: Korrekturen implementiert</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-part"></span> Buch &amp; Archiv</h4>
+      <div class="path">04_Buch_und_Archiv/ · 06_Master_Archive/ · docs/Heroismus/</div>
+      <ul>
+        <li>„Der Heroische Mensch" (CLI + Web-Version)</li>
+        <li>Framework-PDF v2.0, Axiomatik-Dokumente</li>
+        <li>Geisteskrankheiten-4D-Kompendien (v3–v7)</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-open"></span> Wartende Grok-Code-Module</h4>
+      <div class="path">docs/01_vision/GROK_EXPORT_REQUEST.md (PR #32 gemerged, Export ausstehend)</div>
+      <ul>
+        <li>⚪ Timespace/geometrisches Token-Management</li>
+        <li>⚪ HeroicLLM-EA Orchestrator</li>
+        <li>⚪ HeroicImageOrchestrator</li>
+        <li>Export v8 lieferte nur Theorie-Docs, keinen Code</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SÄULE 6: OFFENE FRONTEN -->
+  <div>
+    <div class="col-title">SÄULE 6 · Offene Hypothesen &amp; Baustellen</div>
+
+    <div class="box">
+      <h4><span class="dot d-open"></span> 7 OFFENE Registry-Claims</h4>
+      <div class="path">proof_registry.yaml (status: OFFEN)</div>
+      <ul>
+        <li><span class="claim open">GOSSIP-LOGN</span> N-Knoten-Konvergenz</li>
+        <li><span class="claim open">BFT-ROBUSTHEIT</span> braucht Signaturen + Adversarial-Modell</li>
+        <li><span class="claim open">QUBO-SCHEDULER-NUTZEN</span> reale Workloads fehlen</li>
+        <li><span class="claim open">ORACLE-PREDICT</span> Laufzeit-Kostenmodell</li>
+        <li><span class="claim open">TIMESPACE-QUBO</span> MMR-Kontextauswahl</li>
+        <li><span class="claim open">LORA-F1</span> depriorisiert bis Daten-Pipeline steht</li>
+        <li><span class="claim open">QPT-SISYPHOS-FIT</span> braucht Verlaufsdaten + Modellvergleich</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-miss"></span> Bekannte Baustellen</h4>
+      <ul>
+        <li>🔴 Code-Honesty-Gesamtaudit offen (Auftrag besteht)</li>
+        <li>🔴 Supabase-Schema nicht angewendet</li>
+        <li>🔴 FuHOS_pub (öffentlich vs. proprietär) unentschieden</li>
+        <li>🔴 Core-Patent-Status ungeklärt</li>
+        <li>⚠ Branch main-knoten-proofs noch nicht gepusht (5 Commits vor Remote-Merge-Basis)</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <h4><span class="dot d-open"></span> Bewusste NICHT-Integrationen</h4>
+      <ul>
+        <li>bitnet.cpp: nur Referenz (microsoft/BitNet), keine Integration ohne Bedarf</li>
+        <li>neal/dimod: abgelehnt — eigener Solver vorhanden</li>
+        <li>D-Wave/QPU: abgelehnt — parallel_anneal ist SA, kein Quanten-Backend</li>
+        <li>LoRA-Finetuning: README ehrlich = Inference-Param-Optimizer</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">
+  Erstellt 2026-07-05 · Quellen: proof_registry.yaml (31 Claims), tests/ (112 grün), git-Historie main-knoten-proofs, docs/v8-Grok-Exporte, Session-Memory.
+  Status-Marker folgen dem High-Intellect-Protokoll: „bewiesen" nur bei Registry-Deckung durch reale Tests; Simulatoren, fehlende Schemata und offene Hypothesen sind als solche markiert.
+</div>
+
+</div>
+</body>
+</html>

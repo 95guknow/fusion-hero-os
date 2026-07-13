@@ -1,0 +1,26 @@
+{
+  "id": "geisteskrankheiten_4d_v3",
+  "version": "3.0",
+  "source": "claude_science_review + raum_loesungen",
+  "updated_ts": 1782929800,
+  "files": {
+    "v2": "Geisteskrankheiten_4D_Matrix_v2_claude_science.md",
+    "v3_extension": "Geisteskrankheiten_4D_Raum_Loesungen_v3.md",
+    "full": "Geisteskrankheiten_4D_Matrix_v3_vollstaendig.md"
+  },
+  "new_sections": [
+    "11_raum_geometrie",
+    "12_raumkarte_24_stoerungen",
+    "13_vertiefende_erklaerungen",
+    "14_loesungsansätze_dreiphasen",
+    "15_bewegungsgesetze"
+  ],
+  "key_concepts": [
+    "Z=(K,G,S,N)",
+    "d(Z,Z*)",
+    "I(Z) Schattenhülle",
+    "8 Raumregionen R1-R8",
+    "Trajektorien Z(t)",
+    "alpha1_stabilisieren alpha2_kalibrieren alpha3_rekonstruieren"
+  ]
+}

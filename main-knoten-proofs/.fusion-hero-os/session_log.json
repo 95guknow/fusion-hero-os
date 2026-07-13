@@ -1,0 +1,16 @@
+﻿{
+    "worktrees":  [
+                      "main",
+                      "feature/v7.4-book-heroismus-v33",
+                      "feature/v7.4-core-selfmod-peerreview",
+                      "feature/v7.4-generational-evolution",
+                      "feature/v7.4-meme-campfire-photoreal",
+                      "feature/v7.4-qubo-efficiencydistillation",
+                      "feature/v7.4-roadmap-connectors"
+                  ],
+    "note":  "Automatisch via end_session.ps1 - alle Neuerungen gespeichert und gepusht.",
+    "results":  [
+
+                ],
+    "session_end":  "2026-06-29T05:21:14.6068893+02:00"
+}

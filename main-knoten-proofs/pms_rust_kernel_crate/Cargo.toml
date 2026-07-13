@@ -1,0 +1,18 @@
+[package]
+name = "pms_rust_kernel"
+version = "0.1.0"
+edition = "2021"
+description = "Deterministischer PMS-Minimal-Kernel: PMS.yaml-Validierung, JSONL-Audit, Fail-Closed"
+
+[[bin]]
+name = "pms_rust_kernel"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+sha2 = "0.10"
+
+[profile.release]
+lto = true

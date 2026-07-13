@@ -1,0 +1,26 @@
+# Fusion Hero OS — Standard GUI + API auf Port 8000
+# NiceGUI (workspace.py :8080) ist optional, nicht Standard
+
+# === STARTUP (Standard) ===
+cd 03_Code\Dashboard
+python -m uvicorn app:app --host 127.0.0.1 --port 8000
+
+# Oder: run_backend.bat / start_all.ps1
+
+# === STANDARD GUI ===
+http://127.0.0.1:8000              # Dashboard (templates/index.html)
+ws://127.0.0.1:8000/ws             # Live Event Stream
+
+# === API ===
+GET  /                             # Standard-GUI
+GET  /api/health                 # System health
+GET  /api/gui/status             # GUI metadata
+GET  /api/gui/workspace          # Redirect → /
+GET  /api/hyperthreading         # HT status
+POST /api/hyperthreading         # Enable/disable HT
+GET  /api/autoload/status        # AutoLoad drivers
+POST /api/autoload/run           # Run AutoLoad
+GET  /docs                       # Swagger UI
+
+# === OPTIONAL LEGACY ===
+# workspace.py → http://127.0.0.1:8080 (start_all.ps1 -NiceGUI)

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Together | Fusion Hero OS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/watch_party.css">
+</head>
+<body class="watch-body">
+  <header class="watch-header">
+    <div>
+      <h1>WATCH TOGETHER</h1>
+      <p class="watch-sub">Eine Steuerungsseite · andere Geräte folgen nur · PC stumm · Ton über Handy</p>
+    </div>
+    <a href="/" class="watch-back">← Dashboard</a>
+  </header>
+
+  <section class="watch-controls">
+    <div class="watch-room-row">
+      <label class="watch-label" for="room-id">Raum</label>
+      <input id="room-id" class="watch-input" readonly>
+      <button type="button" id="copy-link-btn" class="watch-btn">Link kopieren</button>
+      <span id="viewer-count" class="watch-badge">0 Zuschauer</span>
+      <span id="role-badge" class="watch-badge watch-badge-role">Rolle…</span>
+    </div>
+    <div class="watch-room-row" id="controller-controls">
+      <label class="watch-label" for="video-url">YouTube</label>
+      <input id="video-url" class="watch-input watch-input-wide" placeholder="https://youtube.com/watch?v=…">
+      <button type="button" id="load-video-btn" class="watch-btn watch-btn-primary">Laden</button>
+    </div>
+    <p id="watch-status" class="watch-status">Verbinde…</p>
+  </section>
+
+  <section class="watch-qr-panel">
+    <div class="watch-qr-box">
+      <canvas id="room-qr" width="220" height="220" aria-label="QR Raumlink"></canvas>
+      <img id="room-qr-fallback" class="watch-qr-fallback" alt="QR Raumlink" hidden>
+    </div>
+    <div class="watch-qr-meta">
+      <p class="watch-qr-title">Redmi: QR scannen</p>
+      <p class="watch-qr-hint">Handy im <strong>gleichen WLAN</strong> wie der PC · Chrome öffnet den Raum</p>
+      <p class="watch-qr-lan">WLAN-Link: <code id="join-url">—</code></p>
+      <p class="watch-qr-local">Nur dieser PC: <code id="local-url">—</code></p>
+    </div>
+  </section>
+
+  <section class="watch-player-wrap">
+    <div id="player"></div>
+  </section>
+
+  <section class="watch-hints">
+    <p><strong>Setup:</strong> Nur der <em>PC steuert</em> (Play/Pause/Laden). Handy folgt per QR-Link automatisch im Follower-Modus. PC stumm, Ton über Handy.</p>
+  </section>
+
+  <script>
+    window.WATCH_ROOM_ID = {{ room_id|tojson }};
+    window.WATCH_VIDEO_ID = {{ video_id|tojson }};
+    window.WATCH_LAN_BASE = {{ lan_base|tojson }};
+    window.WATCH_SERVER_SYNC = {{ watch_server_sync|tojson }};
+    window.WATCH_POLL_MS = {{ watch_poll_ms|tojson }};
+    window.WATCH_REALTIME_CONFIG = {{ watch_realtime_config|tojson }};
+    window.WATCH_ROLE = {{ watch_role|tojson }};
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="/static/watch_party.js?v=20260707"></script>
+</body>
+</html>

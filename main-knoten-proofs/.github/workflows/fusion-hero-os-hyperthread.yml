@@ -1,0 +1,77 @@
+name: Fusion Hero OS - Heroic Core CI (Hyperthreading aware)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  heroic-core-ci:
+    runs-on: ubuntu-latest
+    name: Heroic Core Validation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Repository Structure
+        run: |
+          echo "=== Checking Core vs Developer Separation ==="
+          if [ ! -d "fusion_hero_os/core" ]; then
+            echo "::error::fusion_hero_os/core/ directory is missing!"
+            exit 1
+          fi
+          echo "fusion_hero_os/core/ directory exists"
+
+      - name: Validate Core Python Syntax
+        run: |
+          echo "=== Validating all Python files in fusion_hero_os/ ==="
+          find fusion_hero_os -name "*.py" -print0 | while IFS= read -r -d '' file; do
+            python3 -m py_compile "$file" || exit 1
+          done
+          echo "All fusion_hero_os Python files have valid syntax"
+
+      - name: Validate Migration Concept
+        run: |
+          echo "=== Checking MIGRATION_KONZEPT completeness ==="
+          MIGRATION_DOC="docs/99_archive/MIGRATION_KONZEPT_v7.12_HardFork.md"
+          if [ ! -f "$MIGRATION_DOC" ]; then
+            echo "::error::$MIGRATION_DOC is missing!"
+            exit 1
+          fi
+
+          REQUIRED_SECTIONS=(
+            "Zielarchitektur"
+            "Rollback-Plan"
+            "Technische Schutzmaßnahmen"
+            "Risiken & Gegenmaßnahmen"
+          )
+
+          for section in "${REQUIRED_SECTIONS[@]}"; do
+            if ! grep -q "$section" "$MIGRATION_DOC"; then
+              echo "::warning::Missing section in Migration Concept: $section"
+            fi
+          done
+          echo "Migration Concept check completed"
+
+      - name: Heroic Core Status Report
+        run: |
+          echo "===================================="
+          echo "ALTE_Frau_95g Heroic Core CI - SUCCESS"
+          echo "Version: v8"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Core Structure: Validated"
+          echo "Python Syntax: OK"
+          echo "===================================="
+
+      - name: Branch Model Compliance Check
+        run: |
+          echo "Checking branch model compliance..."
+          if [[ "${{ github.ref_name }}" == main* ]]; then
+            echo "Direct push to main detected - ensure it came via develop + review"
+          fi

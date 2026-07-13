@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="420" viewBox="0 0 500 420">
+  <rect width="100%" height="100%" fill="#FDFAF5"/>
+  <text x="250" y="28" text-anchor="middle" font-family="Georgia, Times, serif" font-size="14" font-weight="bold" fill="#1E3A5F">Projektion Π_SN — Seele × Natur</text>
+
+  <!-- Achsen -->
+  <line x1="80" y1="350" x2="440" y2="350" stroke="#CCCCCC" stroke-width="1"/>
+  <line x1="80" y1="350" x2="80" y2="50" stroke="#CCCCCC" stroke-width="1"/>
+  <line x1="80" y1="200.0" x2="440" y2="200.0" stroke="#1E3A5F" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <line x1="260.0" y1="350" x2="260.0" y2="50" stroke="#1E3A5F" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="260" y="372" text-anchor="middle" font-family="Georgia" font-size="11" fill="#C9A227">S Seele  →</text>
+  <text x="68" y="200" text-anchor="middle" font-family="Georgia" font-size="11" fill="#1E3A5F" transform="rotate(-90,68,200)">N Natur ↑</text>
+  <text x="260.0" y="192.0" text-anchor="middle" font-family="Georgia" font-size="10" font-weight="bold" fill="#C9A227">Z*</text>
+  <text x="98.0" y="362" font-family="Georgia" font-size="8" fill="#555555">−</text>
+  <text x="413.0" y="362" font-family="Georgia" font-size="8" fill="#555555">+</text>
+  <text x="62" y="327.5" font-family="Georgia" font-size="8" fill="#555555">−</text>
+  <text x="62" y="72.5" font-family="Georgia" font-size="8" fill="#555555">+</text>
+  <text x="179.0" y="177.5" font-family="Georgia" font-size="8" fill="#2C3E50" opacity="0.7">R₆ Trauma</text>
+  <text x="161.0" y="297.5" font-family="Georgia" font-size="8" fill="#6B8E9F" opacity="0.7">R₁ Niedrig-N</text>
+  <circle cx="152.0" cy="305.0" r="5" fill="#6B8E9F"/>
+  <text x="160.0" y="309.0" font-family="Georgia" font-size="8" fill="#1C2526">Depression</text>
+  <circle cx="170.0" cy="170.0" r="5" fill="#2C3E50"/>
+  <text x="178.0" y="174.0" font-family="Georgia" font-size="8" fill="#1C2526">PTBS</text>
+  <circle cx="206.0" cy="230.0" r="5" fill="#16A085"/>
+  <text x="214.0" y="234.0" font-family="Georgia" font-size="8" fill="#1C2526">Autismus</text>
+  <circle cx="386.0" cy="230.0" r="5" fill="#9B59B6"/>
+  <text x="394.0" y="234.0" font-family="Georgia" font-size="8" fill="#1C2526">Borderline S+</text>
+  <circle cx="134.0" cy="230.0" r="5" fill="#9B59B6"/>
+  <text x="142.0" y="234.0" font-family="Georgia" font-size="8" fill="#1C2526">Borderline S−</text>
+  <circle cx="188.0" cy="275.0" r="5" fill="#6B8E9F"/>
+  <text x="196.0" y="279.0" font-family="Georgia" font-size="8" fill="#1C2526">Schizophrenie</text>
+  <text x="12" y="412" font-family="Georgia, serif" font-size="8" fill="#555555">MER 4D-Matrix · Modell · kein DSM-Ersatz · Kompendium-Duktus</text>
+</svg>

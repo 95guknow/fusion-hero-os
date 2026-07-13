@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fusion-hero-os"
+version = "8.0.0"
+description = "Fusion Hero OS — Heroic Core, QUBO-Solver, Multi-Agenten-Orchestrierung"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "nicegui>=3.0",
+    "numpy>=1.24",
+    "numba>=0.59",
+    "psutil>=5.9",
+]
+
+[project.optional-dependencies]
+dashboard = [
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+    "qrcode[pil]>=7.4",
+    "python-dotenv>=1.0",
+    "supabase>=2.0",
+]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.4",
+    "httpx>=0.27",
+]
+
+[tool.setuptools.packages.find]
+include = ["fusion_hero_os*"]
+
+[tool.pytest.ini_options]
+# Repo-Wurzel auf den Importpfad, damit `from fusion_hero_os...` in Tests funktioniert.
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120

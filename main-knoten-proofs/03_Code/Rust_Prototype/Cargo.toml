@@ -1,0 +1,7 @@
+[package]
+name = "alte_frau_rust"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+# rayon temporarily disabled due to rustc version
