@@ -40,4 +40,4 @@ jobs:
         run: python -m pyright . || true
 
       - name: Execution Protocol (Tests)
-        run: pytest
+        run: pytest tests/
