@@ -269,7 +269,7 @@ def scan_python(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
         rel = str(f.relative_to(REPO_ROOT)).replace("\\", "/")
         name = _module_name(f)
         try:
-            text = f.read_text(encoding="utf-8", errors="replace")
+            text = f.read_text(encoding="utf-8-sig", errors="replace")
             tree = ast.parse(text)
         except SyntaxError as e:
             atlas.unresolved.append({"src": rel, "target": f"<Syntaxfehler: {e.msg} Zeile {e.lineno}>",
