@@ -1,6 +1,6 @@
 [package]
 name = "pms_rust_kernel"
-version = "8.3.0"
+version = "9.0.0"
 edition = "2021"
 description = "Deterministischer PMS-Minimal-Kernel: PMS.yaml-Validierung, JSONL-Audit, Fail-Closed"
 
