@@ -4,7 +4,7 @@
 > (the OS *is* the work). Text under `docs/dissertation/` is one expression.
 > See `docs/dissertation/ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`.
 
-> **Stand:** v10.0.0 · 2026-07-15
+> **Stand:** v12.0.0 · 2026-07-20
 
 ## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v10.0.0)
 
@@ -51,6 +51,10 @@ und deklarieren ihre Plattform-Kompatibilität in `fuhos_compat.yaml`
 ### `main` (Stable Release Line)
 - Geschützt. Direkte Pushes sind blockiert.
 - Nur Merges via Pull Request (Feature-Branches oder `ascension`).
+- **Merge-Freigabe komplett extern (seit v12.0.0):** 1 GitHub-Review-Approval
+  (Mobile) + 1 Google-Auth-Bestätigung (`human-confirm/google`-Check) — beide
+  am Handy, zwei unabhängige Identitätsanbieter. Automation (inkl. Claude)
+  merged nie selbst. Details + Einrichtung: `docs/ops/HUMAN_CONFIRM_GATE.md`.
 
 ### `develop` – Option A Track (Evolutionary) — eingestellt
 - Historischer Track; der Remote-Branch wurde nach dem Merge in `main`
@@ -59,6 +63,8 @@ und deklarieren ihre Plattform-Kompatibilität in `fuhos_compat.yaml`
 ### `ascension` – Option B Track (Strong Ascension Path)
 - Radikalere Entwicklungslinie für AscensionOS.
 - `ascension_os/` und `AscensionCore` sind jetzt auch auf `main` verfügbar.
+- Unterliegt demselben Human-Confirm-Gate wie `main`. Die main→ascension-
+  Propagation läuft seit v12.0.0 über einen PR, nicht mehr über Direct-Push.
 
 ### `archive`
 - Sinnvoll organisiertes Archiv für alles Alte.

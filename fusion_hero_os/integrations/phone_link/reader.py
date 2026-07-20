@@ -5,6 +5,16 @@ gespiegelten Daten (SMS, Konversationen, Benachrichtigungen) und prüft
 Prozess-Status — keine UI-Automation, kein Schreibzugriff.
 
 Hinweis: Schema/Pfade können sich mit Phone-Link-Updates ändern.
+
+**Realwelt-Kontakt-Guard (hardcoded, nicht konfigurierbar):** Nur der Mensch
+bedient das Handy und bestätigt jeden Eingriff, der mit der echten Welt aus
+seinen Kontakten besteht. Kein automatisiertes Zwischenrouten bei
+Telefonaten oder Nachrichten. ``FORBIDDEN_ACTIONS`` ist eine feste Denyliste,
+die vor jeder Action-Verzweigung geprüft wird — auch wenn später jemand
+versehentlich einen Sende-/Anruf-Pfad ergänzt, greift dieser Guard zuerst.
+``SEND_CAPABLE = False`` ist die dazugehörige, introspektierbare Invariante:
+``PhoneLinkReader`` besitzt und wird nie einen ``send_*``/``place_call``/
+``dial``-Pfad besitzen.
 """
 
 from __future__ import annotations
@@ -14,7 +24,49 @@ import sqlite3
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NoReturn, Optional
+
+# --- Realwelt-Kontakt-Guard --------------------------------------------
+# Policy-Flag ist absichtlich ein Modul-Konstant, nicht env-/config-
+# gesteuert: die Regel darf nicht still umschaltbar sein.
+NO_INTERMEDIARY_ROUTING = True
+
+FORBIDDEN_ACTIONS = frozenset(
+    {
+        "send_message",
+        "send_sms",
+        "reply",
+        "forward_message",
+        "place_call",
+        "dial",
+        "call",
+        "answer_call",
+        "end_call",
+    }
+)
+
+
+class RealWorldContactBlocked(PermissionError):
+    """Ausgelöst, wenn eine Aktion versucht, echte Kontakte zu erreichen.
+
+    Kein Bypass-Pfad vorgesehen (analog ``fusion_hero_os.meta.consent``:
+    Autorisierungs-Check ist das einzige Gate).
+    """
+
+
+def deny_realworld_contact_action(action: str) -> NoReturn:
+    """Hartes, nicht konfigurierbares Veto für Telefonat-/Nachrichten-Actions.
+
+    Muss von jedem Aufrufer (aktuell: ``PhoneLinkCoreModule.process``) VOR
+    einer Action-Verzweigung aufgerufen werden, wenn ``action`` in
+    :data:`FORBIDDEN_ACTIONS` liegt.
+    """
+    raise RealWorldContactBlocked(
+        f"Aktion {action!r} blockiert: nur der Mensch bedient das Handy und "
+        "bestätigt jeden Eingriff mit echten Kontakten. Kein automatisiertes "
+        "Zwischenrouten bei Telefonaten/Nachrichten (hardcoded, siehe "
+        "docs/ops/REALWORLD_CONTACT_GUARD.md)."
+    )
 
 _PHONE_LINK_PKG = "Microsoft.YourPhone_8wekyb3d8bbwe"
 _WIN_EPOCH_OFFSET = 116444736000000000  # 100-ns ticks between 1601-01-01 and 1970-01-01
@@ -101,6 +153,9 @@ def _is_host_running() -> bool:
 
 class PhoneLinkReader:
     """Liest gespiegelte Phone-Link-Daten (read-only)."""
+
+    #: Introspektierbare Invariante — siehe Modul-Docstring. Bleibt False.
+    SEND_CAPABLE = False
 
     def __init__(self, db_path: Optional[Path] = None) -> None:
         self._db_path = db_path or _discover_database("phone.db")

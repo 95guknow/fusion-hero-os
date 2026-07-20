@@ -2,6 +2,13 @@
 
 **Stand:** 2026-07-20 · **Status:** PASS (asset + design-token bridge)
 
+> **Scope-Hinweis:** „PASS" bedeutet ausschließlich Hash-Konsistenz zwischen
+> den (damaligen) Kopien — **keine** Rechteklärung. Das Quellbild trägt einen
+> eingebetteten Copyright-Vermerk Dritter ("All Rights Reserved © 2023");
+> alle öffentlich erreichbaren Kopien wurden am 2026-07-20 entfernt. Siehe
+> `MEISTER_HASCH_PUBLIC.md`. Die Integritätstabelle unten beschreibt den
+> historischen Stand vor der Entfernung.
+
 ## Integrität
 
 | Check | Result |

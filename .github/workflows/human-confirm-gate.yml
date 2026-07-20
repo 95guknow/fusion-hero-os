@@ -1,0 +1,121 @@
+name: Human Confirm Gate (2x externe Handy-Auth)
+
+# Required-Status-Check: main/ascension duerfen nur gemergt werden, wenn ein
+# Mensch in Echtzeit ZWEI unabhaengige externe Identitaeten bestaetigt hat —
+# GitHub (PR-Review-Approval, ueblicherweise per GitHub-Mobile-App mit
+# Passkey/Biometrie) und Google (dieser Check, gekippt durch ein
+# Apps-Script-Web-App, das selbst Google-Sign-In erzwingt).
+#
+# Diese Workflow-Datei OEFFNET das Gate nur (pending Check-Run) und
+# benachrichtigt per Telefon-Push. Sie kann den Check NIE selbst gruen
+# schalten — das darf ausschliesslich der vom Operator selbst betriebene
+# Apps-Script-Endpoint (siehe scripts/google_confirm_webapp/).
+#
+# Setup: docs/ops/HUMAN_CONFIRM_GATE.md
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main, ascension]
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  open-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open pending human-confirm/google check
+        id: open_check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: check } = await github.rest.checks.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'human-confirm/google',
+              head_sha: context.payload.pull_request.head.sha,
+              status: 'in_progress',
+              output: {
+                title: 'Warte auf Google-Bestaetigung',
+                summary: 'Bleibt offen, bis der Operator ueber das Apps-Script-Gate (Google-Sign-In) bestaetigt. Link steht im PR-Kommentar.',
+              },
+            });
+            core.setOutput('check_run_id', String(check.id));
+
+      - name: Post confirm links as PR comment
+        id: links
+        uses: actions/github-script@v7
+        env:
+          GOOGLE_CONFIRM_BASE_URL: ${{ secrets.GOOGLE_CONFIRM_WEBAPP_URL }}
+          CHECK_RUN_ID: ${{ steps.open_check.outputs.check_run_id }}
+        with:
+          script: |
+            const sha = context.payload.pull_request.head.sha;
+            const prNumber = context.payload.pull_request.number;
+            const baseUrl = process.env.GOOGLE_CONFIRM_BASE_URL;
+            const checkRunId = process.env.CHECK_RUN_ID;
+            const reviewUrl = `${context.payload.pull_request.html_url}/files`;
+
+            if (!baseUrl) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: '⚠️ `GOOGLE_CONFIRM_WEBAPP_URL` Secret ist nicht gesetzt — der `human-confirm/google`-Check bleibt dauerhaft offen. Setup: `docs/ops/HUMAN_CONFIRM_GATE.md`.',
+              });
+              core.setOutput('confirm_url', '');
+              core.setOutput('review_url', reviewUrl);
+              return;
+            }
+
+            const confirmUrl = `${baseUrl}?owner=${context.repo.owner}&repo=${context.repo.repo}&sha=${sha}&check_run_id=${checkRunId}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: [
+                '## 🔐 Zwei-Faktor-Merge-Freigabe',
+                '',
+                'Dieser PR braucht **zwei unabhaengige Bestaetigungen vom Handy**, bevor Branch Protection den Merge zulaesst:',
+                '',
+                `1. **GitHub** — [Review + Approve](${reviewUrl}) (GitHub-Mobile-App, Passkey/Biometrie).`,
+                `2. **Google** — [Bestaetigen](${confirmUrl}) (Google-Sign-In, nur der hinterlegte Account darf bestaetigen).`,
+                '',
+                'Automation (inkl. Claude) merged diesen PR nicht selbst — komplett extern.',
+              ].join('\n'),
+            });
+            core.setOutput('confirm_url', confirmUrl);
+            core.setOutput('review_url', reviewUrl);
+
+      - name: Phone push (best-effort, ehrlich ohne Fake-Erfolg)
+        if: always()
+        env:
+          PHONE_NOTIFY_WEBHOOK_URL: ${{ secrets.PHONE_NOTIFY_WEBHOOK_URL }}
+          PHONE_NOTIFY_TOKEN: ${{ secrets.PHONE_NOTIFY_TOKEN }}
+          REVIEW_URL: ${{ steps.links.outputs.review_url }}
+          CONFIRM_URL: ${{ steps.links.outputs.confirm_url }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [ -z "${PHONE_NOTIFY_WEBHOOK_URL:-}" ]; then
+            echo "PHONE_NOTIFY_WEBHOOK_URL nicht gesetzt — nur PR-Kommentar, kein Push. Ehrlich, kein Fake-Erfolg."
+            exit 0
+          fi
+          AUTH_HEADER=()
+          if [ -n "${PHONE_NOTIFY_TOKEN:-}" ]; then
+            AUTH_HEADER=(-H "Authorization: Bearer ${PHONE_NOTIFY_TOKEN}")
+          fi
+          ACTIONS="view, GitHub Review, ${REVIEW_URL}, clear=false"
+          if [ -n "${CONFIRM_URL:-}" ]; then
+            ACTIONS="${ACTIONS}; view, Google Bestaetigen, ${CONFIRM_URL}, clear=false"
+          fi
+          curl -sS -X POST "${PHONE_NOTIFY_WEBHOOK_URL}" \
+            "${AUTH_HEADER[@]}" \
+            -H "Title: 2FA-Merge-Freigabe" \
+            -H "Priority: high" \
+            -H "Tags: lock,closed_lock_with_key" \
+            -H "Actions: ${ACTIONS}" \
+            -d "PR: ${PR_TITLE}" \
+            || echo "Phone-Push fehlgeschlagen (nicht fatal) — Kommentar im PR bleibt die verbindliche Quelle."

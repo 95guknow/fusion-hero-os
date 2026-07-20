@@ -1,7 +1,19 @@
 # Meister Hasch — Public Sandbox Frame (all channels)
 
+> **⚠️ Asset zurückgezogen (2026-07-20):** Das Quellbild trägt einen
+> eingebetteten Copyright-Vermerk Dritter ("All Rights Reserved © 2023",
+> Künstler-/Studio-Nennung sichtbar im PNG selbst) — es war ein Fund-Bild aus
+> einer Web-Recherche, kein eigenes Werk. Alle öffentlich erreichbaren Kopien
+> (public/, android/, memes/, dissertation/assets/, Instagram-Publish-Pack)
+> wurden entfernt; nichts wurde veröffentlicht. Einzige verbleibende Kopie:
+> `journal/meister_hasch.png` (interne Arbeitsnotiz, kein Publikationsasset).
+> „Control: PASS" unten bezieht sich **ausschließlich** auf Hash-Konsistenz
+> zwischen den (damaligen) Kopien, **nicht** auf Rechteklärung — siehe
+> `MEISTER_HASCH_KONTROLLE.md`. Fortsetzung: eigenständiges Artwork oder
+> Lizenzklärung, siehe Chat-Entscheidung.
+
 **Asset SHA256:** `a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e`  
-**Size:** 654464 bytes · **Control:** `MEISTER_HASCH_KONTROLLE.md` (PASS)
+**Size:** 654464 bytes · **Control:** `MEISTER_HASCH_KONTROLLE.md` (PASS, hash-only — siehe Hinweis oben)
 
 ## Thesis (labor)
 

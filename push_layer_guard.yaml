@@ -191,6 +191,12 @@ branches:
     block_force: true
     block_delete: true
     auto_save_needs_intent: true
+    merge_gate: human_confirm_google  # docs/ops/HUMAN_CONFIRM_GATE.md — 2x externe Handy-Auth, kein Self-Merge durch Automation
+  ascension:
+    require_identity_remote: true
+    block_force: true
+    block_delete: true
+    merge_gate: human_confirm_google
   "*":
     require_identity_remote: true
     block_force: true
