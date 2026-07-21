@@ -171,4 +171,23 @@ connector_links:
   vercel: grok
   hyperframes: gemini
   tasks: claude
+# Kreuzvernetzung: primary bleibt oben; secondary = alle anderen Frameworks (runtime mesh)
+cross_mesh:
+  enabled: true
+  module: framework_cross_mesh.py
+  mode: full
+  # Jeder Connector ist mit JEDEM Framework verbunden; primary_llm = bevorzugte Route
+  connector_to_all_frameworks: true
+  framework_to_framework: complete_graph
+  agent_triad: [agent, anti_agent, quantizer]
+  systems:
+    - fusion_integration_hub
+    - agent_backend_router
+    - string_quantizer
+    - qubo_engine
+    - local_llama
+    - firebase_landing
+    - hero_docs
+    - dashboard
+  health: /fusion/cross
 platform_version: "12.0.0"

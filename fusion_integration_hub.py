@@ -226,7 +226,7 @@ def _get_fractal_mesh_status() -> dict:
 
 
 def _build_graph(unified: dict, mesh: dict, llm: dict) -> dict:
-    """Build linked graph: nodes → connectors → LLMs."""
+    """Build linked graph: nodes → connectors → LLMs + full Kreuzvernetzung."""
     links = unified.get("connector_llm_links", {})
     nodes = []
 
@@ -246,6 +246,8 @@ def _build_graph(unified: dict, mesh: dict, llm: dict) -> dict:
     for cid, seg in connectors.items():
         linked_llm = links.get(cid)
         llm_info = frameworks.get(linked_llm, {}) if linked_llm else {}
+        # Kreuz: alle Frameworks als secondary
+        all_fw = list(frameworks.keys()) if isinstance(frameworks, dict) else []
         segments.append({
             "id": seg.get("mesh_id", f"mesh-connector-{cid}"),
             "type": "mcp_connector",
@@ -253,12 +255,14 @@ def _build_graph(unified: dict, mesh: dict, llm: dict) -> dict:
             "segment_status": seg.get("segment_status"),
             "linked_llm": linked_llm,
             "linked_llm_status": "configured" if llm_info.get("configured") else "pending",
+            "cross_linked_frameworks": all_fw,
             "health_path": seg.get("health_path"),
             "edge": f"{cid} → {linked_llm}" if linked_llm else None,
         })
 
     for pid, fw in frameworks.items():
         linked_connectors = [c for c, l in links.items() if l == pid]
+        peer_frameworks = [p for p in frameworks.keys() if p != pid]
         segments.append({
             "id": fw.get("mesh_id", f"mesh-llm-{pid}") if isinstance(fw, dict) else f"mesh-llm-{pid}",
             "type": "llm_framework",
@@ -267,6 +271,8 @@ def _build_graph(unified: dict, mesh: dict, llm: dict) -> dict:
             "api_key_set": fw.get("api_key_set", False),
             "configured": fw.get("configured", False),
             "linked_connectors": linked_connectors,
+            "cross_linked_frameworks": peer_frameworks,
+            "cross_linked_connectors": list(links.keys()),
             "health_path": f"/llm/{pid}/status",
         })
 
@@ -285,19 +291,49 @@ def _build_graph(unified: dict, mesh: dict, llm: dict) -> dict:
         for lid, cfg in (unified.get("layers") or {}).items()
     ]
 
+    # Full Kreuzvernetzung (alle Frameworks × alle Frameworks, Connectoren, Agenten, Layer)
+    cross = {}
+    try:
+        from framework_cross_mesh import build_cross_mesh
+        cross = build_cross_mesh(unified)
+    except Exception as exc:
+        cross = {"error": str(exc), "counts": {}}
+
+    primary_edges = [
+        {"from": c, "to": l, "relation": "primary_llm"}
+        for c, l in links.items()
+    ]
+    edge_count = (
+        len(primary_edges)
+        + len(trinity)
+        + len(node_edges)
+        + len(layer_edges)
+        + int((cross.get("counts") or {}).get("edges") or 0)
+    )
+
     return {
         "nodes": nodes,
         "layer_nodes": layer_nodes,
         "segments": segments,
-        "connector_llm_edges": [
-            {"from": c, "to": l, "relation": "primary_llm"}
-            for c, l in links.items()
-        ],
+        "connector_llm_edges": primary_edges,
         "trinity_edges": trinity_edges,
         "node_edges": node_edges,
         "layer_edges": layer_edges,
+        "cross_mesh": {
+            "enabled": True,
+            "counts": cross.get("counts"),
+            "fully_connected_frameworks": cross.get("fully_connected_frameworks"),
+            "frameworks": cross.get("frameworks"),
+            "connectors": cross.get("connectors"),
+            "agents": cross.get("agents"),
+            "systems": cross.get("systems"),
+            # edges can be large — summary + pointer
+            "edge_count": (cross.get("counts") or {}).get("edges"),
+            "detail_endpoint": "/fusion/cross",
+        },
         "workstation": ws,
-        "edge_count": len(links) + len(trinity) + len(node_edges) + len(layer_edges),
+        "edge_count": edge_count,
+        "principle": "full_cross_mesh",
     }
 
 
@@ -355,7 +391,16 @@ def get_unified_status() -> dict:
         "phone_mesh": phone_check,
         "fractal_mesh": fractal_mesh,
         "graph": graph,
+        "cross_mesh": _get_cross_mesh_summary(unified),
     }
+
+
+def _get_cross_mesh_summary(unified: Optional[dict] = None) -> dict:
+    try:
+        from framework_cross_mesh import cross_mesh_status
+        return cross_mesh_status()
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 def get_llm_segment(provider_id: str) -> dict:
@@ -378,8 +423,16 @@ def orchestrate(
     query: str,
     connector: Optional[str] = None,
     role: Optional[str] = None,
+    cross: bool = False,
 ) -> dict:
-    """Orchestriert über verknüpfte LLM-Frameworks (TRINITY oder Connector→LLM)."""
+    """Orchestriert über verknüpfte LLM-Frameworks (TRINITY, Connector→LLM oder Kreuznetz)."""
+    if cross or os.getenv("FUSION_ORCHESTRATE_CROSS", "0") == "1":
+        try:
+            from framework_cross_mesh import orchestrate_cross
+            return orchestrate_cross(query)
+        except Exception as e:
+            return {"error": str(e), "routing": "framework_cross_mesh"}
+
     unified = _load_yaml(ROOT / "fusion_unified.yaml")
     links = unified.get("connector_llm_links", {})
     trinity = unified.get("trinity_roles", {})
@@ -400,7 +453,8 @@ def orchestrate(
             "routing": "fusion_integration_hub",
             "connector": connector,
         })
-        return {
+        # Post: Quantisierer (whole-string) + Kreuz-Nachbarn annotieren
+        payload = {
             "timestamp": datetime.now().isoformat(),
             "query": query,
             "connector": connector,
@@ -412,8 +466,33 @@ def orchestrate(
             "source": result.source,
             "error": result.error,
         }
+        try:
+            from framework_cross_mesh import neighbor_map, build_cross_mesh
+            nm = neighbor_map(build_cross_mesh(unified))
+            payload["cross_neighbors"] = nm.get(provider, [])[:12]
+        except Exception:
+            pass
+        try:
+            from string_quantizer_agent import emit_logical, accompany
+            if result.ok and result.response:
+                payload["response"] = emit_logical(result.response)
+                payload["quantizer"] = accompany(query, payload["response"], "")
+        except Exception:
+            pass
+        return payload
     except Exception as e:
         return {"error": str(e), "provider": provider, "role": orch_role}
+
+
+def get_cross_mesh() -> dict:
+    """Vollständiges Kreuznetz aller Frameworks."""
+    try:
+        from framework_cross_mesh import build_cross_mesh, cross_mesh_status
+        mesh = build_cross_mesh()
+        status = cross_mesh_status()
+        return {"ok": True, "mesh": mesh, "status": status}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
 
 
 if __name__ == "__main__":
@@ -425,13 +504,32 @@ if __name__ == "__main__":
     elif cmd == "graph":
         u = get_unified_status()
         out = u.get("graph", {})
+    elif cmd in ("cross", "crossmesh", "kreuz"):
+        out = get_cross_mesh()
+        if "--full" not in sys.argv and out.get("ok") and "mesh" in out:
+            m = out["mesh"]
+            out = {
+                "ok": True,
+                "status": out.get("status"),
+                "mesh_summary": {
+                    "counts": m.get("counts"),
+                    "frameworks": m.get("frameworks"),
+                    "connectors": m.get("connectors"),
+                    "fully_connected_frameworks": m.get("fully_connected_frameworks"),
+                    "edges": f"<{m.get('counts', {}).get('edges', 0)} — pass --full>",
+                },
+            }
     elif cmd == "llm" and len(sys.argv) > 2:
         out = get_llm_segment(sys.argv[2])
     elif cmd == "orchestrate" and len(sys.argv) > 2:
         connector = sys.argv[3] if len(sys.argv) > 3 else None
-        out = orchestrate(sys.argv[2], connector=connector)
+        use_cross = "--cross" in sys.argv
+        out = orchestrate(sys.argv[2], connector=connector, cross=use_cross)
     else:
-        out = {"error": f"Unknown command: {cmd}", "usage": "status|graph|llm <id>|orchestrate <query> [connector]"}
+        out = {
+            "error": f"Unknown command: {cmd}",
+            "usage": "status|graph|cross|llm <id>|orchestrate <query> [connector] [--cross]",
+        }
 
-    print(json.dumps(out, indent=2, ensure_ascii=False))
-    sys.exit(1 if "error" in out and cmd != "status" else 0)
+    print(json.dumps(out, indent=2, ensure_ascii=False, default=str))
+    sys.exit(1 if "error" in out and cmd not in ("status", "cross", "crossmesh", "kreuz", "graph") else 0)
