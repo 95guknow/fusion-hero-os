@@ -45,11 +45,19 @@ function Wait-MainframeLoaded([int]$MaxSec = 120) {
     return $null
 }
 
-Write-Host "=== Fusion Hero OS v8 - Auto-Load ===" -ForegroundColor Cyan
+Write-Host "=== Fusion Hero OS v12 - Auto-Load ALL (Connectoren+Module+Mesh) ===" -ForegroundColor Cyan
+# Default: alles beim Start laden (User-Direktive)
+$env:FUSION_AUTO_LOAD = if ($env:FUSION_AUTO_LOAD) { $env:FUSION_AUTO_LOAD } else { "1" }
+$env:FUSION_PRELOAD_ALL = if ($env:FUSION_PRELOAD_ALL) { $env:FUSION_PRELOAD_ALL } else { "1" }
+$env:FUSION_ALL_MODULES = if ($env:FUSION_ALL_MODULES) { $env:FUSION_ALL_MODULES } else { "1" }
+$env:FUSION_BOOT_PHASE = if ($env:FUSION_BOOT_PHASE) { $env:FUSION_BOOT_PHASE } else { "full" }
+$env:FUSION_DUAL_AGENT = if ($env:FUSION_DUAL_AGENT) { $env:FUSION_DUAL_AGENT } else { "1" }
+$env:FUSION_QUANTIZER_AGENT = if ($env:FUSION_QUANTIZER_AGENT) { $env:FUSION_QUANTIZER_AGENT } else { "1" }
 if ($Force) {
     $env:FUSION_FORCE_SYNC = "1"
-    $env:FUSION_AUTO_LOAD = "0"
-    Write-Host "Modus: FORCE (Full-Boot · Medienserver-Sync)" -ForegroundColor Magenta
+    $env:FUSION_AUTO_LOAD = "1"
+    $env:FUSION_BOOT_PHASE = "full"
+    Write-Host "Modus: FORCE (Full-Boot · Preload ALL · Medienserver-Sync)" -ForegroundColor Magenta
 }
 Write-Host "Substrat: Windows | Meta-Layer: Fusion Hero OS v8" -ForegroundColor DarkCyan
 Write-Host "Standard-GUI: $GuiUrl  (FastAPI Dashboard, kein NiceGUI)" -ForegroundColor DarkGray
@@ -100,22 +108,22 @@ if (-not $NoGui) {
 }
 Write-Host " OK" -ForegroundColor Green
 
-Write-Host "[2/3] AutoLoader Treiber+Prozesse..." -NoNewline
+Write-Host "[2/3] Universal Preload + AutoLoader (ALL)..." -NoNewline
 try {
-    if ($Force) {
-        $alBody = '{"phase":"full","force":true,"sync":true,"attach_meta":true}'
-        $alTimeout = 300
-    } else {
-        $alBody = '{"phase":"staged","attach_meta":true}'
-        $alTimeout = 90
-    }
+    # Explizit: alle Connectoren/Module/Frameworks vor API-Call
+    & $Python -c "import sys; sys.path[:0]=[r'$Root', r'$Root\03_Code', r'$Root\03_Code\core']; from universal_startup_preload import preload_all; r=preload_all(force=True); print(r.get('steps_ok'), r.get('steps_total'), r.get('ok'))" 2>$null
+    $alBody = '{"phase":"full","force":true,"sync":true,"attach_meta":true}'
+    $alTimeout = 300
     $al = Invoke-RestMethod -Uri "$GuiUrl/api/autoload/run" -Method POST `
         -Body $alBody -ContentType "application/json" -TimeoutSec $alTimeout
     $sum = $al.summary
     $ready = if ($sum.drivers_ready) { $sum.drivers_ready } else { $sum.drivers_loaded }
-    Write-Host " OK (Treiber $ready/$($sum.drivers_total), geladen $($sum.drivers_loaded))" -ForegroundColor Green
+    Write-Host " OK (Treiber $ready/$($sum.drivers_total), geladen $($sum.drivers_loaded), phase=full)" -ForegroundColor Green
 } catch {
-    Write-Host " FALLBACK" -ForegroundColor Yellow
+    Write-Host " FALLBACK (preload local only)" -ForegroundColor Yellow
+    try {
+        & $Python -c "import sys; sys.path[:0]=[r'$Root\03_Code\core', r'$Root\03_Code']; from universal_startup_preload import preload_all; print(preload_all(force=True).get('ok'))"
+    } catch {}
 }
 
 Write-Host "[3/3] Mainframe-Status..." -NoNewline

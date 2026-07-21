@@ -288,6 +288,14 @@ def ensure_agents_loaded(force: bool = False) -> bool:
         "anti-general-worker": {"name": "anti-general-worker", "role": "anti_agent", "backend": "grok-intern"},
         "anti-math-worker": {"name": "anti-math-worker", "role": "anti_agent", "backend": "grok-intern", "dom": "Math"},
         "anti-phil-worker": {"name": "anti-phil-worker", "role": "anti_agent", "backend": "grok-intern", "dom": "Phil"},
+        # 3. Agent: String-Quantisierer — whole-string Emission + Phrase-Table
+        "string-quantizer": {
+            "name": "string-quantizer",
+            "role": "quantizer",
+            "backend": "local",
+            "agent_kind": "quantizer",
+            "emit_policy": "whole_string_logical_never_char_stream",
+        },
     }
     return True
 
@@ -395,17 +403,39 @@ def assign_task_to_agent(task: Dict[str, Any]) -> str:
             pass
 
     try:
-        from agent_backend_router import annotate_task, is_dual_agent_enabled, dual_run, is_anti_agent
+        from agent_backend_router import (
+            annotate_task,
+            is_dual_agent_enabled,
+            dual_run,
+            is_anti_agent,
+            is_quantizer_agent,
+        )
 
         annotate_task(task)
-        if (
+        if is_quantizer_agent(task=task):
+            q = task.get("query") or task.get("original") or ""
+            if q.strip():
+                from agent_backend_router import invoke
+
+                task["quantizer_result"] = invoke(
+                    "quantizer",
+                    q,
+                    task,
+                    agent_response=str(task.get("response") or ""),
+                    anti_response=str(task.get("anti_response") or ""),
+                )
+        elif (
             is_dual_agent_enabled()
             and task.get("dual_agent")
             and not is_anti_agent(task=task)
         ):
             q = task.get("query") or task.get("original") or ""
             if q.strip():
+                # dual_run = Triade: Agent + Anti-Agent + Quantisierer
                 task["dual_agent_result"] = dual_run(q, task)
+                dual = task.get("dual_agent_result") or {}
+                if dual.get("quantizer"):
+                    task["quantizer_result"] = dual["quantizer"]
     except Exception:
         pass
 

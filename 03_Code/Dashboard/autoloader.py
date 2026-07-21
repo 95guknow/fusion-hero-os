@@ -72,8 +72,14 @@ DRIVER_CATALOG: List[DriverSpec] = [
     DriverSpec("worker_pools", "Worker-Pool Treiber", 0),
     DriverSpec("signal_network", "Layered Signal Network", 1, ["profile"]),
     DriverSpec("grok_bridge", "Grok-intern Bridge", 1),
+    DriverSpec("llm_frameworks", "LLM Framework Registry (all)", 1),
+    DriverSpec("graph_connectors", "Graph/MCP Connectors Hub", 1),
+    DriverSpec("cross_mesh", "Framework Kreuzvernetzung", 1, ["llm_frameworks"]),
+    DriverSpec("quantizer", "String-Quantisierer (3. Agent)", 1),
+    DriverSpec("agent_router", "Agent/Anti/Quantizer Router", 1),
     DriverSpec("mainframe", "HEROIC Mainframe / QUBO", 2, ["hyperthreading", "worker_pools"]),
     DriverSpec("registry_modules", "Registry Module-Bundle", 2, ["mainframe"]),
+    DriverSpec("integration_hub", "Fusion Integration Hub", 2, ["llm_frameworks", "graph_connectors"]),
     DriverSpec("meta_layer", "Windows Meta-Layer", 3, ["mainframe"]),
     DriverSpec("medienserver", "Medienserver Sync", 4, ["registry_modules"]),
 ]
@@ -319,6 +325,30 @@ def _run_autoload_sync_impl(
         _warm_worker_pools()
         _load_signal_network()
         _load_grok()
+        # Universal stack: frameworks + connectors + mesh + quantizer (always at start)
+        try:
+            from core.universal_startup_preload import preload_all, is_preload_enabled
+            if is_preload_enabled() or phase == "full":
+                # skip nested autoloader to avoid recursion
+                pre = preload_all(force=force, skip_autoloader=True)
+                _set_driver(
+                    "llm_frameworks",
+                    "loaded" if pre.get("ok") else "standby",
+                    {"steps_ok": pre.get("steps_ok"), "steps_total": pre.get("steps_total")},
+                )
+                _set_driver("graph_connectors", "loaded" if pre.get("ok") else "standby", {})
+                _set_driver("cross_mesh", "loaded" if pre.get("ok") else "standby", {})
+                _set_driver("quantizer", "loaded", {"enabled": True})
+                _set_driver("agent_router", "loaded", {"triad": True})
+                _set_driver("integration_hub", "loaded" if pre.get("ok") else "standby", {})
+                _STATE["universal_preload"] = {
+                    "ok": pre.get("ok"),
+                    "steps_ok": pre.get("steps_ok"),
+                    "steps_total": pre.get("steps_total"),
+                }
+        except Exception as exc:
+            _STATE["errors"].append(f"universal_preload: {exc}")
+            _set_driver("llm_frameworks", "error", error=str(exc))
 
         result = _load_registry_bundle(force=force, phase=phase, sync_medienserver=sync_medienserver)
 

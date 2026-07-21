@@ -118,6 +118,8 @@ class HeroicDocsHandler(http.server.SimpleHTTPRequestHandler):
             self.send_fusion_status()
         elif self.path == "/fusion/graph":
             self.send_fusion_graph()
+        elif self.path in ("/fusion/cross", "/fusion/crossmesh", "/fusion/kreuz"):
+            self.send_fusion_cross_mesh()
         elif self.path == "/llm/status" or self.path == "/llm":
             self.send_llm_status()
         elif self.path.startswith("/llm/") and self.path.endswith("/status"):
@@ -264,6 +266,25 @@ class HeroicDocsHandler(http.server.SimpleHTTPRequestHandler):
             return
         unified = get_unified_status()
         self._send_json(unified.get("graph", {}))
+
+    def send_fusion_cross_mesh(self):
+        """Vollständige Kreuzvernetzung aller Frameworks / Connectoren / Agenten / Layer."""
+        try:
+            from framework_cross_mesh import build_cross_mesh, cross_mesh_status
+            mesh = build_cross_mesh()
+            st = cross_mesh_status()
+            self._send_json({
+                "ok": True,
+                "cross_mesh": True,
+                "status": st,
+                "mesh": mesh,
+            })
+        except Exception as e:
+            try:
+                from fusion_integration_hub import get_cross_mesh
+                self._send_json(get_cross_mesh())
+            except Exception as e2:
+                self._send_json({"ok": False, "error": str(e), "fallback_error": str(e2)}, 503)
 
     def send_llm_status(self):
         if get_llm_status_all is None:

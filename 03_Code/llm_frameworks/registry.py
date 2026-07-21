@@ -72,6 +72,11 @@ def connector_status() -> Dict[str, object]:
         for pid in FREE_CHAIN
         if pid in statuses and statuses[pid].get("configured")
     ]
+    # Kreuzvernetzung: jeder Provider sieht alle Peers
+    peers = {
+        pid: [p for p in _FRAMEWORKS.keys() if p != pid]
+        for pid in _FRAMEWORKS
+    }
     return {
         "frameworks": statuses,
         "available": available,
@@ -82,7 +87,20 @@ def connector_status() -> Dict[str, object]:
         or "ollama" in free_ready,
         "count": len(_FRAMEWORKS),
         "pseudo_inhouse": True,
+        "cross_mesh": {
+            "enabled": True,
+            "mode": "complete_graph",
+            "peers": peers,
+            "undirected_pairs": len(_FRAMEWORKS) * max(0, len(_FRAMEWORKS) - 1) // 2,
+            "endpoint": "/fusion/cross",
+        },
     }
+
+
+def cross_mesh_peers(provider: str) -> List[str]:
+    """Alle anderen Frameworks als Kreuz-Nachbarn."""
+    pid = normalize_provider(provider)
+    return [p for p in _FRAMEWORKS.keys() if p != pid]
 
 
 def free_ready_providers() -> List[str]:

@@ -389,18 +389,67 @@ def post_dispatch(task: Dict[str, Any], result: Any = None) -> ControlResult:
     if isinstance(result, dict):
         task = {**task, **{k: v for k, v in result.items() if k in ("response", "synthesised_response", "qubo_result")}}
     cr = _run_strategies(task, "post", text)
-    if os.getenv("FUSION_DUAL_AGENT", "1") == "1" and task.get("agent_kind") != "anti_agent":
+    if os.getenv("FUSION_DUAL_AGENT", "1") == "1" and task.get("agent_kind") not in (
+        "anti_agent",
+        "quantizer",
+    ):
         try:
-            from agent_backend_router import invoke, is_anti_agent
+            from agent_backend_router import invoke, is_anti_agent, is_quantizer_agent
 
-            if not is_anti_agent(task=task) and text.strip():
+            if (
+                not is_anti_agent(task=task)
+                and not is_quantizer_agent(task=task)
+                and text.strip()
+            ):
+                q = task.get("query") or task.get("original") or text[:500]
                 anti = invoke(
                     "anti_agent",
-                    task.get("query") or task.get("original") or text[:500],
+                    q,
                     task,
                     agent_response=text,
                 )
                 task["anti_agent_review"] = anti
+                anti_text = ""
+                if isinstance(anti, dict):
+                    anti_text = anti.get("response") or ""
+                # 3. Agent: Quantisierer wohnt jeder Verhandlung bei
+                if os.getenv("FUSION_QUANTIZER_AGENT", "1") == "1":
+                    quant = invoke(
+                        "quantizer",
+                        q,
+                        {**task, "anti_response": anti_text},
+                        agent_response=text,
+                        anti_response=anti_text,
+                    )
+                    task["quantizer_review"] = quant
+                    # Whole-string Emission auf Task-Text anwenden
+                    try:
+                        from string_quantizer_agent import emit_logical
+
+                        if text.strip():
+                            task["response_whole_string"] = emit_logical(text)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+    elif (
+        os.getenv("FUSION_QUANTIZER_AGENT", "1") == "1"
+        and task.get("agent_kind") not in ("quantizer",)
+        and text.strip()
+    ):
+        # Auch ohne Dual-Agent: Quantisierer begleitet Post-Dispatch
+        try:
+            from agent_backend_router import invoke, is_quantizer_agent
+
+            if not is_quantizer_agent(task=task):
+                q = task.get("query") or task.get("original") or text[:500]
+                task["quantizer_review"] = invoke(
+                    "quantizer",
+                    q,
+                    task,
+                    agent_response=text,
+                    anti_response="",
+                )
         except Exception:
             pass
     try:
