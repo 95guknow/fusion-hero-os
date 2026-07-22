@@ -49,7 +49,11 @@ except Exception:  # noqa: BLE001 — early boot without package path
     TCP_PORT = int(os.getenv("FUSION_IPC_PORT", "19753"))
     DASHBOARD_PORT = int(os.getenv("FUSION_BACKEND_PORT", os.getenv("FUSION_PORT_BASE", "42069")))
     PORT_BASE = 42069
-DASHBOARD_HOST = os.getenv("FUSION_BACKEND_HOST", "0.0.0.0")
+# Dark by default: loopback-only unless the operator explicitly opts into a
+# wider bind (LAN/Tailscale reachability from a phone etc). The dashboard's
+# compute-trigger endpoints have no auth unless FUSION_DASHBOARD_ADMIN_TOKEN is
+# set, so a 0.0.0.0 default silently maximized DoS/attack surface.
+DASHBOARD_HOST = os.getenv("FUSION_BACKEND_HOST", "127.0.0.1")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -184,11 +188,17 @@ def start_dashboard(manager: ProcessManager) -> Optional[subprocess.Popen]:
         )
         manager.add(proc)
         logger.info(
-            "Dashboard started (PID: %s) → http://127.0.0.1:%d (LAN: host=%s)",
+            "Dashboard started (PID: %s) → http://127.0.0.1:%d (bind host=%s)",
             proc.pid,
             DASHBOARD_PORT,
             DASHBOARD_HOST,
         )
+        if DASHBOARD_HOST == "127.0.0.1":
+            logger.info(
+                "Loopback-only by default. For phone/LAN/Tailscale access, set "
+                "FUSION_BACKEND_HOST explicitly (and configure "
+                "FUSION_DASHBOARD_ADMIN_TOKEN before widening beyond localhost)."
+            )
         return proc
     except Exception as e:
         logger.error("Failed to start Dashboard: %s", e)

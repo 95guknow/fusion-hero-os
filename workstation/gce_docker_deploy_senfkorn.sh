@@ -2,8 +2,10 @@
 # Senfkorn UG — automated Docker deploy on GCE (europe-west3)
 # Usage (Cloud Shell or VM):
 #   bash workstation/gce_docker_deploy_senfkorn.sh
+# Required env (DoS/DDoS: no world-open default — see ALLOW_CIDR below):
+#   PROJECT_ID, ALLOW_CIDR
 # Optional env:
-#   PROJECT_ID, ZONE (default europe-west3-a), VM_NAME, ALLOW_CIDR (default 0.0.0.0/0)
+#   ZONE (default europe-west3-a), VM_NAME
 
 set -euo pipefail
 
@@ -12,7 +14,17 @@ ZONE="${ZONE:-europe-west3-a}"
 PROJECT_ID="${PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}"
 VM_NAME="${VM_NAME:-fusion-mesh-exit}"
 FW_RULE="${FW_RULE:-allow-fusion-dashboard-8000}"
-ALLOW_CIDR="${ALLOW_CIDR:-0.0.0.0/0}"
+# Fail closed: no implicit 0.0.0.0/0. The dashboard's compute-trigger
+# endpoints have no auth by default, so an accidental world-open rule turns
+# them into an unauthenticated, internet-reachable DoS surface. Set ALLOW_CIDR
+# explicitly — e.g. your Tailscale/VPN range, or "0.0.0.0/0" if you really
+# intend public access and have configured FUSION_DASHBOARD_ADMIN_TOKEN.
+ALLOW_CIDR="${ALLOW_CIDR:-}"
+if [[ -z "${ALLOW_CIDR}" ]]; then
+  echo "ERROR: set ALLOW_CIDR (e.g. your Tailscale/VPN CIDR). No world-open default."
+  echo "       Pass ALLOW_CIDR=0.0.0.0/0 explicitly if public access is truly intended."
+  exit 1
+fi
 REPO_DIR="${REPO_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 echo "=== Senfkorn / Fusion Hero OS Docker deploy ==="

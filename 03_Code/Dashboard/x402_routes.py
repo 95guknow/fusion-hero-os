@@ -2,10 +2,13 @@
 """API: x402 full security stack status + run."""
 from __future__ import annotations
 
+import hmac
+import os
 import sys
+import threading
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 _ROOT = Path(__file__).resolve().parents[2]
@@ -14,6 +17,17 @@ for p in (str(_ROOT), str(_ROOT / "03_Code")):
         sys.path.insert(0, p)
 
 router = APIRouter(tags=["x402-security"])
+
+# Each run spawns a subprocess with a 180s timeout; without a cap an attacker
+# (or a busy operator) can queue unbounded concurrent long-lived subprocesses.
+_MAX_CONCURRENT_RUNS = int(os.getenv("FUSION_X402_MAX_CONCURRENT", "1"))
+_run_lock = threading.Lock()
+_runs_in_flight = 0
+
+# broadcast_onchain triggers a real on-chain transaction, not just a dry run —
+# gate it behind the same admin token as the dashboard's other heavy/sensitive
+# endpoints once configured (unset by default; see app.py).
+_ADMIN_TOKEN = os.getenv("FUSION_DASHBOARD_ADMIN_TOKEN")
 
 
 class X402RunIn(BaseModel):
@@ -47,9 +61,24 @@ async def x402_status():
 
 
 @router.post("/api/x402/run")
-async def x402_run(body: X402RunIn):
+async def x402_run(body: X402RunIn, request: Request):
     import asyncio
     import subprocess
+
+    global _runs_in_flight
+
+    if body.broadcast_onchain and _ADMIN_TOKEN:
+        supplied = request.headers.get("x-fusion-admin-token", "")
+        if not hmac.compare_digest(supplied, _ADMIN_TOKEN):
+            raise HTTPException(status_code=401, detail="admin token required for on-chain broadcast")
+
+    with _run_lock:
+        if _runs_in_flight >= _MAX_CONCURRENT_RUNS:
+            raise HTTPException(
+                status_code=429,
+                detail="an x402 run is already in progress, retry shortly",
+            )
+        _runs_in_flight += 1
 
     def _run():
         cmd = [sys.executable, str(_ROOT / "scripts" / "run_x402_stack.py"), "--json-only"]
@@ -68,4 +97,8 @@ async def x402_run(body: X402RunIn):
                 "returncode": r.returncode,
             }
 
-    return await asyncio.to_thread(_run)
+    try:
+        return await asyncio.to_thread(_run)
+    finally:
+        with _run_lock:
+            _runs_in_flight = max(0, _runs_in_flight - 1)

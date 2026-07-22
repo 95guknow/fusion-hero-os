@@ -32,8 +32,8 @@ class ConsentGrantResponse(BaseModel):
 class NodeFixture(BaseModel):
     node_id: str
     type: str
-    dimensions: Dict[str, float] = Field(default_factory=dict)
-    attributes: Dict[str, object] = Field(default_factory=dict)
+    dimensions: Dict[str, float] = Field(default_factory=dict, max_length=256)
+    attributes: Dict[str, object] = Field(default_factory=dict, max_length=256)
 
 
 class EdgeFixture(BaseModel):
@@ -44,11 +44,14 @@ class EdgeFixture(BaseModel):
     weight: float = 1.0
 
 
+# Bounds below guard against a single request driving an unbounded, synchronous
+# O(n^2)-ish QUBO build/solve (see pipeline.optimize / qubo_bridge.build_qubo).
+# Not a product limit — a resource-exhaustion backstop for this local slice.
 class IngestRequest(BaseModel):
     subject_id: str
     grant_id: str
-    nodes: List[NodeFixture] = Field(default_factory=list)
-    edges: List[EdgeFixture] = Field(default_factory=list)
+    nodes: List[NodeFixture] = Field(default_factory=list, max_length=2000)
+    edges: List[EdgeFixture] = Field(default_factory=list, max_length=4000)
 
 
 class SnapshotResponse(BaseModel):
@@ -62,7 +65,7 @@ class SnapshotResponse(BaseModel):
 class ActivateRequest(BaseModel):
     subject_id: str
     grant_id: str
-    activations: Dict[str, float] = Field(default_factory=dict)
+    activations: Dict[str, float] = Field(default_factory=dict, max_length=2000)
     steps: int = Field(1, ge=0, le=1000)
 
 
