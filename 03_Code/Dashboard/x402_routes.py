@@ -22,7 +22,7 @@ router = APIRouter(tags=["x402-security"])
 # (or a busy operator) can queue unbounded concurrent long-lived subprocesses.
 _MAX_CONCURRENT_RUNS = int(os.getenv("FUSION_X402_MAX_CONCURRENT", "1"))
 _run_lock = threading.Lock()
-_runs_in_flight = 0
+_run_state = {"in_flight": 0}
 
 # broadcast_onchain triggers a real on-chain transaction, not just a dry run —
 # gate it behind the same admin token as the dashboard's other heavy/sensitive
@@ -65,20 +65,18 @@ async def x402_run(body: X402RunIn, request: Request):
     import asyncio
     import subprocess
 
-    global _runs_in_flight
-
     if body.broadcast_onchain and _ADMIN_TOKEN:
         supplied = request.headers.get("x-fusion-admin-token", "")
         if not hmac.compare_digest(supplied, _ADMIN_TOKEN):
             raise HTTPException(status_code=401, detail="admin token required for on-chain broadcast")
 
     with _run_lock:
-        if _runs_in_flight >= _MAX_CONCURRENT_RUNS:
+        if _run_state["in_flight"] >= _MAX_CONCURRENT_RUNS:
             raise HTTPException(
                 status_code=429,
                 detail="an x402 run is already in progress, retry shortly",
             )
-        _runs_in_flight += 1
+        _run_state["in_flight"] += 1
 
     def _run():
         cmd = [sys.executable, str(_ROOT / "scripts" / "run_x402_stack.py"), "--json-only"]
@@ -101,4 +99,4 @@ async def x402_run(body: X402RunIn, request: Request):
         return await asyncio.to_thread(_run)
     finally:
         with _run_lock:
-            _runs_in_flight = max(0, _runs_in_flight - 1)
+            _run_state["in_flight"] = max(0, _run_state["in_flight"] - 1)
