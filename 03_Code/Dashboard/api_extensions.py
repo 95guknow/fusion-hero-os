@@ -1268,19 +1268,45 @@ async def api_medienserver_status():
 async def api_autoload_status():
     from autoloader import autoload_status
 
-    return autoload_status()
+    out = autoload_status()
+    try:
+        from core.universal_startup_preload import last_report, is_preload_enabled
+
+        out["universal_preload"] = last_report()
+        out["preload_all_enabled"] = is_preload_enabled()
+    except Exception as exc:
+        out["universal_preload"] = {"error": str(exc)}
+    return out
 
 
 @router.post("/api/autoload/run")
 async def api_autoload_run(payload: AutoLoadPayload):
     from autoloader import run_autoload
 
+    # Always ensure full stack first when force or phase=full
+    try:
+        from core.universal_startup_preload import preload_all
+
+        if payload.force or (payload.phase or "") == "full" or True:
+            preload_all(force=bool(payload.force), skip_autoloader=True)
+    except Exception:
+        pass
+
     return await run_autoload(
-        phase=payload.phase,
+        phase=payload.phase or "full",
         force=payload.force,
         sync_medienserver=payload.sync,
         attach_meta=payload.attach_meta,
     )
+
+
+@router.post("/api/preload/all")
+async def api_preload_all(force: bool = True):
+    """Explizit: alle Connectoren, Module, Frameworks, Quantizer, Mesh laden."""
+    import asyncio
+    from core.universal_startup_preload import preload_all
+
+    return await asyncio.to_thread(preload_all, force=force, skip_autoloader=True)
 
 
 @router.get("/api/hero-guide/status")

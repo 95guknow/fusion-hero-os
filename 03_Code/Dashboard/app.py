@@ -486,6 +486,11 @@ async def startup_event():
         import sys
 
         sys.exit(1)
+    # Default: ALLES laden (Connectoren, Module, Frameworks, Quantizer, Mesh)
+    os.environ.setdefault("FUSION_AUTO_LOAD", "1")
+    os.environ.setdefault("FUSION_PRELOAD_ALL", "1")
+    os.environ.setdefault("FUSION_ALL_MODULES", "1")
+    os.environ.setdefault("FUSION_BOOT_PHASE", "full")
     launcher_fast_boot = os.getenv("FUSION_AUTO_LOAD") == "0"
     try:
         from fusion_settings import boot_load
@@ -509,11 +514,31 @@ async def startup_event():
     fast_boot = os.getenv("FUSION_AUTO_LOAD", "1") == "0"
     if fast_boot:
         print("[Startup] Fast boot (FUSION_AUTO_LOAD=0) — Bridge UI sofort verfügbar")
+        # Selbst im Fast-Boot: leichte Connector/Framework-Inventar-Ladung
+        if os.getenv("FUSION_PRELOAD_ALL", "1") != "0":
+            try:
+                from core.universal_startup_preload import preload_all
+                pr = preload_all(force=False)
+                print(f"[Preload] fast-path {pr.get('steps_ok')}/{pr.get('steps_total')}")
+            except Exception as _pe:
+                print(f"[Preload] note: {_pe}")
         asyncio.create_task(heroic_core_event_loop())
         return
 
-    # Generelles AutoLoad + Faktenerkennung ZU BEGINN DES OS STARTS
-    autoloader.run(phase="staged", attach_meta=True)
+    # UNIVERSAL PRELOAD: Connectoren + Module + Frameworks + Quantizer + Mesh
+    try:
+        from core.universal_startup_preload import preload_all
+        pr = preload_all(force=False)
+        print(
+            f"[Preload] ALL {pr.get('steps_ok')}/{pr.get('steps_total')} "
+            f"ok={pr.get('ok')} phase={os.getenv('FUSION_BOOT_PHASE', 'full')}"
+        )
+    except Exception as _pe:
+        print(f"[Preload] FAIL note: {_pe}")
+
+    # Generelles AutoLoad + Faktenerkennung ZU BEGINN DES OS STARTS (full default)
+    _boot_phase = os.getenv("FUSION_BOOT_PHASE", "full")
+    autoloader.run(phase=_boot_phase, attach_meta=True)
     detect_input_factors()
     detect_output_factors()
     _ensure_agents()

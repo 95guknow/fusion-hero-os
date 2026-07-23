@@ -206,6 +206,24 @@ trinity_roles:
   worker: gpt
   verifier: grok
 
+# Vollständige Kreuzvernetzung — jedes Framework mit jedem (siehe framework_cross_mesh.py)
+cross_mesh:
+  enabled: true
+  module: framework_cross_mesh
+  mode: full_bipartite_and_complete
+  principles:
+    - every_llm_framework_to_every_llm_framework
+    - every_connector_to_every_llm_framework
+    - agent_triad_fully_meshed
+    - layers_fully_meshed
+    - systems_cross_linked
+  agent_triad:
+    - agent
+    - anti_agent
+    - quantizer
+  health: /fusion/cross
+  orchestrate_cross: /fusion/orchestrate?cross=1
+
 endpoints:
   # Control plane (Grok interconnect — canonical re-routes)
   control_plane: /mainframe/grok
@@ -238,12 +256,15 @@ endpoints:
   # Legacy surfaces (still live; prefer control_plane)
   unified: /fusion/status
   graph: /fusion/graph
+  cross_mesh: /fusion/cross
+  cross_mesh_alias: /fusion/crossmesh
   mesh: /mesh/status
   mesh_segment: /mesh/{id}/status
   llm: /llm/status
   llm_segment: /llm/{id}/status
   tailscale: /tailscale/status
   orchestrate: /fusion/orchestrate
+  orchestrate_cross: /fusion/orchestrate
   masterseed: /status
   vr_status: /api/vr/status
   vr_viewer: /vr/viewer

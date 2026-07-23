@@ -1,0 +1,10 @@
+{
+  "kind": "CLEARWEB_OUTBOUND",
+  "utc": "2026-07-21T13:07:47.097187+00:00",
+  "platform": "12.1.0",
+  "mode": "public_broadcast_labor",
+  "offense": "FORBIDDEN",
+  "funnel": "not_enabled_no_serve_config_auth_gate_first",
+  "surfaces_pass": true,
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build."
+}
