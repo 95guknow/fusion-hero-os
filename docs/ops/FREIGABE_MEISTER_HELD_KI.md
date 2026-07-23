@@ -9,7 +9,7 @@
 | Feld | Wert |
 |------|------|
 | Thread | 19f8468c2f5b87e9 |
-| MCP-Mailbox | stephan95g@googlemail.com |
+| MCP-Mailbox | YOUR_GMAIL_ACCOUNT |
 | Lesbar? | **NEIN** (404 / nicht in angebundener Mailbox; u/1 = anderes Konto?) |
 | Versand via MCP bestätigt? | **NEIN** |
 
