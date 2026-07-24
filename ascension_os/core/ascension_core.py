@@ -124,7 +124,7 @@ class AscensionCore:
     """
 
     def __init__(self, consent_gate: "AscensionConsentGate" = None):
-        self.version = "9.7-coevolutionary"
+        self.version = "9.10-aspirational"
 
         # Consent gate (v10): personal-data operations fail closed unless an
         # AscensionConsentGate bound to a live meta ConsentStore is supplied.
