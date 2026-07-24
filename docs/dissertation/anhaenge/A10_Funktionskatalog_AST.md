@@ -4,7 +4,7 @@
 **Nicht:** Beweis der Korrektheit einzelner Funktionen.
 **Designvorlage:** V3.3 — Katalog = Spezifikation; Herleitungen in A01–A09.
 
-**Dateien gesamt:** 135 (fusion_hero_os: 78 · Dashboard: 57) · **Klassen:** 239 · **Top-Level-Funktionen:** 722
+**Dateien gesamt:** 200 (fusion_hero_os: 135 · Dashboard: 65) · **Klassen:** 314 · **Top-Level-Funktionen:** 1355
 
 Scan-Wurzeln:
 - `fusion_hero_os/`
@@ -37,6 +37,43 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - (Datenklasse / ohne Methoden)
 - def `_max_workers_or_none`
 - def `get_config`
+- def `get_port_base`
+
+## `fusion_hero_os/connectors/graph_api.py`
+
+- def `_load_yaml`
+- def `_env`
+- def `_live_enabled`
+### class `GraphConnectorSpec`
+- public: `token`, `available`
+### class `GraphAPIHub`
+- public: `list_connectors`, `status`, `request`, `instagram_publish`, `dispatch`
+- intern: `__init__`, `_dry`
+- def `build_default_hub`
+- def `status_all`
+
+## `fusion_hero_os/core/_mtc_obf.py`
+
+- def `_L`
+
+## `fusion_hero_os/core/api_plane.py`
+
+- def `load_catalog`
+- def `_fallback_catalog`
+- def `classify_path`
+- def `plane_meta`
+- def `planes_status`
+- def `assert_plane_safe_payload`
+- def `main`
+
+## `fusion_hero_os/core/autoload_controller.py`
+
+- def `_now`
+- def `_load`
+- def `mark_ready`
+- def `public_status`
+- def `status`
+- def `main`
 
 ## `fusion_hero_os/core/base_module.py`
 
@@ -50,11 +87,86 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `process`, `propose_evolution`, `peer_review`
 - intern: `__init__`
 
+## `fusion_hero_os/core/browser_egress.py`
+
+- def `load_config`
+- def `_expand`
+- def `resolve_profile`
+- def `open_url`
+- def `open_urls`
+- def `status`
+- def `main`
+
 ## `fusion_hero_os/core/cec.py`
 
 ### class `CoEvolutionaryClosure`
 - public: `step`
 - intern: `__init__`, `_calculate_coherence`
+
+## `fusion_hero_os/core/comaedchen_audio.py`
+
+- def `_now`
+- def `_ps`
+- def `_process_running`
+- def `_ensure_comet`
+- def `_ensure_audiorelay`
+- def `_svv_path`
+- def `_set_default_endpoint`
+- def `_phone_online`
+- def `_open_comet_surface`
+- def `activate`
+- def `status`
+- def `deactivate_route_note`
+- def `main`
+
+## `fusion_hero_os/core/comaedchen_identity.py`
+
+- def `_now`
+- def `voice_design_contract`
+- def `status`
+- def `propagate`
+- def `main`
+
+## `fusion_hero_os/core/control_instances.py`
+
+### class `ControlResult`
+- public: `to_dict`
+### class `ControlReport`
+- public: `to_dict`
+- def `_load_cfg`
+- def `_load_dotenv`
+- def `list_instances`
+- def `status`
+- def `_parse_json_answer`
+- def `_invoke_accuracy`
+- def `_answer_key`
+- def `_consensus`
+- def `run_control_panel`
+- def `main`
+
+## `fusion_hero_os/core/conversation_archive_inventory.py`
+
+- def `_author_display`
+- def `_decode_instance_key`
+- def `_safe_public_path`
+- def `scan_conversation_archives`
+- def `write_dissertation_appendix`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/daemon_self_heal_field_study.py`
+
+### class `ClearwebLens`
+- (Datenklasse / ohne Methoden)
+### class `HealStep`
+- public: `to_dict`
+- def `_energy`
+- def `_build_qubo`
+- def `_hamming`
+- def `fixed_point_invert`
+- def `qubo_local_search`
+- def `run_field_study`
+- def `main`
 
 ## `fusion_hero_os/core/dashboard/orchestration.py`
 
@@ -67,6 +179,74 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 ### class `Workspace`
 - public: `set`, `get`, `clear`
 - intern: `__init__`
+
+## `fusion_hero_os/core/dauer_eupression.py`
+
+- def `_now`
+- def `_now_ts`
+- def `load_deps`
+- def `_builtin_deps`
+- def `topo_order`
+- def `_probe_node`
+- def `pulse`
+- def `ensure_continuous`
+- def `install`
+- def `_load_state`
+- def `_save_state`
+- def `public_status`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/daycycle_mem.py`
+
+- def `load_config`
+- def `_deep_merge`
+- def `_cfg`
+- def `_p`
+- def `mem_path`
+- def `state_path`
+- def `traffic_path`
+- def `protocol_path`
+- def `archive_dir`
+- def `load_state`
+- def `save_state`
+- def `_now_local`
+- def `_now_utc`
+- def `_redact`
+- def `_git`
+- def `_gh`
+- def `private_repo_path`
+- def `ensure_dev_branch`
+- def `protocol_event`
+- def `is_agent_awake`
+- def `wake_agent`
+- def `check_wake_word`
+- def `minute_tick`
+- def `hourly_flush`
+- def `pr_cycle`
+- def `daily_top_merge`
+- def `fanout_updates`
+- def `log_instance_traffic`
+- def `run_due`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/dead_letterbox_pseudo_attack_sim.py`
+
+### class `DeadLetterbox`
+- public: `deposit`
+### class `PseudoProbe`
+- public: `to_dict`
+### class `DefenseVerdict`
+- public: `to_dict`
+### class `MockDefender`
+- public: `receive`
+- intern: `__init__`, `_forbidden_target`
+- def `_synthetic_boxes`
+- def `_synthetic_probes`
+- def `run_pseudo_attack_sim`
+- def `status`
+- def `main`
 
 ## `fusion_hero_os/core/dependency_atlas.py`
 
@@ -107,6 +287,133 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `build_default_dispatcher`
 - def `get_default_dispatcher`
 
+## `fusion_hero_os/core/dns_tor_stack.py`
+
+- def `load_config`
+- def `_cfg`
+- def `_tor_data`
+- def `find_tor_exe`
+- def `start_tor_if_possible`
+- def `_port_open`
+- def `_parse_qname`
+- def `_encode_name`
+- def `_build_query`
+- def `_forward_udp`
+- def `resolve_once`
+- def `_handle_query`
+- def `serve`
+- def `status`
+- def `configure_tailscale_dns`
+- def `main`
+
+## `fusion_hero_os/core/doppelrekursionsrollation.py`
+
+### class `PCG64`
+- public: `next_u64`, `fill`
+- intern: `__init__`, `_step`
+- def `_rotl_bytes`
+- def `_sha256`
+- def `_sha512`
+- def `polymesh_day_seed`
+- def `polymesh_hash_number_1`
+- def `doppelrekursionsrollation`
+- def `gpg_hash_payload`
+- def `gpg_hash_with_prng`
+- def `run_day_rollation`
+- def `main`
+
+## `fusion_hero_os/core/dual_timeline_training.py`
+
+### class `FileEvent`
+- public: `to_dict`
+### class `TrainSample`
+- public: `to_dict`
+- def `load_config`
+- def `_cfg`
+- def `output_dir`
+- def `_sha16`
+- def `_layer_for`
+- def `_geltung_hits`
+- def `virtual_timelines_enabled`
+- def `heroic_score_for_text`
+- def `_tau`
+- def `iter_candidate_files`
+- def `scan_files`
+- def `_chunk_text`
+- def `_samples_from_file`
+- def `build_samples`
+- def `consistency_report`
+- def `run_auto_train`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/erkenntnis_archiv.py`
+
+- def `_state_dir`
+- def `_now`
+- def `_read_json`
+- def `_write_json`
+- def `_append_jsonl`
+- def `_read_jsonl`
+- def `_summarize_hour`
+### class `ErkenntnisArchiv`
+- public: `record`, `status`, `force_rollover`
+- intern: `__init__`, `_hourly_path`, `_rollover_state_path`, `_daily_path`, `_weekly_path`, `_monthly_path`, `_yearly_path`, `_keys`, `_last_keys`, `_save_keys`, `_maybe_rollover`, `_roll_hour_into_day`, `_roll_day_into_week`, `_roll_week_into_month`, `_roll_month_into_year`
+- def `record`
+- def `status`
+
+## `fusion_hero_os/core/eudaemon_agent.py`
+
+### class `CorridorStep`
+- public: `to_dict`
+- def `_now`
+- def `_plane_hint`
+- def `_classify_body`
+- def `walk_corridor`
+- def `meister_integrity`
+- def `eudaimonia_corridor_check`
+- def `act_other_side`
+- def `run_eudaemon`
+- def `main`
+
+## `fusion_hero_os/core/god_layer_seal.py`
+
+- def `_now`
+- def `_norm_token`
+- def `_token_hash`
+- def `_default_unlock_hash`
+- def `_load`
+- def `_save`
+- def `is_sealed`
+- def `can_read`
+- def `can_write`
+- def `require_write`
+- def `seal_god_layer`
+- def `_bind_private_person_vault`
+- def `try_unlock`
+- def `public_status`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/google_one_sicherung.py`
+
+- def `_open_browser_url`
+- def `load_config`
+- def `_expand`
+- def `_local_root`
+- def `_is_excluded`
+- def `_match_include`
+- def `_sha16_file`
+- def `activate`
+- def `run_snapshot`
+- def `_find_drivefs_exe`
+- def `_drivefs_running`
+- def `_find_my_drive_paths`
+- def `setup_desktop`
+- def `setup_phone`
+- def `status`
+- def `main`
+
 ## `fusion_hero_os/core/grok_interconnect.py`
 
 ### class `GrokNode`
@@ -122,7 +429,6 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `evolve`
 - def `get_graph`
 - def `_persist`
-- def `_read_json`
 
 ## `fusion_hero_os/core/grok_route_table.py`
 
@@ -131,6 +437,44 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `resolve`
 - def `route_message`
 - def `all_routes`
+
+## `fusion_hero_os/core/headset_layers.py`
+
+- def `_now`
+- def `_default_state`
+- def `load_state`
+- def `save_state`
+- def `_phone_link_snapshot`
+- def `set_mesh_only`
+- def `is_mesh_only`
+- def `banner`
+- def `status`
+- def `_probe_default_device`
+- def `enable`
+- def `disable`
+- def `_norm`
+- def `set_active`
+- def `apply_active_route`
+- def `_svv_set_default`
+- def `activate_stack`
+- def `main`
+
+## `fusion_hero_os/core/hero_autoupdate.py`
+
+- def `_utc_now`
+- def `_repo_root`
+- def `_load_yaml_config`
+- def `_env_float`
+- def `_env_bool`
+### class `HeroAutoupdateConfig`
+- public: `load`
+### class `HeroAutoupdateState`
+- public: `to_dict`, `from_dict`
+### class `HeroAutoupdateService`
+- public: `state_file`, `notify_android`, `touch`, `idle_sec`, `status`, `tick`, `notify_startup`
+- intern: `__init__`, `_load_state`, `_save_state`, `_push_event`, `_read_version`, `_git_head`, `_git_behind_origin`, `_health`
+- def `get_hero_autoupdate`
+- def `reset_hero_autoupdate_for_tests`
 
 ## `fusion_hero_os/core/heroic_core.py`
 
@@ -142,7 +486,7 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 ## `fusion_hero_os/core/heroic_core_orchestrator.py`
 
 ### class `MasterSeed`
-- public: `state_hash`, `verify_integrity`
+- public: `state_hash`, `verify_integrity`, `public_display`
 ### class `PMSEvidenceSpine`
 - public: `available`, `execute_operator_chain`, `validate_chain`
 - intern: `__init__`, `_run`
@@ -170,6 +514,22 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - intern: `__init__`
 - def `run_sandbox_verification`
 
+## `fusion_hero_os/core/horkrux_bottom_up.py`
+
+- def `load_config`
+- def `_expand`
+- def `_git`
+- def `_is_git`
+- def `_sync_git`
+- def `_check_state_dir`
+- def `_check_skill`
+- def `_check_remote`
+- def `_scan_worktree_root`
+- def `_preserve_horcrux`
+- def `run_bottom_up`
+- def `status`
+- def `main`
+
 ## `fusion_hero_os/core/inference_scheduler_qubo.py`
 
 ### class `ScheduleProblem`
@@ -179,6 +539,30 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `greedy_schedule`
 - def `solve_schedule`
 - def `random_problem`
+
+## `fusion_hero_os/core/inside_out_inventory.py`
+
+### class `Item`
+- public: `to_dict`
+- def `_expand`
+- def `_class_hint`
+- def `_iter_files`
+- def `_match_repo_globs`
+- def `_record`
+- def `run_inventory`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/layer_distance_crosscheck.py`
+
+- def `build_adjacency`
+- def `distance_n_neighbors`
+### class `BlindSpotCandidate`
+- public: `to_dict`
+- def `find_blind_spot_candidates`
+- def `crosscheck_all`
+- def `build_adjacency_from_fusion_unified`
+- def `crosscheck_real_layers`
 
 ## `fusion_hero_os/core/layer_registry.py`
 
@@ -198,6 +582,20 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `_build_status`
 - def `get_all_layer_status`
 
+## `fusion_hero_os/core/masterseed_public.py`
+
+- def `_b32_crockford`
+- def `_check4`
+### class `PublicMasterSeedView`
+- public: `to_dict`
+- intern: `__str__`
+- def `_platform_version_default`
+- def `public_fingerprint`
+- def `display_id_from_fingerprint`
+- def `parse_display_id`
+- def `public_view`
+- def `assert_unique_display`
+
 ## `fusion_hero_os/core/masterseed_sync.py`
 
 ### class `SyncState`
@@ -206,12 +604,62 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `sync_evolutions`
 - def `identity_preservation_score`
 
+## `fusion_hero_os/core/masterseed_vault.py`
+
+### class `ShardMeta`
+- public: `to_dict`
+- def `vault_root`
+- def `_load_split_config`
+- def `list_module_split`
+- def `_qubo_perm_from_seed`
+- def `qubo_permute`
+- def `qubo_unpermute`
+- def `_gpg_available`
+- def `_gpg_encrypt`
+- def `_gpg_decrypt`
+- def `seal_function_shard`
+- def `open_function_shard`
+- def `seal_all_modules`
+- def `export_public_display`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/meister_hasch_optimize.py`
+
+### class `OptimizeConfig`
+- public: `to_dict`
+### class `ProbeResult`
+- public: `to_dict`
+### class `LensReport`
+- public: `passed`, `score`, `to_dict`
+### class `OptimizeReport`
+- public: `overall_passed`, `to_dict`
+- def `_platform_version`
+- def `_sha256_file`
+- def `_now_iso`
+- def `_fable5_probes`
+- def `_mythos5_probes`
+- def `_hypertarnkappe_probes`
+- def `_hyperpanzerknacker_probes`
+- def `_optimizations_from_lenses`
+- def `run_optimize`
+- def `status`
+
 ## `fusion_hero_os/core/models.py`
 
 ### class `Task`
 - (Datenklasse / ohne Methoden)
 ### class `TaskResult`
 - (Datenklasse / ohne Methoden)
+
+## `fusion_hero_os/core/mugen_tsuky_chan.py`
+
+- def `_obf`
+- def `status`
+- def `day_hash_1`
+- def `roll`
+- def `mint_once`
+- def `propagate`
 
 ## `fusion_hero_os/core/multimodal_protocol.py`
 
@@ -221,6 +669,9 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `_extract_text`
 - def `_extract_pdf`
 - def `_extract_image`
+- def `_mutagen_info`
+- def `_extract_audio`
+- def `_extract_video`
 - def `classify`
 - def `_iter_archive_files`
 - def `build_inventory`
@@ -233,11 +684,288 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `to_dict`
 - def `main`
 
+## `fusion_hero_os/core/operator_identity.py`
+
+- def `_now`
+- def `load_identity`
+- def `save_identity_template`
+- def `operator_role`
+- def `operator_id`
+- def `author_for_publication`
+- def `public_operator_view`
+- def `is_person_bound`
+- def `extract_status`
+- def `main`
+
+## `fusion_hero_os/core/ops_deploy.py`
+
+- def `status`
+- def `deploy`
+- def `main`
+
+## `fusion_hero_os/core/ops_merge.py`
+
+- def `status`
+- def `merge_both`
+- def `main`
+
+## `fusion_hero_os/core/ops_push.py`
+
+- def `status`
+- def `push_public`
+- def `main`
+
+## `fusion_hero_os/core/ops_vocabulary.py`
+
+- def `load_ops`
+- def `meaning_of`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/persona_signature.py`
+
+- def `_display_name`
+- def `signature_block`
+- def `expand_signature_triggers`
+- def `signature_status`
+- def `main`
+
+## `fusion_hero_os/core/poly_fa_write_gate.py`
+
+- def `_now`
+- def `_now_ts`
+- def `hostname`
+- def `_norm_token`
+- def `_token_hash`
+- def `default_policy`
+- def `load_policy`
+- def `save_policy`
+- def `install_handover_policy`
+- def `_save_json`
+- def `_load_json`
+- def `is_authorized_desktop`
+- def `_phrase_ok`
+- def `_poly_plane_ok`
+- def `request_write`
+- def `approve_request_with_poly_fa`
+- def `_active_grants`
+- def `can_write_now`
+- def `revoke_grant`
+- def `public_status`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/poly_mesh_cost_function.py`
+
+### class `BurnBreakdown`
+- public: `total_eur_h`, `total_eur_month`, `to_dict`
+- def `compute_burn`
+- def `compute_feu`
+- def `resolve_margin`
+- def `tier_price`
+- def `placement_cost`
+- def `evaluate_full`
+- def `cost_function_status`
+- def `main`
+
+## `fusion_hero_os/core/poly_mesh_once_url.py`
+
+- def `_state_dir`
+- def `_secret_path`
+- def `_ledger_path`
+- def `get_or_create_secret`
+- def `_b64url`
+- def `_b64url_decode`
+- def `encrypt_mesh_ip`
+- def `decrypt_mesh_ip`
+- def `heroic_dns_label`
+- def `pick_heroic_name`
+- def `_load_ledger`
+- def `_save_ledger`
+### class `OnceUrl`
+- public: `once_url`, `mesh_once_url`, `to_dict`
+- def `mint_once_url`
+- def `redeem_once`
+- def `mint_from_tailscale`
+
+## `fusion_hero_os/core/poly_mesh_orchestrator.py`
+
+- def `_now`
+- def `_load_router`
+- def `_mesh_inventory`
+- def `_algo_class`
+- def `_dispatch_action`
+- def `coherence_score`
+- def `plan_only`
+- def `_build_waves`
+- def `_execute_hooks`
+- def `orchestrate`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/poly_mesh_os_port.py`
+
+- def `_now`
+- def `load_manifest`
+- def `_ts_json`
+- def `inventory_mesh`
+- def `_tier_for_host`
+- def `build_port_registry`
+- def `try_mesh_serve_dashboard`
+- def `port_status`
+- def `port_os`
+- def `main`
+
+## `fusion_hero_os/core/poly_mesh_router.py`
+
+- def `load_catalog`
+- def `_find_kubectl`
+- def `probe_gke`
+- def `_online_tiers_from_tailscale`
+- def `_pick_tier`
+- def `route`
+- def `route_all`
+- def `assert_not_local_dual_start`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/power_mesh_fusion_evolution.py`
+
+### class `StratumState`
+- public: `to_dict`
+### class `Genome`
+- public: `to_dict`
+### class `GenerationRecord`
+- public: `to_dict`
+### class `EvolutionReport`
+- public: `to_dict`
+- def `load_config`
+- def `_output_dir`
+- def `_file_bytes`
+- def `scan_strata`
+- def `_stratum_map`
+- def `_normalize`
+- def `_default_genome`
+- def `_component_scores`
+- def `fitness`
+- def `_mutate`
+- def `_crossover`
+- def `run_evolution`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/pseudo_horcrux.py`
+
+- def `_canonical`
+- def `_checksum`
+### class `HorcruxShard`
+- (Datenklasse / ohne Methoden)
+- def `_encode_json`
+- def `_decode_json`
+- def `_encode_csv`
+- def `_decode_csv`
+- def `_encode_b64`
+- def `_decode_b64`
+### class `PseudoHorcruxStore`
+- public: `preserve`, `restore`, `integrity_report`
+- intern: `__init__`, `_shard_path`, `_iter_shard_paths`, `_read_shard`, `_best_shard_unlocked`
+### class `AutosaveStats`
+- (Datenklasse / ohne Methoden)
+### class `AutosaveDaemon`
+- public: `start`, `stop`, `mark_dirty`, `snapshot_stats`
+- intern: `__init__`, `__enter__`, `__exit__`, `_loop`, `_save_once`
+
+## `fusion_hero_os/core/pseudo_inhouse_ai.py`
+
+### class `PseudoInhouseResult`
+- public: `to_dict`, `openai_chat_completion`
+- def `_load_yaml_catalog`
+- def `catalog`
+- def `_framework_status`
+- def `_ollama_live`
+- def `status`
+- def `list_models`
+- def `_internal_complete`
+- def `complete`
+- def `main`
+
+## `fusion_hero_os/core/pseudo_inhouse_creative.py`
+
+### class `CreativeResult`
+- public: `to_dict`
+- def `output_dir`
+- def `_load_yaml`
+- def `catalog`
+- def `_pil`
+- def `_font`
+- def `_parse_size`
+- def `_slug`
+- def `_stamp`
+- def `_palette`
+- def `create_image`
+- def `create_graphics`
+- def `_xml_escape`
+- def `create_pdf`
+- def `create_video`
+- def `create`
+- def `status`
+- def `list_artifacts`
+- def `openai_image_response`
+- def `main`
+
 ## `fusion_hero_os/core/psycholysis_trigger.py`
 
 ### class `PsycholysisTrigger`
 - public: `should_trigger`, `trigger`, `log_somatic_practice`, `complete_session`
 - intern: `__init__`
+
+## `fusion_hero_os/core/pure_core_coevolution.py`
+
+- def `_now`
+- def `_read_yaml`
+### class `StrengthEntry`
+- public: `to_dict`
+### class `TransferEvent`
+- public: `to_dict`
+### class `CoevolutionReport`
+- public: `to_dict`
+- def `_default_catalog`
+- def `load_catalog`
+- def `_scan_evidence`
+- def `_entries`
+- def `core_strength_ids`
+- def `foreign_strength_ids`
+- def `crosspoll_sources`
+- def `assert_core_not_replaced`
+- def `radiate_core_to_foreign`
+- def `ingest_foreign_gated`
+- def `coevolve_step`
+- def `mutual_cycle`
+- def `export_report`
+- def `status`
+### class `PureCoreMembrane`
+- public: `step`, `cycle`, `status`
+- intern: `__init__`
+
+## `fusion_hero_os/core/push_layer_guard.py`
+
+### class `PushDecision`
+- public: `to_dict`
+- def `load_config`
+- def `_git`
+- def `_match_any`
+- def `_layers_for_paths`
+- def `_load_dotenv_files`
+- def `_secret_intent`
+- def `_intent_present`
+- def `_is_auto_save`
+- def `_remote_ok`
+- def `_platform_ok`
+- def `_collect_push_files`
+- def `evaluate_push`
+- def `status`
+- def `install_hint`
+- def `main`
 
 ## `fusion_hero_os/core/quantum_cognition.py`
 
@@ -289,6 +1017,41 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `update_from_body`, `update_from_theory`, `get_state`
 - intern: `__init__`, `_recalculate_coherence`
 
+## `fusion_hero_os/core/schwerkraftserver.py`
+
+- def `_state_dir`
+- def `_sha256`
+- def `control_a_lossless`
+- def `control_b_lossless`
+- def `dual_multi_model_control`
+- def `_git_log_rows`
+- def `ingest_commit_history`
+- def `execute`
+- def `main`
+
+## `fusion_hero_os/core/tailscale_quantize_selfmod.py`
+
+- def `load_config`
+- def `_cfg`
+- def `state_dir`
+- def `_ts_exe`
+- def `tailscale_snapshot`
+### class `AssistNode`
+- public: `to_dict`
+### class `QuantizeParams`
+- public: `to_dict`
+- def `_clamp`
+- def `_mesh_scale`
+- def `ensure_assist_nodes`
+- def `self_modulate`
+- def `_make_qubo`
+- def `_quantize_matrix`
+- def `_anneal_once`
+- def `run_quantize`
+- def `run_full_cycle`
+- def `status`
+- def `main`
+
 ## `fusion_hero_os/core/universal_llm_router.py`
 
 ### class `SisyphosCycle`
@@ -299,6 +1062,76 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `get_best_assignment`, `ask`, `aask`, `initiate_recovery`, `status`
 - intern: `__init__`, `_build_heroic_context`, `_classify`, `_score`
 - def `get_unified_llm_core`
+
+## `fusion_hero_os/core/x402_hackability_audit.py`
+
+- def `load_config`
+### class `GateResult`
+- public: `to_dict`
+### class `MathCheck`
+- public: `to_dict`
+### class `AuditReport`
+- public: `to_dict`
+- def `heroic_math_checks`
+- def `_default_gate_answers`
+- def `audit`
+- def `risk_score`
+- def `_persist_report`
+- def `emit_warning`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/x402_sandbox_audit.py`
+
+### class `SandboxConfig`
+- public: `to_dict`
+### class `PaymentAuth`
+- (Datenklasse / ohne Methoden)
+### class `EvidenceCase`
+- public: `to_dict`
+### class `MockX402Server`
+- public: `challenge`, `grant`
+- intern: `__init__`, `_bind_ok`
+### class `MockClient`
+- public: `pay_and_request`
+- intern: `__init__`
+- def `_case_replay`
+- def `_case_finality`
+- def `_case_binding`
+- def `_case_unverified`
+- def `_case_cache_header`
+- def `_case_allowlist`
+- def `simulate_successful_attack`
+- def `run_sandbox_audit`
+- def `status`
+- def `main`
+
+## `fusion_hero_os/core/zitterpolymesh.py`
+
+### class `LaneKind`
+- (Datenklasse / ohne Methoden)
+### class `LaneProfile`
+- public: `as_dict`
+- def `_pvht_factor`
+- def `detect_lanes`
+### class `ZitterJitter`
+- public: `delay`
+### class `ZitterTask`
+- (Datenklasse / ohne Methoden)
+### class `MeshValidationError`
+- (Datenklasse / ohne Methoden)
+### class `ZitterPolyMesh`
+- public: `add_task`, `validate`, `run`
+- intern: `__init__`
+- def `_op_cpu_sum_squares`
+- def `_op_mem_shard_roundtrip`
+- def `_op_gpu_matmul`
+- def `_solve_qubo_stdlib`
+- def `_op_qpu_min_qubo`
+- def `builtin_ops`
+- def `load_pipeline`
+- def `mesh_from_pipeline`
+- def `_cli`
 
 ## `fusion_hero_os/engine/mainframe.py`
 
@@ -357,6 +1190,9 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 
 ## `fusion_hero_os/integrations/phone_link/reader.py`
 
+### class `RealWorldContactBlocked`
+- (Datenklasse / ohne Methoden)
+- def `deny_realworld_contact_action`
 ### class `PhoneLinkSnapshot`
 - public: `to_dict`
 - def `_package_root`
@@ -559,6 +1395,10 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 ### class `XAPIConnector`
 - public: `search`, `trends`, `post`
 - intern: `__init__`
+### class `InstagramConnector`
+- public: `publish`, `me`
+### class `MetaGraphConnector`
+- public: `me`, `request`
 ### class `ConnectorRegistry`
 - public: `default`, `register`, `get`, `inject`, `available`, `plan`
 - def `_demo`
@@ -610,6 +1450,13 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `process`
 - intern: `__init__`
 
+## `fusion_hero_os/modules/builder_profile/__init__.py`
+
+- def `_find_foundation_roots`
+- def `status`
+### class `BuilderProfileModule`
+- public: `process`, `propose_evolution`
+
 ## `fusion_hero_os/modules/code_review.py`
 
 ### class `PeerReviewCoreModule`
@@ -635,6 +1482,11 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 ### class `GenerationalEvolutionProtocolCoreModule`
 - public: `process`, `status`
 - intern: `__init__`, `_ensure_impl`
+
+## `fusion_hero_os/modules/hero_autoupdate.py`
+
+### class `HeroAutoupdateCoreModule`
+- public: `process`
 
 ## `fusion_hero_os/modules/heroic_llm_ea/evolution.py`
 
@@ -732,6 +1584,13 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `process`, `snapshot`
 - intern: `__init__`
 
+## `fusion_hero_os/modules/mainframe_laden/__init__.py`
+
+- def `status`
+- def `load_all`
+### class `MainframeLadenModule`
+- public: `process`, `propose_evolution`
+
 ## `fusion_hero_os/modules/mer.py`
 
 ### class `MERModule`
@@ -755,6 +1614,13 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 ### class `SelfModifyCoreModule`
 - public: `process`, `propose_evolution`, `history`
 - intern: `__init__`, `_record_proposal`
+
+## `fusion_hero_os/modules/skill_creator/__init__.py`
+
+- def `status`
+- def `propose_skill`
+### class `SkillCreatorModule`
+- public: `process`, `propose_evolution`
 
 ## `fusion_hero_os/modules/timespace_token/bottleneck.py`
 
@@ -814,6 +1680,13 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - public: `summarize`, `run_until_drained`, `report`
 - intern: `__init__`, `_hire`, `_fire_one_idle`, `_least_loaded`, `_outstanding`, `_run`, `_supervise`
 - def `_demo`
+
+## `fusion_hero_os/ports.py`
+
+- def `_env_int`
+### class `PortMap`
+- public: `dashboard_url_local`, `mesh_ops_url`
+- def `get_ports`
 
 ## `fusion_hero_os/providers/base.py`
 
@@ -939,6 +1812,14 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `api_bridge_ipc_status`
 - def `api_bridge_ipc_dispatch`
 - def `api_phone_link_status`
+- def `api_graph_connectors`
+- def `api_graph_connector_status`
+- def `api_graph_connector_dispatch`
+- def `api_graph_instagram_publish`
+- def `api_hero_autoupdate_status`
+- def `api_hero_autoupdate_touch`
+- def `api_hero_autoupdate_tick`
+- def `api_hero_autoupdate_config`
 - def `api_phone_link_messages`
 - def `api_phone_link_conversations`
 - def `api_discovery`
@@ -987,6 +1868,7 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `api_medienserver_status`
 - def `api_autoload_status`
 - def `api_autoload_run`
+- def `api_preload_all`
 - def `api_hero_guide_status`
 - def `api_hero_guide_audit`
 - def `api_hero_guide_resolve`
@@ -994,6 +1876,23 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `api_knowledge_graph_nodes`
 - def `api_knowledge_graph_write`
 - def `api_mod_validate_code`
+
+## `03_Code/Dashboard/api_plane_routes.py`
+
+- def `_planes`
+- def `api_planes_status`
+- def `api_planes_classify`
+- def `business_root`
+- def `business_health`
+- def `business_businessplan`
+- def `business_pricing`
+- def `business_energy`
+- def `business_cost_function`
+- def `hyperraum_root`
+- def `hyperraum_status`
+- def `hyperraum_operator`
+- def `hyperraum_headset`
+- def `hyperraum_headset_set_active`
 
 ## `03_Code/Dashboard/app.py`
 
@@ -1146,6 +2045,22 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `build_discovery`
 - def `build_connectivity_summary`
 
+## `03_Code/Dashboard/connectors_routes.py`
+
+### class `CallRequest`
+- (Datenklasse / ohne Methoden)
+- def `list_connectors`
+- def `connector_detail`
+- def `connector_health`
+- def `connector_call`
+
+## `03_Code/Dashboard/control_instances_routes.py`
+
+### class `ControlIn`
+- (Datenklasse / ohne Methoden)
+- def `control_status`
+- def `control_run`
+
 ## `03_Code/Dashboard/cyber_layer_windows.py`
 
 ### class `CyberSignal`
@@ -1168,6 +2083,12 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - intern: `__init__`
 ### class `QUBOSolverConfig`
 - intern: `__init__`
+
+## `03_Code/Dashboard/dual_timeline_routes.py`
+
+- def `dt_status`
+- def `dt_run`
+- def `dt_catalog`
 
 ## `03_Code/Dashboard/faden_store.py`
 
@@ -1370,6 +2291,7 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `cost_analysis_loop`
 - def `repo_mirror_loop`
 - def `energy_pricing_loop`
+- def `hero_autoupdate_loop`
 - def `start_mainframe_daemons`
 
 ## `03_Code/Dashboard/mainframe_ops_routes.py`
@@ -1401,6 +2323,34 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `api_worktree_raw`
 - def `api_worktree_content`
 - def `api_ide_status`
+
+## `03_Code/Dashboard/mesh_ops_routes.py`
+
+- def `_ts_exe`
+- def `_tailscale_status`
+- def `_funnel_status`
+- def `_poly_mesh`
+- def `_entwicklungsquant_status`
+- def `_registry_stubs_cleared`
+- def `_quantize_selfmod_status`
+- def `mesh_ops_root`
+- def `mesh_ops_tailscale`
+- def `mesh_ops_funnel`
+- def `mesh_ops_poly`
+- def `mesh_ops_quant`
+- def `mesh_ops_quantize_selfmod`
+- def `mesh_ops_quantize_selfmod_ensure`
+- def `mesh_ops_quantize_selfmod_modulate`
+- def `mesh_ops_quantize_selfmod_cycle`
+- def `mesh_ops_p1`
+- def `mesh_ops_mainframe_laden`
+- def `mesh_ops_once_mint`
+- def `mesh_ops_dns_encrypt`
+- def `mesh_ops_identity`
+- def `mesh_ops_schwerkraft`
+- def `mesh_ops_mtc_status`
+- def `mesh_ops_mtc_roll`
+- def `mesh_once_redeem`
 
 ## `03_Code/Dashboard/meta_layer_windows.py`
 
@@ -1449,6 +2399,39 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `_is_heavy`
 - def `submit_job`
 - def `submit_job_async`
+
+## `03_Code/Dashboard/pseudo_inhouse_creative_routes.py`
+
+### class `CreateIn`
+- (Datenklasse / ohne Methoden)
+### class `OpenAIImageRequest`
+- (Datenklasse / ohne Methoden)
+- def `creative_status`
+- def `creative_catalog`
+- def `creative_artifacts`
+- def `creative_create`
+- def `creative_image`
+- def `creative_pdf`
+- def `creative_video`
+- def `creative_graphics`
+- def `creative_file`
+- def `openai_images`
+
+## `03_Code/Dashboard/pseudo_inhouse_routes.py`
+
+### class `ChatIn`
+- (Datenklasse / ohne Methoden)
+### class `OpenAIMessage`
+- (Datenklasse / ohne Methoden)
+### class `OpenAIChatRequest`
+- (Datenklasse / ohne Methoden)
+- def `_hub`
+- def `api_inhouse_status`
+- def `api_inhouse_catalog`
+- def `api_inhouse_chat`
+- def `openai_list_models`
+- def `openai_chat_completions`
+- def `api_inhouse_health`
 
 ## `03_Code/Dashboard/scripts/build_geisteskrankheiten_4d_kompendium.py`
 
@@ -1707,4 +2690,11 @@ Regenerieren: `python scripts/generate_anhang_katalog.py`
 - def `toggle_auto_git_save`
 - def `periodic_git_save`
 - def `build_workspace`
+
+## `03_Code/Dashboard/x402_routes.py`
+
+### class `X402RunIn`
+- (Datenklasse / ohne Methoden)
+- def `x402_status`
+- def `x402_run`
 
