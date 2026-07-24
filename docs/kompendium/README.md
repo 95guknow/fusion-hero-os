@@ -17,6 +17,7 @@
 |------|--------|
 | Geisteskrankheiten 4D Matrix | [geisteskrankheiten-4d/](geisteskrankheiten-4d/) |
 | Heroische Mathematik | [heroische-mathematik/](heroische-mathematik/) |
+| Psychogramm-Kompendium 95guknow | [psychogramm/](psychogramm/) |
 
 ## Dissertation
 
