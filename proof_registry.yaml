@@ -352,10 +352,11 @@ claims:
       - tests/test_registry.py::test_former_stub_modules_are_now_wired_and_loaded
 
   - id: COWORKING-KI-NO-SELF-MERGE
-    statement: "Der Coworking-KI-Workflow (.github/workflows/claude-coworking.yml) ist valides YAML, reagiert auf Kommentar-/Issue-Events nur bei '@claude'-Ansprache, degradiert ohne ANTHROPIC_API_KEY ehrlich (Guard-Step statt Fake-Erfolg), fuehrt KEINEN Merge-/Approve-Aufruf und beansprucht weder administration- noch workflows:write-Permission. Geprueft wird die WORKFLOW-STRUKTUR, NICHT das Laufzeitverhalten der Action (haengt von GitHub/Secret/Modell ab und ist in pytest nicht testbar)."
+    statement: "Der Coworking-KI-Workflow (.github/workflows/claude-coworking.yml) ist valides YAML, reagiert auf Kommentar-/Issue-Events nur bei '@claude'-Ansprache, degradiert ohne ANTHROPIC_API_KEY ehrlich (Guard-Step statt Fake-Erfolg), fuehrt KEINEN Merge-/Approve-Aufruf, beansprucht weder administration- noch workflows:write-Permission und pinnt Drittanbieter-Actions auf 40-stellige Commit-SHAs statt auf bewegliche Tags (CodeQL Alert 2127). Geprueft wird die WORKFLOW-STRUKTUR, NICHT das Laufzeitverhalten der Action (haengt von GitHub/Secret/Modell ab und ist in pytest nicht testbar)."
     status: BEWIESEN
     proofs:
       - tests/test_coworking_workflow.py::test_coworking_workflow_exists_and_is_valid_yaml
       - tests/test_coworking_workflow.py::test_workflow_has_honest_secret_guard
       - tests/test_coworking_workflow.py::test_workflow_contains_no_merge_or_approve_call
       - tests/test_coworking_workflow.py::test_workflow_permissions_are_bounded
+      - tests/test_coworking_workflow.py::test_third_party_actions_are_pinned_to_commit_sha

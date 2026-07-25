@@ -11,6 +11,7 @@ Proof-Registry-Anker: COWORKING-KI-NO-SELF-MERGE.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -76,6 +77,23 @@ def test_workflow_permissions_are_bounded():
     assert perms, "permissions-Block fehlt (kein implizites Voll-Token)"
     assert "administration" not in perms
     assert perms.get("workflows") != "write", "workflows: write erlaubt Self-Rewrite des Gates"
+
+
+def test_third_party_actions_are_pinned_to_commit_sha():
+    """Supply-Chain-Guard (CodeQL Alert 2127): Drittanbieter-Actions muessen auf
+    einen 40-stelligen Commit-SHA gepinnt sein. Ein beweglicher Tag wie 'v1'
+    kann umgehaengt werden, ein SHA nicht. actions/* ist first-party GitHub und
+    von der Regel ausgenommen (so wertet CodeQL es ebenfalls)."""
+    doc = _doc()
+    unpinned = []
+    for step in doc["jobs"]["coworking"]["steps"]:
+        uses = str(step.get("uses", ""))
+        if not uses or uses.startswith("actions/"):
+            continue
+        ref = uses.partition("@")[2]
+        if not re.fullmatch(r"[0-9a-f]{40}", ref):
+            unpinned.append(uses)
+    assert unpinned == [], f"Drittanbieter-Action nicht auf SHA gepinnt: {unpinned}"
 
 
 @pytest.mark.parametrize("event", ["issue_comment", "pull_request_review_comment"])

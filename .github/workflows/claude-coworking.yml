@@ -91,7 +91,12 @@ jobs:
 
       - name: Claude Code
         if: steps.guard.outputs.ready == 'true'
-        uses: anthropics/claude-code-action@v1
+        # Auf Commit-SHA gepinnt statt auf den beweglichen Tag 'v1'
+        # (CodeQL "Unpinned tag for a non-immutable Action", Alert 2127):
+        # ein Tag kann umgehaengt werden, ein SHA nicht — Supply-Chain-Schutz.
+        # be7b93b = annotierter Tag v1 -> v1.0.183, aufgeloest am 2026-07-25.
+        # Beim Anheben der Version SHA UND Kommentar gemeinsam aktualisieren.
+        uses: anthropics/claude-code-action@be7b93b1907a4abad570368f3c74b6fe3807510b # v1.0.183
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
