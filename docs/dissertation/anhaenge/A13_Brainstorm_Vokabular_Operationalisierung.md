@@ -2,7 +2,7 @@
 
 **Paket:** Gemini-Brainstorm 2026-07-24 (extern) → `ascension_os/core`, `fusion_hero_os/core`, `artifacts/fractal_ghost_hunt`
 **Designvorlage:** Kompendium der Heroik V3.3 — keine Metapher als Beweis
-**Stand:** v2.0 · 2026-07-24
+**Stand:** v2.1 · 2026-07-24 (v2.0: drei Bausteine + Kollisionen · v2.1: Stub-Liquidation, Coworking-KI, zwei weitere Neuprägungen)
 
 ---
 
@@ -32,6 +32,8 @@ Axiomatisches Prinzip dieser Operationalisierung (v2.0): **jeder beförderte Bau
 | Imaginations-M-vers | Brainstorm | n-dimensionaler Möglichkeitsraum latenter Potenziale | **Fragment** — keine formale Definition, kein Code |
 | hyper-meta-qubernate.manifold.nD | Brainstorm | „Root-Befehl" der Gesamtarchitektur | **Fragment** — Name, kein Objekt |
 | n-D Mannigfaltigkeit / Faserbündel | Brainstorm | Differentialgeometrische Rahmung des latenten Raums | **Fragment** — Metapher; es existiert keine Mannigfaltigkeits-Struktur im Code |
+| `hypersafecall.sync` | Brainstorm (2026-07-24) | „sicherer Auto-Update-Ruf" | **Fragment** — null Treffer im Repo. Die reale Entsprechung existiert bereits: `fusion_hero_os/modules/hero_autoupdate.py` + `hero_autoupdate.yaml` (1-Min-Polling, 5-Min-Reminder, Android-Notify). Kein neues Modul — De-Dup-Doktrin. |
+| `hypertarnkappe` | Brainstorm (2026-07-24) | „gesteigerte Tarnkappe" | **Fragment** — der reale `tarnkappe`-Layer in `fusion_unified.yaml` ist `docs-only`; eine „Hyper"-Steigerung hätte keinen zusätzlichen Gegenstand. |
 
 ---
 
@@ -104,7 +106,21 @@ Axiomatisches Prinzip dieser Operationalisierung (v2.0): **jeder beförderte Bau
 - **`hyper-meta-qubernate.manifold.nD` als Root-Kommando** — Name ohne definierte Semantik; als Epigraph/Vokabel zulässig, als Systemobjekt nicht.
 - **Placebo-/Nocebo-Engine** — die ehrliche Entsprechung existiert bereits als Praxis: Proof-Registry-Gate (entfernt nicht-verifizierte Claims = „Nocebo-Minimierung") und Geltungsmarken-Disziplin. Eine eigene „Erwartungs-Engine" hätte keinen messbaren Gegenstand.
 
-**[Spezifikation]** De-Ghosting: der leere Streamlit-Stub `artifacts/fractal_ghost_hunt/streamlit_hyper4d_app.py` (im Legacy Ghost Hunt 2026-07-16 als dokumentierter Geist inventarisiert, P3/Research) wurde auf **v2.0** gefüllt — ein Telemetrie-Dashboard, das ausschließlich ECHTE Daten zeigt (Layer-Status, Crosscheck, M-pression-Demo mit gelabelten synthetischen Eingaben, Handshake-Live-Demo), jedes Panel mit sichtbarem Axiom-Anker. Die Zufallsmetrik-Vorlage aus dem Brainstorm („np.random als M-pression") wurde verworfen: simulierte Werte als Telemetrie anzuzeigen wäre exakt die epistemische Regression, gegen die dieses Repo gebaut ist. P3-Einstufung (Research, nicht Produkt) bleibt bestehen; `streamlit`/`plotly` bleiben optionale Dependencies außerhalb von `requirements.txt`.
+**[Spezifikation]** De-Ghosting (v2.1 vollständig): alle **drei** Geister aus `artifacts/fractal_ghost_hunt/` (Legacy Ghost Hunt 2026-07-16, P3/Research) sind befüllt:
+
+| Datei | v1 | v2.0 |
+|-------|-----|------|
+| `streamlit_hyper4d_app.py` | 88-Byte-Stub | Telemetrie-Dashboard, ausschließlich ECHTE Daten, Axiom-Anker je Panel |
+| `drehbuch.md` | 72-Byte-Zeile | 5-Szenen-Storyboard, Szenen 2–4 an reale Module gebunden (Crosscheck, Banach-Geisterjagd) |
+| `Hyper4D_CoEvolutionary_Morphs_FusionHeroOS.html` | 62-Byte-Versprechen | echter self-contained Tesserakt (16 Ecken/32 Kanten, Doppelprojektion 4D→3D→2D, zwei Rotationsebenen), **ohne** CDN/Libraries — löst das v1-Versprechen ehrlich ein |
+
+Die Zufallsmetrik-Vorlage aus dem Brainstorm („np.random als M-pression") wurde verworfen: simulierte Werte als Telemetrie anzuzeigen wäre exakt die epistemische Regression, gegen die dieses Repo gebaut ist. `streamlit`/`plotly` bleiben optionale Dependencies außerhalb von `requirements.txt`.
+
+**[Satz]** Registry-Stub-Liquidation: die Registry führte `builder_profile`, `mainframe_laden` und `skill_creator` längst als echte Pakete („wired P1"), nur `tests/test_registry.py` hielt noch den alten Stub-Zustand fest und schlug fehl. Der Test ist auf den realen Stand nachgezogen und um einen **Regressions-Guard** ergänzt, der „alle Stubs befüllt" maschinell prüfbar macht statt zu behaupten. Anker: `REGISTRY-NO-STUBS`. Die 184 vom Dependency-Atlas gezählten Platzhalter-Marker bleiben bewusst unangetastet — es sind ehrlich deklarierte Offline-Stubs (Repo-Kultur, laut Atlas-Docstring nicht fatal); sie „zu befüllen" hieße, Fallbacks durch Fake-Implementierungen zu ersetzen.
+
+**[Satz]** Coworking-KI: Das Repo besaß keinen interaktiven KI-Workflow (einziger Touchpoint war die Einbahnstraße `summary.yml`). `.github/workflows/claude-coworking.yml` schließt die Lücke — `@claude` in Issue-/PR-Kommentaren. Die Nie-Selbst-Merge-Doktrin aus `human-confirm-gate.yml` und die ehrliche Degradation ohne `ANTHROPIC_API_KEY` sind maschinell gesichert (`COWORKING-KI-NO-SELF-MERGE`); Setup und Grenzen in `docs/ops/COWORKING_KI_GITHUB.md`. Geprüft ist die Workflow-**Struktur**, nicht das Laufzeitverhalten der Action.
+
+**[Spezifikation]** Workflow-Kollision liquidiert: `fusion-hero-build.yml` („CI/CD Master Matrix") war ein Duplikat der konsolidierten CI (gleiche Trigger, gleiche Matrix, Test-Teilmenge). Ihr einziger Unique-Value (`pyright`) und ihr Test-Teilsatz wurden in `fusion-hero-os-ci.yml` übernommen — der Teilsatz gezielt auf Check-Level *light*, wo sonst kein `pytest` läuft —, danach wurde sie entfernt. Fortsetzung der in Issue #26 dokumentierten Konsolidierung (4 Workflows → 1); dies war der übersehene fünfte.
 
 ---
 

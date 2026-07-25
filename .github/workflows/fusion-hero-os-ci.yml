@@ -72,6 +72,17 @@ jobs:
       run: |
         ruff check fusion_hero_os/ 03_Code/reference/rest_api_server.py || true
 
+    - name: Static Analysis (Pyright)
+      # Uebernommen aus fusion-hero-build.yml ("CI/CD Master Matrix"), die
+      # ansonsten ein Duplikat dieser konsolidierten CI war (gleiche Trigger,
+      # gleiche Matrix, Test-Teilmenge) und im Zuge der Kollisionsaufloesung
+      # 2026-07-24 entfernt wurde — Fortsetzung der Konsolidierung aus Issue #26.
+      # Laeuft bewusst auf BEIDEN Check-Leveln, damit PR-Branches die statische
+      # Analyse behalten (dort greift 'pytest tests/' nicht).
+      run: |
+        pip install pyright
+        python -m pyright
+
     - name: Import-Check (light + full)
       run: |
         python -c "import fusion_hero_os; print('fusion_hero_os OK')"
@@ -96,6 +107,15 @@ jobs:
     - name: Module Registry Status
       run: |
         python -m fusion_hero_os.registry
+
+    - name: Smoke tests (light) — Pfade, PII, OAuth, Kernel
+      # Der Test-Teilsatz der entfernten fusion-hero-build.yml. Auf 'full' deckt
+      # 'pytest tests/' ihn ohnehin ab; auf 'light' (PR-Branches) waere er sonst
+      # bei der Kollisionsaufloesung 2026-07-24 verloren gegangen.
+      if: matrix.check-level != 'full'
+      run: |
+        pytest tests/test_resolve_paths.py tests/test_pii_scanner.py \
+               tests/test_google_oauth.py tests/test_local_infrastructure_kernel.py -q
 
     - name: Run root pytest suite
       if: matrix.check-level == 'full'
