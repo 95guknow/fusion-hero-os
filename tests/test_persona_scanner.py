@@ -60,17 +60,46 @@ def test_persona_is_warning_outside_active_prefix():
         assert scanner.is_blocking(f) is False, path
 
 
-def test_active_package_is_persona_clean_on_disk():
+# Operator-Entscheidung 2026-07-25: die Persona-Token bleiben bestehen, der
+# Klarname steht im Vordergrund (docs/ops/PERSONA_KLARNAME_KONTRAKT.md).
+# Stage-B forderte fusion_hero_os/ AUSNAHMSLOS persona-frei. Das gilt nicht
+# mehr fuer die Dateien, deren GEGENSTAND die Identitaet selbst ist — dort das
+# Token zu streichen wuerde das Modul inhaltlich aushoehlen. Ueberall sonst im
+# aktiven Paket bleibt der Regressions-Guard scharf: eine NEUE Datei mit dem
+# Token faellt weiterhin durch.
+PERSONA_SUBJECT_FILES = {
+    # Modul, das die Identitaet Comaedchen x Persona beschreibt und exportiert.
+    "fusion_hero_os/core/comaedchen_identity.py",
+    # Eine Zeile: Registry-Beschreibung ebendieses Identity-Moduls.
+    "fusion_hero_os/registry.py",
+}
+
+
+def test_active_package_is_persona_free_outside_identity_files():
+    """Regressions-Guard mit dokumentierter Ausnahme statt Absolut-Verbot."""
     pattern = scanner.RULES["persona_identifier"]
     offenders = []
     pkg = ROOT / "fusion_hero_os"
     for path in pkg.rglob("*"):
         if not path.is_file() or scanner._should_skip(path):
             continue
+        rel = path.relative_to(ROOT).as_posix()
+        if rel in PERSONA_SUBJECT_FILES:
+            continue
         try:
             text = path.read_text(encoding="utf-8", errors="strict")
         except (UnicodeDecodeError, OSError):
             continue
         if pattern.search(text):
-            offenders.append(str(path.relative_to(ROOT)))
-    assert offenders == [], f"persona token present in active package: {offenders}"
+            offenders.append(rel)
+    assert offenders == [], (
+        "persona token outside the documented identity files: "
+        f"{offenders} — entweder entfernen oder bewusst in "
+        "PERSONA_SUBJECT_FILES aufnehmen (mit Begruendung)."
+    )
+
+
+def test_persona_subject_files_still_exist():
+    """Die Ausnahmeliste darf nicht auf geloeschte Pfade zeigen (stille Erosion)."""
+    missing = [rel for rel in PERSONA_SUBJECT_FILES if not (ROOT / rel).is_file()]
+    assert missing == [], f"PERSONA_SUBJECT_FILES zeigt auf fehlende Dateien: {missing}"

@@ -128,10 +128,32 @@ def test_no_dangling_scrub_reference():
     assert not offenders, f"dangling scrub token in content: {offenders}"
 
 
-def test_no_persona_spelling_in_content():
+# Operator-Entscheidung 2026-07-25: die Persona bleibt bestehen, der Klarname
+# steht im Vordergrund (docs/ops/PERSONA_KLARNAME_KONTRAKT.md). Das frühere
+# Absolut-Verbot der Persona-Schreibweise im INHALT gilt damit nicht mehr —
+# wohl aber weiterhin in PFADEN (test_no_persona_token_in_tracked_paths), denn
+# Datei- und Verzeichnisnamen sind die öffentlich sichtbare Oberfläche.
+#
+# Die Nennungen bleiben auf diese bekannten Stellen begrenzt, damit sich die
+# Persona nicht unbemerkt neu im Baum ausbreitet: eine NEUE Datei mit der
+# Schreibweise fällt weiterhin durch.
+_PERSONA_CONTENT_ALLOWLIST = {
+    # Protokollname in der Modulliste des Mainframe-Skills (zwei Spiegel).
+    ".grok/skills/mainframe-laden/SKILL.md",
+    "01_Framework/skills/mainframe-laden/SKILL.md",
+    # Business-Dokumente nennen die Persona ausschließlich als NEGATIV-Regel
+    # ("nur implizit heroisch – keine explicit ..."), also gerade um sie aus
+    # geschäftlicher Kommunikation herauszuhalten.
+    "business/STEPHAN_HAGEN_URBAN_BUSINESS_PERSONA_PUBLICATION.md",
+    "business/auto_recognition_stephan_hagen_urban.py",
+}
+
+
+def test_persona_spelling_stays_within_known_files():
+    """Eindämmung statt Verbot: die Persona darf bestehen, aber nicht wuchern."""
     offenders: list[str] = []
     for rel in _tracked_files():
-        if rel in _SELF_ALLOWLIST:
+        if rel in _SELF_ALLOWLIST or rel in _PERSONA_CONTENT_ALLOWLIST:
             continue
         p = ROOT / rel
         if not p.is_file() or not _is_text(p):
@@ -142,4 +164,14 @@ def test_no_persona_spelling_in_content():
             continue
         if _FORBIDDEN_CONTENT.search(text):
             offenders.append(rel)
-    assert not offenders, f"persona spelling in content: {offenders}"
+    assert not offenders, (
+        f"Persona-Schreibweise in neuen Dateien: {offenders} — entweder "
+        "entfernen oder bewusst in _PERSONA_CONTENT_ALLOWLIST aufnehmen."
+    )
+
+
+def test_persona_content_allowlist_has_no_dead_entries():
+    """Die Allowlist darf nicht auf geloeschte Pfade zeigen (stille Erosion)."""
+    tracked = set(_tracked_files())
+    dead = sorted(rel for rel in _PERSONA_CONTENT_ALLOWLIST if rel not in tracked)
+    assert dead == [], f"_PERSONA_CONTENT_ALLOWLIST zeigt auf untracked/fehlende Pfade: {dead}"
