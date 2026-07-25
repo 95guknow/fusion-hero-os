@@ -315,3 +315,48 @@ claims:
       - tests/test_multimodal_protocol.py::test_provider_status_never_contains_key_values
       - tests/test_multimodal_protocol.py::test_routing_reacts_to_key_presence
       - tests/test_multimodal_protocol.py::test_inventory_is_cached_via_quantum_dictionary
+
+  # ---- Brainstorm-Vokabular-Operationalisierung (A13, 2026-07-24) ----------
+  - id: LAYER-DISTANCE-CROSSCHECK
+    statement: "distance_n_neighbors (fusion_hero_os/core/layer_distance_crosscheck.py) liefert per BFS exakt die Kuerzeste-Pfad-Distanz-N-Menge; Distanz-1- und Distanz-2-Mengen sind fuer jeden Knoten disjunkt — auf einem synthetischen Pfadgraphen UND auf dem echten fusion_unified.yaml layer_edges-Graphen. Grundlage der n±2-Crosscheck-Operationalisierung (A13); die allgemeine Behauptung 'faengt mehr reale Blind Spots als reine Adjazenz-Pruefung' ist NICHT Teil dieses Claims (MODELL, siehe A13 Bogen 3)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_layer_distance_crosscheck.py::test_distance_1_2_3_on_path_graph
+      - tests/test_layer_distance_crosscheck.py::test_distance_1_and_distance_2_are_always_disjoint_on_path_graph
+      - tests/test_layer_distance_crosscheck.py::test_distance_1_and_distance_2_are_always_disjoint_on_real_graph
+      - tests/test_layer_distance_crosscheck.py::test_build_adjacency_from_real_fusion_unified_layer_edges
+
+  - id: ROOT-ANCHOR-TAMPER-DETECT
+    statement: "verify_manifest (Ed25519 ueber kanonisches JSON, ascension_os/core/root_anchor_handshake.py) liefert False bei jeder Abweichung von Manifest, Signatur oder Public Key gegenueber dem tatsaechlich Signierten, und ist unabhaengig von der Schluessel-Reihenfolge im Manifest-Dict. Reine, netzwerklose Sign/Verify-Primitive — KEIN SSH-Protokoll, KEIN Netzwerk-Handshake, NICHT mit MasterSeed/Foundation-Runtime verdrahtet (A13 Bogen 4)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_root_anchor_handshake.py::test_tampered_manifest_fails_verification
+      - tests/test_root_anchor_handshake.py::test_tampered_signature_fails_verification
+      - tests/test_root_anchor_handshake.py::test_wrong_public_key_fails_verification
+      - tests/test_root_anchor_handshake.py::test_canonicalization_is_order_independent
+
+  - id: MPRESSION-PROJECTION-LOSS
+    statement: "measure_mpression (ascension_os/core/mpression_projection.py) misst den Projektionsverlust ||v - Pv|| via des bewiesenen K17-Orthogonalprojektors; Pythagoras-Identitaet ||v||^2 = ||Pv||^2 + ||v-Pv||^2 haelt numerisch (Residuum < 1e-9), Verlust ist 0 gdw. v im Unterraum liegt, relative_loss liegt in [0,1] (Nicht-Expansivitaet K17d). Die DEUTUNG 'Verlust = M-pression einer Intention beim Uebergang latent->manifest' ist MODELL, nicht Teil dieses Claims (A13 Bogen 5)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_mpression_projection.py::test_loss_is_zero_when_vector_lies_in_subspace
+      - tests/test_mpression_projection.py::test_pythagoras_identity_holds
+      - tests/test_mpression_projection.py::test_relative_loss_is_between_zero_and_one
+
+  # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
+  - id: REGISTRY-NO-STUBS
+    statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."
+    status: BEWIESEN
+    proofs:
+      - tests/test_registry.py::test_no_registry_spec_is_declared_stub_anymore
+      - tests/test_registry.py::test_former_stub_modules_are_now_wired_and_loaded
+
+  - id: COWORKING-KI-NO-SELF-MERGE
+    statement: "Der Coworking-KI-Workflow (.github/workflows/claude-coworking.yml) ist valides YAML, reagiert auf Kommentar-/Issue-Events nur bei '@claude'-Ansprache, degradiert ohne ANTHROPIC_API_KEY ehrlich (Guard-Step statt Fake-Erfolg), fuehrt KEINEN Merge-/Approve-Aufruf, beansprucht weder administration- noch workflows:write-Permission und pinnt Drittanbieter-Actions auf 40-stellige Commit-SHAs statt auf bewegliche Tags (CodeQL Alert 2127). Geprueft wird die WORKFLOW-STRUKTUR, NICHT das Laufzeitverhalten der Action (haengt von GitHub/Secret/Modell ab und ist in pytest nicht testbar)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_coworking_workflow.py::test_coworking_workflow_exists_and_is_valid_yaml
+      - tests/test_coworking_workflow.py::test_workflow_has_honest_secret_guard
+      - tests/test_coworking_workflow.py::test_workflow_contains_no_merge_or_approve_call
+      - tests/test_coworking_workflow.py::test_workflow_permissions_are_bounded
+      - tests/test_coworking_workflow.py::test_third_party_actions_are_pinned_to_commit_sha

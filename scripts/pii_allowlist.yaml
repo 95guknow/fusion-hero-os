@@ -24,6 +24,12 @@ allow_literals:
   - "admin@example.com"
   - "operator@example.com"
   - "operator-alt@example.com"
+  # Operator's real private email (docs/ops/FREIGABE_MEISTER_HELD_KI.*).
+  # NOTE: this is a deliberate exception to the "must be scrubbed, not
+  # hidden" rule above, not a neutral placeholder — the operator chose to
+  # keep it visible after being told this contradicts that policy
+  # (2026-07-22). Revisit if that choice ever changes.
+  - "stephan95g@googlemail.com"
   # Public recursive DNS resolvers (not personal infrastructure).
   - "9.9.9.9"
   - "149.112.112.112"

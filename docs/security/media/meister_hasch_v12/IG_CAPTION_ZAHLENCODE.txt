@@ -1,0 +1,35 @@
+73 SPECIAL — number trivia, honestly checked (no cipher, no magic)
+
+73 is the 21st prime.
+Its mirror, 37, is the 12th prime.
+Mirror of 12 is 21 — the product of 7×3.
+73 in binary: 1001001 — a palindrome.
+Bonus (not in the original bit): 21 in binary is 10101 — also a palindrome.
+
+Base64, for the curious (plain encoding, not a cipher):
+73->NzM=  37->Mzc=  21->MjE=  12->MTI=
+
+Just numbers that line up. Ehrlich, keine Magie.
+
+#73 #PrimeNumbers #Numerology #FusionHeroOS #95guknow
+
+---
+
+Variante B (kurz):
+
+73. 21. Primzahl.
+Spiegel: 37. 12. Primzahl.
+Spiegel davon: 21 = 7×3.
+Binär: 1001001 — rückwärts dasselbe.
+Keine Magie. Nur Zahlen, die zusammenpassen.
+
+#73 #Primzahlen #FusionHeroOS #95guknow
+
+---
+
+Variante C (first comment, passt zum x402-Post):
+
+Bonus-Zahlencode zu diesem Drop: 73 = 21. Primzahl, Spiegel 37 = 12. Primzahl,
+binär 1001001 ist ein Palindrom. Die SHA16 dieses Proofs trägt zufällig sogar
+ein "73" in sich (ab18ecd473a5cd16) — Zufall, keine Behauptung. Fand die
+Symmetrie einfach schön.
