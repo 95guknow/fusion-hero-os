@@ -21,11 +21,16 @@ ausschließlich in deiner Hand, extern gegenüber diesem Repo.
 ## Ablauf pro PR
 
 1. PR wird geöffnet (von Claude oder jedem anderen Contributor).
+   **Entwürfe werden übersprungen** — ein Draft kann ohnehin nicht gemergt
+   werden. Das Gate öffnet erst, wenn der PR auf „ready for review" geht.
 2. `.github/workflows/human-confirm-gate.yml` öffnet einen **pending**
-   Check-Run `human-confirm/google` und postet einen PR-Kommentar mit zwei
-   Links. Falls `PHONE_NOTIFY_WEBHOOK_URL` gesetzt ist, kommt zusätzlich eine
-   Android-Push-Notification mit beiden Links als Tap-Actions (nutzt die
-   bestehende `tailscale_phone_notify.py`-Infrastruktur/ntfy.sh).
+   Check-Run `human-confirm/google` und pflegt **genau einen** PR-Kommentar
+   mit den zwei Links. Jeder weitere Push aktualisiert diesen Kommentar,
+   statt einen neuen anzulegen. Falls `PHONE_NOTIFY_WEBHOOK_URL` gesetzt ist,
+   kommt eine Android-Push-Notification mit beiden Links als Tap-Actions
+   (nutzt die bestehende `tailscale_phone_notify.py`-Infrastruktur/ntfy.sh) —
+   **nur beim Öffnen, Wiederöffnen und „ready for review"**, nicht bei jedem
+   Folge-Push.
 3. Du tippst am Handy:
    - **GitHub-Link** → Review öffnen → Approve.
    - **Google-Link** → öffnet die Apps-Script-URL im Browser → Google fragt
@@ -33,6 +38,15 @@ ausschließlich in deiner Hand, extern gegenüber diesem Repo.
      Check-Run auf `success`.
 4. Erst wenn **beide** grün sind **und** alle CI-Checks grün sind, lässt
    GitHub Branch Protection den „Merge"-Button überhaupt zu.
+
+Die Bestätigung ist an den Commit gebunden (`sha` steckt in der Confirm-URL).
+Ein neuer Push setzt sie deshalb zurück — das ist der Sinn der Schranke, nicht
+ein Fehler.
+
+**Fehlt das Secret `GOOGLE_CONFIRM_WEBAPP_URL`, bleibt der Check offen und
+blockiert den Merge.** Das ist Absicht: fehlende Einrichtung darf die Schranke
+nicht stillschweigend öffnen. Der PR-Kommentar weist einmalig darauf hin und
+wird bei weiteren Pushes nur aktualisiert.
 
 ## Einmalige Einrichtung (musst du selbst machen — kein Tool-Zugriff von hier)
 
@@ -52,6 +66,12 @@ Actions → New repository secret:
 | `GOOGLE_CONFIRM_WEBAPP_URL` | Apps-Script-Web-App-URL aus Schritt 1 | ja |
 | `PHONE_NOTIFY_WEBHOOK_URL` | z. B. `https://ntfy.sh/<dein-privates-topic>` | optional, sonst nur PR-Kommentar |
 | `PHONE_NOTIFY_TOKEN` | Bearer-Token für privates ntfy-Topic | optional |
+
+**Secrets werden nicht über Forks oder Spiegel hinweg vererbt.** Läuft der
+Workflow auch in einem Spiegel-Repository (etwa `Senfkorn-UG/fusion-hero-os`),
+muss `GOOGLE_CONFIRM_WEBAPP_URL` dort separat gesetzt werden — sonst bleibt das
+Gate dort dauerhaft offen und der Merge blockiert. Alternativ den Workflow im
+Spiegel deaktivieren, wenn dort gar nicht nach `main` gemergt werden soll.
 
 ### 3. Branch Protection aktivieren
 
