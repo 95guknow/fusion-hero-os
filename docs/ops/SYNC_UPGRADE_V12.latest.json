@@ -1,0 +1,19 @@
+{
+  "kind": "SYNC_UPGRADE_V12",
+  "utc": "2026-07-21T10:44:24.351367+00:00",
+  "platform": "12.1.0",
+  "target": "12.1.0",
+  "tip": "7bb340c",
+  "tip_full": "7bb340c26394abfcfbc0138a92510c274b25f659",
+  "tag": "v12.1.0",
+  "remotes": {
+    "origin_main": "7bb340c",
+    "release": "https://github.com/95guknow/fusion-hero-os/releases/tag/v12.1.0"
+  },
+  "gates": {
+    "bump_version_check": true,
+    "manifests": "12.1.0"
+  },
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "geltung": "sync results = Satz"
+}

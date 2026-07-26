@@ -9,7 +9,8 @@ freemium: false
 principle: >
   deploy means private (local vault / operator-only).
   push means public (GitHub / publishable surfaces only).
-  merge means both: connect private and public using the dual timeline (t ∥ τ).
+  merge means both: connect private and public using dual+virtual timeline
+  (t ∥ τ ∥ v). Alias "fusion musion" = merge fusion (private+public bond).
 
 operations:
   deploy:
@@ -48,18 +49,21 @@ operations:
 
   merge:
     meaning: both
-    german: "beide — privat und öffentlich verbinden"
+    german: "beide — privat und öffentlich verbinden (Fusion↔Musion)"
+    alias: fusion_musion
     scope:
       - bind public display_id to private module/function shards
-      - align real time t with imaginary time τ
+      - align real time t with imaginary time τ and virtual heroic v
       - produce merge manifest linking public + private timelines
     never:
       - leak private payloads into public git tree
     cli:
       - python -m fusion_hero_os.core.ops_merge
+      - python scripts/ops.py merge
     axes:
       t: real_chronology
-      tau: imaginary_structural
+      tau: imaginary_structural_heroic
+      v: virtual_heroic_scenario
     output: ~/.fusion/ops/merge_latest.json
 
 mapping_table:

@@ -1,4 +1,4 @@
-"""Fusion Hero OS — v12.0.0 (operativer Kanon; v8.3-Funktionskern + Stage-A/B).
+"""Fusion Hero OS — v12.1.0 (operativer Kanon; v8.3-Funktionskern + Stage-A/B + daycycle).
 
 Namespace-Paket für die aktiven Kernkomponenten des Projekts:
 
@@ -12,6 +12,6 @@ Alle Teilsysteme werden zentral über :mod:`fusion_hero_os.registry` initialisie
 und abgefragt, statt einzeln und lose per Direktimport verdrahtet zu werden.
 """
 
-__version__ = "12.0.0"
+__version__ = "12.1.0"
 
 __all__ = ["__version__"]

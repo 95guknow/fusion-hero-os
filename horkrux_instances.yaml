@@ -1,0 +1,33 @@
+version: "1.0"
+platform_target: "12.1.0"
+layers:
+  L0_state:
+    - {id: fusion_daycycle_state, kind: state_dir, path: "~/.fusion/daycycle", role: daycycle_mem_state}
+    - {id: fusion_ops_state, kind: state_dir, path: "~/.fusion/ops", role: ops_manifests}
+    - {id: fusion_mesh_quantize, kind: state_dir, path: "~/.fusion/mesh/quantize_selfmod", role: quantize_selfmod}
+    - {id: fusion_training_dual, kind: state_dir, path: "~/.fusion/training/dual_timeline", role: dual_timeline_private}
+    - {id: fusion_hero_os_config, kind: state_dir, path: "~/.fusion-hero-os", role: local_config, optional: true}
+  L1_instances:
+    - {id: primary_kanon, kind: git, path: "C:/Users/Admin/fusion-hero-os", branch: main, role: kanon, expect_version_file: true}
+    - {id: daily_plans_private, kind: git, path: "C:/Users/Admin/fusion-hero-os-daily-plans", branch: main, role: mem_private}
+    - {id: fusion_hero_core, kind: git, path: "C:/Users/Admin/fusion-hero-core", branch: main, role: satellite_core, optional: true}
+    - {id: fusion_hero_os_llm_push, kind: git, path: "C:/Users/Admin/fusion-hero-os-llm-push", branch: main, role: satellite, optional: true}
+    - {id: heroic_core_foundation, kind: git, path: "C:/Users/Admin/heroic-core-foundation", branch: main, role: heroic_core, optional: true}
+    - {id: heroic_highest_layer, kind: git, path: "C:/Users/Admin/heroic-highest-layer", branch: main, role: satellite, optional: true}
+    - {id: hero_os, kind: git, path: "C:/Users/Admin/hero-os", branch: main, role: satellite, optional: true}
+    - {id: pages_95guknow, kind: git, path: "C:/Users/Admin/95guknow.github.io", branch: main, role: public_pages, optional: true}
+  L2_worktrees:
+    - {id: wt_port_42069, kind: git, path: "C:/Users/Admin/fusion-hero-os-wt-42069", branch: "port/42069", role: worktree, optional: true}
+    - {id: best_fuhos_desktop, kind: path, path: "C:/Users/Admin/Desktop/best-FuHOS", role: desktop_worktrees_root, optional: true}
+  L3_skills_horkruxe:
+    - {id: skill_fusion_hero_os, kind: skill_dir, path: "~/.grok/skills/fusion-hero-os", role: grok_skill_primary}
+    - {id: skill_alte_frau, kind: skill_dir, path: "~/.grok/skills/alte-frau-95g", role: grok_skill, optional: true}
+    - {id: skill_heroic_core, kind: skill_dir, path: "~/.grok/skills/heroic-core-foundation", role: grok_skill, optional: true}
+    - {id: skill_mainframe_laden, kind: skill_dir, path: "~/.grok/skills/mainframe-laden", role: grok_skill, optional: true}
+    - {id: skill_fusion_hero_bundled, kind: skill_dir, path: "C:/Users/Admin/fusion-hero-os/01_Framework/skills/fusion-hero-os", role: repo_skill_mirror, optional: true}
+  L4_remotes:
+    - {id: github_origin_main, kind: remote_check, remote: origin, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/heads/main", role: public_kanon}
+    - {id: github_senfkorn_main, kind: remote_check, remote: senfkorn, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/heads/main", role: dual_org}
+    - {id: tag_v12_1_0, kind: remote_check, remote: origin, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/tags/v12.1.0", role: release_tag}
+pseudo_horcrux: {enabled: true, store_dir: "~/.fusion/horcrux/bottom_up_v12"}
+bounds: {force_push: false, offense: FORBIDDEN}

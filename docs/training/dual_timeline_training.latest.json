@@ -1,11 +1,17 @@
 {
-  "generated_at": "2026-07-19T10:31:16.899762+00:00",
-  "files": 900,
-  "samples": 5242,
+  "generated_at": "2026-07-21T06:39:23.460818+00:00",
+  "platform": "12.0.0",
+  "cycle": "BIG_ALPHA",
+  "files": 1008,
+  "samples": 6909,
+  "dual_samples": 5215,
+  "virtual_samples": 1694,
+  "virtual_timelines_enabled": true,
+  "heroic_mean": 0.266488,
   "consistency_ok": true,
-  "tau_mean": 0.359623284444445,
+  "tau_mean": 0.3667927757936508,
   "t_min_iso": "2026-06-27T13:31:41.778134+00:00",
-  "t_max_iso": "2026-07-19T10:31:15.994740+00:00",
+  "t_max_iso": "2026-07-21T06:39:20.574052+00:00",
   "roots": [
     "03_Code",
     "ascension_os",
@@ -21,6 +27,12 @@
   "freemium": false,
   "axes": {
     "t": "real",
-    "tau": "imaginary_structural"
+    "tau": "imaginary_structural_heroic",
+    "v": "virtual_heroic_scenario"
+  },
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "realraum_vault_commit": false
   }
 }

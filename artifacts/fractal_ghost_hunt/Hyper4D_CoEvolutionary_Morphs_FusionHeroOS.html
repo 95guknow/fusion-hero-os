@@ -1,1 +1,94 @@
-Interactive Plotly Hyper4D visualization (self-contained HTML)
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Hyper4D Co-Evolutionary Morphs — Fusion Hero OS v2.0</title>
+<!--
+  v2.0 · 2026-07-24 · De-Ghosting des 62-Byte-Stubs (Legacy Ghost Hunt 2026-07-16).
+  v1 versprach "Interactive Plotly Hyper4D visualization (self-contained HTML)",
+  enthielt aber nichts. v2 loest das Versprechen EHRLICH ein: wirklich
+  self-contained (keine CDN, keine Libraries) — ein Tesserakt (4D-Hyperwuerfel),
+  der in zwei 4D-Rotationsebenen (xw, yz) rotiert und per Doppel-Projektion
+  4D -> 3D -> 2D auf Canvas gezeichnet wird. Das ist echte 4D-Geometrie,
+  kein simuliertes Telemetrie-Theater.
+  Geltung: Kreativ-/Anschauungs-Artefakt (P3/Research) — kein Systemclaim.
+  Kanon: docs/dissertation/anhaenge/A13 (Bogen 1: "n-D Mannigfaltigkeit" = Fragment).
+-->
+<style>
+  body { margin: 0; background: #0a0a12; color: #9fe8d0; font-family: monospace; }
+  header { padding: 10px 16px; }
+  h1 { font-size: 15px; margin: 0 0 4px; color: #ff5077; }
+  p { font-size: 11px; margin: 2px 0; color: #7aa; }
+  canvas { display: block; margin: 0 auto; }
+  label { font-size: 11px; margin-right: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hyper4D Co-Evolutionary Morphs — Tesserakt-Doppelprojektion (4D→3D→2D) · v2.0</h1>
+  <p>Self-contained, keine externen Libraries. Rotation in den 4D-Ebenen xw und yz;
+     Kantenfarbe kodiert die w-Tiefe. Geltung: Anschauung (Fragment) — siehe A13.</p>
+  <p>
+    <label>xw-Tempo <input id="s1" type="range" min="0" max="40" value="12"></label>
+    <label>yz-Tempo <input id="s2" type="range" min="0" max="40" value="7"></label>
+  </p>
+</header>
+<canvas id="c" width="820" height="560"></canvas>
+<script>
+"use strict";
+// 16 Ecken des Einheits-Tesserakts in {-1,+1}^4
+const verts = [];
+for (let i = 0; i < 16; i++) {
+  verts.push([(i&1)?1:-1, (i&2)?1:-1, (i&4)?1:-1, (i&8)?1:-1]);
+}
+// Kanten: Paare mit Hamming-Distanz 1 (32 Kanten)
+const edges = [];
+for (let a = 0; a < 16; a++) for (let b = a+1; b < 16; b++) {
+  const x = a ^ b;
+  if (x && !(x & (x-1))) edges.push([a, b]);
+}
+const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+const s1 = document.getElementById("s1"), s2 = document.getElementById("s2");
+
+function rot(p, i, j, t) {                 // Rotation in der Ebene (i,j)
+  const q = p.slice(), c = Math.cos(t), s = Math.sin(t);
+  q[i] = c*p[i] - s*p[j];
+  q[j] = s*p[i] + c*p[j];
+  return q;
+}
+function project(p) {                      // 4D -> 3D -> 2D (Perspektive)
+  const dw = 3.0, d3 = 4.0;
+  const k4 = dw / (dw - p[3]);             // w-Perspektive
+  const x = p[0]*k4, y = p[1]*k4, z = p[2]*k4;
+  const k3 = d3 / (d3 - z);                // z-Perspektive
+  return [cv.width/2 + x*k3*95, cv.height/2 + y*k3*95, p[3]];
+}
+let t = 0;
+function frame() {
+  t += 0.008;
+  const a = t * (s1.value/10), b = t * (s2.value/10);
+  const pts = verts.map(v => project(rot(rot(v, 0, 3, a), 1, 2, b)));
+  ctx.fillStyle = "#0a0a12";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+  for (const [i, j] of edges) {
+    const wAvg = (pts[i][2] + pts[j][2]) / 2;         // w-Tiefe -> Farbe
+    const hue = 160 + wAvg * 90;
+    ctx.strokeStyle = `hsl(${hue} 90% ${55 + wAvg*15}%)`;
+    ctx.lineWidth = 1.4 + (wAvg + 1) * 0.8;
+    ctx.beginPath();
+    ctx.moveTo(pts[i][0], pts[i][1]);
+    ctx.lineTo(pts[j][0], pts[j][1]);
+    ctx.stroke();
+  }
+  for (const p of pts) {
+    ctx.fillStyle = "#ff5077";
+    ctx.beginPath();
+    ctx.arc(p[0], p[1], 2.4, 0, 6.284);
+    ctx.fill();
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

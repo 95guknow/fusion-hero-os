@@ -1,0 +1,28 @@
+{
+  "kind": "GLOBAL_DEPLOY_PUSH",
+  "utc": "2026-07-21T06:40:12.801564+00:00",
+  "platform": "12.0.0",
+  "cycle": "BIG_ALPHA",
+  "deploy": {
+    "ok": true,
+    "meaning": "private",
+    "manifest": "C:\\Users\\Admin\\.fusion\\ops\\deploy_latest.json"
+  },
+  "push": {
+    "ok": true,
+    "meaning": "public",
+    "commit": "86c78a9",
+    "remotes": {
+      "origin": "https://github.com/95guknow/fusion-hero-os.git",
+      "senfkorn": "https://github.com/Senfkorn-UG/fusion-hero-os.git"
+    },
+    "branch": "main",
+    "range": "2b81a06..86c78a9"
+  },
+  "payload": "virtual timelines + fusion_musion + BIG ALPHA + BESTAETIGUNG-1 + big_ALPHA art",
+  "bounds": {
+    "vault_in_git": false,
+    "offense": "FORBIDDEN"
+  },
+  "geltung": "deploy+push results = Satz"
+}

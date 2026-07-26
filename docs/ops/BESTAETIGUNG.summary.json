@@ -1,0 +1,20 @@
+{
+  "id": "BESTAETIGUNG",
+  "utc": "2026-07-21T11:13:41.525111+00:00",
+  "result": "PASS_WITH_WARN",
+  "counts": {
+    "total": 17,
+    "pass": 16,
+    "fail_or_miss": 0,
+    "warn": 1
+  },
+  "platform": "12.1.0",
+  "cycle": "BIG_ALPHA",
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "realraum_vault_commit": false
+  },
+  "geltung": "local lab confirmation = Satz where hashed/measured"
+}

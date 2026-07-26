@@ -1,0 +1,22 @@
+{
+  "id": "BESTAETIGUNG-1",
+  "utc": "2026-07-21T06:53:03.551282+00:00",
+  "result": "PASS_WITH_WARN",
+  "counts": {
+    "total": 23,
+    "pass": 22,
+    "fail_or_miss": 0,
+    "warn": 1
+  },
+  "platform": "12.0.0",
+  "cycle": "BIG_ALPHA",
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "realraum_vault_commit": false,
+    "power_force_through": "lab_only",
+    "external_tailnet_mutate": false
+  },
+  "geltung": "BESTAETIGUNG-1 local lab state = Satz where hashed/measured"
+}

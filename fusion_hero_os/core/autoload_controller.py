@@ -20,7 +20,7 @@ __all__ = ["STATE_PATH", "status", "public_status", "mark_ready"]
 
 OP = Path.home() / ".fusion"
 STATE_PATH = OP / "autoload_controller.json"
-PLATFORM = "12.0.0"
+PLATFORM = "12.1.0"
 
 
 def _now() -> str:

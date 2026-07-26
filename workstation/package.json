@@ -1,7 +1,7 @@
 {
 	"name": "fusion-hero-os",
 	"private": true,
-	"version": "12.0.0",
+	"version": "12.1.0",
 	"type": "module",
 	"scripts": {
 		"supabase:health": "node 03_Code/Dashboard/scripts/supabase-health.mjs",

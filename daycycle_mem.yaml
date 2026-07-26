@@ -1,0 +1,103 @@
+# Daycycle Mem + Central Consolidation — Fusion Hero OS v12.1.0
+# Bottom-up manifold upgrade · minute mem · hourly private dev · 4h PR · daily top
+# Policy: private mem repo only · no vault secrets in mem · freemium=false
+
+version: "1.0"
+platform_version: "12.1.0"
+cycle: BIG_ALPHA
+policy: pseudo_inhouse_only
+
+principle: >
+  Day schedule is written every minute into local mem.md.
+  Hourly: mem is flushed (commit+push) to private repo branch `dev`, then cleared.
+  Every 4 hours: open/refresh PR dev → main (private repo).
+  Once per day: merge PR to top (main), then fan-out pull/update to all registered instances.
+  Instances log real-world traffic locally as usual.
+  Agent protocol: passive protocol-only unless operator says explicit wake word "testtest".
+
+paths:
+  local_mem: ~/.fusion/daycycle/mem.md
+  local_archive: ~/.fusion/daycycle/archive
+  local_traffic_log: ~/.fusion/daycycle/instance_traffic.jsonl
+  local_state: ~/.fusion/daycycle/state.json
+  local_protocol: ~/.fusion/daycycle/agent_protocol.jsonl
+  config_override: ~/.fusion/daycycle/config.json
+
+private_repo:
+  # Private GitHub repo for mem flush (NOT public fusion-hero-os)
+  owner: 95guknow
+  name: fusion-hero-os-daily-plans
+  local_path: C:/Users/Admin/fusion-hero-os-daily-plans
+  remote: origin
+  branch_dev: dev
+  branch_top: main
+  mem_dir: daycycle/mem
+  # commit prefix must NOT look like auto-save spam on public guards
+  commit_prefix: "daycycle:"
+
+schedule:
+  minute_tick_sec: 60
+  hourly_flush_minute: 0          # at :00
+  pr_every_hours: 4
+  daily_top_merge_hour_local: 3   # 03:00 local
+  daily_fanout_after_merge: true
+
+mem:
+  max_lines_before_force_flush: 5000
+  include_hostname: true
+  include_platform_version: true
+  redact_patterns:
+    - "(?i)api[_-]?key\\s*=\\s*\\S+"
+    - "(?i)password\\s*=\\s*\\S+"
+    - "(?i)bearer\\s+[A-Za-z0-9._\\-]+"
+    - "(?i)sk-[A-Za-z0-9]{10,}"
+
+agent_protocol:
+  mode_default: protocol_only     # log only; no autonomous intervention
+  wake_word: "testtest"           # explicit operator call-in
+  wake_ttl_minutes: 30            # active engagement window after wake
+  note: >
+    Unless wake_word appears in operator input, agent only protocols
+    (appends to agent_protocol.jsonl). Real-world traffic stays on instances.
+
+instances:
+  # Bottom-up fan-out targets (git pull when path exists)
+  - id: primary
+    path: C:/Users/Admin/fusion-hero-os
+    branch: main
+    role: kanon
+  - id: daily_plans
+    path: C:/Users/Admin/fusion-hero-os-daily-plans
+    branch: main
+    role: mem_private
+  # optional worktrees / satellites — skipped if path missing
+  - id: wt_port_42069
+    path: C:/Users/Admin/fusion-hero-os-wt-42069
+    branch: port/42069
+    role: satellite
+    optional: true
+
+upgrade:
+  target: "12.1.0"
+  mode: bottom_up_full_manifold
+  include:
+    - VERSION + manifests (bump_version)
+    - daycycle engine
+    - quantize selfmod
+    - virtual timelines
+    - dual-org publish surfaces
+  never:
+    - private vault shards
+    - .env secrets
+
+bounds:
+  offense: FORBIDDEN
+  sandbox_only: false            # daycycle is operator labor on own machines
+  public_repo_mem_push: false    # mem never to public fusion-hero-os
+  realraum_vault_commit: false
+
+geltung:
+  minute_lines: Satz
+  schedule: Spezifikation
+  PR_merge_outcome: Satz
+  manifold_language: Modell

@@ -1,0 +1,60 @@
+# AscensionHypercluster — Konfiguration
+#
+# Der Hyperclusterup Zitterpolymesh (PVHT-Scheduler, Lanes CPU/MEM/GPU/QPU) als
+# Ausführungsschicht des AscensionOS-Tracks. Geladen von
+# ascension_os/hypercluster.py. Ohne diese Datei greifen die eingebauten
+# Defaults (DEFAULT_GOVERNANCE / DEFAULT_UNITS).
+
+version: 1
+
+# --- Governance -------------------------------------------------------------
+# owner ist eine deklarierte Betreiber-Zuordnung (Label), KEIN Rechts- oder
+# Registerdokument. Consent bleibt Layer 0: personenbezogene Einheiten laufen
+# ohne aktiven Grant fail-closed.
+governance:
+  owner: "Senfkorn Holding UG"
+  track: ascension
+  platform_version: "12.0.0"
+  consent_required_for_personal_data: true
+
+# --- Ascensionen (Cluster-Knoten) -------------------------------------------
+# lane: cpu | mem | gpu | qpu
+# requires_consent: true  -> ohne Grant = blocked_consent (nicht ausgeführt)
+# deps: Namen anderer Einheiten, die zuerst betriebsbereit sein müssen
+units:
+  - name: consent-gate
+    lane: cpu
+    module: ascension_os.consent_gate
+    entrypoint: AscensionConsentGate
+
+  - name: ascension-core
+    lane: cpu
+    module: ascension_os.core.ascension_core
+    entrypoint: AscensionCore
+    deps: [consent-gate]
+
+  - name: persistent-sisyphos
+    lane: mem
+    module: ascension_os.core.persistent_sisyphos
+    entrypoint: PersistentSisyphosCycle
+    requires_consent: true
+    deps: [consent-gate]
+
+  - name: stage9-tracker
+    lane: mem
+    module: ascension_os.core.stage9_tracker
+    entrypoint: Stage9AscensionTracker
+    requires_consent: true
+    deps: [consent-gate]
+
+  - name: generational-evolution
+    lane: gpu
+    module: ascension_os.evolution.generational_engine
+    entrypoint: GenerationalEvolutionEngine
+    deps: [ascension-core]
+
+  - name: qubo-optimizer
+    lane: qpu
+    module: ascension_os.core.qubo_ascension_optimizer
+    entrypoint: QUBOAscensionOptimizer
+    deps: [ascension-core]

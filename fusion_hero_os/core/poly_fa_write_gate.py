@@ -55,7 +55,7 @@ POLICY_PATH = OP_DIR / "poly_fa_write_policy.json"
 GRANTS_PATH = OP_DIR / "poly_fa_grants.json"
 REQUESTS_PATH = OP_DIR / "poly_fa_requests.json"
 
-PLATFORM = "12.0.0"
+PLATFORM = "12.1.0"
 DEFAULT_TTL_SEC = 15 * 60  # 15 minutes
 GOD_SCOPES = frozenset(
     {

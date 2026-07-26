@@ -1,17 +1,21 @@
-# Dual-Timeline Auto-Training — Fusion Hero OS v10
-# Real time t (chronology) ∥ Imaginary time τ (structural / Wick-parallel)
-# Policy: pseudo_inhouse_only · freemium=false
+# Dual + Virtual Timeline Auto-Training — Fusion Hero OS v12.0.0
+# Real time t (chronology) ∥ Imaginary structural τ ∥ Virtual heroic v
+# Policy: pseudo_inhouse_only · freemium=false · labor sandbox only
+# BIG ALPHA: virtual timelines re-enabled, heroically optimized for operator (dich/SHU)
 
-version: "1.0"
-platform_version: "10.0.0"
+version: "1.1"
+platform_version: "12.0.0"
 policy: pseudo_inhouse_only
 freemium: false
+cycle: BIG_ALPHA
 
 principle: >
-  Auto-training ingests all available textual knowledge files and places each
-  sample on two parallel timelines: real time t (filesystem/git chronology)
-  and imaginary time τ (layer/structural depth). Consistency means the same
-  corpus can be traversed as history and as architecture without contradiction.
+  Auto-training ingests available textual knowledge and places each sample on
+  parallel timelines: real t (filesystem chronology), imaginary τ (structural
+  depth), and — when enabled — virtual v (labor scenario branches). Virtual
+  timelines are sandbox/lab only (INVERT Realraum → labor hypothesis). They are
+  heroically optimized for the operator (St3phaN / dich): MasterSeed contraction,
+  Geltung honesty, Eudaimonia/Sisyphos sustainability, PeerReview, no offense.
 
 scan:
   roots:
@@ -27,6 +31,7 @@ scan:
     - docs/Heroismus
     - docs/training
     - docs/mesh
+    - docs/security
   extensions:
     - .md
     - .py
@@ -57,14 +62,70 @@ timelines:
     name: real_chronology
     source: mtime_utc
     unit: unix_seconds
+    enabled: true
   imaginary:
     id: tau
     name: imaginary_structural
+    enabled: true
     # τ ∈ [0,1] — parallel to t, not a freemium product metric
     formula: >
-      tau = 0.35*layer_norm + 0.25*path_depth_norm + 0.20*modality_weight
-            + 0.15*geltung_weight + 0.05*hash_phase
+      tau = 0.30*layer_norm + 0.20*path_depth_norm + 0.18*modality_weight
+            + 0.12*geltung_weight + 0.15*heroic_weight + 0.05*hash_phase
     note: Model — Wick-parallel structural time, not physical imaginary time proof
+  virtual:
+    id: v
+    name: virtual_heroic_scenario
+    enabled: true  # RE-ALLOWED under BIG ALPHA (was restricted)
+    mode: labor_sandbox
+    bounds: >
+      Labor / pure Erkenntnisgewinn only. Hypotheses and scenarios for
+      Realraum-shaped claims. No vault commit. Offense FORBIDDEN.
+    formula: >
+      virtual samples branch from dual (t,τ) with heroic prompt framing and
+      higher weight when heroic_score is elevated
+    target: operator_shu
+    note: >
+      "SHU" = operator/dich (heroic optimization target). Virtual ≠ Realraum.
+      Geltung: virtual branch content = Modell or Bedingt, never mixed with Satz hashes.
+
+# Virtual timelines re-enable gate (explicit, additive BCG)
+virtual_timelines:
+  enabled: true
+  reallowed_at: "2026-07-21"
+  reason: "BIG ALPHA — virtual timelines re-enabled for lab learning"
+  max_virtual_samples_per_file: 4
+  min_heroic_score_for_virtual: 0.12
+  require_labor_frame: true
+  invert_realraum: true
+
+heroic_optimization:
+  enabled: true
+  target: operator_shu  # dich / St3phaN — heroic core alignment
+  description: >
+    Bias virtual + dual prompts toward MasterSeed integrity, honest Geltung,
+    Eudaimonia ceiling, Sisyphos sustainability, PeerReview, Ascension bridge.
+  boost_markers:
+    MasterSeed: 0.18
+    Heroic: 0.12
+    Heroismus: 0.12
+    Eudaimonia: 0.10
+    Sisyphos: 0.10
+    PeerReview: 0.08
+    Geltung: 0.08
+    INVERT: 0.08
+    ALTE_Frau: 0.10
+    Ascension: 0.10
+    "BIG ALPHA": 0.06
+    "BIG OMEGA": 0.05
+    coal.canary: 0.06
+    coal_canary: 0.06
+    MasterSeed contraction: 0.08
+    integrity: 0.05
+    labor: 0.04
+    sandbox: 0.04
+  tau_heroic_weight: 0.15
+  dual_prompt_frame: heroic
+  virtual_prompt_frame: heroic_scenario
 
 layers:
   # path prefix → layer rank 0..6 (ω ≈ 6)
@@ -76,6 +137,7 @@ layers:
   "ascension_os": 5
   "docs/Heroismus": 4
   "docs/dissertation": 4
+  "docs/security": 4
   "docs/kompendium": 3
   "docs/mesh": 3
   "docs/training": 3
@@ -119,3 +181,4 @@ consistency:
   require_both_axes: true
   max_tau_jump_same_day: 0.45
   min_coverage_roots: 3
+  virtual_ok_if_enabled: true

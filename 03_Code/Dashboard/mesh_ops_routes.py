@@ -146,30 +146,43 @@ def _registry_stubs_cleared() -> Dict[str, Any]:
         return {"ok": False, "error": str(exc)[:200]}
 
 
+def _quantize_selfmod_status() -> Dict[str, Any]:
+    try:
+        from fusion_hero_os.core.tailscale_quantize_selfmod import status
+
+        return status()
+    except Exception as exc:  # noqa: BLE001
+        return {"ok": False, "error": str(exc)[:200]}
+
+
 @router.get("/api/mesh/ops")
 async def mesh_ops_root() -> Dict[str, Any]:
     """Unified mesh ops snapshot (poly-mesh + tailscale + quant bus + P1 stubs)."""
-    ts, funnel, poly, quant, stubs = await asyncio.gather(
+    ts, funnel, poly, quant, stubs, qsm = await asyncio.gather(
         asyncio.to_thread(_tailscale_status),
         asyncio.to_thread(_funnel_status),
         asyncio.to_thread(_poly_mesh),
         asyncio.to_thread(_entwicklungsquant_status),
         asyncio.to_thread(_registry_stubs_cleared),
+        asyncio.to_thread(_quantize_selfmod_status),
     )
     return {
         "ok": True,
-        "platform_version": "10.0.0",
+        "platform_version": "12.0.0",
         "plane": "hyperraum",
         "tailscale": ts,
         "funnel": funnel,
         "poly_mesh": poly,
         "entwicklungsquant": quant,
+        "quantize_selfmod": qsm,
         "p1_wiring": stubs,
         "endpoints": {
             "tailscale": "/api/mesh/ops/tailscale",
             "funnel": "/api/mesh/ops/funnel",
             "poly": "/api/mesh/ops/poly",
             "quant": "/api/mesh/ops/entwicklungsquant",
+            "quantize_selfmod": "/api/mesh/ops/quantize-selfmod",
+            "quantize_selfmod_cycle": "/api/mesh/ops/quantize-selfmod/cycle",
             "p1": "/api/mesh/ops/p1",
         },
     }
@@ -193,6 +206,48 @@ async def mesh_ops_poly() -> Dict[str, Any]:
 @router.get("/api/mesh/ops/entwicklungsquant")
 async def mesh_ops_quant() -> Dict[str, Any]:
     return await asyncio.to_thread(_entwicklungsquant_status)
+
+
+@router.get("/api/mesh/ops/quantize-selfmod")
+async def mesh_ops_quantize_selfmod() -> Dict[str, Any]:
+    """Tailscale-assisted self-modulating quantization status."""
+    return await asyncio.to_thread(_quantize_selfmod_status)
+
+
+@router.post("/api/mesh/ops/quantize-selfmod/ensure")
+async def mesh_ops_quantize_selfmod_ensure() -> Dict[str, Any]:
+    def _run():
+        from fusion_hero_os.core.tailscale_quantize_selfmod import ensure_assist_nodes
+
+        return ensure_assist_nodes()
+
+    return await asyncio.to_thread(_run)
+
+
+@router.post("/api/mesh/ops/quantize-selfmod/modulate")
+async def mesh_ops_quantize_selfmod_modulate(
+    heroic: float = Query(0.0, ge=0.0, le=1.0),
+) -> Dict[str, Any]:
+    def _run():
+        from fusion_hero_os.core.tailscale_quantize_selfmod import self_modulate
+
+        return self_modulate(heroic_boost=heroic)
+
+    return await asyncio.to_thread(_run)
+
+
+@router.post("/api/mesh/ops/quantize-selfmod/cycle")
+async def mesh_ops_quantize_selfmod_cycle(
+    heroic: float = Query(0.0, ge=0.0, le=1.0),
+) -> Dict[str, Any]:
+    """Ensure assist nodes → self-mod params → quantized QUBO run (local fan-out)."""
+
+    def _run():
+        from fusion_hero_os.core.tailscale_quantize_selfmod import run_full_cycle
+
+        return run_full_cycle(heroic_boost=heroic)
+
+    return await asyncio.to_thread(_run)
 
 
 @router.get("/api/mesh/ops/p1")

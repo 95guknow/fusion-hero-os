@@ -1,6 +1,6 @@
 # Eudaemon — Korridor begangen, jenseits gehandelt
 
-**UTC:** 2026-07-20T07:24:09.610173+00:00
+**UTC:** 2026-07-21T11:13:46.003575+00:00
 **Meister Hasch:** binding · labor
 **Cloud Run:** `https://fusion-hero-os-42426705927.europe-west2.run.app`
 

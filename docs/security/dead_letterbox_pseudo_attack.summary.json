@@ -1,6 +1,6 @@
 {
   "kind": "dead_letterbox_pseudo_attack_sim",
-  "generated_at": "2026-07-20T07:24:10.346372+00:00",
+  "generated_at": "2026-07-21T11:13:46.001574+00:00",
   "policy": {
     "sandbox_only": true,
     "no_external_targets": true,
@@ -26,19 +26,19 @@
   "doc": "docs/security/DEAD_LETTERBOX_PSEUDO_ATTACK_SIM.md",
   "boxes": [
     {
-      "box_id": "deadbox-2824-0",
+      "box_id": "deadbox-7311-0",
       "label": "retired_synthetic_letterbox_0",
       "retired": true,
       "message_count": 4
     },
     {
-      "box_id": "deadbox-1409-1",
+      "box_id": "deadbox-7890-1",
       "label": "retired_synthetic_letterbox_1",
       "retired": true,
       "message_count": 4
     },
     {
-      "box_id": "deadbox-5506-2",
+      "box_id": "deadbox-1663-2",
       "label": "retired_synthetic_letterbox_2",
       "retired": true,
       "message_count": 4

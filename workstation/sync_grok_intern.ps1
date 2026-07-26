@@ -1,4 +1,5 @@
-# Fusion-Hero-OS v10.0.0 - Grok Intern Abgleich mit GitHub
+# Fusion-Hero-OS Grok Intern Abgleich mit GitHub
+# Platform version = root VERSION (source of truth). Sync upgrade v12.x.
 # Synchronisiert lokalen Grok-Skill + Kilo-Workspace mit Repo-Stand (operativer Kanon)
 
 $ErrorActionPreference = "Continue"
@@ -7,10 +8,12 @@ $GrokSkill = Join-Path $env:USERPROFILE ".grok\skills\fusion-hero-os"
 $KiloWs = Join-Path $env:USERPROFILE ".config\kilo\fusion-hero-os.code-workspace"
 $GitRemote = "https://github.com/95guknow/fusion-hero-os"
 $CheckScript = Join-Path $PSScriptRoot "check-grok-cli.ps1"
-$PlatformVersion = "10.0.0"
-$OperativeKanon = "v10.0.0"
+# Prefer root VERSION; fallback 12.1.0
+$versionFileEarly = Join-Path $Root "VERSION"
+$PlatformVersion = if (Test-Path $versionFileEarly) { (Get-Content $versionFileEarly -Raw).Trim() } else { "12.1.0" }
+$OperativeKanon = "v$PlatformVersion"
 $Aspirational = "v9.10 AscensionOS track (loadable)"
-$Inherits = "v8.3 functional stack + Stage-A/B"
+$Inherits = "v8.3 functional stack + Stage-A/B + v12 daycycle"
 
 New-Item -ItemType Directory -Force -Path $GrokSkill | Out-Null
 
@@ -61,8 +64,9 @@ $fileVersion = $null
 if (Test-Path $versionFile) {
     $fileVersion = (Get-Content $versionFile -Raw).Trim()
 }
-if ($fileVersion -and ($fileVersion -ne $PlatformVersion)) {
-    Write-Host "WARNUNG: Root VERSION=$fileVersion, erwartet $PlatformVersion" -ForegroundColor Yellow
+if ($fileVersion) {
+    $PlatformVersion = $fileVersion
+    $OperativeKanon = "v$PlatformVersion"
 }
 
 @{
@@ -87,7 +91,7 @@ if ($fileVersion -and ($fileVersion -ne $PlatformVersion)) {
     }
 } | ConvertTo-Json -Depth 4 | Set-Content -Path $KiloWs -Encoding UTF8
 
-Write-Host "[v10.0.0] Grok-intern Abgleich mit GitHub:" -ForegroundColor Cyan
+Write-Host "[$OperativeKanon] Grok-intern Abgleich mit GitHub:" -ForegroundColor Cyan
 Write-Host "  Repo:      $GitRemote"
 Write-Host "  HEAD:      $gitHead ($gitDate)"
 Write-Host "  Skill:     $GrokSkill"

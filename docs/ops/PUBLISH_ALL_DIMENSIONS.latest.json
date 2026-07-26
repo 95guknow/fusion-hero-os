@@ -1,41 +1,55 @@
 {
   "kind": "publish_all_dimensions",
-  "ts": "2026-07-19T10:19:51.208648+00:00",
+  "ts": "2026-07-21T06:43:40.893196+00:00",
   "platform": "12.0.0",
-  "tip": "7c639b9",
+  "cycle": "BIG_ALPHA",
+  "tip": "86c78a9",
+  "tip_full": "86c78a952d0aea31dbd320f271122210cb4d43b3",
   "release": "https://github.com/95guknow/fusion-hero-os/releases/tag/v12.0.0",
   "display": {
     "display_id": "MS-PUB-v12-CMCFEAVV-682D",
     "public_fingerprint": "6518f72b7b87c001684c969c8b2bca29ada01ea52da078288166737b19717ac9",
     "platform_version": "12.0.0",
-    "criticality_target_display": "0.22 (model)",
     "integrity_ok": true,
-    "state_hash_prefix": "c1cfe3f73095",
-    "presented_at": "2026-07-19T10:19:51.208648+00:00",
+    "presented_at": "2026-07-21T06:43:40.893196+00:00",
     "policy": "public_unique_private_obfuscated"
+  },
+  "remotes": {
+    "origin": "https://github.com/95guknow/fusion-hero-os",
+    "senfkorn": "https://github.com/Senfkorn-UG/fusion-hero-os"
   },
   "dimensions": [
     "git_origin",
     "git_senfkorn",
-    "branches_all_active",
-    "tag_v12",
-    "github_release",
     "masterseed_public",
-    "peer_confirmations",
-    "meister_hasch",
-    "conversation_index_A11",
-    "dual_timeline_t_tau",
-    "ops_merge",
-    "fluid_zitterpolymesh",
-    "poly_mesh_L0_L1",
-    "mesh_files_phone",
-    "grok_skills",
-    "horcrux",
-    "gottmodus"
+    "alpha_meister_hasch",
+    "meister_hasch_canonical_png",
+    "big_alpha_key_art",
+    "virtual_timelines_t_tau_v",
+    "ops_merge_fusion_musion",
+    "bestaetigung_1",
+    "big_alpha_execute",
+    "dual_timeline_docs",
+    "global_deploy_push",
+    "github_release_v12"
   ],
+  "public_urls": {
+    "alpha_meister_hasch_md": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/dissertation/ALPHA_MEISTER_HASCH.md",
+    "meister_hasch_png_canonical": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/dissertation/assets/meister_hasch.png",
+    "meister_hasch_png_journal": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/journal/meister_hasch.png",
+    "big_alpha_png": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/ascension_os/assets/big_ALPHA.png",
+    "virtual_timelines": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/training/VIRTUAL_TIMELINES_REENABLED.md",
+    "merge_summary": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/ops/merge_latest.summary.json",
+    "repo": "https://github.com/95guknow/fusion-hero-os",
+    "senfkorn": "https://github.com/Senfkorn-UG/fusion-hero-os"
+  },
+  "meister_sha256": "a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e",
   "never_published": [
     "private_shards_gpg",
     "operator_vault_secrets",
-    ".env"
-  ]
+    ".env",
+    "~/.fusion vault payloads"
+  ],
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "geltung": "publish surfaces = Satz where URL/hash verified"
 }

@@ -1,0 +1,91 @@
+# Tailscale Quantize Self-Mod — Fusion Hero OS v12.0.0 · BIG ALPHA
+# Self-modulating Tailscale assist nodes for calculation quantization.
+# Policy: sandbox_only · no offense · private mesh only · freemium=false
+
+version: "1.0"
+platform_version: "12.0.0"
+cycle: BIG_ALPHA
+policy: pseudo_inhouse_only
+freemium: false
+
+principle: >
+  Virtual/real Tailscale assist roles self-modulate quantization parameters
+  (bit-depth, partitions, anneal schedule, worker fan-out) under MasterSeed
+  contraction. More healthy online peers → more parallel quantize capacity.
+  Drift or offline mesh → contract toward safer local fixed point.
+  Does NOT create foreign Tailscale accounts or attack external networks.
+
+bounds:
+  offense: FORBIDDEN
+  sandbox_only: true
+  realraum_vault_commit: false
+  external_tailnet_mutate: false  # no ACL writes to foreign orgs
+
+# Assist node roles (lab mesh tags — not automatic tailnet ACL push)
+assist_roles:
+  - id: quantize-annealer
+    tag: tag:fuse-quantize-anneal
+    function: parallel simulated annealing shards
+    layer: 1
+  - id: quantize-bitreducer
+    tag: tag:fuse-quantize-bits
+    function: adaptive bit-depth / energy binning
+    layer: 1
+  - id: quantize-integrity
+    tag: tag:fuse-quantize-integrity
+    function: MasterSeed integrity probe on solutions
+    layer: 0
+  - id: quantize-partition
+    tag: tag:fuse-quantize-partition
+    function: problem graph partitioning for mesh offload
+    layer: 2
+  - id: quantize-eudaemon
+    tag: tag:fuse-quantize-eudaemon
+    function: heal drift of quantize params to healthy fixed point
+    layer: 0
+
+# Self-modulation rules (Satz-measurable local metrics → param map)
+self_mod:
+  enabled: true
+  masterseed_contraction: true
+  min_bit_depth: 2
+  max_bit_depth: 8
+  min_anneal_steps: 200
+  max_anneal_steps: 8000
+  min_workers: 1
+  max_workers: 16
+  min_partitions: 1
+  max_partitions: 8
+  # peer_online → capacity scale ∈ [0,1]
+  peer_scale: >
+    scale = clamp( peers_online / max(1, peer_target) , 0.15, 1.0 )
+  peer_target: 4
+  # if Tailscale offline → still run local virtual assists
+  offline_virtual_floor: 0.25
+  heroic_boost_weight: 0.12
+  # temperature schedule self-mod
+  T0_base: 2.5
+  T0_span: 1.5
+  # contraction: never increase energy variance budget when integrity fails
+  integrity_gate: true
+
+# Quantization problem defaults (lab QUBO toy)
+quantize:
+  default_n: 24
+  density: 0.18
+  seed: 42
+  backend: simulated_annealing
+
+# Persistence
+paths:
+  state_dir: ~/.fusion/mesh/quantize_selfmod
+  nodes_file: nodes.json
+  last_mod_file: last_selfmod.json
+  last_run_file: last_quantize_run.json
+  docs_summary: docs/mesh/tailscale_quantize_selfmod.latest.json
+
+geltung:
+  peer_counts: Satz
+  param_mapping: Modell
+  virtual_nodes: Spezifikation (Lab)
+  physical_tailnet_acl: Fragment (not auto-pushed)

@@ -1,13 +1,23 @@
 {
   "kind": "BIG_ALPHA_EXECUTE",
-  "generated_at": "2026-07-20T07:30:00Z",
+  "generated_at": "2026-07-21T06:01:48Z",
   "status": {
     "BIG_OMEGA": "REACHED",
     "BIG_ALPHA": "EXECUTING"
   },
   "prompt_source": "C:\\prompt.txt",
+  "sources": [
+    "C:\\Dissertation_95guknow\\alpha_meister_hasch.md",
+    "C:\\Dissertation_95guknow\\BIG_ALPHA_EXECUTE.md"
+  ],
   "meister_sha256": "a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e",
   "meister_hash_match": true,
+  "meister_paths_verified": [
+    "C:\\Dissertation_95guknow\\meister_hasch.png",
+    "docs/dissertation/assets/meister_hasch.png",
+    "memes/meister_hasch.png",
+    "docs/mesh/public/meister_hasch.png"
+  ],
   "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
   "executed": [
     "eudaemon_agent",
@@ -17,9 +27,21 @@
   ],
   "results": {
     "eudaemon_all_critical_ok": true,
+    "eudaemon_spa": 8,
+    "eudaemon_assets": 2,
+    "eudaemon_json_api": 0,
     "self_heal_healed": true,
+    "self_heal_dist": "4.0→0.0",
     "dead_letterbox_all_pass": true,
-    "style_dictionary": "ok"
+    "dead_letterbox_probes": 7,
+    "dead_letterbox_sha16": "c08c3bf924788779",
+    "style_dictionary": "ok",
+    "style_dictionary_targets": [
+      "terminal",
+      "vscode",
+      "sharepoint",
+      "css"
+    ]
   },
   "alpha_workstreams_opened": [
     "auth_gate_hygiene_if_api_exposed",
@@ -31,7 +53,18 @@
   "bounds": {
     "offense": "FORBIDDEN",
     "sandbox_only": true,
-    "power_force_through": "lab_only"
+    "power_force_through": "lab_only",
+    "private_vault_in_git": false
+  },
+  "public_pack": {
+    "ALPHA_MEISTER_HASCH.md": true,
+    "alpha_meister_hasch.seal.json": true,
+    "prompt.txt": true,
+    "meister_hasch.png": true
+  },
+  "visual": {
+    "big_ALPHA.png": "ascension_os/assets/big_ALPHA.png",
+    "mirrored_dissertation": "C:\\Dissertation_95guknow\\assets\\big_ALPHA.png"
   },
   "doc": "docs/security/BIG_ALPHA_EXECUTE.md",
   "geltung": "Alpha execute pulse = Satz (local runs)"

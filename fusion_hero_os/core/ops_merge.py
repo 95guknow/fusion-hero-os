@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-merge = both (private + public) connected via dual timeline (t ∥ τ)
+merge = both (private + public) connected via dual + virtual timeline (t ∥ τ ∥ v)
 
 Does not leak private shard payloads into git. Produces a merge manifest
 linking public display identities to private module/function refs and
-timeline axes.
+timeline axes. Virtual axis is labor sandbox only (BIG ALPHA re-enabled).
 """
 from __future__ import annotations
 
@@ -18,14 +18,23 @@ from fusion_hero_os.core.ops_vocabulary import OPS_MERGE, meaning_of
 
 __all__ = ["merge_both", "status"]
 
+PLATFORM = "12.1.0"
+
 
 def status() -> Dict[str, Any]:
     return {
         "ok": True,
         "operation": OPS_MERGE,
         "meaning": meaning_of(OPS_MERGE),
-        "german": "beide — privat und öffentlich über Timeline verbinden",
-        "axes": {"t": "real", "tau": "imaginary_structural"},
+        "german": "beide — privat und öffentlich über Timeline verbinden (Fusion↔Musion)",
+        "platform": PLATFORM,
+        "cycle": "BIG_ALPHA",
+        "axes": {
+            "t": "real",
+            "tau": "imaginary_structural_heroic",
+            "v": "virtual_heroic_scenario",
+        },
+        "alias": "fusion_musion_merge",
     }
 
 
@@ -100,24 +109,40 @@ def merge_both(
     except Exception as e:  # noqa: BLE001
         out["steps"].append({"step": "private_refs", "ok": False, "error": str(e)[:160]})
 
-    # --- timeline both axes ---
+    # --- timeline all axes: t ∥ τ ∥ v (virtual re-enabled, heroic SHU) ---
     timeline_meta: Dict[str, Any] = {}
     if include_timeline:
         try:
             from fusion_hero_os.core.dual_timeline_training import run_auto_train
 
-            # ensure fresh axes
+            # ensure fresh axes (includes virtual heroic samples when enabled)
             tr = run_auto_train(write=True)
             timeline_meta = {
                 "files": tr.get("files"),
                 "samples": tr.get("samples"),
+                "dual_samples": tr.get("dual_samples"),
+                "virtual_samples": tr.get("virtual_samples"),
+                "virtual_timelines_enabled": tr.get("virtual_timelines_enabled"),
+                "heroic_mean": tr.get("heroic_mean"),
                 "consistency": tr.get("consistency"),
                 "paths": tr.get("paths"),
-                "axes": {"t": "real_chronology", "tau": "imaginary_structural"},
+                "axes": {
+                    "t": "real_chronology",
+                    "tau": "imaginary_structural_heroic",
+                    "v": "virtual_heroic_scenario",
+                },
+                "platform": PLATFORM,
             }
-            out["steps"].append({"step": "dual_timeline", "ok": bool(tr.get("ok"))})
+            out["steps"].append(
+                {
+                    "step": "dual_virtual_timeline",
+                    "ok": bool(tr.get("ok")),
+                    "virtual_samples": tr.get("virtual_samples"),
+                    "heroic_mean": tr.get("heroic_mean"),
+                }
+            )
         except Exception as e:  # noqa: BLE001
-            out["steps"].append({"step": "dual_timeline", "ok": False, "error": str(e)[:160]})
+            out["steps"].append({"step": "dual_virtual_timeline", "ok": False, "error": str(e)[:160]})
 
     # --- merge links: public identity ↔ private module/function ↔ timeline ---
     for ref in private_refs:
@@ -134,8 +159,11 @@ def merge_both(
                         "max": (timeline_meta.get("consistency") or {}).get("t_max_iso"),
                     },
                     "tau_mean": (timeline_meta.get("consistency") or {}).get("tau_mean"),
+                    "virtual_samples": timeline_meta.get("virtual_samples"),
+                    "heroic_mean": timeline_meta.get("heroic_mean"),
+                    "axes": timeline_meta.get("axes"),
                 },
-                "binding": "merge_both_via_timeline",
+                "binding": "merge_both_via_timeline_fusion_musion",
             }
         )
 
@@ -167,11 +195,19 @@ def merge_both(
     summary = {
         "generated_at": out["ended_at"],
         "operation": "merge",
+        "alias": "fusion_musion",
         "meaning": "both_via_timeline",
+        "platform": PLATFORM,
+        "cycle": "BIG_ALPHA",
         "public_display_id": out["public"].get("display_id"),
         "private_ref_count": out["private"].get("ref_count"),
         "timeline_samples": (timeline_meta or {}).get("samples"),
+        "timeline_dual_samples": (timeline_meta or {}).get("dual_samples"),
+        "timeline_virtual_samples": (timeline_meta or {}).get("virtual_samples"),
+        "virtual_timelines_enabled": (timeline_meta or {}).get("virtual_timelines_enabled"),
+        "heroic_mean": (timeline_meta or {}).get("heroic_mean"),
         "timeline_files": (timeline_meta or {}).get("files"),
+        "axes": (timeline_meta or {}).get("axes"),
         "link_count": len(out["links"]),
         "ok": out["ok"],
     }

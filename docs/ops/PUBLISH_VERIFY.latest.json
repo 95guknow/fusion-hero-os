@@ -1,0 +1,52 @@
+{
+  "kind": "PUBLISH_VERIFY",
+  "utc": "2026-07-21T06:44:26.676240+00:00",
+  "tip": "df5f2fc",
+  "result": "PASS",
+  "checks": [
+    {
+      "name": "meister_canonical",
+      "status": "PASS",
+      "bytes": 654464,
+      "sha16": "a032b31b3f702585"
+    },
+    {
+      "name": "meister_memes",
+      "status": "PASS",
+      "bytes": 654464,
+      "sha16": "a032b31b3f702585"
+    },
+    {
+      "name": "meister_mesh",
+      "status": "PASS",
+      "bytes": 654464,
+      "sha16": "a032b31b3f702585"
+    },
+    {
+      "name": "alpha_md",
+      "status": "PASS",
+      "bytes": 4899
+    },
+    {
+      "name": "publish_json",
+      "status": "PASS",
+      "bytes": 2418
+    },
+    {
+      "name": "big_alpha",
+      "status": "PASS",
+      "bytes": 995556,
+      "sha16": "88dbea4b3a12ce90"
+    },
+    {
+      "name": "virtual",
+      "status": "PASS",
+      "bytes": 659
+    },
+    {
+      "name": "merge",
+      "status": "PASS",
+      "bytes": 611
+    }
+  ]
+}

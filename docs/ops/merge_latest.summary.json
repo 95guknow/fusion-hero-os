@@ -1,11 +1,23 @@
 {
-  "generated_at": "2026-07-19T10:31:16.904530+00:00",
+  "generated_at": "2026-07-21T06:36:21.155620+00:00",
   "operation": "merge",
+  "alias": "fusion_musion",
   "meaning": "both_via_timeline",
+  "platform": "12.0.0",
+  "cycle": "BIG_ALPHA",
   "public_display_id": "MS-PUB-v12-CMCFEAVV-682D",
   "private_ref_count": 12,
-  "timeline_samples": 5242,
-  "timeline_files": 900,
+  "timeline_samples": 6906,
+  "timeline_dual_samples": 5214,
+  "timeline_virtual_samples": 1692,
+  "virtual_timelines_enabled": true,
+  "heroic_mean": 0.265948,
+  "timeline_files": 1007,
+  "axes": {
+    "t": "real_chronology",
+    "tau": "imaginary_structural_heroic",
+    "v": "virtual_heroic_scenario"
+  },
   "link_count": 12,
   "ok": true
 }

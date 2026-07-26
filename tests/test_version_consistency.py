@@ -48,5 +48,17 @@ def test_all_manifests_agree():
     assert len(distinct) == 1, f"version mismatch across manifests: {versions}"
 
 
-def test_version_is_v10():
-    assert _read(Path("VERSION")).strip() == "10.0.0"
+def test_version_is_at_least_v10():
+    """Stage-A-Untergrenze statt fest verdrahteter Zahl.
+
+    Frueher stand hier ``== "10.0.0"``. Das brach bei jedem Plattform-Bump
+    (zuletzt 12.1.0) und hielt damit die CI auf main dauerhaft rot, ohne einen
+    echten Defekt zu zeigen. Die eigentliche Aussage des Gates — alle Manifeste
+    tragen DIESELBE Version — prueft ``test_all_manifests_agree``. Hier bleibt
+    nur die Regressions-Untergrenze: die Plattform faellt nicht hinter v10
+    zurueck (die vor-v10-Drift 8.0.0/8.3.0 ist der Anlass dieses Gates).
+    """
+    raw = _read(Path("VERSION")).strip()
+    parts = raw.split(".")
+    assert len(parts) == 3 and all(p.isdigit() for p in parts), f"kein semver: {raw!r}"
+    assert tuple(int(p) for p in parts) >= (10, 0, 0), f"Plattform-Version unter v10: {raw}"

@@ -1,0 +1,40 @@
+{
+  "kind": "tailscale_quantize_selfmod",
+  "generated_at": "2026-07-21T06:53:04.352743+00:00",
+  "platform": "12.0.0",
+  "cycle": "BIG_ALPHA",
+  "ok": true,
+  "virtual_nodes": false,
+  "nodes_count": 5,
+  "mesh_scale": 0.524,
+  "peers_online": 2,
+  "params": {
+    "bit_depth": 5,
+    "anneal_steps": 4287,
+    "workers": 9,
+    "partitions": 5,
+    "T0": 3.214,
+    "n": 24,
+    "density": 0.18,
+    "scale": 0.524,
+    "heroic_boost": 0.2,
+    "reason": "mesh_scale=0.500 peers_online=2 virtual_floor=False heroic=0.200"
+  },
+  "metrics": {
+    "quantization_mse": 0.00040216,
+    "energy_quantized": -11.793442,
+    "energy_true_Q": -11.980532,
+    "integrity_gap": 0.18709,
+    "solution_ones": 11,
+    "solution_sha16": "4b53e38d538a63cf"
+  },
+  "duration_sec": 0.277,
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "external_tailnet_mutate": false,
+    "remote_peer_execution": false
+  },
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "geltung": "cycle metrics = Satz · capacity map = Modell"
+}

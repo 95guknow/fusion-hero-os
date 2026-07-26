@@ -1,0 +1,123 @@
+name: Claude Coworking (interaktive KI im Repo)
+
+# Schliesst die Luecke "fehlende Coworking-KI in GitHub" (2026-07-24).
+#
+# Vorher gab es genau EINEN KI-Touchpoint: summary.yml fasst neue Issues
+# einmalig zusammen — eine Einbahnstrasse. Es war nicht moeglich, aus GitHub
+# heraus mit einer KI ZUSAMMENZUARBEITEN (Frage stellen, Patch anfordern,
+# Review erbitten). Dieser Workflow macht das moeglich: "@claude ..." in
+# einem Issue-/PR-Kommentar startet einen Lauf.
+#
+# Doktrin (nicht verhandelbar, maschinell geprueft in
+# tests/test_coworking_workflow.py):
+#   * NIE Selbst-Merge. human-confirm-gate.yml schreibt woertlich fest:
+#     "Automation (inkl. Claude) merged diesen PR nicht selbst — komplett
+#     extern." Dieser Workflow enthaelt daher keinen Merge-Aufruf.
+#   * Ehrliche Degradation. Fehlt ANTHROPIC_API_KEY, wird das GESAGT
+#     (Kommentar) statt still zu scheitern oder Erfolg vorzutaeuschen —
+#     dasselbe Muster wie der PHONE_NOTIFY_WEBHOOK_URL-Step im
+#     human-confirm-gate.
+#
+# Setup (nur der Operator kann das): docs/ops/COWORKING_KI_GITHUB.md
+# Version: v1.0 · 2026-07-24
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  issues:
+    types: [opened, assigned, labeled]
+
+# Race-Guard auf CI-Ebene: pro Issue/PR hoechstens ein Lauf. Bewusst KEIN
+# cancel-in-progress — ein laufender Patch soll nicht mitten im Schreiben
+# abgebrochen werden (vgl. race_guard-Kultur des Repos).
+concurrency:
+  group: claude-coworking-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  coworking:
+    # Nur bei echter Ansprache laufen — nicht bei jedem Kommentar.
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || github.event.label.name == 'claude'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Secret-Guard (ehrlich, ohne Fake-Erfolg)
+        id: guard
+        uses: actions/github-script@v7
+        env:
+          HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        with:
+          script: |
+            const hasKey = process.env.HAS_KEY === 'true';
+            core.setOutput('ready', String(hasKey));
+            if (hasKey) return;
+            const number = context.payload.issue?.number || context.payload.pull_request?.number;
+            if (!number) return;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: number,
+              body: [
+                '⚠️ **Coworking-KI ist noch nicht scharf geschaltet.**',
+                '',
+                'Das Repo-Secret `ANTHROPIC_API_KEY` ist nicht gesetzt — nur der Operator',
+                'kann das tun (Settings → Secrets and variables → Actions).',
+                'Bis dahin bleibt dieser Workflow bewusst wirkungslos statt',
+                'einen Erfolg vorzutaeuschen.',
+                '',
+                'Setup: `docs/ops/COWORKING_KI_GITHUB.md`',
+              ].join('\n'),
+            });
+
+      - name: Checkout
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code
+        if: steps.guard.outputs.ready == 'true'
+        # Auf Commit-SHA gepinnt statt auf den beweglichen Tag 'v1'
+        # (CodeQL "Unpinned tag for a non-immutable Action", Alert 2127):
+        # ein Tag kann umgehaengt werden, ein SHA nicht — Supply-Chain-Schutz.
+        # be7b93b = annotierter Tag v1 -> v1.0.183, aufgeloest am 2026-07-25.
+        # Beim Anheben der Version SHA UND Kommentar gemeinsam aktualisieren.
+        uses: anthropics/claude-code-action@be7b93b1907a4abad570368f3c74b6fe3807510b # v1.0.183
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          trigger_phrase: "@claude"
+          use_sticky_comment: "true"
+          prompt: |
+            Du arbeitest im Repo Fusion Hero OS. Dessen Regeln sind bindend
+            und gehen jeder Bequemlichkeit vor:
+
+            1. NIE selbst mergen und NIE einen PR approven. Der Merge braucht
+               zwei unabhaengige menschliche Bestaetigungen (human-confirm-gate.yml).
+            2. Code-Honesty: kein Claim ohne Deckung. Ein Eintrag in
+               proof_registry.yaml darf nur BEWIESEN sein, wenn er auf real
+               existierende, gruene pytest-Knoten zeigt. Sonst OFFEN.
+            3. Geltungsmarken in Doku (Satz/Bedingt/Modell/Fragment/Spezifikation),
+               keine Metapher als Beweis (V3.3, docs/kompendium).
+            4. Dieses Repo ist oeffentlich: keine personenbezogenen Daten,
+               keine privaten Orte, keine Live-Tailscale-Topologie (IPs,
+               Node-IDs, private MagicDNS).
+            5. Namenskollisionen vermeiden statt erzeugen — vor neuen Namen
+               pruefen, ob der Begriff im Repo schon anders belegt ist
+               (siehe docs/dissertation/anhaenge/A13).
+            6. Was du nicht verifizieren kannst, sagst du als offen —
+               lieber ein ehrliches "nicht geprueft" als eine glatte Behauptung.

@@ -18,6 +18,12 @@ nicht ausführen, auch nicht mit einer lokal noch vorhandenen Handy-Kopie.**
 
 Details: `docs/dissertation/MEISTER_HASCH_PUBLIC.md`
 
+## Sichere Alternative
+
+Kein Bildbezug, kein Copyright-Risiko — reine Zahlencode-Ideen (73/37/21/12)
+zum Anhängen an den aktiven Legacy-x402-Post:
+`docs/security/media/meister_hasch_v12/IG_CAPTION_ZAHLENCODE.txt`
+
 ## Assets (historisch, entfernt)
 | File | Role |
 |------|------|

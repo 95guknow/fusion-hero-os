@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ascension-os"
-version = "12.0.0"
+version = "12.1.0"
 description = "AscensionOS - Fusion Hero OS Coevolutionary Variant (CEC, Persistent Sisyphos, AscensionCore, Heroic Core, Kernel AI)"
 readme = "README.md"
 requires-python = ">=3.11"

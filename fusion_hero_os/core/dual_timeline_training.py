@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Dual-Timeline Auto-Training — real chronology t ∥ imaginary structural time τ.
+Dual + Virtual Timeline Auto-Training — Fusion Hero OS v12.
 
-Scans available knowledge files, places each sample on:
+Axes:
   - t  = real time (mtime UTC)
-  - τ  = imaginary/structural time ∈ [0,1] (layer/path/modality/Geltung)
+  - τ  = imaginary/structural time ∈ [0,1] (layer/path/modality/Geltung/heroic)
+  - v  = virtual heroic scenario (labor sandbox) — re-enabled under BIG ALPHA
 
-Builds JSONL training pairs + dual timeline index + consistency report.
-Policy: pseudo_inhouse_only · freemium=false.
+Virtual timelines are lab-only (INVERT Realraum → labor hypothesis).
+Heroic optimization targets the operator (dich / SHU / St3phaN).
 
-Geltung: Spezifikation (pipeline) · τ-mapping = Modell (not physical Wick proof).
+Policy: pseudo_inhouse_only · freemium=false · offense FORBIDDEN.
+Geltung: Spezifikation (pipeline) · τ/v-mapping = Modell (not physical Wick proof).
 """
 from __future__ import annotations
 
@@ -33,7 +35,11 @@ __all__ = [
     "run_auto_train",
     "status",
     "load_config",
+    "virtual_timelines_enabled",
+    "heroic_score_for_text",
 ]
+
+PLATFORM = "12.1.0"
 
 
 @dataclass
@@ -48,6 +54,8 @@ class FileEvent:
     bytes: int
     sha16: str
     geltung_hits: Dict[str, int] = field(default_factory=dict)
+    heroic_score: float = 0.0
+    heroic_hits: Dict[str, int] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -62,7 +70,7 @@ class TrainSample:
     t_iso: str
     tau: float
     layer: int
-    timeline: str  # "real" | "imaginary" | "dual"
+    timeline: str  # "real" | "imaginary" | "dual" | "virtual"
     sample_id: str
     meta: Dict[str, Any] = field(default_factory=dict)
 
@@ -111,10 +119,43 @@ def _layer_for(rel: str, layers: Dict[str, int]) -> int:
 def _geltung_hits(text: str, boosts: Dict[str, float]) -> Dict[str, int]:
     hits: Dict[str, int] = {}
     for marker in boosts or {}:
-        n = len(re.findall(re.escape(marker), text))
+        n = len(re.findall(re.escape(marker), text, flags=re.IGNORECASE))
         if n:
             hits[marker] = n
     return hits
+
+
+def virtual_timelines_enabled(cfg: Optional[Dict[str, Any]] = None) -> bool:
+    """BIG ALPHA gate: virtual timelines re-allowed (labor sandbox only)."""
+    cfg = cfg or _cfg()
+    vt = cfg.get("virtual_timelines") or {}
+    if "enabled" in vt:
+        return bool(vt.get("enabled"))
+    timelines = cfg.get("timelines") or {}
+    virtual = timelines.get("virtual") or {}
+    return bool(virtual.get("enabled", False))
+
+
+def heroic_score_for_text(text: str, cfg: Optional[Dict[str, Any]] = None) -> Tuple[float, Dict[str, int]]:
+    """Heroic optimization score ∈ [0,1] for operator (SHU/dich) alignment."""
+    cfg = cfg or _cfg()
+    ho = cfg.get("heroic_optimization") or {}
+    if not ho.get("enabled", True):
+        return 0.0, {}
+    markers = ho.get("boost_markers") or {}
+    if not markers:
+        return 0.0, {}
+    snippet = (text or "")[:50000]
+    hits: Dict[str, int] = {}
+    score = 0.0
+    for marker, w in markers.items():
+        # allow dotted keys as phrase alternatives
+        pattern = re.escape(str(marker).replace(".", r"[\s._-]+"))
+        n = len(re.findall(pattern, snippet, flags=re.IGNORECASE))
+        if n:
+            hits[str(marker)] = n
+            score += float(w) * min(3, n)
+    return round(max(0.0, min(1.0, score)), 6), hits
 
 
 def _tau(
@@ -125,8 +166,13 @@ def _tau(
     layers: Dict[str, int],
     mod_w: Dict[str, float],
     geltung: Dict[str, float],
+    heroic: float = 0.0,
+    cfg: Optional[Dict[str, Any]] = None,
 ) -> float:
     """Imaginary structural time τ ∈ [0,1] — parallel to real chronology (Modell)."""
+    cfg = cfg or _cfg()
+    ho = cfg.get("heroic_optimization") or {}
+    h_w = float(ho.get("tau_heroic_weight") or 0.15) if ho.get("enabled", True) else 0.0
     layer_norm = max(0.0, min(1.0, layer / 6.0))
     depth = rel.replace("\\", "/").count("/")
     path_depth_norm = max(0.0, min(1.0, depth / 12.0))
@@ -139,11 +185,13 @@ def _tau(
     # hash phase — stable micro-structure (not random each run)
     h = int(hashlib.md5(rel.encode()).hexdigest()[:8], 16)
     hash_phase = (h % 1000) / 1000.0
+    heroic_n = max(0.0, min(1.0, float(heroic)))
     tau = (
-        0.35 * layer_norm
-        + 0.25 * path_depth_norm
-        + 0.20 * modality_weight
-        + 0.15 * g_score
+        0.30 * layer_norm
+        + 0.20 * path_depth_norm
+        + 0.18 * modality_weight
+        + 0.12 * g_score
+        + h_w * heroic_n
         + 0.05 * hash_phase
     )
     return round(max(0.0, min(1.0, tau)), 6)
@@ -196,7 +244,8 @@ def scan_files(cfg: Optional[Dict[str, Any]] = None) -> List[FileEvent]:
         t_real = float(st.st_mtime)
         t_iso = datetime.fromtimestamp(t_real, tz=timezone.utc).isoformat()
         layer = _layer_for(rel, layers)
-        tau = _tau(rel, layer, p.suffix, text, layers, mod_w, geltung)
+        h_score, h_hits = heroic_score_for_text(text, cfg)
+        tau = _tau(rel, layer, p.suffix, text, layers, mod_w, geltung, heroic=h_score, cfg=cfg)
         events.append(
             FileEvent(
                 path=str(p),
@@ -209,6 +258,8 @@ def scan_files(cfg: Optional[Dict[str, Any]] = None) -> List[FileEvent]:
                 bytes=st.st_size,
                 sha16=_sha16(text),
                 geltung_hits=_geltung_hits(text[:50000], geltung),
+                heroic_score=h_score,
+                heroic_hits=h_hits,
             )
         )
     events.sort(key=lambda e: (e.t_real, e.tau, e.rel))
@@ -242,6 +293,10 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
     max_resp = int(train.get("max_response") or 800)
     cap = int(train.get("samples_per_file_cap") or 12)
     min_c = int(train.get("min_chunk_chars") or 80)
+    vt = cfg.get("virtual_timelines") or {}
+    virtual_on = virtual_timelines_enabled(cfg)
+    max_virtual = int(vt.get("max_virtual_samples_per_file") or 4)
+    min_h_for_v = float(vt.get("min_heroic_score_for_virtual") or 0.12)
     try:
         text = Path(ev.path).read_text(encoding="utf-8", errors="replace")
     except Exception:
@@ -249,6 +304,7 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
 
     title = Path(ev.rel).stem.replace("_", " ")
     samples: List[TrainSample] = []
+    virtual_n = 0
     # Prefer markdown headers
     sections = re.split(r"\n(?=#{1,3}\s)", text) if ev.modality == ".md" else [text]
     bodies: List[Tuple[str, str]] = []
@@ -270,19 +326,23 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
                 continue
             if len(samples) >= cap:
                 break
-            # Dual prompts: real-time frame + imaginary-time frame
+            # Dual prompts: real t ∥ imaginary τ, heroically framed for operator
             sid = _sha16(f"{ev.rel}:{header}:{i}:{ev.sha16}")
             meta = {
                 "header": header[:200],
                 "chunk": i,
                 "geltung_hits": ev.geltung_hits,
+                "heroic_score": ev.heroic_score,
+                "heroic_hits": ev.heroic_hits,
+                "platform": PLATFORM,
             }
             samples.append(
                 TrainSample(
                     prompt=(
-                        f"[t={ev.t_iso} · τ={ev.tau:.4f} · L{ev.layer}] "
-                        f"Erkläre aus {title}: {header} "
-                        f"(realer Zeitstrahl + imaginäre Strukturzeit, Fusion Hero OS v10)"
+                        f"[t={ev.t_iso} · τ={ev.tau:.4f} · H={ev.heroic_score:.3f} · L{ev.layer}] "
+                        f"Erkläre heroisch-optimiert für den Operator (SHU/dich) aus {title}: {header}. "
+                        f"Nutze Geltung (Satz|Bedingt|Modell|Fragment), MasterSeed-Kontraktion, "
+                        f"Labor-only. (realer Zeitstrahl t + imaginäre Strukturzeit τ, Fusion Hero OS v{PLATFORM})"
                     ),
                     response=part[:max_resp],
                     source=ev.rel,
@@ -295,6 +355,43 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
                     meta=meta,
                 )
             )
+            # Virtual heroic scenario axis (re-allowed) — labor sandbox only
+            if (
+                virtual_on
+                and virtual_n < max_virtual
+                and ev.heroic_score >= min_h_for_v
+                and len(samples) < cap
+            ):
+                vsid = _sha16(f"virtual:{ev.rel}:{header}:{i}:{ev.sha16}")
+                vmeta = {
+                    **meta,
+                    "axis": "virtual",
+                    "mode": "labor_sandbox",
+                    "invert": "INVERT(realraum)=labor_hypothesis+integrity_probe+no_vault_commit",
+                    "geltung": "Modell|Bedingt",
+                    "offense": "FORBIDDEN",
+                }
+                samples.append(
+                    TrainSample(
+                        prompt=(
+                            f"[VIRTUAL v · t={ev.t_iso} · τ={ev.tau:.4f} · H={ev.heroic_score:.3f} · L{ev.layer}] "
+                            f"Labor-Szenario (virtuelle Timeline, heroisch für SHU/Operator): "
+                            f"aus {title} — {header}. "
+                            f"Entfalte additive Optionen unter MasterSeed, Eudaimonia-Ceiling, Sisyphos-Nachhaltigkeit. "
+                            f"Kein Realraum-Commit, kein Offense. Fusion Hero OS v{PLATFORM} BIG ALPHA."
+                        ),
+                        response=part[:max_resp],
+                        source=ev.rel,
+                        t_real=ev.t_real,
+                        t_iso=ev.t_iso,
+                        tau=ev.tau,
+                        layer=ev.layer,
+                        timeline="virtual",
+                        sample_id=vsid,
+                        meta=vmeta,
+                    )
+                )
+                virtual_n += 1
         if len(samples) >= cap:
             break
     return samples
@@ -373,20 +470,36 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
     samples = build_samples(events, cfg)
     cons = consistency_report(events, samples, cfg)
 
-    # Dual indices
+    # Dual + virtual indices
     by_t = sorted(events, key=lambda e: e.t_real)
     by_tau = sorted(events, key=lambda e: e.tau)
+    by_heroic = sorted(events, key=lambda e: (-e.heroic_score, e.tau))
+    virtual_samples = [s for s in samples if s.timeline == "virtual"]
+    dual_samples = [s for s in samples if s.timeline == "dual"]
     timeline = {
-        "platform": "10.0.0",
+        "platform": PLATFORM,
         "policy": "pseudo_inhouse_only",
         "freemium": False,
+        "cycle": "BIG_ALPHA",
         "axes": {
             "t": "real chronology (mtime UTC)",
-            "tau": "imaginary/structural time ∈ [0,1] (Modell)",
+            "tau": "imaginary/structural time ∈ [0,1] (Modell, heroic-weighted)",
+            "v": "virtual heroic scenario (labor sandbox, re-enabled)",
         },
+        "virtual_timelines_enabled": virtual_timelines_enabled(cfg),
+        "heroic_optimization": True,
+        "heroic_target": (cfg.get("heroic_optimization") or {}).get("target", "operator_shu"),
         "real_timeline": [e.to_dict() for e in by_t[:5000]],
         "imaginary_timeline": [e.to_dict() for e in by_tau[:5000]],
+        "heroic_ranked": [e.to_dict() for e in by_heroic[:2000]],
+        "virtual_sample_count": len(virtual_samples),
+        "dual_sample_count": len(dual_samples),
         "parallel": True,
+        "bounds": {
+            "offense": "FORBIDDEN",
+            "sandbox_only": True,
+            "realraum_vault_commit": False,
+        },
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -394,9 +507,16 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
         "ok": cons.get("ok", False),
         "files": len(events),
         "samples": len(samples),
+        "dual_samples": len(dual_samples),
+        "virtual_samples": len(virtual_samples),
+        "virtual_timelines_enabled": virtual_timelines_enabled(cfg),
+        "heroic_mean": (
+            round(sum(e.heroic_score for e in events) / len(events), 6) if events else 0.0
+        ),
         "consistency": cons,
         "duration_sec": round(time.time() - t0, 2),
         "output_dir": str(output_dir()),
+        "platform": PLATFORM,
     }
 
     if write:
@@ -419,8 +539,14 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
         docs_mirror.mkdir(parents=True, exist_ok=True)
         summary = {
             "generated_at": datetime.now(timezone.utc).isoformat(),
+            "platform": PLATFORM,
+            "cycle": "BIG_ALPHA",
             "files": len(events),
             "samples": len(samples),
+            "dual_samples": len(dual_samples),
+            "virtual_samples": len(virtual_samples),
+            "virtual_timelines_enabled": virtual_timelines_enabled(cfg),
+            "heroic_mean": out.get("heroic_mean"),
             "consistency_ok": cons.get("ok"),
             "tau_mean": cons.get("tau_mean"),
             "t_min_iso": cons.get("t_min_iso"),
@@ -430,7 +556,12 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
             "timeline": str(tl_path),
             "policy": "pseudo_inhouse_only",
             "freemium": False,
-            "axes": {"t": "real", "tau": "imaginary_structural"},
+            "axes": {
+                "t": "real",
+                "tau": "imaginary_structural_heroic",
+                "v": "virtual_heroic_scenario",
+            },
+            "bounds": timeline["bounds"],
         }
         (docs_mirror / "dual_timeline_training.latest.json").write_text(
             json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
@@ -468,12 +599,27 @@ def status() -> Dict[str, Any]:
             latest = json.loads(man.read_text(encoding="utf-8"))
         except Exception:
             latest = {}
+    cfg = _cfg()
     return {
         "ok": True,
-        "platform": "10.0.0",
+        "platform": PLATFORM,
         "policy": "pseudo_inhouse_only",
         "freemium": False,
-        "axes": {"t": "real_chronology", "tau": "imaginary_structural"},
+        "cycle": "BIG_ALPHA",
+        "virtual_timelines_enabled": virtual_timelines_enabled(cfg),
+        "heroic_optimization": bool((cfg.get("heroic_optimization") or {}).get("enabled", True)),
+        "heroic_target": (cfg.get("heroic_optimization") or {}).get("target", "operator_shu"),
+        "axes": {
+            "t": "real_chronology",
+            "tau": "imaginary_structural_heroic",
+            "v": "virtual_heroic_scenario",
+        },
+        "bounds": {
+            "offense": "FORBIDDEN",
+            "sandbox_only": True,
+            "realraum_vault_commit": False,
+            "invert": "INVERT(realraum)=labor_hypothesis+integrity_probe+no_vault_commit",
+        },
         "output_dir": str(od),
         "latest": latest,
         "config": "training_dual_timeline.yaml",

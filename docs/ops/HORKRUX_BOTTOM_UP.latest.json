@@ -1,0 +1,390 @@
+{
+  "kind": "HORKRUX_BOTTOM_UP",
+  "generated_at": "2026-07-21T10:53:33.827333+00:00",
+  "platform_target": "12.1.0",
+  "platform_version_file": "12.1.0",
+  "kanon_tip": "a2ad8d1",
+  "duration_sec": 15.73,
+  "ok": true,
+  "counts": {
+    "total": 24,
+    "ok": 19,
+    "skipped": 5,
+    "fail": 0
+  },
+  "results": [
+    {
+      "id": "fusion_daycycle_state",
+      "kind": "state_dir",
+      "path": "C:\\Users\\Admin\\.fusion\\daycycle",
+      "role": "daycycle_mem_state",
+      "layer": "L0_state",
+      "ok": true,
+      "exists": true,
+      "file_count": 11,
+      "skipped": false
+    },
+    {
+      "id": "fusion_ops_state",
+      "kind": "state_dir",
+      "path": "C:\\Users\\Admin\\.fusion\\ops",
+      "role": "ops_manifests",
+      "layer": "L0_state",
+      "ok": true,
+      "exists": true,
+      "file_count": 26,
+      "skipped": false
+    },
+    {
+      "id": "fusion_mesh_quantize",
+      "kind": "state_dir",
+      "path": "C:\\Users\\Admin\\.fusion\\mesh\\quantize_selfmod",
+      "role": "quantize_selfmod",
+      "layer": "L0_state",
+      "ok": true,
+      "exists": true,
+      "file_count": 3,
+      "skipped": false
+    },
+    {
+      "id": "fusion_training_dual",
+      "kind": "state_dir",
+      "path": "C:\\Users\\Admin\\.fusion\\training\\dual_timeline",
+      "role": "dual_timeline_private",
+      "layer": "L0_state",
+      "ok": true,
+      "exists": true,
+      "file_count": 4,
+      "skipped": false
+    },
+    {
+      "id": "fusion_hero_os_config",
+      "kind": "state_dir",
+      "path": "C:\\Users\\Admin\\.fusion-hero-os",
+      "role": "local_config",
+      "layer": "L0_state",
+      "ok": true,
+      "exists": true,
+      "file_count": 21,
+      "skipped": false
+    },
+    {
+      "id": "primary_kanon",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\fusion-hero-os",
+      "branch": "main",
+      "role": "kanon",
+      "layer": "L1_instances",
+      "stashed": true,
+      "ok": true,
+      "tip": "a2ad8d1",
+      "version": "12.1.0",
+      "was_dirty": true,
+      "stderr": "",
+      "matches_kanon_tip": true,
+      "version_ok": true
+    },
+    {
+      "id": "daily_plans_private",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\fusion-hero-os-daily-plans",
+      "branch": "main",
+      "role": "mem_private",
+      "layer": "L1_instances",
+      "ok": true,
+      "tip": "b9ebcf8",
+      "version": null,
+      "was_dirty": false,
+      "stderr": "",
+      "matches_kanon_tip": false,
+      "version_ok": null
+    },
+    {
+      "id": "fusion_hero_core",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\fusion-hero-core",
+      "branch": "main",
+      "role": "satellite_core",
+      "layer": "L1_instances",
+      "ok": true,
+      "skipped": true,
+      "reason": "not_git"
+    },
+    {
+      "id": "fusion_hero_os_llm_push",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\fusion-hero-os-llm-push",
+      "branch": "main",
+      "role": "satellite",
+      "layer": "L1_instances",
+      "ok": true,
+      "skipped": true,
+      "reason": "not_git"
+    },
+    {
+      "id": "heroic_core_foundation",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\heroic-core-foundation",
+      "branch": "main",
+      "role": "heroic_core",
+      "layer": "L1_instances",
+      "ok": true,
+      "skipped": true,
+      "reason": "not_git"
+    },
+    {
+      "id": "heroic_highest_layer",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\heroic-highest-layer",
+      "branch": "main",
+      "role": "satellite",
+      "layer": "L1_instances",
+      "ok": true,
+      "skipped": true,
+      "reason": "not_git"
+    },
+    {
+      "id": "hero_os",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\hero-os",
+      "branch": "main",
+      "role": "satellite",
+      "layer": "L1_instances",
+      "ok": true,
+      "skipped": true,
+      "reason": "not_git"
+    },
+    {
+      "id": "pages_95guknow",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\95guknow.github.io",
+      "branch": "main",
+      "role": "public_pages",
+      "layer": "L1_instances",
+      "ok": true,
+      "tip": "28ead85",
+      "version": null,
+      "was_dirty": false,
+      "stderr": "",
+      "matches_kanon_tip": false,
+      "version_ok": null
+    },
+    {
+      "id": "wt_port_42069",
+      "kind": "git",
+      "path": "C:\\Users\\Admin\\fusion-hero-os-wt-42069",
+      "branch": "port/42069",
+      "role": "worktree",
+      "layer": "L2_worktrees",
+      "ok": true,
+      "tip": "7d406cf",
+      "version": "12.0.0",
+      "was_dirty": false,
+      "stderr": "",
+      "matches_kanon_tip": false,
+      "version_ok": null
+    },
+    {
+      "id": "best_fuhos_desktop",
+      "kind": "path_scan",
+      "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS",
+      "ok": true,
+      "scanned_git_dirs": 6,
+      "children": [
+        {
+          "id": "scan:AscensionOS-agent-99b2dd0d",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\AscensionOS-agent-99b2dd0d",
+          "tip": null,
+          "ok": true,
+          "matches_kanon_tip": null
+        },
+        {
+          "id": "scan:AscensionOS-nummer2-99b2dd0d",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\AscensionOS-nummer2-99b2dd0d",
+          "tip": null,
+          "ok": true,
+          "matches_kanon_tip": null
+        },
+        {
+          "id": "scan:fusion-hero-os-agent-0aa308ee",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\fusion-hero-os-agent-0aa308ee",
+          "tip": "9006de2",
+          "ok": true,
+          "matches_kanon_tip": false
+        },
+        {
+          "id": "scan:fusion-hero-os-nummer2-0aa308ee",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\fusion-hero-os-nummer2-0aa308ee",
+          "tip": "9006de2",
+          "ok": true,
+          "matches_kanon_tip": false
+        },
+        {
+          "id": "scan:normalOS-agent-8a9ae021",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\normalOS-agent-8a9ae021",
+          "tip": "15dcdf4",
+          "ok": true,
+          "matches_kanon_tip": false
+        },
+        {
+          "id": "scan:normalOS-nummer2-8a9ae021",
+          "path": "C:\\Users\\Admin\\Desktop\\best-FuHOS\\.worktrees\\normalOS-nummer2-8a9ae021",
+          "tip": "15dcdf4",
+          "ok": true,
+          "matches_kanon_tip": false
+        }
+      ],
+      "layer": "L2_worktrees"
+    },
+    {
+      "id": "skill_fusion_hero_os",
+      "kind": "skill_dir",
+      "path": "C:\\Users\\Admin\\.grok\\skills\\fusion-hero-os",
+      "role": "grok_skill_primary",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "has_skill_md": true,
+      "has_github_sync": true,
+      "github_sync_platform": null,
+      "skill_mentions_v12": true,
+      "target_platform": "12.1.0"
+    },
+    {
+      "id": "skill_alte_frau",
+      "kind": "skill_dir",
+      "path": "C:\\Users\\Admin\\.grok\\skills\\alte-frau-95g",
+      "role": "grok_skill",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "has_skill_md": true,
+      "has_github_sync": false,
+      "github_sync_platform": null,
+      "skill_mentions_v12": true,
+      "target_platform": "12.1.0"
+    },
+    {
+      "id": "skill_heroic_core",
+      "kind": "skill_dir",
+      "path": "C:\\Users\\Admin\\.grok\\skills\\heroic-core-foundation",
+      "role": "grok_skill",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "has_skill_md": true,
+      "has_github_sync": false,
+      "github_sync_platform": null,
+      "skill_mentions_v12": true,
+      "target_platform": "12.1.0"
+    },
+    {
+      "id": "skill_mainframe_laden",
+      "kind": "skill_dir",
+      "path": "C:\\Users\\Admin\\.grok\\skills\\mainframe-laden",
+      "role": "grok_skill",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "has_skill_md": true,
+      "has_github_sync": false,
+      "github_sync_platform": null,
+      "skill_mentions_v12": true,
+      "target_platform": "12.1.0"
+    },
+    {
+      "id": "skill_fusion_hero_bundled",
+      "kind": "skill_dir",
+      "path": "C:\\Users\\Admin\\fusion-hero-os\\01_Framework\\skills\\fusion-hero-os",
+      "role": "repo_skill_mirror",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "has_skill_md": true,
+      "has_github_sync": false,
+      "github_sync_platform": null,
+      "skill_mentions_v12": true,
+      "target_platform": "12.1.0"
+    },
+    {
+      "id": "github_origin_main",
+      "kind": "remote_check",
+      "remote": "origin",
+      "ref": "refs/heads/main",
+      "role": "public_kanon",
+      "layer": "L4_remotes",
+      "ok": true,
+      "sha": "a2ad8d1a6f94487214529902088610fe7383a12f",
+      "short": "a2ad8d1",
+      "matches_local_kanon": true,
+      "stderr": ""
+    },
+    {
+      "id": "github_senfkorn_main",
+      "kind": "remote_check",
+      "remote": "senfkorn",
+      "ref": "refs/heads/main",
+      "role": "dual_org",
+      "layer": "L4_remotes",
+      "ok": true,
+      "sha": "a2ad8d1a6f94487214529902088610fe7383a12f",
+      "short": "a2ad8d1",
+      "matches_local_kanon": true,
+      "stderr": ""
+    },
+    {
+      "id": "tag_v12_1_0",
+      "kind": "remote_check",
+      "remote": "origin",
+      "ref": "refs/tags/v12.1.0",
+      "role": "release_tag",
+      "layer": "L4_remotes",
+      "ok": true,
+      "sha": "fe498494fefad1f64f7902103059cdcc4157d094",
+      "short": "fe49849",
+      "matches_local_kanon": null,
+      "stderr": ""
+    },
+    {
+      "id": "daycycle_fanout",
+      "kind": "daycycle",
+      "layer": "L1_instances",
+      "ok": true,
+      "results": [
+        {
+          "id": "primary",
+          "ok": true,
+          "branch": "main",
+          "tip": "a2ad8d1",
+          "stderr": "",
+          "role": "kanon"
+        },
+        {
+          "id": "daily_plans",
+          "ok": true,
+          "branch": "main",
+          "tip": "b9ebcf8",
+          "stderr": "",
+          "role": "mem_private"
+        },
+        {
+          "id": "wt_port_42069",
+          "ok": true,
+          "branch": "port/42069",
+          "tip": "7d406cf",
+          "stderr": "",
+          "role": "satellite"
+        }
+      ]
+    }
+  ],
+  "pseudo_horcrux": {
+    "ok": true,
+    "store": "C:\\Users\\Admin\\.fusion\\horcrux\\bottom_up_v12",
+    "result": {
+      "generation": 3,
+      "sha256": "d83ecf30f57bbb72e3c8593affb4ab02e471b36cf118e2d3f50ca33fb352c263",
+      "shards": [
+        "horcrux-json-c0.hx",
+        "horcrux-csv-c0.hx",
+        "horcrux-b64-c0.hx"
+      ]
+    }
+  },
+  "geltung": "path/git results = Satz · missing optional = Bedingt skip"
+}
