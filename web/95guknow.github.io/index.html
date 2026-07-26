@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="de" prefix="og: https://ogp.me/ns#">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+<!-- Everything this page needs is same-origin. Nothing is fetched from third
+     parties, so the policy can stay this tight. (frame-ancestors is omitted
+     because <meta> CSP ignores it — GitHub Pages cannot set it as a header.) -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+
+<title>95guknow · Senfkorn UG — Cybersecurity, WIR Mesh &amp; Fusion Hero OS</title>
+<meta name="description" content="Öffentlicher Mesh- und Lab-Pol der Senfkorn UG: Cybersecurity-Orientierung, fraktale Informationsarchitektur und Fusion Hero OS v12.1.0. Public-safe, ohne private Vault-Shards." />
+<link rel="canonical" href="https://95guknow.github.io/" />
+
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#07070d" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="95guknow · Senfkorn UG" />
+<meta property="og:locale" content="de_DE" />
+<meta property="og:url" content="https://95guknow.github.io/" />
+<meta property="og:title" content="95guknow · Senfkorn UG — Cybersecurity, WIR Mesh &amp; Fusion Hero OS" />
+<meta property="og:description" content="Cybersecurity-Orientierung, fraktale Informationsarchitektur und Fusion Hero OS v12.1.0 — public-safe, ohne private Vault-Shards." />
+<meta property="og:image" content="https://95guknow.github.io/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="95guknow · Senfkorn UG — BIG ALPHA, Plattform v12.1.0" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="assets/avatar.jpg" />
+<link rel="manifest" href="manifest.webmanifest" />
+
+<link rel="preload" href="assets/fonts/orbitron-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="css/style.css" />
+
+<script src="js/theme-init.js"></script>
+<script src="js/app.js" type="module"></script>
+</head>
+
+<body>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+
+<div class="backdrop" aria-hidden="true"></div>
+
+<header class="masthead">
+  <a class="brand" href="/" aria-label="95guknow — Startseite">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">95guknow</span>
+  </a>
+
+  <nav class="nav" aria-label="Hauptnavigation">
+    <a href="#plattform">Plattform</a>
+    <a href="#mesh">Mesh</a>
+    <a href="#publikationen">Publikationen</a>
+    <a href="#governance">Governance</a>
+  </nav>
+
+  <button class="theme-toggle" type="button" data-theme-toggle aria-label="Farbschema wechseln">
+    <span class="theme-icon" aria-hidden="true"></span>
+    <span class="theme-label" data-theme-label>Auto</span>
+  </button>
+</header>
+
+<div class="statusbar" role="status" aria-label="Zyklusstatus">
+  <span class="chip chip--omega"><span class="dot" aria-hidden="true"></span>BIG OMEGA · sealed</span>
+  <span class="chip chip--alpha"><span class="dot" aria-hidden="true"></span>BIG ALPHA · open</span>
+  <span class="chip chip--ver">Plattform v12.1.0</span>
+</div>
+
+<main id="main">
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__body">
+      <p class="eyebrow">Senfkorn UG · Holding &amp; Operations · WIR Mesh</p>
+      <h1 id="hero-title">Cybersecurity.<br />Mesh.<br />Kontrolle.</h1>
+      <p class="lead">
+        <strong>95guknow</strong> ist der öffentliche Mesh- und Lab-Pol der
+        <strong>Senfkorn UG</strong>. Hier liegt offen, was offen liegen darf:
+        Orientierung in Cybersecurity, fraktale Informationsarchitektur und die
+        Plattform <strong>Fusion Hero OS</strong> — public-safe, ohne private
+        Vault-Shards.
+      </p>
+
+      <ul class="layerstrip" aria-label="Layer-Modell">
+        <li class="layerstrip__item" data-layer="0"><span class="pip" aria-hidden="true"></span>L0 Meister</li>
+        <li class="layerstrip__item" data-layer="1"><span class="pip" aria-hidden="true"></span>L1 Held</li>
+        <li class="layerstrip__item" data-layer="2"><span class="pip" aria-hidden="true"></span>L2 Operator</li>
+      </ul>
+
+      <div class="actions">
+        <a class="btn btn--primary" href="https://github.com/95guknow/fusion-hero-os">
+          Fusion Hero OS
+          <span class="btn__meta">v12.1.0</span>
+        </a>
+        <a class="btn" href="https://github.com/95guknow">GitHub · 95guknow</a>
+        <a class="btn btn--ghost" href="https://instagram.com/95guknow" rel="me noopener noreferrer" target="_blank">@95guknow</a>
+      </div>
+    </div>
+
+    <aside class="hero__aside" aria-label="Profil und Integrität">
+      <a class="profile" href="https://instagram.com/95guknow" rel="me noopener noreferrer" target="_blank">
+        <img src="assets/avatar.jpg" width="128" height="128" alt="" loading="eager" decoding="async" />
+        <span class="profile__handle">@95guknow</span>
+        <span class="profile__label">Instagram</span>
+      </a>
+
+      <div class="integrity">
+        <h2 class="integrity__title">Meister Hasch</h2>
+        <p class="integrity__note">
+          Instruction Frame · Labor · public-safe. Das Bildmaterial wird auf
+          öffentlichen Flächen nicht ausgeliefert — verbindlich ist der Seal.
+        </p>
+        <dl class="integrity__grid">
+          <dt>SHA-256</dt>
+          <dd><code class="hash">a032b31b…13d5f81e</code></dd>
+          <dt>Status</dt>
+          <dd>sealed · Omega</dd>
+        </dl>
+        <div class="integrity__links">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/MEISTER_HASCH_PUBLIC.md">Public Frame</a>
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/alpha_meister_hasch.seal.json">Seal JSON</a>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ── Plattform ──────────────────────────────────────────── -->
+  <section class="section" id="plattform" aria-labelledby="plattform-title">
+    <header class="section__head">
+      <p class="eyebrow">Plattform</p>
+      <h2 id="plattform-title">Fusion Hero OS v12.1.0</h2>
+      <p class="section__intro">
+        Hybrid-AI- und Mainframe-Labor: Dissertation-as-OS, QUBO-Optimierung,
+        duale API-Planes und ein Mesh, das Rechenlast über Instanzen verteilt,
+        statt sie zu zentralisieren.
+      </p>
+    </header>
+
+    <div class="grid grid--cards">
+      <article class="card">
+        <h3>Quantizer-Triade</h3>
+        <p>
+          String-Quantizer, Sinnquanten-Registry und M→N-Quant-DB bilden die
+          Kette, über die Bedeutung diskretisiert und wieder auflösbar gemacht
+          wird.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Cross-Mesh</h3>
+        <p>
+          Framework-übergreifende Kopplung mit Layer-Distance-Crosscheck —
+          Instanzen prüfen ihre Abstände gegeneinander, statt einer zentralen
+          Wahrheit zu vertrauen.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Preload-All</h3>
+        <p>
+          Universeller Startup-Preload: Module kommen deterministisch hoch,
+          nicht in zufälliger Reihenfolge.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Root-Anchor-Handshake</h3>
+        <p>
+          M-Pression-Projektion und Anker-Handshake im AscensionCore
+          (9.10-aspirational) — Herkunft bleibt prüfbar.
+        </p>
+      </article>
+    </div>
+
+    <div class="actions actions--tight">
+      <a class="btn" href="https://github.com/95guknow/fusion-hero-os/blob/main/README.md">README</a>
+      <a class="btn" href="https://github.com/95guknow/fusion-hero-os/blob/main/architecture.md">Architektur</a>
+      <a class="btn" href="https://github.com/95guknow/fusion-hero-os/blob/main/PUBLIC_STATUS.md">Public Status</a>
+      <a class="btn" href="https://github.com/95guknow/fusion-hero-os/blob/main/prompt.txt">prompt.txt</a>
+    </div>
+  </section>
+
+  <!-- ── Zyklus ─────────────────────────────────────────────── -->
+  <section class="section section--accent" id="zyklus" aria-labelledby="zyklus-title">
+    <header class="section__head">
+      <p class="eyebrow">Zyklus</p>
+      <h2 id="zyklus-title">BIG OMEGA → BIG ALPHA</h2>
+    </header>
+
+    <p class="pullquote">
+      BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.
+    </p>
+
+    <ul class="deflist">
+      <li>
+        <strong>Omega</strong>
+        <span>Integritätsbogen geschlossen — Seal, INVERT, Korridor, Eudaemon, Expression.</span>
+      </li>
+      <li>
+        <strong>Alpha</strong>
+        <span>Additiver Zyklus — duale Plane-Klarheit, Design-Tokens, öffentliches Mesh, Laborhygiene.</span>
+      </li>
+      <li>
+        <strong>INVERT</strong>
+        <span><code>realraum → labor_hypothesis + integrity_probe + no_vault_commit</code></span>
+      </li>
+      <li>
+        <strong>Grenzen</strong>
+        <span>Sandbox · kein privater Vault in Git · keine Offensive auf öffentlichen Flächen.</span>
+      </li>
+    </ul>
+
+    <div class="actions actions--tight">
+      <a class="btn btn--primary" href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/ALPHA_MEISTER_HASCH.md">ALPHA_MEISTER_HASCH.md</a>
+      <a class="btn" href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/alpha_meister_hasch.seal.json">Alpha Seal JSON</a>
+    </div>
+  </section>
+
+  <!-- ── Mesh ───────────────────────────────────────────────── -->
+  <section class="section" id="mesh" aria-labelledby="mesh-title">
+    <header class="section__head">
+      <p class="eyebrow">WIR Mesh</p>
+      <h2 id="mesh-title">Öffentliche Repositories</h2>
+      <p class="section__intro">
+        Das Mesh trennt sauber: <em>Business-Plane</em> (Produkt, Health) gegen
+        <em>Hyperraum</em> (Operator-lokal, Mesh, Consent). Öffentlich ist nur,
+        was öffentlich sein soll.
+      </p>
+    </header>
+
+    <ul class="repolist">
+      <li>
+        <a href="https://github.com/95guknow/fusion-hero-os">
+          <span class="repolist__name">fusion-hero-os</span>
+          <span class="repolist__desc">Plattform-Kern — Dissertation-as-OS, Mesh, QUBO, Seals</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/95guknow/normalOS">
+          <span class="repolist__name">normalOS</span>
+          <span class="repolist__desc">Bodenständige Gegenschicht zum Hyperraum</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/95guknow/heroische-mathematik">
+          <span class="repolist__name">heroische-mathematik</span>
+          <span class="repolist__desc">Mathematischer Unterbau des Layer-Modells</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/95guknow/dashboard">
+          <span class="repolist__name">dashboard</span>
+          <span class="repolist__desc">Operative Sicht auf Mesh und Plattformzustand</span>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/95guknow/95guknow.github.io">
+          <span class="repolist__name">95guknow.github.io</span>
+          <span class="repolist__desc">Diese Seite — Quelltext offen</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ── Publikationen ──────────────────────────────────────── -->
+  <section class="section" id="publikationen" aria-labelledby="pub-title">
+    <header class="section__head">
+      <p class="eyebrow">Publikationen</p>
+      <h2 id="pub-title">Lesbares aus dem Labor</h2>
+    </header>
+
+    <div class="grid grid--pub">
+      <article class="pub">
+        <h3>Psychogramm-Kompendium</h3>
+        <p class="pub__meta">v1.0.0 · Markdown &amp; PDF</p>
+        <p>
+          Systematische Selbstbeschreibung des Operators als offengelegtes
+          Dokument — Grundlage für die Frage, wer hier eigentlich steuert.
+        </p>
+        <p class="pub__links">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/kompendium/psychogramm/Psychogramm_Kompendium_95guknow_v1.0.0.md">Lesen</a>
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/kompendium/psychogramm/psychogramm_kompendium_95guknow.pdf">PDF</a>
+        </p>
+      </article>
+
+      <article class="pub">
+        <h3>A13 — Brainstorm-Vokabular</h3>
+        <p class="pub__meta">Dissertationsanhang</p>
+        <p>
+          Operationalisierung des Arbeitsvokabulars: drei bewiesene Bausteine
+          statt Begriffsnebel, mit Telemetrie hinterlegt.
+        </p>
+        <p class="pub__links">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/anhaenge/A13_Brainstorm_Vokabular_Operationalisierung.md">Anhang A13</a>
+        </p>
+      </article>
+
+      <article class="pub">
+        <h3>Kompendium-Index</h3>
+        <p class="pub__meta">Übersicht</p>
+        <p>
+          Einstiegspunkt in die Sammlung — von hier aus verzweigt der
+          dokumentierte Teil des Labors.
+        </p>
+        <p class="pub__links">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/kompendium/README.md">Index</a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Governance ─────────────────────────────────────────── -->
+  <section class="section" id="governance" aria-labelledby="gov-title">
+    <header class="section__head">
+      <p class="eyebrow">Governance</p>
+      <h2 id="gov-title">Wer drückt den Knopf</h2>
+      <p class="section__intro">
+        Automatisierung — auch KI — merged hier nichts selbst. Sie öffnet PRs,
+        lässt CI laufen und legt die Bestätigungslinks vor. Der Merge bleibt
+        beim Menschen, extern gegenüber dem Repository.
+      </p>
+    </header>
+
+    <div class="grid grid--cards">
+      <article class="card">
+        <h3>Human-Confirm-Gate</h3>
+        <p>
+          Zwei unabhängige Bestätigungen vom Handy — GitHub-Approval plus
+          externer Google-Check — bevor irgendetwas nach <code>main</code> geht.
+        </p>
+        <p class="card__link">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/ops/HUMAN_CONFIRM_GATE.md">Verfahren</a>
+        </p>
+      </article>
+      <article class="card">
+        <h3>Coworking-KI</h3>
+        <p>
+          KI-Beteiligung läuft als regulärer Contributor durch GitHub —
+          nachvollziehbar, mit denselben Schranken wie jeder andere Beitrag.
+        </p>
+        <p class="card__link">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/docs/ops/COWORKING_KI_GITHUB.md">Ablauf</a>
+        </p>
+      </article>
+      <article class="card">
+        <h3>Branch-Strategie</h3>
+        <p>
+          Release-Tags <code>vX.Y.Z</code> auf <code>main</code> sind die Quelle
+          der Wahrheit für die Plattformversion.
+        </p>
+        <p class="card__link">
+          <a href="https://github.com/95guknow/fusion-hero-os/blob/main/BRANCH_STRATEGY.md">Schema</a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ── Leistungen ─────────────────────────────────────────── -->
+  <section class="section section--muted" id="leistungen" aria-labelledby="leist-title">
+    <header class="section__head">
+      <p class="eyebrow">Senfkorn UG</p>
+      <h2 id="leist-title">Leistungen (public)</h2>
+    </header>
+
+    <div class="grid grid--cards">
+      <article class="card">
+        <h3>Cybersecurity</h3>
+        <p>Orientierung und Schutzstrategien für Menschen und Unternehmen — praxisnah, ohne Hype-Theater.</p>
+      </article>
+      <article class="card">
+        <h3>WIR Mesh</h3>
+        <p>Fraktale Informationsarchitektur über öffentliche Repos und kontrollierte Operator-Flächen.</p>
+      </article>
+      <article class="card">
+        <h3>Fusion Hero OS</h3>
+        <p>Hybrid-AI- und Mainframe-Labor v12 — duale API-Planes, QUBO, public-safe Seals.</p>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot__line">
+    <span>© <span data-year>2026</span> Senfkorn UG · 95guknow</span>
+    <span class="foot__sep" aria-hidden="true">·</span>
+    <span>Plattform v12.1.0 · BIG ALPHA</span>
+    <span class="foot__sep" aria-hidden="true">·</span>
+    <span>Labor Frame · public-safe</span>
+  </p>
+  <p class="foot__line foot__line--links">
+    <a href="https://github.com/95guknow/95guknow.github.io">Quelltext</a>
+    <a href="https://github.com/95guknow/fusion-hero-os/blob/main/LICENSE">Lizenz</a>
+    <a href="https://github.com/95guknow">GitHub</a>
+  </p>
+  <p class="foot__fineprint">
+    Diese Seite lädt keine Ressourcen von Dritten und setzt keine Cookies.
+    Schriftart Orbitron (SIL&nbsp;OFL&nbsp;1.1) wird lokal ausgeliefert.
+  </p>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://95guknow.github.io/#org",
+      "name": "Senfkorn UG",
+      "alternateName": "95guknow",
+      "url": "https://95guknow.github.io/",
+      "logo": "https://95guknow.github.io/assets/avatar.jpg",
+      "description": "Cybersecurity-Orientierung, fraktale Informationsarchitektur und die Plattform Fusion Hero OS.",
+      "sameAs": [
+        "https://github.com/95guknow",
+        "https://instagram.com/95guknow"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://95guknow.github.io/#site",
+      "url": "https://95guknow.github.io/",
+      "name": "95guknow · Senfkorn UG",
+      "inLanguage": "de-DE",
+      "publisher": { "@id": "https://95guknow.github.io/#org" }
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Fusion Hero OS",
+      "version": "12.1.0",
+      "codeRepository": "https://github.com/95guknow/fusion-hero-os",
+      "programmingLanguage": ["Python", "Rust", "JavaScript"],
+      "author": { "@id": "https://95guknow.github.io/#org" },
+      "description": "Hybrid-AI- und Mainframe-Labor: Dissertation-as-OS, QUBO, duale API-Planes, Mesh."
+    }
+  ]
+}
+</script>
+</body>
+</html>

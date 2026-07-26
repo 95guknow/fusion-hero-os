@@ -200,23 +200,50 @@ def _invoke_grok(prompt: str, role: str, backend: str, ctx: Dict[str, Any]) -> D
 
 def dual_run(query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
-    Verhandlungstriade:
+    Verhandlungstriade unter Operand/i invertierter Modalkollaps:
+      0) INVERT(realraum) → labor dual
       1) Agent (Llama) erzeugt
       2) Anti-Agent (Grok) prüft
-      3) Quantisierer — ganze Strings logisch, Wiederholungen quantisieren
+      3) Quantisierer — adaptive Substrings + Sinnquanten
     """
     ctx = dict(context or {})
-    agent_out = invoke("agent", query, ctx)
+    operandi_meta = None
+    work_query = query
+    try:
+        from inverted_modal_collapse import gate_text, is_operandi, INVERT_FORMULA
+
+        if is_operandi():
+            operandi_meta = gate_text(query or "")
+            if operandi_meta.get("proceed_lab_only") is False:
+                return {
+                    "ok": False,
+                    "error": "anti_inversion_trap",
+                    "operandi": operandi_meta,
+                    "formula": INVERT_FORMULA,
+                    "synthesis": (
+                        "BLOCK: Agent-Nein ist kein Startbefehl. "
+                        "Bleibe im Labor — kein Offensiv-Start."
+                    ),
+                }
+            inv = (operandi_meta.get("invert") or {}).get("inverted")
+            if inv:
+                work_query = inv
+                ctx["query_lab"] = inv
+                ctx["operandi"] = "inverted_modal_collapse"
+    except Exception:
+        pass
+
+    agent_out = invoke("agent", work_query, ctx)
     anti_out = None
     if is_dual_agent_enabled() and agent_out.get("ok"):
         anti_out = invoke(
             "anti_agent",
-            query,
+            work_query,
             ctx,
             agent_response=agent_out.get("response", ""),
         )
 
-    # Whole-string policy auf Agent-Antwort anwenden (kein Char-Stream)
+    # Adaptive-substring / quantizer path (kein Char-Stream)
     agent_text = agent_out.get("response", "") or ""
     anti_text = (anti_out or {}).get("response", "") or ""
     try:
@@ -236,7 +263,7 @@ def dual_run(query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, 
     if is_quantizer_enabled():
         quant_out = invoke(
             "quantizer",
-            query,
+            work_query,
             {**ctx, "anti_response": anti_text},
             agent_response=agent_text,
             anti_response=anti_text,
@@ -266,6 +293,9 @@ def dual_run(query: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, 
         "quantizer": quant_out,
         "synthesis": synthesis,
         "triad": True,
+        "operandi": "inverted_modal_collapse",
+        "operandi_gate": operandi_meta,
+        "query_lab": work_query if work_query != query else None,
         "policy": policy(),
     }
 

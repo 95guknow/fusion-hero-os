@@ -36,3 +36,7 @@ powershell -File .\sync_grok_intern.ps1
 ## Summary JSON
 
 See `docs/ops/SYNC_UPGRADE_V13.latest.json`.
+
+## Status (2026-07-26)
+
+**COMPLETED:** PR #98 merged · tag `v13.0.0` · release published · intern sync v13.0.0.

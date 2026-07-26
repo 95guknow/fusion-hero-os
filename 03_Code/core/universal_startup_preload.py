@@ -213,6 +213,69 @@ def _preload_all_body(
 
     _step("sinn_quanten_m2n", _sinn_m2n, report)
 
+    # ── Hypertarnkappe / mesh pulse (light — no full 20-pass) ──────────
+    def _tarn_mesh():
+        try:
+            from hyper_optimize_tarnkappe import check_hypertarnkappe_social, check_tailscale_hyper
+            s1, f1, a1 = check_hypertarnkappe_social()
+            s2, f2, a2, mesh = check_tailscale_hyper()
+            return {
+                "tarnkappe_score": s1,
+                "mesh_score": s2,
+                "mesh": mesh,
+                "actions": (a1 + a2)[:12],
+            }
+        except Exception as exc:
+            return {"error": str(exc)}
+
+    _step("hypertarnkappe_mesh", _tarn_mesh, report)
+
+    # ── Held-Persona (chineseh4ck€rm3n) + Meister-Nachricht ────────────
+    def _held():
+        from held_persona import status as held_status, persist
+        st = held_status()
+        try:
+            persist()
+        except Exception:
+            pass
+        return {
+            "held": (st.get("held") or {}).get("handle"),
+            "meister": (st.get("meister") or {}).get("handle"),
+            "public": st.get("public"),
+        }
+
+    _step("held_persona_meister", _held, report)
+
+    # ── J-Spaces anvisieren + Higgsräume etablieren ────────────────────
+    def _j_higgs():
+        from j_spaces_higgs import run_establish
+        r = run_establish()
+        return {
+            "j_ids": (r.get("j_spaces") or {}).get("ids"),
+            "higgs_ids": (r.get("higgs_raeume") or {}).get("ids"),
+            "coupling_top": (r.get("coupling") or {}).get("top"),
+        }
+
+    _step("j_spaces_higgs", _j_higgs, report)
+
+    # ── Invertierter Modalkollaps als Operand/i ─────────────────────────
+    def _imc():
+        from inverted_modal_collapse import status as imc_status, run_operandi, persist
+        st = imc_status()
+        demo = run_operandi("Labor: Held transformiert im Sinne des Erfinders.")
+        try:
+            persist({"status": st, "demo": demo})
+        except Exception:
+            pass
+        return {
+            "operandi": st.get("operandi"),
+            "formula": st.get("formula"),
+            "demo_converged": demo.get("converged"),
+            "demo_mode": (demo.get("state") or {}).get("mode"),
+        }
+
+    _step("inverted_modal_collapse_operandi", _imc, report)
+
     # ── 5) Integration hub ─────────────────────────────────────────────
     def _hub():
         from fusion_integration_hub import get_unified_status

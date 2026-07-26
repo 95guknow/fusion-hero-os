@@ -1,0 +1,25 @@
+{
+  "name": "95guknow · Senfkorn UG",
+  "short_name": "95guknow",
+  "description": "Cybersecurity, WIR Mesh und Fusion Hero OS — öffentlicher Lab-Pol der Senfkorn UG.",
+  "lang": "de-DE",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07070d",
+  "theme_color": "#07070d",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/avatar.jpg",
+      "sizes": "400x400",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
