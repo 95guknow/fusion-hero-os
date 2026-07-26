@@ -1,23 +1,23 @@
 ---
 name: fusion-hero-os
-description: Auto-load and operate Fusion Hero OS v12.0.0 operational (v8.3 stack + Stage-A/B) + v9.10 aspirational AscensionOS with Grok-intern ALTE_Frau_95g Heroic Core alignment. Use when the user mentions Fusion Hero OS, mainframe laden, auto load, heroic core, v8, v9, v10, Ascension, Grok intern abgleich, or propagation of v10.
+description: Auto-load and operate Fusion Hero OS v13.0.0 operational (v8.3 stack + Stage-A/B) + v9.10 aspirational AscensionOS with Grok-intern ALTE_Frau_95g Heroic Core alignment. Use when the user mentions Fusion Hero OS, mainframe laden, auto load, heroic core, v8, v9, v10, Ascension, Grok intern abgleich, or propagation of v10.
 ---
 
-# Fusion Hero OS v12.0.0 operational + v9.10 aspirational — Grok Intern Skill
+# Fusion Hero OS v13.0.0 operational + v9.10 aspirational — Grok Intern Skill
 
 ## Version Stand
-- **Fusion Hero OS Operative Kanon (Best Version):** **v12.0.0** (platform; inherits v8.3 functional stack + Stage-A/B privacy/consent/version gates)
+- **Fusion Hero OS Operative Kanon (Best Version):** **v13.0.0** (platform; inherits v8.3 functional stack + Stage-A/B privacy/consent/version gates)
 - **Aspirational / Roadmap Track:** v9.10 (AscensionOS / CEC + AscensionCore + PersistentSisyphosCycle + GenerationalEvolutionEngine + v9.6/v9.7 modules)
 - **Heroic Core (intern):** v10 platform + v8.3 modules + v9.10 aspirational bridge (`fusion_hero_os` + `heroic_math_engine` + `ascension_os`)
 - **Repo:** `C:\Users\Admin\fusion-hero-os` → [95guknow/fusion-hero-os](https://github.com/95guknow/fusion-hero-os)
-- **GitHub release target:** `v12.0.0` (operativer Kanon; Ascension v9.x bleibt loadable Roadmap)
+- **GitHub release target:** `v13.0.0` (operativer Kanon; Ascension v9.x bleibt loadable Roadmap)
 - **Dashboard:** `03_Code/Dashboard/app.py` → `http://127.0.0.1:8000`
 - **Ascension Layer:** registered in fusion_unified.yaml (loadable via QuadCoreBridge mode="ascension")
 
 ## Core Skills (global gespiegelt)
 - `heroic-core-foundation` — unified ALTE_Frau_95g Heroic Core (v10 platform alignment)
 - `alte-frau-95g` — Fusion Hero OS + Hyperthreading + Ascension bridge
-- `mainframe-laden` — Mainframe-Modus + Vermerk-Pflicht (v12.0.0 alignment)
+- `mainframe-laden` — Mainframe-Modus + Vermerk-Pflicht (v13.0.0 alignment)
 
 ## Auto-Load (lokal)
 ```powershell
@@ -42,8 +42,8 @@ Startet:
 | `POST /api/hyperthreading` | `{"enabled": true}` |
 | `GET /api/mainframe/pipeline` | Kaskade + HT-Status |
 
-## v12.0.0 Operative + v9.10 Aspirational Modules (2026-07-15)
-**Operative (v12.0.0 Kanon = v8.3 stack + Stage-A/B):** Timespace TMS, HeroicLLM-EA, Image Orchestrator, QUBO-Engine, Multi-Agent-Orchestration, Layer-Registry (13 Layers), Tailscale-Mesh + MCP, LLM Integration Hub, unified VERSION 12.0.0, consent gate, scrypt archive KDF, persona/PII gates.
+## v13.0.0 Operative + v9.10 Aspirational Modules (2026-07-15)
+**Operative (v13.0.0 Kanon = v8.3 stack + Stage-A/B):** Timespace TMS, HeroicLLM-EA, Image Orchestrator, QUBO-Engine, Multi-Agent-Orchestration, Layer-Registry (13 Layers), Tailscale-Mesh + MCP, LLM Integration Hub, unified VERSION 13.0.0, consent gate, scrypt archive KDF, persona/PII gates.
 **Aspirational v9.10 (AscensionOS track, partial in `ascension_os/`):** CoEvolutionaryClosure (CEC v9.3), AscensionCore (v9.4), PersistentSisyphosCycle (v9.4), HarmonisierungsCoreModule + Geisterjagdmodul (v9.6), exposure_practice_module (v9.7), GenerationalEvolutionEngine, full Inside-Out coevolution + EudaimoniaGuard extensions.
 | Modul | Pfad | Features |
 |---|---|---|
@@ -80,14 +80,14 @@ Startet:
 - Crates: `pms_rust_kernel_crate/`, `rust_engine_crate/`
 - CI: `cargo build --workspace` auf main/develop
 
-## Grok Intern Abgleich (Session-Start) — v12.0.0 Update 2026-07-15
-1. `git pull origin main` — Tag/Release `v12.0.0` ist operativer Kanon
+## Grok Intern Abgleich (Session-Start) — v13.0.0 Update 2026-07-15
+1. `git pull origin main` — Tag/Release `v13.0.0` ist operativer Kanon
 2. `powershell -File sync_grok_intern.ps1`
 3. `GET http://127.0.0.1:8000/api/health` (oder `?light=true` unter Last)
 4. Falls offline: `start_all.ps1` (Fast-Boot: `FUSION_AUTO_LOAD=0`)
 5. Ascension activation: `ascension_os/` Layer per `fusion_unified.yaml`
-6. Referenz: `BEST_VERSION.md` (v12.0.0), `DEPLOYMENT_GUIDE.md`, `BRANCH_STRATEGY.md`, `docs/v8/`, `ascension_os/`
-7. Version gate: `python scripts/bump_version.py --check` → muss `12.0.0` sein
+6. Referenz: `BEST_VERSION.md` (v13.0.0), `DEPLOYMENT_GUIDE.md`, `BRANCH_STRATEGY.md`, `docs/v8/`, `ascension_os/`
+7. Version gate: `python scripts/bump_version.py --check` → muss `13.0.0` sein
 
 ## Code-Honesty Regel
 - Docstrings/Header: nur behaupten, was der Code einlöst

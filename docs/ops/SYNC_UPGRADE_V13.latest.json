@@ -1,0 +1,31 @@
+{
+  "kind": "SYNC_UPGRADE_V13",
+  "utc": "2026-07-26T11:40:00+00:00",
+  "platform": "13.0.0",
+  "target": "13.0.0",
+  "from": "12.1.0",
+  "branch": "release/v13.0.0",
+  "tag": "v13.0.0",
+  "gates": {
+    "bump_version_check": true,
+    "manifests": "13.0.0",
+    "main_protected": true,
+    "path": "PR + human confirm (not direct push)"
+  },
+  "intern": {
+    "operative_kanon": "v13.0.0",
+    "skills": [
+      "fusion-hero-os",
+      "alte-frau-95g",
+      "heroic-core-foundation",
+      "mainframe-laden"
+    ],
+    "script": "sync_grok_intern.ps1"
+  },
+  "extern": {
+    "repo": "95guknow/fusion-hero-os",
+    "release_url": "https://github.com/95guknow/fusion-hero-os/releases/tag/v13.0.0",
+    "note": "Tag+gh release after PR merge to main"
+  },
+  "geltung": "sync results = Satz when gate green; release tag = Satz after human merge"
+}

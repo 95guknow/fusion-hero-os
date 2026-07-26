@@ -13,7 +13,7 @@ $versionFileEarly = Join-Path $Root "VERSION"
 $PlatformVersion = if (Test-Path $versionFileEarly) { (Get-Content $versionFileEarly -Raw).Trim() } else { "12.1.0" }
 $OperativeKanon = "v$PlatformVersion"
 $Aspirational = "v9.10 AscensionOS track (loadable)"
-$Inherits = "v8.3 functional stack + Stage-A/B + v12 daycycle"
+$Inherits = "v8.3 functional stack + Stage-A/B + v12 daycycle (BCG into v13)"
 
 New-Item -ItemType Directory -Force -Path $GrokSkill | Out-Null
 
@@ -122,7 +122,7 @@ $manifestObj = [ordered]@{
     aspirational = $Aspirational
     best_version = "BEST_VERSION.md"
     deployment_guide = "DEPLOYMENT_GUIDE.md"
-    release_url = "https://github.com/95guknow/fusion-hero-os/releases/tag/v10.0.0"
+    release_url = "https://github.com/95guknow/fusion-hero-os/releases/tag/$OperativeKanon"
     grok_cli_version = $grokVersion
     grok_cli_checked_at = $grokCheckedAt
     previous_grok_cli_version = $previousGrokVersion

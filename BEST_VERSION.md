@@ -1,6 +1,7 @@
 # BEST VERSION — Fusion Hero OS
 
-**Stand:** v12.1.0 operational (2026-07-21) — additive over v12.0.0 / v10 / v8.3 BCG  
+**Stand:** v13.0.0 operational (2026-07-26) — additive over v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**v13.0.0:** Platform major (Ära 13) — consolidates v12.1 daycycle + origin/main A13/psychogramm/coworking CI; BCG; AscensionOS v9.10 remains aspirational  
 **v12.1.0:** Daycycle mem (minute→private dev hourly→4h PR→daily top+fanout) · agent protocol wake `testtest`
 
 Dieses Dokument benennt den besten, kohärenten Stand des Systems — und
@@ -35,10 +36,10 @@ Original und Verfassung der Textqualität:
 
 Code Honesty bleibt organisch: Proof Registry **BEWIESEN / OFFEN / WIDERLEGT** — die Ontologie entbindet nicht von Nachweis.
 
-## Operativer Kanon: v12.1.0 / main
+## Operativer Kanon: v13.0.0 / main
 
-**`VERSION` = `12.1.0` ist die kanonische Plattform-Version** (additiv zu v12.0.0 / v10 / v8.3). Quelle der
-Wahrheit: annotierter Git-Tag `v12.1.0` auf `main` (nach Release) + Root-`VERSION`.
+**`VERSION` = `13.0.0` ist die kanonische Plattform-Version** (additiv zu v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
+Wahrheit: annotierter Git-Tag `v13.0.0` auf `main` (nach Release) + Root-`VERSION`.
 Alle Manifeste (`pyproject.toml`, `package.json`, Crate-`Cargo.toml`,
 `fusion_hero_os.__version__`) müssen übereinstimmen (`scripts/bump_version.py --check`).
 

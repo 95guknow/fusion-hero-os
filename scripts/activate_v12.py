@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
-PLATFORM = "12.0.0"
+PLATFORM = "13.0.0"
 MANIFEST = (
     Path.home() / ".fusion" / "mesh" / "coordination" / "v12_activation.json"
 )
