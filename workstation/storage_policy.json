@@ -1,16 +1,18 @@
 {
   "version": "1.0",
-  "updated": "2026-07-13",
+  "updated": "2026-07-26",
   "policy_id": "google_drive_cold_default",
-  "principle": "Dokumente, Archive, Medien und nicht-operative Daten liegen standardmaessig in Google Drive. Lokal bleiben nur operative Systeme (Code, laufende Dienste, aktive Builds).",
+  "principle": "Dokumente, Archive, Medien und nicht-operative Daten liegen standardmaessig in Google Drive. Lokal bleiben nur operative Systeme (Code, laufende Dienste, aktive Builds). Runtime-HT-Spill (LongTermCache) nutzt denselben Cold-Root.",
   "vault_repo": "95guknow/fusion-hero-vault",
   "google_drive": {
     "mount_candidates": [
+      "G:",
       "{USERPROFILE}\\Google Drive-Streaming",
       "{USERPROFILE}\\Google Drive"
     ],
     "library": "Meine Ablage",
     "cold_root": "FusionHero_Offload",
+    "longterm_cache": "FusionHero_Offload/LongTermCache",
     "photo_ingestion": "ALTE_Frau_95g_Photo_Ingestion"
   },
   "operational_local": [

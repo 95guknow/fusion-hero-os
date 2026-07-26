@@ -10,18 +10,22 @@ from typing import Any, Dict, List, Optional, Tuple
 
 
 def dashboard_port() -> int:
-    """Canonical default **42069** (FUSION_PORT_BASE / FUSION_BACKEND_PORT)."""
+    """Canonical default **8000** (GUI + REST; matches start_all.ps1 / run_backend.bat).
+
+    Override with FUSION_DASHBOARD_PORT / FUSION_BACKEND_PORT / FUSION_PORT_BASE / PORT.
+    Legacy mesh port 42069 only if explicitly set.
+    """
     raw = (
         os.getenv("FUSION_DASHBOARD_PORT")
         or os.getenv("FUSION_BACKEND_PORT")
         or os.getenv("FUSION_PORT_BASE")
         or os.getenv("PORT")
-        or "42069"
+        or "8000"
     )
     try:
         return int(raw)
     except ValueError:
-        return 42069
+        return 8000
 
 
 def _score_ip(ip: str) -> int:

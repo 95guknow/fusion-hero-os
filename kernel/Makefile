@@ -1,5 +1,5 @@
-# Makefile für Fusion Hero OS Kernel
-# Unterstützung für SMP und Hyperthreading
+# Makefile fï¿½r Fusion Hero OS Kernel
+# Unterstï¿½tzung fï¿½r SMP und Hyperthreading
 
 # Compiler und Linker
 CC = gcc
@@ -7,7 +7,8 @@ CFLAGS = -ffreestanding -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -nostdlib -nos
 LDFLAGS = -T linker.ld -nostdlib -nostartfiles -static
 
 # Verzeichnisse
-ASM_SRC = boot.s drivers/isr.s
+# Primary kernel surface: Assembly (boot + ISR + inject table)
+ASM_SRC = boot.s drivers/isr.s inject/inject_table.s
 C_SRC = kernel.c smp/smp.c management/monitor.c management/database.c \
         ai/request_optimizer.c ai/hybrid_cognition.c \
         gui/gui_core.c ide/ide_shell.c
@@ -40,6 +41,9 @@ $(OBJ_DIR)/smp.o: smp/smp.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -I. -c -o $@ $<
 
 $(OBJ_DIR)/isr.o: drivers/isr.s | $(OBJ_DIR)
+	nasm -f elf64 -o $@ $<
+
+$(OBJ_DIR)/inject_table.o: inject/inject_table.s | $(OBJ_DIR)
 	nasm -f elf64 -o $@ $<
 
 $(OBJ_DIR)/monitor.o: management/monitor.c | $(OBJ_DIR)

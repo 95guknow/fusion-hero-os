@@ -1,10 +1,15 @@
 {
   "kind": "CLEARWEB_OUTBOUND",
-  "utc": "2026-07-21T13:07:47.097187+00:00",
-  "platform": "12.1.0",
+  "utc": "2026-07-26T12:50:00Z",
+  "platform": "13.0.0",
   "mode": "public_broadcast_labor",
-  "offense": "FORBIDDEN",
-  "funnel": "not_enabled_no_serve_config_auth_gate_first",
-  "surfaces_pass": true,
-  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build."
+  "release": "https://github.com/95guknow/fusion-hero-os/releases/tag/v13.0.0",
+  "dual_org": [
+    "https://github.com/95guknow/fusion-hero-os",
+    "https://github.com/Senfkorn-UG/fusion-hero-os"
+  ],
+  "site": "https://95guknow.github.io/",
+  "ui_stub": "https://95guknow.github.io/ui-stub/",
+  "bifocal": "docs/ops/BIFOCAL_FUSION_MERGE_TODAY.md",
+  "entry": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build."
 }

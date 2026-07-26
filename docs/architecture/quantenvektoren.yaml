@@ -1,0 +1,193 @@
+# Quantenvektoren — machine map (Fusion Hero OS v13+)
+# Geltung: Spezifikation / Modell — BCG facades until quanta are process-isolated
+version: "1.0.0"
+platform_min: "13.0.0"
+principle: >
+  One quantum = one purpose x one boundary x one primary language x one contract.
+  Doubt => own language allowed; contract mandatory.
+
+axes:
+  L: [us, ms, s, min]
+  I: [in_process, process, host, mesh]
+  M: [immutable, versioned, hot_reload]
+  S: [none, local, network]
+  G: [satz, bedingt, modell, fragment]
+
+wire_families:
+  A_control: { transport: http_json, schema: openapi3 }
+  B_compute: { transport: ipc_or_grpc, schema: compute.v1 }
+  C_agent: { transport: jsonl, schema: agent.v1 }
+  D_storage: { transport: files, schema: manifest_json_sha256 }
+  E_events: { transport: websocket_json, schema: event.v1 }
+
+quanta:
+  Q0_integrity:
+    name: MasterSeed / Integrity
+    purpose: fixpoint hashes push-layer-guard geltung
+    language: { primary: rust, secondary: [python_facade] }
+    isolation: process
+    contract: integrity.v1
+    wire: A_control
+    repo_hints: [push_layer_guard.yaml, fusion_hero_os/core]
+    phase: F
+
+  Q1_control_plane:
+    name: Control Plane
+    purpose: health load-all jobs routes orchestrate quanta
+    language: { primary: python3, secondary: [] }
+    isolation: process
+    contract: control.v1
+    wire: A_control
+    repo_hints: [03_Code/Dashboard, fusion_hero_os/core/dispatcher.py]
+    phase: D
+
+  Q2_compute:
+    name: Compute Hot Path
+    purpose: QUBO SA anneal virtual-HT kernels
+    language: { primary: rust, secondary: [python_client] }
+    isolation: process
+    contract: compute.v1
+    wire: B_compute
+    repo_hints: [rust_engine_crate, pms_rust_kernel_crate, fusion_hero_os/engine]
+    phase: B
+
+  Q3_agent_mesh:
+    name: Agent Mesh
+    purpose: message bus task queue supervisor dual-agent
+    language: { primary: python3, secondary: [rust] }
+    isolation: process
+    contract: agent.v1
+    wire: C_agent
+    repo_hints: [fusion_hero_os/orchestration]
+    phase: C
+
+  Q4_intelligence:
+    name: Intelligence Fabric
+    purpose: LLM frameworks router providers always-on
+    language: { primary: python3, secondary: [] }
+    isolation: process
+    contract: llm.v1
+    wire: A_control
+    repo_hints: [03_Code/llm_frameworks, fusion_hero_os/core/universal_llm_router.py]
+    phase: C
+
+  Q5_cold_storage:
+    name: Cold Storage / Spill
+    purpose: GDrive offload longterm cache medienserver
+    language: { primary: powershell, secondary: [python3] }
+    isolation: host
+    contract: storage.v1
+    wire: D_storage
+    repo_hints: [tools/disk_dedup_offload.py, workstation/offload-to-gdrive.ps1]
+    phase: E
+
+  Q6_mesh:
+    name: Mesh / Network
+    purpose: tailscale connectors coordination
+    language: { primary: python3, secondary: [go, rust] }
+    isolation: multi_process
+    contract: mesh.v1
+    wire: A_control
+    repo_hints: [mesh, docs/mesh]
+    phase: E
+
+  Q7_surface:
+    name: Surface UI
+    purpose: dashboard GUI static skins big_ALPHA
+    language: { primary: python3, secondary: [html_js, typescript] }
+    isolation: process
+    contract: surface.v1
+    wire: [A_control, E_events]
+    repo_hints: [03_Code/Dashboard]
+    phase: D
+
+  Q8_substrate_ops:
+    name: Substrate Ops
+    purpose: start_all windows tune process exclusivity
+    language: { primary: powershell, secondary: [python3] }
+    isolation: host
+    contract: ops.v1
+    wire: D_storage
+    repo_hints: [start_all.ps1, run_backend.bat, workstation]
+    phase: E
+
+  Q9_ascension:
+    name: Ascension Track
+    purpose: CEC Sisyphos aspirational coevolution
+    language: { primary: python3, secondary: [] }
+    isolation: loadable_or_process
+    contract: ascension.v1
+    wire: A_control
+    repo_hints: [ascension_os]
+    aspirational: true
+    phase: F
+
+  Q10_ipc_bridge:
+    name: Kernel IPC + Assembly Inject Core
+    purpose: >
+      Assembly-primary kernel inject table (256 slots, hot-swap, caps);
+      C/Python IPC TCP 19753; max cooperative injectability for all quanta
+    language: { primary: assembly, secondary: [c, rust, python_host] }
+    isolation: process
+    contract: ipc.v1
+    wire: B_compute
+    repo_hints: [kernel/inject, kernel/bridge, kernel/boot.s, kernel/drivers/isr.s]
+    injectability:
+      max_slots: 256
+      hot_swap: true
+      capability_gated: true
+      host_module: kernel.inject.inject_host
+    phase: B
+
+  Q11_dissertation:
+    name: Dissertation / Proof
+    purpose: text proof_registry kompendium publication
+    language: { primary: markdown, secondary: [python3] }
+    isolation: files
+    contract: proof.v1
+    wire: D_storage
+    repo_hints: [docs/dissertation, proof_registry.yaml]
+    phase: F
+
+  Q12_security:
+    name: Security / Persona / PII
+    purpose: consent gates scanners persona contracts
+    language: { primary: python3, secondary: [rust] }
+    isolation: lib_or_process
+    contract: security.v1
+    wire: A_control
+    repo_hints: [scripts/check_pii_scanner.py, docs/ops/PERSONA_KLARNAME_KONTRAKT.md]
+    phase: F
+
+decision_tree:
+  - when: "latency_us_cpu_bound"
+    choose: rust
+    quanta: [Q2_compute, Q0_integrity]
+  - when: "ai_sdk_glue_research"
+    choose: python3
+    quanta: [Q1_control_plane, Q3_agent_mesh, Q4_intelligence, Q9_ascension]
+  - when: "windows_host_automation"
+    choose: powershell
+    quanta: [Q8_substrate_ops, Q5_cold_storage]
+  - when: "os_abi_bridge"
+    choose: c_thin_plus_rust
+    quanta: [Q10_ipc_bridge]
+  - when: "browser_product_ui"
+    choose: typescript
+    quanta: [Q7_surface]
+  - when: "doubt"
+    choose: owner_language_with_mandatory_contract
+    note: every quantum may use its own language
+
+phases:
+  A_draw: [contracts_skeleton, tag_registry]
+  B_hot: [Q2_compute, Q10_ipc_bridge]
+  C_intel_agents: [Q4_intelligence, Q3_agent_mesh]
+  D_thin_control: [Q1_control_plane, Q7_surface]
+  E_ops_storage: [Q5_cold_storage, Q8_substrate_ops, Q6_mesh]
+  F_gates: [Q0_integrity, Q9_ascension, Q11_dissertation, Q12_security]
+
+bcg:
+  facades_python: facades/python
+  no_break_imports: true
+  min_facade_minor: 1

@@ -1,6 +1,14 @@
 @echo off
 cd /d "%~dp003_Code\Dashboard"
+REM === Always: full frameworks + dashboard on :8000 ===
 if not defined FUSION_AUTO_LOAD set FUSION_AUTO_LOAD=1
+if not defined FUSION_PRELOAD_ALL set FUSION_PRELOAD_ALL=1
+if not defined FUSION_ALL_MODULES set FUSION_ALL_MODULES=1
+if not defined FUSION_BOOT_PHASE set FUSION_BOOT_PHASE=full
+set FUSION_BACKEND_PORT=8000
+set FUSION_DASHBOARD_PORT=8000
+set FUSION_PORT_BASE=8000
+set PORT=8000
 set FUSION_HYPERTHREADING=1
 set FUSION_PROFILE=admin
 set FUSION_PERFORMANCE_RATIO=1.0
@@ -13,6 +21,16 @@ set FUSION_TRINITY_MAX_MODELS=2
 set FUSION_MODEL_MAX_TOKENS=768
 set FUSION_ORCH_EXECUTOR_WORKERS=4
 set FUSION_WINDOWS_SKIN=synthwave
+REM BIG ALPHA visual asset (Dissertation + static)
+if not defined FUSION_BIG_ALPHA_ASSET set FUSION_BIG_ALPHA_ASSET=C:\Dissertation_95guknow\assets\big_ALPHA.png
+if exist "%USERPROFILE%\.fusion\gdrive_spill.env" (
+  for /f "usebackq tokens=1,* delims==" %%A in ("%USERPROFILE%\.fusion\gdrive_spill.env") do (
+    if not "%%A"=="" if not "%%A:~0,1%"=="#" set "%%A=%%B"
+  )
+)
+if not defined FUSION_SSD_LONGTERM_CACHE set FUSION_SSD_LONGTERM_CACHE=G:\Meine Ablage\FusionHero_Offload\LongTermCache
+if not defined FUSION_MEMORY_SPILL set FUSION_MEMORY_SPILL=1
+if not exist "%FUSION_SSD_LONGTERM_CACHE%" mkdir "%FUSION_SSD_LONGTERM_CACHE%" 2>nul
 
 REM GPU acceleration for QUBO / Mainframe
 set FUSION_USE_GPU=1
@@ -96,12 +114,20 @@ set FUSION_VIRTUAL_STATE_SIZE=256
 set FUSION_GPU_STREAMS=8
 set FUSION_GPU_SHARE_FACTOR=3.0
 set FUSION_VCACHE_AGGRESSIVE=1
-set FUSION_SSD_LONGTERM_CACHE=C:\FusionHero\LongTermCache
-if not exist "%FUSION_SSD_LONGTERM_CACHE%" mkdir "%FUSION_SSD_LONGTERM_CACHE%"
+if not exist "%FUSION_SSD_LONGTERM_CACHE%" mkdir "%FUSION_SSD_LONGTERM_CACHE%" 2>nul
+
+REM Stale exclusivity locks (dashboard:8000 / :42069) freigeben
+powershell -NoProfile -Command "$ld=Join-Path $env:USERPROFILE '.fusion-hero-os\process_locks'; if(Test-Path $ld){ Get-ChildItem $ld -Filter 'dashboard_*.lock' -EA SilentlyContinue | Remove-Item -Force -EA SilentlyContinue }"
 
 REM Port 8000 freimachen — verhindert Errno 10048 bei Doppelstart
 powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match 'uvicorn app:app' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"
 timeout /t 2 /nobreak >nul
 
-REM Port 8000 = Standard-GUI (templates/index.html) + REST API + WebSocket
+REM Sync big_ALPHA into dashboard static (always available at /static/big_ALPHA.png)
+if exist "%FUSION_BIG_ALPHA_ASSET%" (
+  if not exist "static" mkdir static
+  copy /Y "%FUSION_BIG_ALPHA_ASSET%" "static\big_ALPHA.png" >nul 2>&1
+)
+
+REM Port 8000 = Standard-GUI (templates/index.html) + REST API + WebSocket + frameworks preload
 "C:\Users\Admin\venv\Scripts\python.exe" -m uvicorn app:app --host 127.0.0.1 --port 8000 --log-level warning

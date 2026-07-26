@@ -19,10 +19,26 @@ class VirtualGPUHTCache:
         self.use_gpu = os.getenv("FUSION_USE_GPU", "1") == "1" and self._has_gpu()
         self.vram = {}  # tid -> np.array state
         self.next_tid = 0
-        self.ssd_cache = SSDLongTermCache() if os.getenv("FUSION_SSD_LONGTERM_CACHE") else None
+        # Enable spill when path set OR when GDrive cold storage is resolvable (default on).
+        _spill_flag = os.getenv("FUSION_SSD_LONGTERM_CACHE", "").strip()
+        _spill_on = os.getenv("FUSION_MEMORY_SPILL", "1").strip() not in ("0", "false", "off")
+        if _spill_flag or _spill_on:
+            try:
+                # Prefer shared module (GDrive-aware)
+                from ssd_longterm_cache import SSDLongTermCache as _SSD  # type: ignore
+
+                self.ssd_cache = _SSD(_spill_flag or None)
+            except Exception:
+                self.ssd_cache = SSDLongTermCache()
+        else:
+            self.ssd_cache = None
         self._last_update = time.time()
 
-        print(f"[VirtualGPUHT] Initialized: GPU={self.use_gpu}, state_size={self.state_size}, max={self.max_threads}")
+        _spill_base = getattr(self.ssd_cache, "base", None) if self.ssd_cache else None
+        print(
+            f"[VirtualGPUHT] Initialized: GPU={self.use_gpu}, state_size={self.state_size}, "
+            f"max={self.max_threads}, spill={_spill_base or 'off'}"
+        )
 
     def _has_gpu(self) -> bool:
         try:
@@ -210,9 +226,21 @@ def gpu_virtual_energy_update(batch_tids, q_matrix=None):
 
 
 class SSDLongTermCache:
-    """Tier-2 cache on SSD for virtual thread states that don't fit in VRAM/RAM."""
-    def __init__(self):
-        self.base = Path(os.getenv("FUSION_SSD_LONGTERM_CACHE", "C:/FusionHero/LongTermCache"))
+    """Tier-2 cache for virtual thread states that don't fit in VRAM/RAM.
+
+    Default base: FUSION_SSD_LONGTERM_CACHE, else GDrive FusionHero_Offload/LongTermCache,
+    else C:/FusionHero/LongTermCache.
+    """
+    def __init__(self, base_dir: str | None = None):
+        if base_dir:
+            root = Path(base_dir)
+        elif os.getenv("FUSION_SSD_LONGTERM_CACHE"):
+            root = Path(os.environ["FUSION_SSD_LONGTERM_CACHE"])
+        else:
+            root = Path("G:/Meine Ablage/FusionHero_Offload/LongTermCache")
+            if not root.parent.parent.exists() and not Path("G:/").exists():
+                root = Path("C:/FusionHero/LongTermCache")
+        self.base = root
         self.base.mkdir(parents=True, exist_ok=True)
         self.meta = {}  # tid -> path
 
