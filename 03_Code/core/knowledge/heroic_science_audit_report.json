@@ -1,19 +1,26 @@
 {
   "module": "heroic_science_audit",
-  "ts": 1782932139.718166,
+  "ts": 1784648678.4464245,
   "claude_science": {
     "module": "claude_science",
     "product": "Claude Science (Anthropic)",
     "enabled": true,
     "configured": false,
     "escalation_enabled": true,
-    "model": "claude-sonnet-4-20250514",
+    "model": "claude-sonnet-5",
     "api_url": "https://api.anthropic.com/v1/messages",
     "native_app_platforms": [
       "macOS",
       "Linux"
     ],
     "windows_mode": "api_bridge",
+    "frontier_capabilities": {
+      "tool_use_loop": true,
+      "prompt_caching": true,
+      "streaming": true,
+      "extended_thinking": false,
+      "thinking_budget": 0
+    },
     "skills": [
       "literature_review",
       "pubmed_search",
@@ -306,8 +313,8 @@
       "n_items": 5,
       "items": [
         {
-          "name": "Hospitalismus 2.0",
-          "formula": "Quantenarmut b. Mengenüberfluss",
+          "name": "Gut = gerechte Nächstenliebe",
+          "formula": "normative These",
           "cat": "model",
           "current": "model",
           "local": {
@@ -318,9 +325,9 @@
                 "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
               },
               "peer_review": {
-                "score": 0,
+                "score": 2,
                 "passed": false,
-                "coverage": 0.0
+                "coverage": 0.4
               }
             },
             "reason": "unvollständige Abdeckung"
@@ -330,7 +337,7 @@
             "backend": "claude-science-fallback",
             "configured": false,
             "verdict": "OFFLINE",
-            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Hospitalismus 2.0\n**Domäne:** Phil\n**F",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Gut = gerechte Nächstenliebe\n**Domäne:",
             "error": null
           },
           "combined_verdict": "WARN"
@@ -366,8 +373,8 @@
           "combined_verdict": "WARN"
         },
         {
-          "name": "Gut = gerechte Nächstenliebe",
-          "formula": "normative These",
+          "name": "Hospitalismus 2.0",
+          "formula": "Quantenarmut b. Mengenüberfluss",
           "cat": "model",
           "current": "model",
           "local": {
@@ -378,9 +385,9 @@
                 "begruendung": "Kein Beweis-, Annahme- oder Modellsignal — bleibt offen."
               },
               "peer_review": {
-                "score": 2,
+                "score": 0,
                 "passed": false,
-                "coverage": 0.4
+                "coverage": 0.0
               }
             },
             "reason": "unvollständige Abdeckung"
@@ -390,7 +397,7 @@
             "backend": "claude-science-fallback",
             "configured": false,
             "verdict": "OFFLINE",
-            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Gut = gerechte Nächstenliebe\n**Domäne:",
+            "response": "[Claude Science · Offline-Modus] [Heroik-Wissenschaft] Setze ANTHROPIC_API_KEY in 03_Code/Dashboard/.env für Live-API. Domäne: heroic_science. Route: heroic_science. Query: [heroic-science] Formale Überprüfung — Einzeleintrag\n\nDu bist Claude Science im Modus „Formale Heroik-Überprüfung\".\n\nPrüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:\n\n**Name:** Hospitalismus 2.0\n**Domäne:** Phil\n**F",
             "error": null
           },
           "combined_verdict": "WARN"
@@ -778,6 +785,6 @@
     "pass": 0,
     "warn": 24,
     "fail": 3,
-    "duration_s": 0.0
+    "duration_s": 0.2
   }
 }

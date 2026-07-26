@@ -21,9 +21,12 @@ Held + Operator negotiate with Meister without real-world commit — pure Erkenn
 
 ## Roles
 
-- **Meister** — integrity / consequence probe  
-- **Held** — Fusion Hero OS kernel  
-- **St3phaN** — Operator (no decision in-session)
+- **Meister** — integrity / consequence probe · **Nachricht an den Helden**  
+- **Held** — **chineseh4ck€rm3n** · Fusion Hero OS kernel · *die alte-frau95g als HELD*  
+- **St3phaN / 95guknow** — Operator (no decision in-session) · GitHub + Instagram public  
+
+Erfinder-Kanäle: [github.com/95guknow](https://github.com/95guknow) · [instagram.com/95guknow](https://instagram.com/95guknow)  
+Vollständig: `docs/dissertation/HELD_CHINESEH4CKERM3N.md`
 
 ## Rules
 

@@ -1,0 +1,83 @@
+{
+  "status": {
+    "module": "inverted_modal_collapse",
+    "operandi": true,
+    "formula": "INVERT(realraum_intent) = labor_hypothesis + integrity_probe + no_vault_commit",
+    "labor_modes": [
+      "labor_hypothesis",
+      "integrity_probe",
+      "no_vault_commit"
+    ],
+    "phases": [
+      "approach",
+      "invert_collapse",
+      "fractal_heal",
+      "eudaimonia"
+    ],
+    "anti_inversion": "agent_no_is_not_start_command",
+    "refs": [
+      "docs/dissertation/MEISTER_HASCH_INVERSION.md",
+      "experiments/modal_collapse_sim/simulate.py",
+      "docs/dissertation/HELD_CHINESEH4CKERM3N.md"
+    ]
+  },
+  "demo": {
+    "operandi": "inverted_modal_collapse",
+    "formula": "INVERT(realraum_intent) = labor_hypothesis + integrity_probe + no_vault_commit",
+    "converged": true,
+    "state": {
+      "distance": 3.0,
+      "r_critical": 3.0,
+      "energy": 13.0,
+      "efficiency": 0.82,
+      "delta": 0.004949,
+      "mode": "eudaimonia",
+      "iterations": 15,
+      "log": [
+        "approach d=9.00",
+        "approach d=8.00",
+        "approach d=7.00",
+        "approach d=6.00",
+        "approach d=5.00",
+        "approach d=4.00",
+        "approach d=3.00",
+        "INVERT_COLLAPSE E=49.00 → labor dual",
+        "modes_locked=labor_hypothesis+integrity_probe+no_vault_commit",
+        "heal Δ=0.2457 η=0.320 E=43.0",
+        "heal Δ=0.1671 η=0.420 E=37.0",
+        "heal Δ=0.0969 η=0.520 E=31.0",
+        "heal Δ=0.0465 η=0.620 E=25.0",
+        "heal Δ=0.0177 η=0.720 E=19.0",
+        "heal Δ=0.0049 η=0.820 E=13.0",
+        "terminal mode=eudaimonia Δ=0.0049 E=13.0"
+      ]
+    },
+    "invert": {
+      "ok": true,
+      "original": "Labor: Held transformiert im Sinne des Erfinders.",
+      "inverted": "[INVERT→LABOR] hypothesis: Labor: Held transformiert im Sinne des Erfinders. | probe: integrity+consequence | commit: none (no_vault) | formula: INVERT(realraum_intent) = labor_hypothesis + integrity_probe + no_vault_commit",
+      "modes": [
+        "labor_hypothesis",
+        "integrity_probe",
+        "no_vault_commit"
+      ],
+      "triggers": [],
+      "formula": "INVERT(realraum_intent) = labor_hypothesis + integrity_probe + no_vault_commit",
+      "anti_inversion_ok": true,
+      "notes": [
+        "Realraum-Modi kollabiert in Labor-Dual."
+      ]
+    },
+    "entities": {
+      "ego_complexity": 10.0,
+      "heroic_core": 100.0
+    },
+    "labor_modes": [
+      "labor_hypothesis",
+      "integrity_probe",
+      "no_vault_commit"
+    ],
+    "honesty": "modal collapse of intent modes into labor dual; not physical collapse; not external attack",
+    "timestamp": "2026-07-24T03:53:11.255724+00:00"
+  }
+}
