@@ -66,6 +66,50 @@ TOOLS = [
         },
     },
     {
+        "name": "fhero_mcp_fill_govern",
+        "description": (
+            "Haelt den MCP/Context-Fill in [40%,70%] wenn moeglich. "
+            "Ueber 70%: geschaerfte Autokompression OHNE Informationsverlust "
+            "(normalize/dedupe/merge, dann reversibles Offload mit SHA-Archiv; "
+            "nie permanent droppen). Sinnkongruenz steuert nur Offload-Reihenfolge. "
+            "Unter 40%: Archiv-Refill. Rehydrate via rehydrate_from_archive(sha)."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "array",
+                    "description": "Liste {role, content, meta?}",
+                    "items": {"type": "object"},
+                },
+                "intent": {
+                    "type": "string",
+                    "description": "Aktive Absicht fuer Sinnkongruenz-Scoring.",
+                },
+                "window_tokens": {
+                    "type": "integer",
+                    "description": "Optional Context-Window (default env/128k).",
+                },
+            },
+            "required": ["messages"],
+        },
+    },
+    {
+        "name": "fhero_provider_costs",
+        "description": (
+            "Analysiert Realkosten (public list prices, Bedingt) der Top-LLM-"
+            "Provider und die daraus abgeleiteten Market-Ceilings fuer die "
+            "interne Kosten-/Energie-Funktion v2.1."),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "include_cost_function": {
+                    "type": "boolean",
+                    "description": "Wenn true: poly_mesh_cost_function Status anhaengen.",
+                },
+            },
+        },
+    },
+    {
         "name": "fhero_schedule_qubo",
         "description": (
             "Loest ein Zwei-Einheiten-Inference-Scheduling (CPU vs. NPU) in "
@@ -141,9 +185,66 @@ def _tool_schedule_qubo(args: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _tool_mcp_fill_govern(args: Dict[str, Any]) -> Dict[str, Any]:
+    from fusion_hero_os.core.mcp_fill_governor import (
+        FillBand,
+        McpFillGovernor,
+        govern_messages,
+    )
+
+    messages = args.get("messages") or []
+    intent = str(args.get("intent") or "")
+    if args.get("window_tokens"):
+        band = FillBand.from_env()
+        band.window_tokens = int(args["window_tokens"])
+        gov = McpFillGovernor(band)
+        from fusion_hero_os.core.sinnkongruenz_compressor import MessageUnit
+
+        units = [
+            MessageUnit(
+                role=str(m.get("role") or "user"),
+                content=str(m.get("content") or ""),
+                meta=dict(m.get("meta") or {}),
+            )
+            for m in messages
+        ]
+        out = gov.govern(units, intent=intent)
+        out["messages"] = [
+            {"role": u.role, "content": u.content, "meta": u.meta} for u in out["units"]
+        ]
+        # drop non-serializable units key for JSON-RPC
+        out = {k: v for k, v in out.items() if k != "units"}
+        return out
+    out = govern_messages(messages, intent=intent)
+    return {k: v for k, v in out.items() if k != "units"}
+
+
+def _tool_provider_costs(args: Dict[str, Any]) -> Dict[str, Any]:
+    from fusion_hero_os.core.provider_token_costs import (
+        analyse_providers,
+        market_ceilings_eur_per_1m,
+    )
+
+    out: Dict[str, Any] = {
+        "analysis": analyse_providers(),
+        "market_ceilings_eur_per_1m": market_ceilings_eur_per_1m(),
+        "cost_function_version": "2.1.0",
+    }
+    if args.get("include_cost_function"):
+        try:
+            from fusion_hero_os.core.poly_mesh_cost_function import cost_function_status
+
+            out["cost_function"] = cost_function_status()
+        except Exception as exc:
+            out["cost_function"] = {"ok": False, "error": str(exc)[:200]}
+    return out
+
+
 _TOOL_IMPL = {
     "fhero_layer0_verify": _tool_layer0_verify,
     "fhero_schedule_qubo": _tool_schedule_qubo,
+    "fhero_mcp_fill_govern": _tool_mcp_fill_govern,
+    "fhero_provider_costs": _tool_provider_costs,
 }
 
 

@@ -41,9 +41,10 @@ __all__ = [
     "evaluate_full",
 ]
 
-COST_FUNCTION_VERSION = "2.0.0"
+COST_FUNCTION_VERSION = "2.1.0"
 
 # EUR rates — europe-west3 / Senfkorn 2026-07 (angemessene Defaults)
+# v2.1: L4 LLM token burn from public provider list prices (provider_token_costs)
 RATES_EUR: Dict[str, float] = {
     "gce_e2_micro_month": 7.50,
     "gce_e2_micro_hour": 7.50 / 730.0,
@@ -56,6 +57,9 @@ RATES_EUR: Dict[str, float] = {
     "h100_gpu_hour": 12.00,  # order-of-magnitude; confirm Billing
     "l1_desk_power_hour": 0.08,  # local mainframe electricity EWMA floor
     "l4_saas_api_est_hour": 0.02,  # soft estimate when MCP active
+    # LLM: fallback EUR/1M blend if provider module unavailable
+    "llm_flagship_blend_eur_per_1m": 8.0,
+    "llm_fast_blend_eur_per_1m": 0.7,
 }
 
 # Soft placement bases (relative, not EUR) — lower = preferred when free
@@ -105,12 +109,40 @@ def compute_burn(
     gcs_gb: float = 10.0,
     l1_power_eur_h: Optional[float] = None,
     l4_saas_active: bool = False,
+    llm_tokens_in_per_h: float = 0.0,
+    llm_tokens_out_per_h: float = 0.0,
+    llm_provider_id: str = "anthropic_claude_sonnet",
     rates: Optional[Dict[str, float]] = None,
 ) -> BurnBreakdown:
-    """Aggregate real EUR/h burn across poly-mesh tiers."""
+    """Aggregate real EUR/h burn across poly-mesh tiers.
+
+    v2.1: C_L4 includes measured/estimated LLM token burn from public
+    provider rates (provider_token_costs) when token throughput is known.
+    """
     r = dict(RATES_EUR)
     if rates:
         r.update(rates)
+
+    # refresh LLM blend defaults from live analysis when possible
+    try:
+        from fusion_hero_os.core.provider_token_costs import (
+            blended_top_tier_eur_per_1m,
+            estimate_llm_burn_eur_h,
+        )
+
+        r["llm_flagship_blend_eur_per_1m"] = blended_top_tier_eur_per_1m("flagship")
+        r["llm_fast_blend_eur_per_1m"] = blended_top_tier_eur_per_1m("fast")
+        llm_burn = estimate_llm_burn_eur_h(
+            llm_tokens_in_per_h,
+            llm_tokens_out_per_h,
+            provider_id=llm_provider_id,
+        )
+        l4_llm = float(llm_burn.get("eur_h") or 0.0)
+    except Exception:
+        llm_burn = {}
+        # fallback blend: treat tokens as 70/30 in/out at flagship median
+        tok = float(llm_tokens_in_per_h) + float(llm_tokens_out_per_h)
+        l4_llm = (tok / 1e6) * float(r.get("llm_flagship_blend_eur_per_1m", 8.0))
 
     l1 = float(l1_power_eur_h if l1_power_eur_h is not None else r["l1_desk_power_hour"])
     l2 = mesh_exit_nodes * r["gce_e2_micro_hour"]
@@ -121,7 +153,8 @@ def compute_burn(
         + gpu_l4 * r["l4_gpu_hour"]
         + gpu_a100 * r["a100_gpu_hour"]
     )
-    l4 = r["l4_saas_api_est_hour"] if l4_saas_active else 0.0
+    l4_saas = r["l4_saas_api_est_hour"] if l4_saas_active else 0.0
+    l4 = l4_saas + l4_llm
     fixed = (
         mesh_exit_nodes * r["gce_e2_micro_month"]
         + gcs_gb * r["gcs_storage_gb_month"]
@@ -141,10 +174,15 @@ def compute_burn(
             "coordination_jobs_running": coordination_jobs_running,
             "mesh_exit_nodes": mesh_exit_nodes,
             "gcs_gb": gcs_gb,
+            "l4_saas_eur_h": round(l4_saas, 6),
+            "l4_llm_eur_h": round(l4_llm, 6),
+            "llm_burn": llm_burn,
+            "cost_function_version": COST_FUNCTION_VERSION,
             "rates": r,
             "formula": (
                 "C_h = C_L1 + C_L2 + C_L3 + C_L4; "
-                "C_L3 = pods*cpu_h + coord*light_h + L4*l4_h + A100*a100_h; "
+                "C_L4 = saas_est + LLM(tokens, provider_rates); "
+                "C_L3 = pods*cpu_h + coord*light_h + GPU; "
                 "C_L2 = n_exit * e2_micro_h; C_month = fixed + C_h*730"
             ),
         },
@@ -306,11 +344,19 @@ def evaluate_full(
         feu_per_eur=float(em.get("feu_per_eur_real", 100)),
     )
     sub = pricing_cfg or {}
-    comp = sub.get("competitive_pricing") or {}
+    comp = dict(sub.get("competitive_pricing") or {})
     target = float(comp.get("margin_pct", sub.get("margin_pct", 1.50)))
     floor = float(sub.get("margin_pct_floor", 0.35))
     min_p = float(sub.get("minimum_price_eur_per_1k_tokens", 0.002))
-    ceilings = comp.get("market_ceiling_eur_per_1m_tokens") or {}
+    ceilings = dict(comp.get("market_ceiling_eur_per_1m_tokens") or {})
+    # v2.1: overlay real top-provider market ceilings when not explicitly set
+    try:
+        from fusion_hero_os.core.provider_token_costs import market_ceilings_eur_per_1m
+
+        for k, v in market_ceilings_eur_per_1m().items():
+            ceilings.setdefault(k, v)
+    except Exception:
+        pass
     tiers_out = {}
     for tid, tier in (sub.get("tiers") or {
         "inference_standard": {"tokens_per_hour_capacity": 500000, "label": "Standard"},
@@ -353,6 +399,14 @@ def evaluate_full(
         )
         for t in PLACEMENT_BASE
     }
+    provider_analysis = None
+    try:
+        from fusion_hero_os.core.provider_token_costs import analyse_providers
+
+        provider_analysis = analyse_providers()
+    except Exception as exc:
+        provider_analysis = {"ok": False, "error": str(exc)[:160]}
+
     return {
         "ok": True,
         "cost_function_version": COST_FUNCTION_VERSION,
@@ -361,18 +415,24 @@ def evaluate_full(
         "feu": feu,
         "subcontractor_tiers": tiers_out,
         "placement_soft_costs": placement,
+        "provider_token_costs": provider_analysis,
+        "market_ceilings_eur_per_1m": ceilings,
         "formulas": {
             "C_h": "C_L1 + C_L2 + C_L3 + C_L4",
+            "C_L4": "saas_est + LLM(tokens, provider_list_prices)",
             "E_h": "(C_h / p_grid) * PUE",
             "FEU_h": "C_h * λ_FEU",
             "P_1k": "max(P_min, min(c_1k*(1+m*), ceiling_1k))",
             "Pi_tier": "π_base*(1+load) s.t. force_cluster→L3, control→L1",
+            "MCP_fill": "keep token_fill ∈ [0.40, 0.70]; compress by Sinnkongruenz",
         },
         "policy": {
             "real_cost_basis": "measured_or_rate_model",
             "mesh_aware": True,
             "force_cluster_hard": True,
             "competitive_margin_target": target,
+            "provider_ceilings_overlay": True,
+            "mcp_fill_band": [0.40, 0.70],
         },
     }
 
