@@ -7,16 +7,17 @@ These events are NOT from real review/self-modification logic (Code-Honesty).
 """
 from __future__ import annotations
 
-import asyncio, time, uuid, json, statistics, random
-from collections import deque
+import asyncio, hmac, threading, time, uuid, json, statistics, random
+from collections import defaultdict, deque
 from pathlib import Path
 from typing import Optional, Dict, Any, List, Set
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 
-from fastapi.responses import HTMLResponse, FileResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, FileResponse, JSONResponse, RedirectResponse
 
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from pydantic import BaseModel
 
@@ -56,6 +57,76 @@ if _cors_origins:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# === DoS/DDoS hardening =====================================================
+# 1) Per-IP sliding-window rate limit across the whole app (no new dependency).
+_RATE_LIMIT_PER_MIN = int(os.getenv("FUSION_RATE_LIMIT_PER_MIN", "120"))
+_RATE_LIMIT_WINDOW_S = 60.0
+_rate_buckets: Dict[str, deque] = defaultdict(deque)
+_rate_lock = threading.Lock()
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        client_ip = request.client.host if request.client else "unknown"
+        now = time.monotonic()
+        with _rate_lock:
+            bucket = _rate_buckets[client_ip]
+            while bucket and now - bucket[0] > _RATE_LIMIT_WINDOW_S:
+                bucket.popleft()
+            if len(bucket) >= _RATE_LIMIT_PER_MIN:
+                retry_after = max(1, int(_RATE_LIMIT_WINDOW_S - (now - bucket[0])))
+                return JSONResponse(
+                    {"error": "rate_limited", "retry_after_s": retry_after},
+                    status_code=429,
+                    headers={"Retry-After": str(retry_after)},
+                )
+            bucket.append(now)
+        return await call_next(request)
+
+
+app.add_middleware(RateLimitMiddleware)
+
+# 2) Extra gate for endpoints that trigger real compute (hyperthreading toggle,
+# orchestration, GPU/CPU tuning). Concurrency is always capped; an admin token
+# is additionally required once FUSION_DASHBOARD_ADMIN_TOKEN is configured
+# (unset by default so a single local operator keeps working out of the box —
+# set it before exposing this dashboard beyond localhost/Tailscale).
+_HEAVY_ADMIN_TOKEN = os.getenv("FUSION_DASHBOARD_ADMIN_TOKEN")
+_HEAVY_MAX_CONCURRENT = int(os.getenv("FUSION_HEAVY_MAX_CONCURRENT", "2"))
+_heavy_lock = threading.Lock()
+_heavy_in_flight = 0
+
+
+def _heavy_acquire() -> bool:
+    global _heavy_in_flight
+    with _heavy_lock:
+        if _heavy_in_flight >= _HEAVY_MAX_CONCURRENT:
+            return False
+        _heavy_in_flight += 1
+        return True
+
+
+def _heavy_release() -> None:
+    global _heavy_in_flight
+    with _heavy_lock:
+        _heavy_in_flight = max(0, _heavy_in_flight - 1)
+
+
+async def heavy_endpoint_guard(request: Request):
+    if _HEAVY_ADMIN_TOKEN:
+        supplied = request.headers.get("x-fusion-admin-token", "")
+        if not hmac.compare_digest(supplied, _HEAVY_ADMIN_TOKEN):
+            raise HTTPException(status_code=401, detail="admin token required")
+    if not _heavy_acquire():
+        raise HTTPException(
+            status_code=429,
+            detail="too many concurrent compute requests, retry shortly",
+        )
+    try:
+        yield
+    finally:
+        _heavy_release()
 if '03_Code' not in sys.path:
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 try:
@@ -1004,7 +1075,7 @@ async def get_hyperthreading():
         return ht.status()
     return {"enabled": False, "logical_cpus": os.cpu_count() or 12, "workers": 1}
 
-@app.post("/api/hyperthreading")
+@app.post("/api/hyperthreading", dependencies=[Depends(heavy_endpoint_guard)])
 async def post_hyperthreading(payload: dict):
     enabled = payload.get("enabled", True)
     if ht:
@@ -1073,7 +1144,7 @@ async def api_input(payload: InputPayload):
     await emit({"type": "task_input", "msg": f"Input auto-checked + agent assigned: {normalized[:60]}"})
     return {"status": "ok", "job_id": job_id, "normalized": normalized, "category": cat}
 
-@app.post("/api/v12/orchestrate")
+@app.post("/api/v12/orchestrate", dependencies=[Depends(heavy_endpoint_guard)])
 async def api_orchestrate(payload: OrchestratePayload):
     query = (payload.query or "").strip()
     normalized, cat, _, dom = classify_and_normalize(query)
@@ -1170,7 +1241,7 @@ async def api_gpu_memory():
     return alloc.status()
 
 
-@app.post("/api/gpu/allocator/rebalance")
+@app.post("/api/gpu/allocator/rebalance", dependencies=[Depends(heavy_endpoint_guard)])
 async def api_gpu_allocator_rebalance():
     alloc = get_gpu_allocator()
     if not alloc:
@@ -1194,7 +1265,7 @@ async def api_cpu_tuner_status():
     return tuner.status()
 
 
-@app.post("/api/cpu/tuner/run")
+@app.post("/api/cpu/tuner/run", dependencies=[Depends(heavy_endpoint_guard)])
 async def api_cpu_tuner_run():
     tuner = get_cpu_tuner()
     if not tuner:
