@@ -1,9 +1,9 @@
-# Daycycle Mem + Central Consolidation — Fusion Hero OS v12.1.0
+# Daycycle Mem + Central Consolidation — Fusion Hero OS v13.0.0
 # Bottom-up manifold upgrade · minute mem · hourly private dev · 4h PR · daily top
 # Policy: private mem repo only · no vault secrets in mem · freemium=false
 
 version: "1.0"
-platform_version: "12.1.0"
+platform_version: "13.0.0"
 cycle: BIG_ALPHA
 policy: pseudo_inhouse_only
 
@@ -78,7 +78,7 @@ instances:
     optional: true
 
 upgrade:
-  target: "12.1.0"
+  target: "13.0.0"
   mode: bottom_up_full_manifold
   include:
     - VERSION + manifests (bump_version)

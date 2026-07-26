@@ -1,5 +1,5 @@
 version: "1.0"
-platform_target: "12.1.0"
+platform_target: "13.0.0"
 layers:
   L0_state:
     - {id: fusion_daycycle_state, kind: state_dir, path: "~/.fusion/daycycle", role: daycycle_mem_state}
@@ -29,5 +29,6 @@ layers:
     - {id: github_origin_main, kind: remote_check, remote: origin, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/heads/main", role: public_kanon}
     - {id: github_senfkorn_main, kind: remote_check, remote: senfkorn, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/heads/main", role: dual_org}
     - {id: tag_v12_1_0, kind: remote_check, remote: origin, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/tags/v12.1.0", role: release_tag}
+    - {id: tag_v13_0_0, kind: remote_check, remote: origin, repo_path: "C:/Users/Admin/fusion-hero-os", ref: "refs/tags/v13.0.0", role: release_tag}
 pseudo_horcrux: {enabled: true, store_dir: "~/.fusion/horcrux/bottom_up_v12"}
 bounds: {force_push: false, offense: FORBIDDEN}
