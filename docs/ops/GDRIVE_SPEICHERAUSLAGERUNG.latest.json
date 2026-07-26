@@ -1,0 +1,18 @@
+{
+  "utc": "2026-07-26T12:21:08.9655940Z",
+  "paths": {
+    "offload": "G:\\Meine Ablage\\FusionHero_Offload",
+    "env_file": "C:\\Users\\Admin\\.fusion\\gdrive_spill.env",
+    "longterm": "G:\\Meine Ablage\\FusionHero_Offload\\LongTermCache"
+  },
+  "c_free_gb": 14.65,
+  "kind": "GDRIVE_SPEICHERAUSLAGERUNG",
+  "runtime_spill": "enabled",
+  "g_free_gb": 13.91,
+  "platform": "13.0.0",
+  "notes": [
+    "disk_dedup first pass ENOSPC on GDrive",
+    "partial Move-Item + cache purge recovered C space",
+    "FUSION_MEMORY_SPILL=1 + LongTermCache on GDrive smoke OK"
+  ]
+}

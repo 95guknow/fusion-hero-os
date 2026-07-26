@@ -580,117 +580,168 @@ async def startup_event():
             )
     except Exception as exc:
         print(f"[MainframeOps] Daemon note: {exc}")
-    if launcher_fast_boot:
-        os.environ["FUSION_AUTO_LOAD"] = "0"
-    fast_boot = os.getenv("FUSION_AUTO_LOAD", "1") == "0"
-    if fast_boot:
-        print("[Startup] Fast boot (FUSION_AUTO_LOAD=0) — Bridge UI sofort verfügbar")
-        # Selbst im Fast-Boot: leichte Connector/Framework-Inventar-Ladung
-        if os.getenv("FUSION_PRELOAD_ALL", "1") != "0":
+    # CRITICAL: do not block uvicorn lifespan — health must answer immediately.
+    # Frameworks + modules always load, but in a background thread (max injectability of boot).
+    print(
+        "[Startup] Dashboard port open ASAP — full frameworks/modules preload in background "
+        f"(AUTO_LOAD={os.getenv('FUSION_AUTO_LOAD')} PRELOAD_ALL={os.getenv('FUSION_PRELOAD_ALL')})"
+    )
+
+    def _full_boot_sync() -> None:
+        """Blocking full stack load — runs off the event loop."""
+        try:
+            from core.universal_startup_preload import preload_all
+
+            pr = preload_all(force=False)
+            print(
+                f"[Preload] ALL {pr.get('steps_ok')}/{pr.get('steps_total')} "
+                f"ok={pr.get('ok')} phase={os.getenv('FUSION_BOOT_PHASE', 'full')}"
+            )
+        except Exception as _pe:
+            print(f"[Preload] FAIL note: {_pe}")
+        try:
+            _boot_phase = os.getenv("FUSION_BOOT_PHASE", "full")
+            autoloader.run(phase=_boot_phase, attach_meta=True)
+            detect_input_factors()
+            detect_output_factors()
+            _ensure_agents()
+        except Exception as e:
+            print(f"[AutoLoad] note: {e}")
+        if ht:
             try:
-                from core.universal_startup_preload import preload_all
-                pr = preload_all(force=False)
-                print(f"[Preload] fast-path {pr.get('steps_ok')}/{pr.get('steps_total')}")
-            except Exception as _pe:
-                print(f"[Preload] note: {_pe}")
-        asyncio.create_task(heroic_core_event_loop())
-        return
+                ht.enable(True)
+                vcache = ht.get_virtual_gpu_ht_cache()
+                if hasattr(vcache, "status"):
+                    print("[AutoLoad] Virtual GPU HT + SSD cache active:", vcache.status())
+            except Exception as e:
+                print("[AutoLoad] Virtual HT init note:", e)
+        alloc = get_gpu_allocator()
+        if alloc:
+            try:
+                if alloc.start_background():
+                    print("[GPU] Adaptiver VRAM-Allocator gestartet (dediziert priorisiert)")
+                else:
+                    alloc.rebalance_once()
+                    print("[GPU] VRAM-Rebalance einmalig:", alloc.state.last_action)
+            except Exception as e:
+                print(f"[GPU] note: {e}")
+        cpu_tuner = get_cpu_tuner()
+        if cpu_tuner:
+            try:
+                result = cpu_tuner.tune_once()
+                snap = result.get("cpu", {})
+                print(
+                    f"[CPU] Adaptives Tuning: {result.get('action')} | "
+                    f"Last={snap.get('load_pct')}% Temp={snap.get('temp_c')}°C "
+                    f"Ratio={result.get('tuning', {}).get('ratio')}"
+                )
+                cpu_tuner.start_background()
+            except Exception as e:
+                print(f"[CPU] note: {e}")
+        coupler = get_resource_coupler()
+        if coupler:
+            try:
+                cresult = coupler.couple_once()
+                mem = cresult.get("memory", {}).get("system_ram", {})
+                vram = cresult.get("memory", {}).get("dedicated_vram", {})
+                print(
+                    f"[Coupler] CPU+GPU+SSD: {cresult.get('action')} | "
+                    f"RAM={mem.get('util_pct')}% VRAM={vram.get('util_pct')}% "
+                    f"GPU-Layer={cresult.get('tuning', {}).get('llama_gpu_layers')}"
+                )
+                coupler.start_background()
+            except Exception as e:
+                print(f"[Coupler] note: {e}")
+        if os.getenv("FUSION_ALL_MODULES", "1") == "1":
+            try:
+                from core.module_registry import load_all
 
-    # UNIVERSAL PRELOAD: Connectoren + Module + Frameworks + Quantizer + Mesh
-    try:
-        from core.universal_startup_preload import preload_all
-        pr = preload_all(force=False)
-        print(
-            f"[Preload] ALL {pr.get('steps_ok')}/{pr.get('steps_total')} "
-            f"ok={pr.get('ok')} phase={os.getenv('FUSION_BOOT_PHASE', 'full')}"
-        )
-    except Exception as _pe:
-        print(f"[Preload] FAIL note: {_pe}")
-
-    # Generelles AutoLoad + Faktenerkennung ZU BEGINN DES OS STARTS (full default)
-    _boot_phase = os.getenv("FUSION_BOOT_PHASE", "full")
-    autoloader.run(phase=_boot_phase, attach_meta=True)
-    detect_input_factors()
-    detect_output_factors()
-    _ensure_agents()
-    if ht:
+                mod_result = load_all(force=False)
+                print(
+                    f"[Modules] Freigabe: {mod_result.get('count')}/{mod_result.get('total')} geladen"
+                )
+            except Exception as e:
+                print(f"[Modules] Load note: {e}")
+        mem_guard = get_memory_guard()
+        if mem_guard:
+            try:
+                mg = mem_guard.relieve_once()
+                print(
+                    f"[RAM] Memory-Guard: {mg.get('action')} | {mg.get('ram', {}).get('util_pct')}%"
+                )
+                mem_guard.start_background()
+            except Exception as e:
+                print(f"[RAM] note: {e}")
+        vram_prio = get_vram_prioritizer()
+        if vram_prio and os.getenv("FUSION_VRAM_PRIORITIZER_AUTO", "1") == "1":
+            try:
+                vp = vram_prio.prioritize_once()
+                b, a = vp.get("before", {}), vp.get("after", {})
+                print(
+                    f"[VRAM] Prioritizer: {vp.get('action')} | "
+                    f"{b.get('vram_used_mb', 0):.0f}MB -> {a.get('vram_used_mb', 0):.0f}MB"
+                )
+            except Exception as e:
+                print(f"[VRAM] note: {e}")
+        gpu_booster = get_gpu_compute_booster()
+        if gpu_booster:
+            try:
+                if os.getenv("FUSION_GPU_COMPUTE_BOOSTER_AUTO", "1") == "1":
+                    bresult = gpu_booster.boost_once()
+                    print(
+                        f"[GPU] Compute-Booster: {bresult.get('action')} | "
+                        f"SM={bresult.get('compute_util_pct')}% "
+                        f"Ziel={bresult.get('target_compute_pct')}%"
+                    )
+                gpu_booster.start_background()
+            except Exception as e:
+                print(f"[GPU booster] note: {e}")
         try:
-            ht.enable(True)
-            # Force virtual GPU HT + SSD cache init
-            vcache = ht.get_virtual_gpu_ht_cache()
-            if hasattr(vcache, 'status'):
-                print('[AutoLoad] Virtual GPU HT + SSD cache active:', vcache.status())
+            from core.provider_switcher import select_provider, status as provider_status
+
+            active_provider = select_provider(force_probe=True)
+            ps = provider_status()
+            print(
+                f"[Provider] Auto-Wechsler aktiv={ps.get('auto_enabled')} | "
+                f"backend={active_provider}"
+            )
         except Exception as e:
-            print('[AutoLoad] Virtual HT init note:', e)
+            print(f"[Provider] Load note: {e}")
+        if os.getenv("FUSION_FIRST_INSTALL_AUTO", "1") == "1":
+            try:
+                from core.first_install_bootstrap import (
+                    is_first_install_pending,
+                    run as run_first_install,
+                )
+
+                if is_first_install_pending():
+                    fi = run_first_install()
+                    print(
+                        f"[FirstInstall] {fi.get('status')} "
+                        f"({fi.get('steps_ok')}/{fi.get('steps_total')} Schritte)"
+                    )
+            except Exception as e:
+                print(f"[FirstInstall] note: {e}")
+        print("[ALTE_Frau_95g] Heroic Core Dashboard fully loaded (background)")
+        try:
+            print(f"  AutoLoad Status: {autoloader.status()}")
+            print(
+                f"  Input-Faktoren: CPUs={INPUT_FACTORS.get('logical_cpus')}, "
+                f"HT={INPUT_FACTORS.get('hyperthreading_env')}"
+            )
+            print(
+                f"  Output-Faktoren: target_workers={OUTPUT_FACTORS.get('target_workers')}"
+            )
+        except Exception:
+            pass
+
+    async def _bg_full_boot() -> None:
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, _full_boot_sync)
+
+    asyncio.create_task(_bg_full_boot())
     asyncio.create_task(heroic_core_event_loop())
-    alloc = get_gpu_allocator()
-    if alloc:
-        if alloc.start_background():
-            print("[GPU] Adaptiver VRAM-Allocator gestartet (dediziert priorisiert)")
-        else:
-            alloc.rebalance_once()
-            print("[GPU] VRAM-Rebalance einmalig:", alloc.state.last_action)
-    cpu_tuner = get_cpu_tuner()
-    if cpu_tuner:
-        result = cpu_tuner.tune_once()
-        snap = result.get("cpu", {})
-        print(f"[CPU] Adaptives Tuning: {result.get('action')} | "
-              f"Last={snap.get('load_pct')}% Temp={snap.get('temp_c')}°C "
-              f"Ratio={result.get('tuning', {}).get('ratio')}")
-        cpu_tuner.start_background()
-    coupler = get_resource_coupler()
-    if coupler:
-        cresult = coupler.couple_once()
-        mem = cresult.get("memory", {}).get("system_ram", {})
-        vram = cresult.get("memory", {}).get("dedicated_vram", {})
-        print(f"[Coupler] CPU+GPU+SSD: {cresult.get('action')} | "
-              f"RAM={mem.get('util_pct')}% VRAM={vram.get('util_pct')}% "
-              f"GPU-Layer={cresult.get('tuning', {}).get('llama_gpu_layers')}")
-        coupler.start_background()
-    if os.getenv("FUSION_ALL_MODULES", "1") == "1":
-        try:
-            from core.module_registry import load_all
-            mod_result = load_all(force=False)
-            print(f"[Modules] Freigabe: {mod_result.get('count')}/{mod_result.get('total')} geladen")
-        except Exception as e:
-            print(f"[Modules] Load note: {e}")
-    mem_guard = get_memory_guard()
-    if mem_guard:
-        mg = mem_guard.relieve_once()
-        print(f"[RAM] Memory-Guard: {mg.get('action')} | {mg.get('ram', {}).get('util_pct')}%")
-        mem_guard.start_background()
-    vram_prio = get_vram_prioritizer()
-    if vram_prio and os.getenv("FUSION_VRAM_PRIORITIZER_AUTO", "1") == "1":
-        vp = vram_prio.prioritize_once()
-        b, a = vp.get("before", {}), vp.get("after", {})
-        print(f"[VRAM] Prioritizer: {vp.get('action')} | "
-              f"{b.get('vram_used_mb', 0):.0f}MB -> {a.get('vram_used_mb', 0):.0f}MB")
-    gpu_booster = get_gpu_compute_booster()
-    if gpu_booster:
-        if os.getenv("FUSION_GPU_COMPUTE_BOOSTER_AUTO", "1") == "1":
-            bresult = gpu_booster.boost_once()
-            print(f"[GPU] Compute-Booster: {bresult.get('action')} | "
-                  f"SM={bresult.get('compute_util_pct')}% Ziel={bresult.get('target_compute_pct')}%")
-        gpu_booster.start_background()
-    try:
-        from core.provider_switcher import select_provider, status as provider_status
-        active_provider = select_provider(force_probe=True)
-        ps = provider_status()
-        print(f"[Provider] Auto-Wechsler aktiv={ps.get('auto_enabled')} | backend={active_provider}")
-    except Exception as e:
-        print(f"[Provider] Load note: {e}")
-    if os.getenv("FUSION_FIRST_INSTALL_AUTO", "1") == "1":
-        try:
-            from core.first_install_bootstrap import is_first_install_pending, run as run_first_install
-            if is_first_install_pending():
-                fi = run_first_install()
-                print(f"[FirstInstall] {fi.get('status')} ({fi.get('steps_ok')}/{fi.get('steps_total')} Schritte)")
-        except Exception as e:
-            print(f"[FirstInstall] note: {e}")
-    print("[ALTE_Frau_95g] Heroic Core Dashboard gestartet")
-    print(f"  AutoLoad Status: {autoloader.status()}")
-    print(f"  Input-Faktoren: CPUs={INPUT_FACTORS.get('logical_cpus')}, HT={INPUT_FACTORS.get('hyperthreading_env')}")
-    print(f"  Output-Faktoren: target_workers={OUTPUT_FACTORS.get('target_workers')}")
+    print("[ALTE_Frau_95g] Heroic Core Dashboard listening (preload async)")
 
 
 @app.on_event("shutdown")
@@ -844,7 +895,7 @@ async def api_gui_status():
         "gui": "dashboard",
         "url": f"http://127.0.0.1:{_p}",
         "port": _p,
-        "port_base": 42069,
+        "port_base": int(os.getenv("FUSION_PORT_BASE", os.getenv("FUSION_BACKEND_PORT", "8000"))),
         "type": "fastapi+html",
         "template": "templates/index.html",
         "websocket": "/ws",
@@ -855,6 +906,28 @@ async def api_gui_status():
 @app.get("/api/gui/workspace")
 async def api_gui_workspace():
     return RedirectResponse(url="/")
+
+
+@app.get("/api/visuals/live-graph")
+async def api_visuals_live_graph():
+    """Live GraphAPI snapshot for landing dual viz (heroic + formal math)."""
+    try:
+        from live_graph_visuals import build_live_graph_snapshot
+
+        return await asyncio.to_thread(build_live_graph_snapshot)
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:300]}
+
+
+@app.post("/api/visuals/live-graph/render-webm")
+async def api_visuals_render_webm():
+    """Regenerate heroic + formal webm loops from current GraphAPI snapshot."""
+    try:
+        from live_graph_visuals import render_webm_pair
+
+        return await asyncio.to_thread(render_webm_pair)
+    except Exception as exc:
+        return {"ok": False, "error": str(exc)[:400]}
 
 @app.get("/api/metrics", response_model=MetricsOut)
 async def get_metrics():

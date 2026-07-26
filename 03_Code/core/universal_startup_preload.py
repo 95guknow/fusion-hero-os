@@ -136,7 +136,52 @@ def _preload_all_body(
 ) -> Dict[str, Any]:
     global _LAST
 
-    # ── 1) LLM frameworks ──────────────────────────────────────────────
+    # ── 0) BIG ALPHA asset (Dissertation visual) ───────────────────────
+    def _big_alpha():
+        candidates = [
+            os.getenv("FUSION_BIG_ALPHA_ASSET", ""),
+            r"C:\Dissertation_95guknow\assets\big_ALPHA.png",
+            str(_ROOT / "ascension_os" / "assets" / "big_ALPHA.png"),
+            str(_DASH / "static" / "big_ALPHA.png"),
+        ]
+        src = next((p for p in candidates if p and Path(p).is_file()), None)
+        if not src:
+            return {"ok": False, "error": "big_ALPHA.png not found"}
+        static_dst = _DASH / "static" / "big_ALPHA.png"
+        static_dst.parent.mkdir(parents=True, exist_ok=True)
+        if Path(src).resolve() != static_dst.resolve():
+            import shutil
+
+            shutil.copy2(src, static_dst)
+        os.environ["FUSION_BIG_ALPHA_ASSET"] = src
+        return {
+            "source": src,
+            "static": str(static_dst),
+            "bytes": static_dst.stat().st_size,
+            "url": "/static/big_ALPHA.png",
+        }
+
+    _step("big_alpha_asset", _big_alpha, report)
+
+    # ── 0b) Kernel inject host (assembly ABI · max injectability) ──────
+    def _kernel_inject():
+        try:
+            from kernel.inject.inject_host import preload_kernel_inject
+
+            return preload_kernel_inject()
+        except Exception:
+            # path fallback when package root differs
+            import sys
+            kroot = str(_ROOT)
+            if kroot not in sys.path:
+                sys.path.insert(0, kroot)
+            from kernel.inject.inject_host import preload_kernel_inject
+
+            return preload_kernel_inject()
+
+    _step("kernel_inject_asm", _kernel_inject, report)
+
+    # ── 1) LLM frameworks (always on at start) ─────────────────────────
     def _llm():
         from llm_frameworks import connector_status, list_frameworks
         st = connector_status()
@@ -147,6 +192,7 @@ def _preload_all_body(
             "trinity": st.get("trinity"),
             "cross_mesh": st.get("cross_mesh"),
             "any_live": st.get("any_live"),
+            "always_on": True,
         }
 
     _step("llm_frameworks", _llm, report)

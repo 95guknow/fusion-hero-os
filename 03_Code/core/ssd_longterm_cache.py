@@ -11,7 +11,28 @@ class SSDLongTermCache:
     activations, or large intermediate results.
     """
     def __init__(self, base_dir: str = None):
-        self.base = Path(base_dir or os.getenv("FUSION_SSD_LONGTERM_CACHE", "C:/FusionHero/LongTermCache"))
+        # Prefer explicit path, then GDrive cold LongTermCache, then local C: fallback.
+        if base_dir:
+            root = Path(base_dir)
+        elif os.getenv("FUSION_SSD_LONGTERM_CACHE"):
+            root = Path(os.environ["FUSION_SSD_LONGTERM_CACHE"])
+        else:
+            root = None
+            try:
+                import sys
+                _tools = Path(__file__).resolve().parents[2] / "tools"
+                if str(_tools) not in sys.path:
+                    sys.path.insert(0, str(_tools))
+                from storage_policy import resolve_longterm_cache_root  # type: ignore
+
+                resolved = resolve_longterm_cache_root()
+                if resolved is not None:
+                    root = resolved
+            except Exception:
+                root = None
+            if root is None:
+                root = Path("C:/FusionHero/LongTermCache")
+        self.base = Path(root)
         self.base.mkdir(parents=True, exist_ok=True)
         self.index = {}  # key -> filepath
 

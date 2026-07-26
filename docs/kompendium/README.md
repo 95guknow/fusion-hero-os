@@ -19,6 +19,15 @@
 | Heroische Mathematik | [heroische-mathematik/](heroische-mathematik/) |
 | Psychogramm-Kompendium 95guknow | [psychogramm/](psychogramm/) |
 
+## Öffentliche Oberfläche (V3.3-Langform)
+
+| Werk | Pfad |
+|------|------|
+| **Public-Safe UI-Stub 95guknow** (Synthese + 6 Bögen + Anhang) | [PUBLIC_UI_STUB_95GUKNOW.md](PUBLIC_UI_STUB_95GUKNOW.md) |
+| Statischer Stub (GitHub Pages) | `web/95guknow.github.io/ui-stub/` → https://95guknow.github.io/ui-stub/ |
+
+**Regel:** Der Stub ist **Orientierung ohne Runtime**. Keine echten APIs, kein Vault; Geltungsmarken und Designvorlage V3.3 sind verbindlich.
+
 ## Dissertation
 
 Siehe [../dissertation/](../dissertation/) und [../DISSERTATION_AS_OS.md](../DISSERTATION_AS_OS.md).

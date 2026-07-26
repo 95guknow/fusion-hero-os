@@ -1,7 +1,8 @@
 # BEST VERSION — Fusion Hero OS
 
-**Stand:** v13.0.0 operational (2026-07-26) — additive over v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
-**v13.0.0:** Platform major (Ära 13) — consolidates v12.1 daycycle + origin/main A13/psychogramm/coworking CI; BCG; AscensionOS v9.10 remains aspirational  
+**Stand:** v13.0.0 operational + **bifocal best-of-today 2026-07-26** — additive over v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**v13.0.0:** Platform major (Ära 13) — daycycle + A13/psychogramm/coworking CI; dual-org merge; AscensionOS v9.10 aspirational  
+**Best-of-today (post-tag, same major):** Live GraphAPI landing dual viz · ASM kernel inject · public UI-stub · GDrive spill · quantenvektoren polyglot map · non-blocking dashboard boot  
 **v12.1.0:** Daycycle mem (minute→private dev hourly→4h PR→daily top+fanout) · agent protocol wake `testtest`
 
 Dieses Dokument benennt den besten, kohärenten Stand des Systems — und

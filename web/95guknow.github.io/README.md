@@ -7,13 +7,18 @@ das, was ausgeliefert wird.
 
 ## Stand
 
-- Plattform: Fusion Hero OS **v12.1.0**
+- Plattform-Bezug: Fusion Hero OS **v13.0.0** (Orientierung; diese Site führt keinen Mainframe aus)
 - Zyklus: BIG OMEGA sealed · BIG ALPHA open
+- **UI-Stub:** public-safe · **ohne echte Funktionalität** · Designhandbuch V3.3
 
 ## Aufbau
 
 ```
 index.html              Startseite
+ui-stub/                Public-safe UI-Stub (Labor-Frame, dual canvas, disabled HUD)
+  index.html
+  css/stub.css
+  js/stub.js            Canvas-Illustration only — kein fetch
 404.html                Fehlerseite (nutzt dasselbe Stylesheet)
 css/style.css           Cascade Layers: reset → tokens → base → layout
                         → components → motion → utilities
@@ -27,6 +32,17 @@ manifest.webmanifest    Installierbarkeit
 robots.txt sitemap.xml  Indexierung
 .nojekyll               GitHub Pages liefert die Dateien unverändert aus
 ```
+
+## UI-Stub (Kurz)
+
+| Eigenschaft | Wert |
+|-------------|------|
+| URL | https://95guknow.github.io/ui-stub/ |
+| Funktion | **keine** (alle Controls `disabled`) |
+| Netzwerk | `connect-src 'none'` — kein GraphAPI, kein Dashboard |
+| Doku (V3.3 Langform) | `docs/kompendium/PUBLIC_UI_STUB_95GUKNOW.md` im Plattform-Repo |
+
+Lokal: `python -m http.server 8080` im Ordner `web/95guknow.github.io`, dann `/ui-stub/`.
 
 ## Grundsätze
 

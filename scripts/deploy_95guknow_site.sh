@@ -15,7 +15,7 @@ set -euo pipefail
 
 SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/web/95guknow.github.io"
 REPO="git@github.com:95guknow/95guknow.github.io.git"
-BRANCH="site/refresh-v12.1.0"
+BRANCH="site/refresh-v13.0.0-best-of-today"
 DIRECT=0
 [[ "${1:-}" == "--direct" ]] && DIRECT=1
 
