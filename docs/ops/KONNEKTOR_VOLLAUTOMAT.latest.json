@@ -1,10 +1,11 @@
 {
   "kind": "KONNEKTOR_VOLLAUTOMAT",
-  "generated_at": "2026-07-27T07:01:29.344903+00:00",
+  "generated_at": "2026-07-27T07:15:05.847437+00:00",
   "platform_version": "13.0.0",
   "ok": true,
   "befunde_offen": true,
-  "duration_sec": 0.074,
+  "duration_sec": 0.043,
+  "sicht": "deklariert",
   "direktiven": {
     "laden": "bottom_up",
     "verarbeiten": "top_down",
@@ -20,26 +21,16 @@
       "L3_links",
       "L4_remotes"
     ],
+    "deklariert": true,
     "schichten": {
       "L0_state": {
         "layer": "L0_state",
         "kind": "state",
         "ok": true,
         "optional": true,
-        "entries": [
-          {
-            "path": "/home/runner/.fusion/ops/konnektor_vollautomat.latest.json",
-            "exists": false,
-            "skipped": true,
-            "reason": "path_missing"
-          },
-          {
-            "path": "/home/runner/.fusion/horcrux/bottom_up_v12",
-            "exists": false,
-            "skipped": true,
-            "reason": "path_missing"
-          }
-        ],
+        "sicht": "operativ_only",
+        "hinweis": "Operator-lokaler Zustand ist nicht Teil des deklarierten Stands.",
+        "entries": [],
         "erinnerung_vorhanden": false
       },
       "L1_registries": {
@@ -123,6 +114,7 @@
         "layer": "L2_connectors",
         "kind": "connectors",
         "ok": true,
+        "deklariert": true,
         "gesamt": 66,
         "per_familie": {
           "mesh": 10,

@@ -94,8 +94,12 @@ def _load_yaml(path: Path) -> Dict[str, Any]:
         if path.is_file():
             data = yaml.safe_load(path.read_text(encoding="utf-8"))
             return data if isinstance(data, dict) else {}
-    except Exception:
-        pass
+    except (OSError, UnicodeDecodeError, yaml.YAMLError):
+        # Eine unlesbare oder kaputte Registry darf den Automaten nicht
+        # abbrechen: sie wird als nicht geparst gemeldet (parsed=false in
+        # L1_registries) und schlaegt dort als Befund auf. Nur diese drei
+        # Faelle werden geschluckt — Programmierfehler sollen hochkommen.
+        return {}
     return {}
 
 
@@ -149,9 +153,28 @@ def _ghost_id(klasse: str, subjekt: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _load_L0_state(cfg: Dict[str, Any]) -> Dict[str, Any]:
-    """Erinnerung des letzten Laufs. Fehlt sie, ist das kein Fehler."""
+def _load_L0_state(cfg: Dict[str, Any], deklariert: bool = False) -> Dict[str, Any]:
+    """Erinnerung des letzten Laufs. Fehlt sie, ist das kein Fehler.
+
+    In der deklarierten Sicht bleibt diese Schicht leer: Erinnerung liegt
+    unter ``~/.fusion`` und ist damit maschinenlokal. Die Schicht wird
+    trotzdem als erste besucht — die Bottom-up-Reihenfolge bleibt
+    unangetastet —, sie traegt nur nichts zum deklarierten Stand bei.
+    Sonst landeten absolute Heimpfade und der Lauf einer fremden Maschine
+    im eingecheckten Report.
+    """
     spec = ((cfg.get("laden_bottom_up") or {}).get("L0_state") or {})
+    if deklariert:
+        return {
+            "layer": "L0_state",
+            "kind": "state",
+            "ok": True,
+            "optional": bool(spec.get("optional", True)),
+            "sicht": "operativ_only",
+            "hinweis": "Operator-lokaler Zustand ist nicht Teil des deklarierten Stands.",
+            "entries": [],
+            "erinnerung_vorhanden": False,
+        }
     entries: List[Dict[str, Any]] = []
     for raw in spec.get("paths") or []:
         p = _expand(str(raw))
@@ -228,6 +251,7 @@ def _connector_record(
     mesh_id: str = "",
     provider: str = "",
     beschreibung: str = "",
+    deklariert: bool = False,
 ) -> Dict[str, Any]:
     envs = [str(e) for e in (api_key_envs or []) if e]
     return {
@@ -238,7 +262,9 @@ def _connector_record(
         "base_url": base_url or "",
         "skill_module": skill_module or "",
         "credential_envs": envs,
-        "token_present": _env_present(envs),
+        # deklariert: die Umgebung wird gar nicht erst befragt. Damit ist der
+        # committete Report reproduzierbar — siehe _load_L2_connectors.
+        "token_present": False if deklariert else _env_present(envs),
         "health_path": health_path or "",
         "actions": list(actions or []),
         "mesh_id": mesh_id or "",
@@ -247,8 +273,16 @@ def _connector_record(
     }
 
 
-def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
-    """Einzelne Konnektoren aus allen vier Familien extrahieren."""
+def _load_L2_connectors(
+    registries: Dict[str, Any], deklariert: bool = False
+) -> Dict[str, Any]:
+    """Einzelne Konnektoren aus allen vier Familien extrahieren.
+
+    Mit ``deklariert=True`` wird die Umgebung nicht befragt: jeder Konnektor
+    gilt als tokenlos. Das ergibt den *deklarierten* Stand des Repos,
+    unabhaengig davon, welche Variablen auf der ausfuehrenden Maschine
+    zufaellig gesetzt sind.
+    """
     data = registries.get("_data") or {}
     mesh = data.get("mesh") or {}
     graph = data.get("graph_api") or {}
@@ -269,6 +303,7 @@ def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
                 health_path=str(raw.get("health_path") or ""),
                 mesh_id=str(raw.get("mesh_id") or ""),
                 beschreibung=str(raw.get("description") or ""),
+                deklariert=deklariert,
             )
         )
 
@@ -286,6 +321,7 @@ def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
                 api_key_envs=[e for e in envs if e],
                 actions=raw.get("actions") or [],
                 beschreibung=str(raw.get("note") or ""),
+                deklariert=deklariert,
             )
         )
 
@@ -310,6 +346,7 @@ def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
                 mesh_id=str(raw.get("mesh_id") or ""),
                 provider=str(fid),
                 beschreibung=str(raw.get("display_name") or ""),
+                deklariert=deklariert,
             )
         )
 
@@ -333,6 +370,7 @@ def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
                 actions=["verify"],
                 provider=provider,
                 beschreibung=str(raw.get("label") or ""),
+                deklariert=deklariert,
             )
         )
 
@@ -344,6 +382,7 @@ def _load_L2_connectors(registries: Dict[str, Any]) -> Dict[str, Any]:
         "layer": "L2_connectors",
         "kind": "connectors",
         "ok": bool(records),
+        "deklariert": deklariert,
         "gesamt": len(records),
         "per_familie": per_familie,
         "_records": records,
@@ -429,24 +468,32 @@ def _load_L4_remotes(registries: Dict[str, Any], connectors: Dict[str, Any]) -> 
     }
 
 
-def load_bottom_up(cfg: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def load_bottom_up(
+    cfg: Optional[Dict[str, Any]] = None, *, deklariert: bool = False
+) -> Dict[str, Any]:
     """Phase 1 — Erinnerungen bottom-up laden (L0 -> L4).
 
     ``reihenfolge`` wird waehrend der Ausfuehrung mitgeschrieben, nicht aus
     einer Konstanten kopiert: der Test prueft damit die tatsaechliche
     Ladereihenfolge, nicht eine Behauptung.
+
+    ``deklariert=True`` liefert den deklarierten Stand des Repos, ohne die
+    Umgebung oder den Operator-Zustand zu befragen — reproduzierbar auf
+    jeder Maschine.
     """
     cfg = cfg if cfg is not None else load_config()
     reihenfolge: List[str] = []
     mem: Dict[str, Any] = {}
 
-    mem["L0_state"] = _load_L0_state(cfg)
+    mem["L0_state"] = _load_L0_state(cfg, deklariert=deklariert)
     reihenfolge.append("L0_state")
 
     mem["L1_registries"] = _load_L1_registries(cfg)
     reihenfolge.append("L1_registries")
 
-    mem["L2_connectors"] = _load_L2_connectors(mem["L1_registries"])
+    mem["L2_connectors"] = _load_L2_connectors(
+        mem["L1_registries"], deklariert=deklariert
+    )
     reihenfolge.append("L2_connectors")
 
     mem["L3_links"] = _load_L3_links(mem["L1_registries"], mem["L2_connectors"])
@@ -459,6 +506,7 @@ def load_bottom_up(cfg: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         "ok": all(mem[name].get("ok") for name in reihenfolge),
         "richtung": "bottom_up",
         "reihenfolge": reihenfolge,
+        "deklariert": deklariert,
         "schichten": mem,
     }
 
@@ -860,6 +908,14 @@ def _render_markdown(report: Dict[str, Any]) -> str:
     zeilen.append("")
     zeilen.append(f"**UTC:** {report['generated_at']}  ")
     zeilen.append(f"**Modus:** {report['automatisierung']['modus']}  ")
+    zeilen.append(
+        f"**Sicht:** {report['sicht']}"
+        + (
+            " (credential-blind — was das Repo deklariert)  "
+            if report["sicht"] == "deklariert"
+            else " (Umgebung befragt)  "
+        )
+    )
     zeilen.append(f"**Status:** {'ok' if report['ok'] else 'Befunde offen'}")
     zeilen.append("")
     zeilen.append("## Direktive")
@@ -918,13 +974,14 @@ def _render_markdown(report: Dict[str, Any]) -> str:
     return "\n".join(zeilen)
 
 
-def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict[str, Any]:
-    """Phase 1-4 in einem Lauf. Dry-Run, solange kein Live-Flag gesetzt ist."""
+def _pipeline(
+    cfg: Dict[str, Any], *, force_live: bool, deklariert: bool
+) -> Dict[str, Any]:
+    """Phase 1-4 einmal durchlaufen und den Report bauen."""
     t0 = datetime.now(timezone.utc)
-    cfg = load_config()
     live = _live_enabled(force_live)
 
-    laden = load_bottom_up(cfg)
+    laden = load_bottom_up(cfg, deklariert=deklariert)
     verarbeiten = process_top_down(laden, cfg)
     geister = manifest_ghosts(laden, verarbeiten, cfg, live=live)
     auto = automatisiere(verarbeiten, cfg, force_live=force_live)
@@ -949,6 +1006,7 @@ def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict
         "ok": bool(laden["ok"] and verarbeiten["ok"] and auto["ok"]),
         "befunde_offen": bool(echte_befunde),
         "duration_sec": round((datetime.now(timezone.utc) - t0).total_seconds(), 3),
+        "sicht": "deklariert" if deklariert else "operativ",
         "direktiven": {
             "laden": "bottom_up",
             "verarbeiten": "top_down",
@@ -963,12 +1021,34 @@ def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict
         or "Registry-/Pfad-Ergebnisse = Satz",
     }
 
+    return report
+
+
+def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict[str, Any]:
+    """Phase 1-4 in einem Lauf. Dry-Run, solange kein Live-Flag gesetzt ist.
+
+    Zwei Sichten, bewusst getrennt:
+
+    * **operativ** — befragt Umgebung und Operator-Zustand. Das ist der
+      Rueckgabewert, die CLI-Ausgabe und der ``~/.fusion``-Pin: was *diese*
+      Maschine tatsaechlich kann.
+    * **deklariert** — credential-blind und ohne Operator-Zustand. Das ist
+      der Report unter ``docs/ops``: was das *Repo* deklariert.
+
+    Ohne diese Trennung haengt ein eingecheckter Report davon ab, welche
+    Variablen auf der Maschine des Committers gesetzt waren — lokaler Lauf
+    und CI wuerden sich gegenseitig ueberschreiben.
+    """
+    cfg = load_config()
+    report = _pipeline(cfg, force_live=force_live, deklariert=False)
+
     if schreiben:
+        deklariert = _pipeline(cfg, force_live=force_live, deklariert=True)
         DOCS_JSON.parent.mkdir(parents=True, exist_ok=True)
         DOCS_JSON.write_text(
-            json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+            json.dumps(deklariert, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
-        DOCS_MD.write_text(_render_markdown(report), encoding="utf-8")
+        DOCS_MD.write_text(_render_markdown(deklariert), encoding="utf-8")
         try:
             PIN.parent.mkdir(parents=True, exist_ok=True)
             PIN.write_text(
@@ -979,6 +1059,7 @@ def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict
             report["pin_error"] = str(exc)[:120]
         report["docs"] = str(DOCS_JSON.relative_to(ROOT))
         report["markdown"] = str(DOCS_MD.relative_to(ROOT))
+        report["docs_sicht"] = deklariert["sicht"]
 
     return report
 

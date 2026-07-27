@@ -2,8 +2,9 @@
 
 Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 
-**UTC:** 2026-07-27T07:01:29.344903+00:00  
+**UTC:** 2026-07-27T07:15:05.847437+00:00  
 **Modus:** DRY-RUN  
+**Sicht:** deklariert (credential-blind — was das Repo deklariert)  
 **Status:** ok
 
 ## Direktive

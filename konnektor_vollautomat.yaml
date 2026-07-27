@@ -206,6 +206,22 @@ automatisierung:
   schedule_cron: "0 5 * * *"
   workflow: .github/workflows/konnektor-vollautomat.yml
   aktion_je_konnektor: status
+  # Zwei Sichten, bewusst getrennt — sonst haengt ein eingecheckter Report
+  # davon ab, welche Variablen auf der Maschine des Committers gesetzt waren,
+  # und lokaler Lauf und CI ueberschreiben sich gegenseitig.
+  sichten:
+    operativ:
+      beschreibung: Umgebung und Operator-Zustand befragt — was DIESE Maschine kann
+      ziele:
+        - CLI-Ausgabe
+        - ~/.fusion/ops/konnektor_vollautomat.latest.json
+    deklariert:
+      beschreibung: >
+        credential-blind und ohne Operator-Zustand — was das REPO deklariert.
+        Reproduzierbar auf jeder Maschine, keine Heimpfade, kein Fremdlauf.
+      ziele:
+        - docs/ops/KONNEKTOR_VOLLAUTOMAT.latest.json
+        - docs/ops/KONNEKTOR_VOLLAUTOMAT.md
   reports:
     json: docs/ops/KONNEKTOR_VOLLAUTOMAT.latest.json
     markdown: docs/ops/KONNEKTOR_VOLLAUTOMAT.md

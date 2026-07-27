@@ -246,6 +246,39 @@ def test_lauf_ist_ok_trotz_offener_befunde(monkeypatch):
     assert r["counts"]["geister_latent"] == 0
 
 
+# --------------------------------------------------------------------------
+# Zwei Sichten — operativ vs. deklariert
+# --------------------------------------------------------------------------
+
+
+def test_operative_sicht_befragt_die_umgebung(memories, monkeypatch):
+    envs = sorted(_alle_credential_envs(memories))
+    monkeypatch.setenv(envs[0], "vorhanden")
+    lay = process_top_down(load_bottom_up())
+    assert lay["groessen"]["L2_bindung"] > 0
+    assert lay["groessen"]["L1_verkoerperung"] >= 1
+
+
+def test_deklarierte_sicht_ignoriert_die_umgebung(memories, monkeypatch):
+    """Der eingecheckte Report darf nicht davon abhaengen, wer ihn erzeugt."""
+    for name in _alle_credential_envs(memories):
+        monkeypatch.setenv(name, "vorhanden")
+    lay = process_top_down(load_bottom_up(deklariert=True))
+    assert lay["groessen"]["L1_verkoerperung"] == 0
+    assert lay["groessen"]["L0_fundament"] == 0
+
+
+def test_deklarierte_sicht_traegt_keine_maschinenpfade(monkeypatch):
+    monkeypatch.delenv("FUSION_KONNEKTOR_LIVE", raising=False)
+    laden = load_bottom_up(deklariert=True)
+    blob = json.dumps(laden, ensure_ascii=False)
+    for muster in ("/home/", "/root/", "/Users/", "C:\\"):
+        assert muster not in blob, f"Maschinenpfad {muster!r} in der deklarierten Sicht"
+    assert laden["schichten"]["L0_state"]["entries"] == []
+    # Die Schicht wird trotzdem zuerst besucht — Bottom-up bleibt unangetastet.
+    assert laden["reihenfolge"] == list(LADEN_ORDER)
+
+
 def test_status_meldet_direktiven():
     st = status()
     assert st["ok"] is True
