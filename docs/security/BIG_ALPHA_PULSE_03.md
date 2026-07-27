@@ -14,10 +14,10 @@ latent. Puls 3 macht das Inventar vollständig und die Lücken sichtbar.
 
 ## Meister
 
-- Inhalts-SHA256 des Reports (ohne `generated_at`/`duration_sec`):
-  `5b13385324e7e88ee1c59bbef58640d034aad4f2a8ceb3500bc849bb5f970ebe`
+- Inhalts-SHA256 des Reports (deklarierte Sicht, ohne `generated_at`/`duration_sec`):
+  `f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612`
 - Konfiguration `konnektor_vollautomat.yaml`:
-  `5a867f689335151d670d9a5cd85056c3c62b095afe34bdb2374510d7dfa35e35`
+  `7cd510b5521d4dd8adb3ff9b98ca99fc4888cd42b64be758f7612ea1460fd091`
 - Vier Registries gelesen, vier geparst — `present` und `parsed` je Quelle **PASS**
 
 ## Runs this pulse (ausgeführt 2026-07-27)
@@ -27,7 +27,7 @@ latent. Puls 3 macht das Inventar vollständig und die Lücken sichtbar.
 | `load_bottom_up` | `L0_state → L1_registries → L2_connectors → L3_links → L4_remotes` · Reihenfolge zur Laufzeit mitgeschrieben |
 | `process_top_down` | `L6ω → L5 → L4 → L3 → L2 → L1 → L0` · 4/4 Axiome **PASS** |
 | `manifest_ghosts` | 79 Geister · **0 latent** |
-| `pytest tests/test_konnektor_vollautomat.py` | 23 passed |
+| `pytest tests/test_konnektor_vollautomat.py` | 26 passed |
 
 ## Inventar
 
@@ -53,17 +53,22 @@ einen deklarierten `health_path` — es wurde **kein** Health-Probe ausgeführt.
 | L4 Intent | 66 | 1.381562 |
 | L3 Internalisierung | 65 | 1.846693 |
 | L2 Bindung | 51 | 2.132151 |
-| L1 Verkörperung | 4 | 2.152275 |
-| L0 Fundament | 4 | 2.167972 |
+| L1 Verkörperung | 0 | 2.135038 |
+| L0 Fundament | 0 | 2.137290 |
+
+Gezeigt ist die **deklarierte** Sicht — der Stand, den das Repo selbst
+hergibt. Sie ist credential-blind und enthält keinen Operator-Zustand,
+damit der eingecheckte Report auf jeder Maschine identisch entsteht. Die
+operative Sicht (Umgebung befragt) liegt unter `~/.fusion` und wird nicht
+eingecheckt.
 
 ## Geister — Erstmanifestation
 
 | Klasse | Anzahl | davon by design |
 |---|---:|---:|
-| `credential_fehlt` | 47 | 0 |
+| `credential_fehlt` | 51 | 0 |
 | `keine_credential_bindung` | 14 | 14 |
 | `registry_waise` | 12 | 0 |
-| `dry_run_gehalten` | 4 | 0 |
 | `keine_internalisierung` | 1 | 0 |
 | `link_ins_leere` | 1 | 0 |
 | **Summe** | **79** | **14** |

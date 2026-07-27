@@ -1,15 +1,16 @@
 {
-  "generated_at": "2026-07-27T06:51:42.385347+00:00",
+  "generated_at": "2026-07-27T07:12:47.195104+00:00",
   "platform_version": "13.0.0",
   "direktiven": {
     "laden": "bottom_up",
     "verarbeiten": "top_down",
     "ausgabe": "geister_manifestiert"
   },
+  "sicht": "deklariert",
   "meister": {
-    "report_inhalts_sha256": "5b13385324e7e88ee1c59bbef58640d034aad4f2a8ceb3500bc849bb5f970ebe",
-    "config_sha256": "5a867f689335151d670d9a5cd85056c3c62b095afe34bdb2374510d7dfa35e35",
-    "modul_sha256": "03734fa0a81717a53b4c3f4b7219c0a40ce629b57ae3f61e545a3da83912c101"
+    "report_inhalts_sha256": "f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612",
+    "config_sha256": "7cd510b5521d4dd8adb3ff9b98ca99fc4888cd42b64be758f7612ea1460fd091",
+    "modul_sha256": "283cdd9f08b413d6b3abaf58a67fe19272de62c81ce883b346ce15801e991043"
   },
   "bounds": {
     "offense": "FORBIDDEN",
@@ -50,40 +51,48 @@
       1.381562,
       1.846693,
       2.132151,
-      2.152275,
-      2.167972
+      2.135038,
+      2.13729
     ],
     "inkremente": [
       0.776158,
       0.605404,
       0.465131,
       0.285458,
-      0.020124,
-      0.015697
+      0.002887,
+      0.002252
     ],
     "strikt_monoton": true,
     "inkremente_kontrahieren": true,
     "hinweis": "Strikte Monotonie ist durch epsilon>0 konstruktiv garantiert; der Test ist Regressionswaechter, kein Beweis."
   },
   "dry_run_siegel": {
-    "modus": "DRY-RUN",
-    "live_enabled": false,
-    "l0_konnektoren": [
-      "control_instances:control_github_models",
-      "graph_api:github_graphql",
-      "graph_api:github_rest",
-      "llm_frameworks:github_models"
-    ],
-    "would_execute_anzahl": 0,
+    "operativ": {
+      "beschreibung": "Umgebung befragt - Pin, nicht eingecheckt",
+      "l0_konnektoren": [
+        "control_instances:control_github_models",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "llm_frameworks:github_models"
+      ],
+      "would_execute_anzahl": 0,
+      "modus": "DRY-RUN"
+    },
+    "deklariert": {
+      "beschreibung": "credential-blind - docs/ops, eingecheckt",
+      "l0_konnektoren": [],
+      "would_execute_anzahl": 0,
+      "modus": "DRY-RUN"
+    },
     "live_bedingung": "flag FUSION_KONNEKTOR_LIVE=1 UND Token gesetzt"
   },
   "tests": {
     "puls_suite": {
-      "passed": 23,
+      "passed": 26,
       "failed": 0
     },
     "gesamt_sammelbar": {
-      "passed": 467,
+      "passed": 470,
       "failed": 29
     },
     "baseline_origin_main": {

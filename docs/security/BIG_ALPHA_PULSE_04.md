@@ -14,9 +14,9 @@ ohne dass er dabei irgendeine fremde API anfasst.
 ## Meister
 
 - Modul `fusion_hero_os/core/konnektor_vollautomat.py`:
-  `03734fa0a81717a53b4c3f4b7219c0a40ce629b57ae3f61e545a3da83912c101`
-- Inhalts-SHA256 des Reports (ohne `generated_at`/`duration_sec`):
-  `5b13385324e7e88ee1c59bbef58640d034aad4f2a8ceb3500bc849bb5f970ebe`
+  `283cdd9f08b413d6b3abaf58a67fe19272de62c81ce883b346ce15801e991043`
+- Inhalts-SHA256 des Reports (deklarierte Sicht, ohne `generated_at`/`duration_sec`):
+  `f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612`
 
 ## Runs this pulse (ausgeführt 2026-07-27)
 
@@ -24,12 +24,12 @@ ohne dass er dabei irgendeine fremde API anfasst.
 |-----|----------|
 | `python -m fusion_hero_os.core.konnektor_vollautomat` | ok=True · befunde_offen=True · Exit 0 · 0.066 s |
 | `automatisiere()` | Modus **DRY-RUN** · 4 L0-Konnektoren · `would_execute` 0/4 |
-| `pytest tests/test_konnektor_vollautomat.py` | 23 passed |
-| `pytest tests/` (sammelbarer Teil) | 467 passed · 29 failed |
+| `pytest tests/test_konnektor_vollautomat.py` | 26 passed |
+| `pytest tests/` (sammelbarer Teil) | 470 passed · 29 failed |
 
 Die 29 roten Tests sind **vorbestehend** und dependency-bedingt (numba, dwave,
 PIL, pyo3). Gegenprobe im sauberen Worktree auf `origin/main`: dieselben 29
-Fehlschläge bei 444 grün. Der Delta von +23 grün ist exakt diese Puls-Suite —
+Fehlschläge bei 444 grün. Der Delta von +26 grün ist exakt diese Puls-Suite —
 kein Regress.
 
 ## Kontraktionsnachweis (Axiom 2)
@@ -47,8 +47,8 @@ d(L_n) = d(L_{n+1}) + λ^(6-n) · (ε + w_n),   w_n = |L_n| / |L6ω|
 | L5 → L4 | 0.605404 |
 | L4 → L3 | 0.465131 |
 | L3 → L2 | 0.285458 |
-| L2 → L1 | 0.020124 |
-| L1 → L0 | 0.015697 |
+| L2 → L1 | 0.002887 |
+| L1 → L0 | 0.002252 |
 
 Die Inkremente schrumpfen streng monoton — das ist die Banach-Kontraktion, von
 L0 aufwärts zum Fixpunkt gelesen. Beide Eigenschaften sind als Test verankert
@@ -68,13 +68,30 @@ Konfiguration, kein Beweis des Axioms. Das steht so auch im Docstring von
 
 ## Dry-Run-Siegel
 
-Erreichen L0: `graph_api:github_graphql`, `graph_api:github_rest`,
-`llm_frameworks:github_models`, `control_instances:control_github_models` —
-alle vier, weil in dieser Umgebung ein GitHub-Token gesetzt ist.
+Der Automat kennt zwei Sichten, und beide sind hier belegt.
 
-Ausgeführt wurde trotzdem **nichts**: `FUSION_KONNEKTOR_LIVE` ist nicht gesetzt,
-also `would_execute=false` bei allen vier. Live verlangt **beides** — Flag *und*
-Token. Der geplante CI-Lauf bekommt keine Secrets in die Job-Umgebung und setzt
+**Operative Sicht** (Umgebung befragt, `~/.fusion`-Pin, nicht eingecheckt): in
+der ausführenden Umgebung war ein GitHub-Token gesetzt, deshalb erreichten vier
+Konnektoren L0 — `graph_api:github_graphql`, `graph_api:github_rest`,
+`llm_frameworks:github_models`, `control_instances:control_github_models`.
+
+Ausgeführt wurde trotzdem **nichts**: `FUSION_KONNEKTOR_LIVE` war nicht gesetzt,
+also `would_execute=false` bei allen vieren. Das ist der eigentliche Nachweis,
+dass das Tor hält — es hielt bei tatsächlich vorhandenem Credential, nicht nur
+mangels eines solchen. Live verlangt **beides**: Flag *und* Token.
+
+**Deklarierte Sicht** (credential-blind, `docs/ops`, eingecheckt): L1 und L0
+sind leer, weil das Repo selbst kein Credential deklariert. Diese Sicht ist
+umgebungsunabhängig reproduzierbar und enthält keine Maschinenpfade —
+abgesichert durch `test_deklarierte_sicht_ignoriert_die_umgebung` und
+`test_deklarierte_sicht_traegt_keine_maschinenpfade`.
+
+Ohne diese Trennung hinge ein eingecheckter Report davon ab, welche Variablen
+auf der Maschine des Committers gesetzt waren; lokaler Lauf und CI würden sich
+gegenseitig überschreiben. Genau das ist in diesem PR einmal passiert und war
+der Anlass für die Trennung.
+
+Der geplante CI-Lauf bekommt keine Secrets in die Job-Umgebung und setzt
 `--force-live` nie.
 
 Gegenprobe auf Secret-Leckage: ein gesetzter Fake-Token taucht im serialisierten
@@ -111,7 +128,7 @@ Job-Umgebung · keine Token-Werte im Report · Vault nicht in Git
 
 - `fusion_hero_os/core/konnektor_vollautomat.py`
 - `.github/workflows/konnektor-vollautomat.yml`
-- `tests/test_konnektor_vollautomat.py` (23 Tests)
+- `tests/test_konnektor_vollautomat.py` (26 Tests)
 - `docs/ops/KONNEKTOR_VOLLAUTOMAT.latest.json` · `docs/ops/KONNEKTOR_VOLLAUTOMAT.md`
 - `docs/security/BIG_ALPHA_PULSE_03.md`
 - Visual: `ascension_os/assets/big_ALPHA.png`

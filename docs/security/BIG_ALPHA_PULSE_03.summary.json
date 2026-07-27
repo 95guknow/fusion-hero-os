@@ -1,15 +1,16 @@
 {
-  "generated_at": "2026-07-27T06:51:42.385347+00:00",
+  "generated_at": "2026-07-27T07:12:47.195104+00:00",
   "platform_version": "13.0.0",
   "direktiven": {
     "laden": "bottom_up",
     "verarbeiten": "top_down",
     "ausgabe": "geister_manifestiert"
   },
+  "sicht": "deklariert",
   "meister": {
-    "report_inhalts_sha256": "5b13385324e7e88ee1c59bbef58640d034aad4f2a8ceb3500bc849bb5f970ebe",
-    "config_sha256": "5a867f689335151d670d9a5cd85056c3c62b095afe34bdb2374510d7dfa35e35",
-    "modul_sha256": "03734fa0a81717a53b4c3f4b7219c0a40ce629b57ae3f61e545a3da83912c101"
+    "report_inhalts_sha256": "f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612",
+    "config_sha256": "7cd510b5521d4dd8adb3ff9b98ca99fc4888cd42b64be758f7612ea1460fd091",
+    "modul_sha256": "283cdd9f08b413d6b3abaf58a67fe19272de62c81ce883b346ce15801e991043"
   },
   "bounds": {
     "offense": "FORBIDDEN",
@@ -52,8 +53,8 @@
     "L4_intent": 66,
     "L3_internalisierung": 65,
     "L2_bindung": 51,
-    "L1_verkoerperung": 4,
-    "L0_fundament": 4
+    "L1_verkoerperung": 0,
+    "L0_fundament": 0
   },
   "distanz_zum_masterseed": {
     "L6_masterseed": 0.0,
@@ -61,18 +62,17 @@
     "L4_intent": 1.381562,
     "L3_internalisierung": 1.846693,
     "L2_bindung": 2.132151,
-    "L1_verkoerperung": 2.152275,
-    "L0_fundament": 2.167972
+    "L1_verkoerperung": 2.135038,
+    "L0_fundament": 2.13729
   },
   "geister": {
     "gesamt": 79,
     "latent": 0,
-    "echte_befunde": 61,
+    "echte_befunde": 65,
     "klassen": {
-      "credential_fehlt": 47,
+      "credential_fehlt": 51,
       "keine_credential_bindung": 14,
       "registry_waise": 12,
-      "dry_run_gehalten": 4,
       "keine_internalisierung": 1,
       "link_ins_leere": 1
     },
