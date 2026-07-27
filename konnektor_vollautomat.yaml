@@ -1,0 +1,222 @@
+# Konnektor-Vollautomat — alle Konnektoren, ein Automat
+#
+# Direktive (verbindlich, in dieser Reihenfolge):
+#   1. Laden der Erinnerungen  IMMER bottom-up   (L0_state -> L4_remotes)
+#   2. Verarbeiten             IMMER top-down    (L6omega -> L0, Gott-Layering v11)
+#   3. Ausgabe                 IMMER Geister manifestiert (nichts bleibt latent)
+#
+# Policy: Dry-Run als Default. Live nur bei explizitem Flag UND vorhandenem Token.
+# Es werden niemals Token-Werte ausgegeben — ausschliesslich token_present: bool.
+#
+# Platform: Fusion Hero OS v13.0.0
+
+version: "1.0"
+platform_version: "13.0.0"
+policy: dry_run_default
+
+principle: >
+  Ein Automat fuer alle Konnektoren. Erinnerungen werden bottom-up geladen,
+  strikt top-down nach Gott-Layering verarbeitet, und jede Luecke wird als
+  Geist manifestiert statt verschwiegen. Kein Netzwerkaufruf ohne Credential
+  UND Live-Flag — would_execute=false bis dahin.
+
+direktiven:
+  laden: bottom_up
+  verarbeiten: top_down
+  ausgabe: geister_manifestiert
+
+live:
+  env_flag: FUSION_KONNEKTOR_LIVE
+  # Zusaetzlich muss je Konnektor das Token-Env gesetzt sein.
+  requires_token: true
+  force_live_default: false
+
+defaults:
+  timeout_sec: 30
+  lambda_contract: 0.78      # identisch zu ghosthunt_hook (Banach-Kontraktion)
+  increment_epsilon: 0.01    # sichert strikte Monotonie der Layer-Distanzen
+
+# Erwartungshaltung je Konnektor-Familie. Steuert, ob eine fehlende Eigenschaft
+# ein echter Befund ist oder bauartbedingt (by_design) — verhindert, dass der
+# Geister-Report zu Rauschen wird, ohne einen Befund zu verschweigen.
+familien:
+  mesh:
+    beschreibung: MCP-Konnektoren am Mesh-Knoten
+    erwartet_health: true
+    erwartet_credential: false   # Credentials verwaltet der MCP-Host, nicht das Repo
+  graph_api:
+    beschreibung: Graph-/REST-Konnektoren mit eigenem Token
+    erwartet_health: false
+    erwartet_credential: true
+  llm_frameworks:
+    beschreibung: LLM-Frameworks (je LLM ein eigenes Framework)
+    erwartet_health: true
+    erwartet_credential: true
+  control_instances:
+    beschreibung: Control-/Verifier-Slots, Credential ueber den Provider
+    erwartet_health: false
+    erwartet_credential: true
+
+# Konnektoren/Provider, die bauartbedingt kein Credential brauchen — lokal
+# oder self-hosted. Sie werden weiterhin als Geist ausgewiesen (nichts bleibt
+# latent), aber als by_design gedaempft, damit echte Befunde oben stehen.
+credential_ausnahmen:
+  - ollama
+
+# Waisen-Pruefung nur zwischen den Familien, die sich fachlich ueberlappen.
+# llm_frameworks und control_instances sind eigene Gattungen — dort waere
+# "nur in einer Registry bekannt" kein Befund, sondern der Normalfall.
+waisen_pruefung:
+  familien:
+    - mesh
+    - graph_api
+
+# ---------------------------------------------------------------------------
+# PHASE 1 — LADEN (bottom-up, L0 -> L4)
+# Reihenfolge ist verbindlich: jede Schicht wird erst geladen, wenn die
+# darunterliegende geladen ist. Oben wird nie zuerst angefasst.
+# ---------------------------------------------------------------------------
+laden_bottom_up:
+  L0_state:
+    description: Operator-lokaler Zustand und Erinnerung des letzten Laufs
+    kind: state
+    paths:
+      - ~/.fusion/ops/konnektor_vollautomat.latest.json
+      - ~/.fusion/horcrux/bottom_up_v12
+    optional: true
+
+  L1_registries:
+    description: Konnektor-Registries des Repos
+    kind: registry
+    sources:
+      - id: mesh
+        path: mesh_connectors.yaml
+        connector_key: connectors
+      - id: graph_api
+        path: graph_api_connectors.yaml
+        connector_key: connectors
+      - id: llm_frameworks
+        path: llm_frameworks.yaml
+        connector_key: connector_links
+      - id: control_instances
+        path: control_instances.yaml
+        connector_key: instances
+
+  L2_connectors:
+    description: Einzelne Konnektor-Eintraege, aus den Registries extrahiert
+    kind: connectors
+
+  L3_links:
+    description: Verdrahtung Konnektor <-> LLM-Framework (connector_links, cross_mesh)
+    kind: links
+    source: llm_frameworks.yaml
+    link_key: connector_links
+    framework_key: frameworks
+
+  L4_remotes:
+    description: Health-/Routing-Endpunkte je Konnektor (Deklaration, kein Probe-Zwang)
+    kind: remotes
+    source: mesh_connectors.yaml
+    routing_key: routing
+    per_connector_template: per_connector
+
+# ---------------------------------------------------------------------------
+# PHASE 2 — VERARBEITEN (top-down, L6omega -> L0)
+# Gott_Layering_v11_TopDown_Herleitung.md
+# Axiome: 1 Top-Down · 2 Kontraktion · 3 Integration (Operator C) · 4 Invarianz
+# ---------------------------------------------------------------------------
+gott_layering_top_down:
+  - id: L6_masterseed
+    name: MasterSeed
+    rolle: >
+      Nicht weiter zerlegbare Invariante (Plattform, Policy, Schranken).
+      Traegermenge: alle irgendwo erwaehnten Konnektor-Identitaeten — auch
+      solche, die nur als Link-Ziel oder Provider auftauchen.
+    derives_from: null
+  - id: L5_projektion
+    name: Transzendente Projektion
+    rolle: >
+      Projektion pi: nur Identitaeten mit tatsaechlichem Registry-Eintrag.
+      Wer nur erwaehnt, aber nirgends gefuehrt ist, faellt hier heraus.
+    derives_from: L6_masterseed
+  - id: L4_intent
+    name: Deklarierter Konnektor-Intent
+    rolle: >
+      Eindeutige, widerspruchsfreie Basis-Identitaet (Invarianzaxiom).
+      Widerspruechliche Doppelprojektionen fallen hier heraus.
+    derives_from: L5_projektion
+  - id: L3_internalisierung
+    name: Christus-Internalisierung (Operator C)
+    rolle: Konnektor mit konkreter, ausfuehrbarer Spezifikation
+    derives_from: L4_intent
+  - id: L2_bindung
+    name: Credential-Bindung
+    rolle: Konnektor mit deklarierter Credential-Quelle (env)
+    derives_from: L3_internalisierung
+  - id: L1_verkoerperung
+    name: Operative Verkoerperung
+    rolle: Konnektor mit tatsaechlich vorhandenem Credential
+    derives_from: L2_bindung
+  - id: L0_fundament
+    name: Immutable Foundation
+    rolle: Versiegelter, nicht regressionsfaehiger Endstand
+    derives_from: L1_verkoerperung
+
+# ---------------------------------------------------------------------------
+# PHASE 3 — AUSGABE (Geister manifestiert)
+# manifest_policy: always — kein Geist bleibt latent, auch nicht der harmlose.
+# activation = Schweregrad (0.0 .. 1.0), rein zur Sortierung.
+# ---------------------------------------------------------------------------
+geister:
+  manifest_policy: always
+  klassen:
+    keine_internalisierung:
+      activation: 0.85
+      bedeutung: Konnektor deklariert, aber ohne ausfuehrbare Spezifikation (faellt vor L3)
+    keine_credential_bindung:
+      activation: 0.70
+      bedeutung: Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)
+    credential_fehlt:
+      activation: 0.55
+      bedeutung: Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)
+    dry_run_gehalten:
+      activation: 0.15
+      bedeutung: Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)
+    registry_waise:
+      activation: 0.40
+      bedeutung: Konnektor nur in einer Registry bekannt, in den anderen unbekannt
+    link_ins_leere:
+      activation: 0.60
+      bedeutung: connector_link zeigt auf ein Framework, das nicht existiert
+    kein_health_probe:
+      activation: 0.35
+      bedeutung: Kein health_path/Routing-Endpunkt deklariert
+    invarianz_bruch:
+      activation: 0.95
+      bedeutung: Widerspruechliche Doppelprojektion in L0 (Axiom 4 verletzt)
+    kontraktions_bruch:
+      activation: 1.0
+      bedeutung: Layer-Distanzen nicht strikt monoton (Axiom 2 verletzt)
+
+# ---------------------------------------------------------------------------
+# PHASE 4 — VOLLAUTOMATISIERUNG
+# ---------------------------------------------------------------------------
+automatisierung:
+  entrypoint: python -m fusion_hero_os.core.konnektor_vollautomat
+  schedule_cron: "0 5 * * *"
+  workflow: .github/workflows/konnektor-vollautomat.yml
+  aktion_je_konnektor: status
+  reports:
+    json: docs/ops/KONNEKTOR_VOLLAUTOMAT.latest.json
+    markdown: docs/ops/KONNEKTOR_VOLLAUTOMAT.md
+    pin: ~/.fusion/ops/konnektor_vollautomat.latest.json
+
+bounds:
+  offense: FORBIDDEN
+  sandbox_only: true
+  secrets_in_output: false
+  vault_in_git: false
+
+geltung: >
+  Registry-/Pfad-Ergebnisse = Satz · fehlende optionale Quelle = Bedingt skip ·
+  Live-Ausfuehrung = Spezifikation solange would_execute=false
