@@ -1,0 +1,191 @@
+{
+  "kind": "SPRACHBINDUNG",
+  "generated_at": "2026-07-27T14:14:57.028592+00:00",
+  "platform_version": "13.0.0",
+  "ok": true,
+  "config_ok": true,
+  "atlas_fehler": "",
+  "uebersetzt_automatisch": false,
+  "counts": {
+    "module_gesamt": 1078,
+    "abweichungen": 11,
+    "gebunden": 3,
+    "luecken": 8,
+    "ist": {
+      "python": 1021,
+      "c": 49,
+      "asm": 5,
+      "rust": 2,
+      "js": 1
+    },
+    "soll": {
+      "python": 1010,
+      "c": 49,
+      "rust": 13,
+      "asm": 5,
+      "js": 1
+    }
+  },
+  "luecken": [
+    {
+      "name": "src.normal_os.ascension.reference.heroic_core_mainframe",
+      "pfad": "src/normal_os/ascension/reference/heroic_core_mainframe.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "src.normal_os.ascension.tools.qb_qubo",
+      "pfad": "src/normal_os/ascension/tools/qb_qubo.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "src.normal_os.integration.qb_qubo",
+      "pfad": "src/normal_os/integration/qb_qubo.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "src.normal_os.math.qb_qubo",
+      "pfad": "src/normal_os/math/qb_qubo.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "src.normal_os.tools.qb_qubo",
+      "pfad": "src/normal_os/tools/qb_qubo.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "03_Code.StarrLernenderAntiLoopGuardCoreModule_v1",
+      "pfad": "03_Code/StarrLernenderAntiLoopGuardCoreModule_v1.py",
+      "layer": "suite",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "03_Code.reference.heroic_core_mainframe",
+      "pfad": "03_Code/reference/heroic_core_mainframe.py",
+      "layer": "suite",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "03_Code.tools.qb_qubo",
+      "pfad": "03_Code/tools/qb_qubo.py",
+      "layer": "suite",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": false,
+      "abweichung": true,
+      "luecke": true,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    }
+  ],
+  "durch_bindung_geschlossen": [
+    {
+      "name": "fusion_hero_os.engine.mainframe",
+      "pfad": "fusion_hero_os/engine/mainframe.py",
+      "layer": "mainframe",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": true,
+      "abweichung": true,
+      "luecke": false,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "src.normal_os.ascension.reference.mainframe",
+      "pfad": "src/normal_os/ascension/reference/mainframe.py",
+      "layer": "surface",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": true,
+      "abweichung": true,
+      "luecke": false,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    },
+    {
+      "name": "03_Code.reference.mainframe",
+      "pfad": "03_Code/reference/mainframe.py",
+      "layer": "suite",
+      "ist": "python",
+      "soll": "rust",
+      "regel": "heisser_pfad",
+      "signal": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat.",
+      "bindung": "pyo3_cdylib",
+      "gebunden": true,
+      "abweichung": true,
+      "luecke": false,
+      "hinweis": "Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen schneller ist als der numba-Pfad — sonst bleibt Python richtig."
+    }
+  ],
+  "signale": {
+    "heisser_pfad": "Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen Compiler braucht. Das ist der belegte Rust-Kandidat."
+  },
+  "geltung": "Ist-Sprache = Satz (aus dem Dependency-Atlas bzw. der Dateiendung abgelesen) · Soll-Sprache = Spezifikation (Regel, nicht Messung) · Luecke = Bedingt, solange die Zielsprache nicht gebaut und gebunden ist"
+}
