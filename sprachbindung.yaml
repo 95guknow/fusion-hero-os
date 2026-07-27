@@ -121,7 +121,14 @@ regeln:
     signal: >
       Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen
       Compiler braucht. Das ist der belegte Rust-Kandidat.
-    enthaelt_muster: ["from numba", "import numba", "@njit", "@jit"]
+    # Zeilenverankerte Regexe, nicht Teilstrings: ein blosses Vorkommen von
+    # "@jit" in einem Text oder Kommentar ist kein heisser Pfad. Genau darueber
+    # ist diese Regel schon einmal gestolpert — das Render-Skript nennt
+    # "numba/@jit" in einer Beschriftung und galt prompt als Rust-Kandidat.
+    enthaelt_regex:
+      - '^\s*(from|import)\s+numba\b'
+      - '^\s*@n?jit\b'
+      - '^\s*@numba\.'
     soll: rust
     hinweis: >
       Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen

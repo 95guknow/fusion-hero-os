@@ -25,7 +25,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import dataclass, field
+import re
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -199,15 +200,33 @@ def inventar() -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def _datei_enthaelt(pfad: str, muster: Sequence[str]) -> bool:
+def _datei_text(pfad: str) -> Optional[str]:
     p = ROOT / pfad
     if not p.is_file():
-        return False
+        return None
     try:
-        text = p.read_text(encoding="utf-8", errors="replace")
+        return p.read_text(encoding="utf-8", errors="replace")
     except OSError:
+        return None
+
+
+def _datei_enthaelt(pfad: str, muster: Sequence[str]) -> bool:
+    """Teilstring-Suche — fuer Referenzen, wo eine Erwaehnung genuegt."""
+    text = _datei_text(pfad)
+    return text is not None and any(m in text for m in muster)
+
+
+def _datei_matcht(pfad: str, regexe: Sequence[str]) -> bool:
+    """Zeilenverankerte Regex-Suche — fuer Code-Signale.
+
+    Teilstrings taugen hier nicht: ein "@jit" in einer Beschriftung oder
+    einem Kommentar ist kein heisser Pfad. Genau daran ist die Regel
+    heisser_pfad schon einmal falsch angeschlagen.
+    """
+    text = _datei_text(pfad)
+    if text is None:
         return False
-    return any(m in text for m in muster)
+    return any(re.search(rx, text, re.MULTILINE) for rx in regexe)
 
 
 def zielsprache(m: Modul, regeln: Sequence[Dict[str, Any]]) -> Tuple[str, str, str, str]:
@@ -232,7 +251,12 @@ def zielsprache(m: Modul, regeln: Sequence[Dict[str, Any]]) -> Tuple[str, str, s
         if muster and not _datei_enthaelt(m.pfad, muster):
             continue
 
-        if not (prefixe or endungen or kinds or muster) and regel.get("id") != "normalfall":
+        regexe = regel.get("enthaelt_regex") or []
+        if regexe and not _datei_matcht(m.pfad, regexe):
+            continue
+
+        if (not (prefixe or endungen or kinds or muster or regexe)
+                and regel.get("id") != "normalfall"):
             # Regel ohne jedes Kriterium waere ein stiller Auffangbecken —
             # nur der ausdrueckliche Normalfall darf das.
             continue
