@@ -61,6 +61,44 @@ def test_llm_blend_kommt_aus_der_live_analyse():
     assert blend != RATES_EUR["llm_flagship_blend_eur_per_1m"]
 
 
+def test_umweltfehler_faellt_zurueck_und_sagt_es(monkeypatch):
+    """Ein Fallback ist erlaubt — aber er muss sich zu erkennen geben."""
+    import fusion_hero_os.core.provider_token_costs as ptc
+
+    def leer(**_):
+        raise ValueError("Ratentabelle leer")
+
+    monkeypatch.setattr(ptc, "blended_top_tier_eur_per_1m", leer)
+    b = compute_burn(llm_tokens_in_per_h=1_000_000, llm_tokens_out_per_h=300_000)
+    assert b.detail["llm_blend_quelle"] == "fallback"
+    assert "ValueError" in b.detail["llm_blend_fallback_grund"]
+
+
+def test_programmierfehler_wird_nicht_verschluckt(monkeypatch):
+    """Der eigentliche Befund: ein TypeError darf nicht im except verschwinden.
+
+    Genau so blieb ein falscher Aufruf lange unsichtbar — der Live-Zweig brach
+    still ab und die Rechnung lief mit statischen Defaults weiter.
+    Siehe docs/security/MYTHOS_STILLER_FALLBACK.md.
+    """
+    import pytest
+
+    import fusion_hero_os.core.provider_token_costs as ptc
+
+    def falsche_signatur(**_):
+        raise TypeError("takes 0 positional arguments but 1 was given")
+
+    monkeypatch.setattr(ptc, "blended_top_tier_eur_per_1m", falsche_signatur)
+    with pytest.raises(TypeError):
+        compute_burn(llm_tokens_in_per_h=1, llm_tokens_out_per_h=1)
+
+
+def test_live_lauf_ist_als_solcher_markiert():
+    b = compute_burn(llm_tokens_in_per_h=1_000_000, llm_tokens_out_per_h=300_000)
+    assert b.detail["llm_blend_quelle"] == "live"
+    assert b.detail["llm_blend_fallback_grund"] == ""
+
+
 def test_blended_top_tier_ist_keyword_only():
     """Regression: der Aufruf muss keyword-only bleiben.
 
