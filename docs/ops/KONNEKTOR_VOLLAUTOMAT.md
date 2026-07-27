@@ -2,7 +2,7 @@
 
 Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 
-**UTC:** 2026-07-27T06:51:42.385347+00:00  
+**UTC:** 2026-07-27T07:01:29.344903+00:00  
 **Modus:** DRY-RUN  
 **Status:** ok
 
@@ -23,8 +23,8 @@ Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 | L4_intent | 66 | 1.381562 |
 | L3_internalisierung | 65 | 1.846693 |
 | L2_bindung | 51 | 2.132151 |
-| L1_verkoerperung | 4 | 2.152275 |
-| L0_fundament | 4 | 2.167972 |
+| L1_verkoerperung | 0 | 2.135038 |
+| L0_fundament | 0 | 2.13729 |
 
 ## Axiome
 
@@ -53,6 +53,7 @@ Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 | 0.55 | credential_fehlt | `control_instances:control_gemini_25_pro` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `control_instances:control_gemini_flash` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `control_instances:control_gemini_flash_lite` | L1_verkoerperung | nein |
+| 0.55 | credential_fehlt | `control_instances:control_github_models` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `control_instances:control_gpt` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `control_instances:control_gpt_4_1` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `control_instances:control_gpt_4o` | L1_verkoerperung | nein |
@@ -73,6 +74,8 @@ Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 | 0.55 | credential_fehlt | `graph_api:canva` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `graph_api:drive` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `graph_api:facebook` | L1_verkoerperung | nein |
+| 0.55 | credential_fehlt | `graph_api:github_graphql` | L1_verkoerperung | nein |
+| 0.55 | credential_fehlt | `graph_api:github_rest` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `graph_api:gmail` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `graph_api:instagram` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `graph_api:notion` | L1_verkoerperung | nein |
@@ -81,6 +84,7 @@ Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 | 0.55 | credential_fehlt | `llm_frameworks:claude` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `llm_frameworks:cloudflare_ai` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `llm_frameworks:gemini` | L1_verkoerperung | nein |
+| 0.55 | credential_fehlt | `llm_frameworks:github_models` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `llm_frameworks:gpt` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `llm_frameworks:grok` | L1_verkoerperung | nein |
 | 0.55 | credential_fehlt | `llm_frameworks:groq` | L1_verkoerperung | nein |
@@ -114,10 +118,6 @@ Platform 13.0.0 · `python -m fusion_hero_os.core.konnektor_vollautomat`
 | 0.17 | keine_credential_bindung | `mesh:notion` | L2_bindung | ja |
 | 0.17 | keine_credential_bindung | `mesh:tasks` | L2_bindung | ja |
 | 0.17 | keine_credential_bindung | `mesh:vercel` | L2_bindung | ja |
-| 0.15 | dry_run_gehalten | `control_instances:control_github_models` | L0_fundament | nein |
-| 0.15 | dry_run_gehalten | `graph_api:github_graphql` | L0_fundament | nein |
-| 0.15 | dry_run_gehalten | `graph_api:github_rest` | L0_fundament | nein |
-| 0.15 | dry_run_gehalten | `llm_frameworks:github_models` | L0_fundament | nein |
 
 ## Bounds
 

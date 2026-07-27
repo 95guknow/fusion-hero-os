@@ -1,10 +1,10 @@
 {
   "kind": "KONNEKTOR_VOLLAUTOMAT",
-  "generated_at": "2026-07-27T06:51:42.385347+00:00",
+  "generated_at": "2026-07-27T07:01:29.344903+00:00",
   "platform_version": "13.0.0",
   "ok": true,
   "befunde_offen": true,
-  "duration_sec": 0.066,
+  "duration_sec": 0.074,
   "direktiven": {
     "laden": "bottom_up",
     "verarbeiten": "top_down",
@@ -28,13 +28,13 @@
         "optional": true,
         "entries": [
           {
-            "path": "/root/.fusion/ops/konnektor_vollautomat.latest.json",
+            "path": "/home/runner/.fusion/ops/konnektor_vollautomat.latest.json",
             "exists": false,
             "skipped": true,
             "reason": "path_missing"
           },
           {
-            "path": "/root/.fusion/horcrux/bottom_up_v12",
+            "path": "/home/runner/.fusion/horcrux/bottom_up_v12",
             "exists": false,
             "skipped": true,
             "reason": "path_missing"
@@ -753,18 +753,8 @@
         "llm_frameworks:openrouter",
         "llm_frameworks:openrouter_free"
       ],
-      "L1_verkoerperung": [
-        "control_instances:control_github_models",
-        "graph_api:github_graphql",
-        "graph_api:github_rest",
-        "llm_frameworks:github_models"
-      ],
-      "L0_fundament": [
-        "control_instances:control_github_models",
-        "graph_api:github_graphql",
-        "graph_api:github_rest",
-        "llm_frameworks:github_models"
-      ]
+      "L1_verkoerperung": [],
+      "L0_fundament": []
     },
     "groessen": {
       "L6_masterseed": 67,
@@ -772,8 +762,8 @@
       "L4_intent": 66,
       "L3_internalisierung": 65,
       "L2_bindung": 51,
-      "L1_verkoerperung": 4,
-      "L0_fundament": 4
+      "L1_verkoerperung": 0,
+      "L0_fundament": 0
     },
     "distanz_zum_masterseed": {
       "L6_masterseed": 0.0,
@@ -781,8 +771,8 @@
       "L4_intent": 1.381562,
       "L3_internalisierung": 1.846693,
       "L2_bindung": 2.132151,
-      "L1_verkoerperung": 2.152275,
-      "L0_fundament": 2.167972
+      "L1_verkoerperung": 2.135038,
+      "L0_fundament": 2.13729
     },
     "axiome": {
       "1_top_down_teilmengen": true,
@@ -1016,6 +1006,23 @@
         "envs": [
           "GOOGLE_API_KEY",
           "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "c01957",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_github_models",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GITHUB_TOKEN",
+          "GH_TOKEN"
         ]
       }
     },
@@ -1346,6 +1353,38 @@
       }
     },
     {
+      "id": "d83810",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:github_graphql",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GITHUB_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "9c767b",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:github_rest",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GITHUB_TOKEN"
+        ]
+      }
+    },
+    {
       "id": "a60334",
       "klasse": "credential_fehlt",
       "label": "graph_api:gmail",
@@ -1473,6 +1512,23 @@
         "envs": [
           "GOOGLE_API_KEY",
           "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "3f05fb",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:github_models",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GITHUB_TOKEN",
+          "GH_TOKEN"
         ]
       }
     },
@@ -2029,54 +2085,6 @@
         "familie": "mesh",
         "grund": "keine env-Quelle deklariert"
       }
-    },
-    {
-      "id": "706a54",
-      "klasse": "dry_run_gehalten",
-      "label": "control_instances:control_github_models",
-      "activation": 0.15,
-      "manifest": true,
-      "latent_layer": "L0_fundament",
-      "manifest_layer": "ausgabe",
-      "by_design": false,
-      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
-      "detail": {}
-    },
-    {
-      "id": "a42c95",
-      "klasse": "dry_run_gehalten",
-      "label": "graph_api:github_graphql",
-      "activation": 0.15,
-      "manifest": true,
-      "latent_layer": "L0_fundament",
-      "manifest_layer": "ausgabe",
-      "by_design": false,
-      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
-      "detail": {}
-    },
-    {
-      "id": "f8097b",
-      "klasse": "dry_run_gehalten",
-      "label": "graph_api:github_rest",
-      "activation": 0.15,
-      "manifest": true,
-      "latent_layer": "L0_fundament",
-      "manifest_layer": "ausgabe",
-      "by_design": false,
-      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
-      "detail": {}
-    },
-    {
-      "id": "74f15e",
-      "klasse": "dry_run_gehalten",
-      "label": "llm_frameworks:github_models",
-      "activation": 0.15,
-      "manifest": true,
-      "latent_layer": "L0_fundament",
-      "manifest_layer": "ausgabe",
-      "by_design": false,
-      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
-      "detail": {}
     }
   ],
   "automatisierung": {
@@ -2086,53 +2094,14 @@
     "aktion": "status",
     "hub_verfuegbar": true,
     "ausgefuehrt": 0,
-    "ergebnisse": [
-      {
-        "id": "control_instances:control_github_models",
-        "familie": "control_instances",
-        "aktion": "status",
-        "token_present": true,
-        "live_enabled": false,
-        "ok": true,
-        "would_execute": false,
-        "reason": "kein Ausfuehrungspfad ausserhalb des Graph-Hubs"
-      },
-      {
-        "id": "graph_api:github_graphql",
-        "familie": "graph_api",
-        "aktion": "status",
-        "token_present": true,
-        "live_enabled": false,
-        "ok": true,
-        "would_execute": false
-      },
-      {
-        "id": "graph_api:github_rest",
-        "familie": "graph_api",
-        "aktion": "status",
-        "token_present": true,
-        "live_enabled": false,
-        "ok": true,
-        "would_execute": false
-      },
-      {
-        "id": "llm_frameworks:github_models",
-        "familie": "llm_frameworks",
-        "aktion": "status",
-        "token_present": true,
-        "live_enabled": false,
-        "ok": true,
-        "would_execute": false,
-        "reason": "kein Ausfuehrungspfad ausserhalb des Graph-Hubs"
-      }
-    ]
+    "ergebnisse": []
   },
   "counts": {
     "konnektoren_gesamt": 67,
-    "l0_fundament": 4,
+    "l0_fundament": 0,
     "geister": 79,
     "geister_latent": 0,
-    "geister_echte_befunde": 61,
+    "geister_echte_befunde": 65,
     "per_familie": {
       "mesh": 10,
       "graph_api": 10,
