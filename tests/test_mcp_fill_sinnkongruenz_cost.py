@@ -2,6 +2,8 @@
 """MCP fill band + Sinnkongruenz compress + provider costs v2.1."""
 from __future__ import annotations
 
+import pytest
+
 from fusion_hero_os.core.mcp_fill_governor import FillBand, McpFillGovernor, govern_messages
 from fusion_hero_os.core.poly_mesh_cost_function import COST_FUNCTION_VERSION, compute_burn
 from fusion_hero_os.core.provider_token_costs import analyse_providers, market_ceilings_eur_per_1m
@@ -61,14 +63,18 @@ def test_llm_blend_kommt_aus_der_live_analyse():
     assert blend != RATES_EUR["llm_flagship_blend_eur_per_1m"]
 
 
+#: Ziel der Monkeypatches als String — so bleibt es bei einem einzigen
+#: Importstil fuer provider_token_costs (CodeQL py/import-and-import-from).
+_BLEND = "fusion_hero_os.core.provider_token_costs.blended_top_tier_eur_per_1m"
+
+
 def test_umweltfehler_faellt_zurueck_und_sagt_es(monkeypatch):
     """Ein Fallback ist erlaubt — aber er muss sich zu erkennen geben."""
-    import fusion_hero_os.core.provider_token_costs as ptc
 
     def leer(**_):
         raise ValueError("Ratentabelle leer")
 
-    monkeypatch.setattr(ptc, "blended_top_tier_eur_per_1m", leer)
+    monkeypatch.setattr(_BLEND, leer)
     b = compute_burn(llm_tokens_in_per_h=1_000_000, llm_tokens_out_per_h=300_000)
     assert b.detail["llm_blend_quelle"] == "fallback"
     assert "ValueError" in b.detail["llm_blend_fallback_grund"]
@@ -81,14 +87,11 @@ def test_programmierfehler_wird_nicht_verschluckt(monkeypatch):
     still ab und die Rechnung lief mit statischen Defaults weiter.
     Siehe docs/security/MYTHOS_STILLER_FALLBACK.md.
     """
-    import pytest
-
-    import fusion_hero_os.core.provider_token_costs as ptc
 
     def falsche_signatur(**_):
         raise TypeError("takes 0 positional arguments but 1 was given")
 
-    monkeypatch.setattr(ptc, "blended_top_tier_eur_per_1m", falsche_signatur)
+    monkeypatch.setattr(_BLEND, falsche_signatur)
     with pytest.raises(TypeError):
         compute_burn(llm_tokens_in_per_h=1, llm_tokens_out_per_h=1)
 
@@ -105,8 +108,6 @@ def test_blended_top_tier_ist_keyword_only():
     Ein positionaler Aufruf wirft TypeError und wird von compute_burn
     verschluckt — deshalb hier direkt und ungekapselt geprueft.
     """
-    import pytest
-
     from fusion_hero_os.core.provider_token_costs import blended_top_tier_eur_per_1m
 
     assert blended_top_tier_eur_per_1m(prefer="flagship") > 0
