@@ -124,6 +124,20 @@ def compute_burn(
         r.update(rates)
 
     # refresh LLM blend defaults from live analysis when possible
+    #
+    # Der except-Zweig faengt bewusst NUR Umweltfehler ab: provider_token_costs
+    # fehlt im Deployment (ImportError) oder die Ratentabelle ist unvollstaendig
+    # bzw. unbrauchbar (LookupError, ValueError, ArithmeticError). TypeError,
+    # AttributeError und NameError sind Programmierfehler und muessen
+    # durchschlagen.
+    #
+    # Grund: ein "except Exception" hat hier ueber unbekannte Zeit einen
+    # TypeError verschluckt (positionaler Aufruf einer keyword-only-Funktion).
+    # Der Live-Zweig brach dadurch bei seiner ersten Zeile ab, die Rechnung fiel
+    # still auf statische Defaults zurueck — und das Ergebnis sah trotzdem
+    # plausibel aus. Siehe docs/security/MYTHOS_STILLER_FALLBACK.md.
+    llm_blend_quelle = "live"
+    llm_blend_grund = ""
     try:
         from fusion_hero_os.core.provider_token_costs import (
             blended_top_tier_eur_per_1m,
@@ -138,8 +152,10 @@ def compute_burn(
             provider_id=llm_provider_id,
         )
         l4_llm = float(llm_burn.get("eur_h") or 0.0)
-    except Exception:
+    except (ImportError, LookupError, ValueError, ArithmeticError) as exc:
         llm_burn = {}
+        llm_blend_quelle = "fallback"
+        llm_blend_grund = f"{type(exc).__name__}: {str(exc)[:120]}"
         # fallback blend: treat tokens as 70/30 in/out at flagship median
         tok = float(llm_tokens_in_per_h) + float(llm_tokens_out_per_h)
         l4_llm = (tok / 1e6) * float(r.get("llm_flagship_blend_eur_per_1m", 8.0))
@@ -177,6 +193,11 @@ def compute_burn(
             "l4_saas_eur_h": round(l4_saas, 6),
             "l4_llm_eur_h": round(l4_llm, 6),
             "llm_burn": llm_burn,
+            # Ein Fallback darf nicht wie ein gelungener Live-Lauf aussehen:
+            # ohne dieses Feld ist ein plausibler Zahlenwert aus statischen
+            # Defaults nicht von einem aus der Live-Analyse zu unterscheiden.
+            "llm_blend_quelle": llm_blend_quelle,
+            "llm_blend_fallback_grund": llm_blend_grund,
             "cost_function_version": COST_FUNCTION_VERSION,
             "rates": r,
             "formula": (
