@@ -31,6 +31,51 @@ def test_llm_burn_in_compute_burn():
     assert b.detail.get("l4_llm_eur_h", 0) > 0
 
 
+def test_llm_blend_kommt_aus_der_live_analyse():
+    """Der Live-Zweig in compute_burn muss tatsaechlich durchlaufen.
+
+    ``compute_burn`` kapselt die Live-Aktualisierung in ``try/except
+    Exception``. Faellt darin irgendetwas um, greift still ein statischer
+    Fallback und ``llm_burn`` bleibt leer — der Burn-Wert sieht dann trotzdem
+    plausibel aus. Genau so blieb ein ``TypeError`` (positionaler Aufruf einer
+    keyword-only-Funktion) lange unbemerkt: ``l4_llm_eur_h > 0`` galt auch im
+    Fallback.
+
+    Dieser Test prueft deshalb nicht den Wert, sondern dass der Zweig
+    *durchgelaufen* ist.
+    """
+    b = compute_burn(
+        llm_tokens_in_per_h=1_000_000,
+        llm_tokens_out_per_h=300_000,
+        llm_provider_id="anthropic_claude_sonnet",
+    )
+    llm_burn = b.detail.get("llm_burn")
+    assert llm_burn, "llm_burn ist leer — der except-Zweig hat gegriffen"
+    assert llm_burn.get("provider_id") == "anthropic_claude_sonnet"
+    assert llm_burn.get("eur_h", 0) > 0
+
+    # Der Blend stammt aus der Live-Analyse, nicht aus den statischen RATES_EUR.
+    from fusion_hero_os.core.poly_mesh_cost_function import RATES_EUR
+
+    blend = b.detail["rates"]["llm_flagship_blend_eur_per_1m"]
+    assert blend != RATES_EUR["llm_flagship_blend_eur_per_1m"]
+
+
+def test_blended_top_tier_ist_keyword_only():
+    """Regression: der Aufruf muss keyword-only bleiben.
+
+    Ein positionaler Aufruf wirft TypeError und wird von compute_burn
+    verschluckt — deshalb hier direkt und ungekapselt geprueft.
+    """
+    import pytest
+
+    from fusion_hero_os.core.provider_token_costs import blended_top_tier_eur_per_1m
+
+    assert blended_top_tier_eur_per_1m(prefer="flagship") > 0
+    with pytest.raises(TypeError):
+        blended_top_tier_eur_per_1m("flagship")  # type: ignore[misc]
+
+
 def test_sinnkongruenz_prefers_intent_match():
     intent = "QUBO mesh inject MasterSeed"
     hi = MessageUnit(role="user", content="QUBO anneal mesh inject MasterSeed layer")
