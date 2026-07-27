@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """CLI vertical slice for the meta-neural network (local-only).
 
 Uses the stdlib ``argparse`` (no new dependency). Runs the full flow on the
@@ -13,7 +12,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from typing import List, Optional
 
 from .consent import Purpose
 from .fixtures import load_neutral_fixture
@@ -21,7 +19,7 @@ from .pipeline import MetaNeuralService
 
 
 def run_demo(backend: str = "numpy", seed: int = 7, steps: int = 2000,
-             cardinality: Optional[int] = 2) -> dict:
+             cardinality: int | None = 2) -> dict:
     fixture = load_neutral_fixture()
     subject = fixture["subject_id"]
     svc = MetaNeuralService()
@@ -55,7 +53,7 @@ def run_demo(backend: str = "numpy", seed: int = 7, steps: int = 2000,
     }
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Meta-neural vertical slice (local-only).")
     sub = parser.add_subparsers(dest="command", required=True)
     demo = sub.add_parser("demo", help="Run the full consent->optimize->audit flow.")

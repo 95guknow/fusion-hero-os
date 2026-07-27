@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Google One Sicherung — activate + local snapshot for Fusion Hero OS.
 
@@ -18,9 +17,9 @@ import json
 import os
 import shutil
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     from fusion_hero_os.core.browser_egress import open_url as _egress_open
@@ -52,7 +51,7 @@ __all__ = [
 ]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "google_one_sicherung.yaml"
     if not path.exists():
         return {}
@@ -68,7 +67,7 @@ def _expand(p: str) -> Path:
     return Path(os.path.expanduser(str(p)))
 
 
-def _local_root(cfg: Optional[Dict[str, Any]] = None) -> Path:
+def _local_root(cfg: dict[str, Any] | None = None) -> Path:
     cfg = cfg or load_config()
     p = _expand((cfg.get("local") or {}).get("root") or "~/.fusion/sicherung")
     p.mkdir(parents=True, exist_ok=True)
@@ -77,7 +76,7 @@ def _local_root(cfg: Optional[Dict[str, Any]] = None) -> Path:
     return p
 
 
-def _is_excluded(rel: str, exclude: List[str]) -> bool:
+def _is_excluded(rel: str, exclude: list[str]) -> bool:
     rel_f = rel.replace("\\", "/")
     low = rel_f.lower()
     if any(x in low for x in (".env", "secret", "credential", ".pem", "id_rsa", "push_secret")):
@@ -88,7 +87,7 @@ def _is_excluded(rel: str, exclude: List[str]) -> bool:
     return False
 
 
-def _match_include(rel: str, includes: List[str]) -> bool:
+def _match_include(rel: str, includes: list[str]) -> bool:
     rel_f = rel.replace("\\", "/")
     for pat in includes:
         if fnmatch.fnmatch(rel_f, pat):
@@ -109,11 +108,11 @@ def _sha16_file(path: Path) -> str:
     return h.hexdigest()[:16]
 
 
-def activate(*, open_browser: bool = True) -> Dict[str, Any]:
+def activate(*, open_browser: bool = True) -> dict[str, Any]:
     """Activate local sicherung + open Google One URLs."""
     cfg = load_config()
     root = _local_root(cfg)
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     drive = cfg.get("drive") or {}
     flag = {
         "activated": True,
@@ -186,7 +185,7 @@ def activate(*, open_browser: bool = True) -> Dict[str, Any]:
         json.dumps(pub, indent=2, ensure_ascii=False), encoding="utf-8"
     )
 
-    opened: List[str] = []
+    opened: list[str] = []
     if open_browser:
         for key in ("landing_url", "storage_url"):
             url = cfg.get(key) or flag.get(key)
@@ -208,7 +207,7 @@ def activate(*, open_browser: bool = True) -> Dict[str, Any]:
     }
 
 
-def run_snapshot() -> Dict[str, Any]:
+def run_snapshot() -> dict[str, Any]:
     """Copy public-safe includes into a timestamped local snapshot."""
     cfg = load_config()
     root = _local_root(cfg)
@@ -216,12 +215,12 @@ def run_snapshot() -> Dict[str, Any]:
     excludes = list(cfg.get("exclude_globs") or [])
     max_mb = float((cfg.get("policy") or {}).get("max_file_mb") or 25)
     max_b = int(max_mb * 1024 * 1024)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     dest = root / "snapshots" / f"snap_{stamp}"
     dest.mkdir(parents=True, exist_ok=True)
 
-    files: List[Dict[str, Any]] = []
-    skipped: List[str] = []
+    files: list[dict[str, Any]] = []
+    skipped: list[str] = []
     total = 0
     t0 = time.time()
 
@@ -261,7 +260,7 @@ def run_snapshot() -> Dict[str, Any]:
     manifest = {
         "ok": True,
         "snapshot_id": stamp,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": datetime.now(UTC).isoformat(),
         "file_count": len(files),
         "bytes_total": total,
         "files": files,
@@ -311,7 +310,7 @@ def run_snapshot() -> Dict[str, Any]:
     return manifest
 
 
-def _find_drivefs_exe() -> Optional[str]:
+def _find_drivefs_exe() -> str | None:
     bases = [
         Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Google" / "Drive File Stream",
         Path(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"))
@@ -348,7 +347,7 @@ def _drivefs_running() -> bool:
         return False
 
 
-def _find_my_drive_paths() -> List[str]:
+def _find_my_drive_paths() -> list[str]:
     candidates = [
         Path.home() / "Google Drive",
         Path.home() / "Meine Ablage",
@@ -359,7 +358,7 @@ def _find_my_drive_paths() -> List[str]:
         Path("H:/Meine Ablage"),
         Path("H:/My Drive"),
     ]
-    found: List[str] = []
+    found: list[str] = []
     for p in candidates:
         try:
             if p.exists():
@@ -376,14 +375,14 @@ def _find_my_drive_paths() -> List[str]:
             except OSError:
                 continue
     # unique preserve order
-    out: List[str] = []
+    out: list[str] = []
     for x in found:
         if x not in out:
             out.append(x)
     return out
 
 
-def setup_desktop(*, open_browser: bool = True, start_app: bool = True) -> Dict[str, Any]:
+def setup_desktop(*, open_browser: bool = True, start_app: bool = True) -> dict[str, Any]:
     """Start Drive for Desktop if present; stage local mirror of latest snapshot."""
     cfg = load_config()
     root = _local_root(cfg)
@@ -468,7 +467,7 @@ def setup_desktop(*, open_browser: bool = True, start_app: bool = True) -> Dict[
             except OSError:
                 continue
 
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     state = {
         "ok": True,
         "device": "desktop",
@@ -530,7 +529,7 @@ def setup_desktop(*, open_browser: bool = True, start_app: bool = True) -> Dict[
         ),
         encoding="utf-8",
     )
-    opened: List[str] = []
+    opened: list[str] = []
     if open_browser:
         for url in (
             (cfg.get("drive") or {}).get("web_view_link"),
@@ -542,7 +541,7 @@ def setup_desktop(*, open_browser: bool = True, start_app: bool = True) -> Dict[
     return state
 
 
-def setup_phone(*, open_browser: bool = True) -> Dict[str, Any]:
+def setup_phone(*, open_browser: bool = True) -> dict[str, Any]:
     """Write phone checklist + open app/store links (analog to desktop Drive)."""
     cfg = load_config()
     root = _local_root(cfg)
@@ -604,7 +603,7 @@ Keine Secrets (.env, API-Keys, private GPG) aufs Handy-Backup laden.
     docs = ROOT / "docs" / "sicherung"
     docs.mkdir(parents=True, exist_ok=True)
     (docs / "HANDY_CHECKLISTE.md").write_text(checklist, encoding="utf-8")
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
     state = {
         "ok": True,
         "device": "phone",
@@ -625,7 +624,7 @@ Keine Secrets (.env, API-Keys, private GPG) aufs Handy-Backup laden.
         f"{links['drive_folder']}\n",
         encoding="utf-8",
     )
-    opened: List[str] = []
+    opened: list[str] = []
     if open_browser:
         for key in ("drive_android", "one_android", "device_backup", "drive_folder"):
             url = links.get(key)
@@ -635,7 +634,7 @@ Keine Secrets (.env, API-Keys, private GPG) aufs Handy-Backup laden.
     return state
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     root = _local_root(cfg)
     flag_path = root / "google_one" / "ACTIVATED.json"
@@ -724,7 +723,7 @@ def main() -> int:
     if args.status and not (args.activate or args.snapshot or args.desktop or args.phone):
         print(json.dumps(status(), indent=2, ensure_ascii=False))
         return 0
-    out: Dict[str, Any] = {}
+    out: dict[str, Any] = {}
     do_all = not (args.activate or args.snapshot or args.status or args.desktop or args.phone)
 
     if args.activate or do_all:

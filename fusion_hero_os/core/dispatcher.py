@@ -17,7 +17,8 @@ from __future__ import annotations
 
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 from fusion_hero_os.config import get_config
 from fusion_hero_os.core.base_module import BaseModule, EvolutionProposal, ReviewResult
@@ -32,11 +33,11 @@ class ModuleNotRegisteredError(KeyError):
 class Dispatcher:
     """Registriert :class:`BaseModule`-Instanzen und routet Anfragen an sie."""
 
-    def __init__(self, max_workers: Optional[int] = None) -> None:
-        self._modules: Dict[str, BaseModule] = {}
+    def __init__(self, max_workers: int | None = None) -> None:
+        self._modules: dict[str, BaseModule] = {}
         self._max_workers = max_workers if max_workers is not None else get_config().max_workers
 
-    def register(self, module: BaseModule, name: Optional[str] = None) -> None:
+    def register(self, module: BaseModule, name: str | None = None) -> None:
         """Registriert ``module`` unter ``name`` (Default: ``module.name``).
 
         Eine erneute Registrierung unter demselben Namen überschreibt bewusst
@@ -51,7 +52,7 @@ class Dispatcher:
     def unregister(self, name: str) -> None:
         self._modules.pop(name, None)
 
-    def list_modules(self) -> List[str]:
+    def list_modules(self) -> list[str]:
         return sorted(self._modules)
 
     def _get(self, name: str) -> BaseModule:
@@ -68,8 +69,8 @@ class Dispatcher:
         return module.process(payload)
 
     def dispatch_many(
-        self, requests: Sequence[Tuple[str, Any]], parallel: bool = True
-    ) -> List[Any]:
+        self, requests: Sequence[tuple[str, Any]], parallel: bool = True
+    ) -> list[Any]:
         """Führt mehrere ``(modulname, payload)``-Anfragen aus.
 
         Bei ``parallel=True`` (Default) laufen sie über einen
@@ -88,10 +89,10 @@ class Dispatcher:
             futures = [pool.submit(self.dispatch, name, payload) for name, payload in requests]
             return [f.result() for f in futures]
 
-    def propose_evolution(self, name: str, context: Any = None) -> Optional[EvolutionProposal]:
+    def propose_evolution(self, name: str, context: Any = None) -> EvolutionProposal | None:
         return self._get(name).propose_evolution(context)
 
-    def collect_evolution_proposals(self, context: Any = None) -> List[EvolutionProposal]:
+    def collect_evolution_proposals(self, context: Any = None) -> list[EvolutionProposal]:
         """Fragt alle registrierten Module nach Verbesserungsvorschlägen.
 
         Liefert nur die Vorschläge, die tatsächlich einen zurückgeben (die
@@ -108,7 +109,7 @@ class Dispatcher:
         return self._get(name).peer_review(target)
 
 
-_default_dispatcher: Optional[Dispatcher] = None
+_default_dispatcher: Dispatcher | None = None
 
 
 def build_default_dispatcher() -> Dispatcher:

@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
+from typing import Any
 
 
-def build_prompt(user_prompt: str, identity: Dict[str, Any]) -> str:
+def build_prompt(user_prompt: str, identity: dict[str, Any]) -> str:
     """Kombiniert User-Prompt mit Character-Bible / Style-Tags."""
     name = identity.get("name", "BuilderProfile")
-    tags: List[str] = list(identity.get("style_tags", []))
+    tags: list[str] = list(identity.get("style_tags", []))
     palette = identity.get("palette", {})
     seed = identity.get("primary_seed", "")
     tag_str = ", ".join(tags) if tags else "heroic"
@@ -25,7 +25,7 @@ def build_prompt(user_prompt: str, identity: Dict[str, Any]) -> str:
     return " | ".join(p for p in parts if p)
 
 
-def validate_identity(identity: Dict[str, Any]) -> Dict[str, Any]:
+def validate_identity(identity: dict[str, Any]) -> dict[str, Any]:
     """Prüft Mindestfelder der Character Bible."""
     required = ["name", "style_tags"]
     missing = [k for k in required if not identity.get(k)]

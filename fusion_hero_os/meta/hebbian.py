@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Hebbian association memory as consent-scoped sparse edge weights.
 
 This is a plain, well-defined learning rule on a sparse weight table — **not**
@@ -23,14 +22,14 @@ the subject before applying updates; this module stores only opaque slot names.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Tuple
+from collections.abc import Iterable
 
 
 class HebbianError(ValueError):
     pass
 
 
-def _key(a: str, b: str) -> Tuple[str, str]:
+def _key(a: str, b: str) -> tuple[str, str]:
     # Undirected association: canonical ordering for a stable, symmetric key.
     return (a, b) if a <= b else (b, a)
 
@@ -56,7 +55,7 @@ class HebbianAssociationMemory:
 
     def __init__(self, config: HebbianConfig | None = None) -> None:
         self.config = config or HebbianConfig()
-        self._w: Dict[Tuple[str, str], float] = {}
+        self._w: dict[tuple[str, str], float] = {}
 
     def _clip(self, v: float) -> float:
         m = self.config.w_max
@@ -76,7 +75,7 @@ class HebbianAssociationMemory:
         self._w[k] = new
         return new
 
-    def update_many(self, pairs: Iterable[Tuple[str, str, float, float]]) -> None:
+    def update_many(self, pairs: Iterable[tuple[str, str, float, float]]) -> None:
         for a, b, act_a, act_b in pairs:
             self.update(a, b, act_a, act_b)
 
@@ -107,11 +106,11 @@ class HebbianAssociationMemory:
             self._w.pop(k, None)
         return len(to_remove)
 
-    def items(self) -> List[Tuple[Tuple[str, str], float]]:
+    def items(self) -> list[tuple[tuple[str, str], float]]:
         """Deterministically ordered (key, weight) pairs."""
         return sorted(self._w.items(), key=lambda kv: kv[0])
 
-    def to_matrix(self, slots: List[str]) -> Tuple[List[str], List[List[float]]]:
+    def to_matrix(self, slots: list[str]) -> tuple[list[str], list[list[float]]]:
         """Dense symmetric matrix over the given slot order."""
         idx = {s: i for i, s in enumerate(slots)}
         n = len(slots)

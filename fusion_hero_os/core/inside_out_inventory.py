@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Inside-Out Inventory — what EXISTS, independent of storage location.
 
@@ -19,16 +18,17 @@ import os
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Set
+from typing import Any
+from collections.abc import Iterable
 
 ROOT = Path(__file__).resolve().parents[2]
 
 __all__ = ["run_inventory", "status", "INSIDE_OUT_RINGS"]
 
 # Inside-out rings (0 = innermost)
-INSIDE_OUT_RINGS: List[Dict[str, Any]] = [
+INSIDE_OUT_RINGS: list[dict[str, Any]] = [
     {
         "ring": 0,
         "name": "masterseed_identity",
@@ -170,7 +170,7 @@ class Item:
     sha16: str = ""
     class_hint: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -227,9 +227,9 @@ def _iter_files(base: Path, max_files: int) -> Iterable[Path]:
             yield p
 
 
-def _match_repo_globs(repo: Path, patterns: List[str]) -> List[Path]:
+def _match_repo_globs(repo: Path, patterns: list[str]) -> list[Path]:
     """Resolve repo-relative patterns; 'foo/**' means full tree under foo/."""
-    out: List[Path] = []
+    out: list[Path] = []
     for pat in patterns:
         pat = pat.replace("\\", "/").strip()
         if not pat:
@@ -269,7 +269,7 @@ def _record(
     storage_root: str,
     ring: int,
     ring_name: str,
-) -> Optional[Item]:
+) -> Item | None:
     try:
         if path.is_dir():
             return Item(
@@ -314,17 +314,17 @@ def _record(
         return None
 
 
-def run_inventory(*, write: bool = True) -> Dict[str, Any]:
+def run_inventory(*, write: bool = True) -> dict[str, Any]:
     t0 = time.time()
-    seen: Set[str] = set()
-    items: List[Item] = []
-    by_ring: Dict[str, int] = defaultdict(int)
-    by_class: Dict[str, int] = defaultdict(int)
-    by_storage: Dict[str, int] = defaultdict(int)
+    seen: set[str] = set()
+    items: list[Item] = []
+    by_ring: dict[str, int] = defaultdict(int)
+    by_class: dict[str, int] = defaultdict(int)
+    by_storage: dict[str, int] = defaultdict(int)
     bytes_total = 0
 
     # Ring 0 special: always include live public MasterSeed view
-    identity_block: Dict[str, Any] = {}
+    identity_block: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.masterseed_public import public_view
         from fusion_hero_os.core.ops_vocabulary import status as ops_status
@@ -387,7 +387,7 @@ def run_inventory(*, write: bool = True) -> Dict[str, Any]:
         "platform": "10.0.0",
         "policy": "pseudo_inhouse_only",
         "freemium": False,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "duration_sec": round(time.time() - t0, 2),
         "identity": identity_block,
         "counts": {
@@ -417,7 +417,7 @@ def run_inventory(*, write: bool = True) -> Dict[str, Any]:
                 f.write(json.dumps(it.to_dict(), ensure_ascii=False) + "\n")
         summary_path = out_dir / "inventory_summary.json"
         # sample paths per ring (not full dump in summary)
-        samples: Dict[str, List[str]] = defaultdict(list)
+        samples: dict[str, list[str]] = defaultdict(list)
         for it in items:
             if len(samples[it.ring_name]) < 15 and it.kind == "file":
                 samples[it.ring_name].append(it.path)
@@ -495,7 +495,7 @@ def run_inventory(*, write: bool = True) -> Dict[str, Any]:
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     p = Path.home() / ".fusion" / "inventory" / "inside_out" / "inventory_summary.json"
     if p.exists():
         try:

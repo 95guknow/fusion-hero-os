@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Graph-style connector hub (Meta Graph, GraphQL, REST)."""
 
 from fusion_hero_os.connectors.graph_api import (

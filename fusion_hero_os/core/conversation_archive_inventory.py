@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Conversation archives across instances — inventory for Dissertation-as-OS.
 
@@ -13,9 +12,9 @@ import json
 import os
 import re
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 from urllib.parse import unquote
 
 __all__ = ["scan_conversation_archives", "write_dissertation_appendix", "status"]
@@ -69,10 +68,10 @@ def _safe_public_path(p: str) -> str:
 
 
 def scan_conversation_archives(
-    sessions_root: Optional[Path] = None,
-) -> Dict[str, Any]:
+    sessions_root: Path | None = None,
+) -> dict[str, Any]:
     root = sessions_root or SESSIONS_ROOT
-    instances: List[Dict[str, Any]] = []
+    instances: list[dict[str, Any]] = []
     totals = defaultdict(int)
     session_count = 0
     bytes_total = 0
@@ -94,14 +93,14 @@ def scan_conversation_archives(
             continue
 
         decoded = _decode_instance_key(inst_dir.name)
-        sessions: List[Dict[str, Any]] = []
+        sessions: list[dict[str, Any]] = []
         inst_bytes = 0
         inst_files = 0
-        artifact_counts: Dict[str, int] = defaultdict(int)
+        artifact_counts: dict[str, int] = defaultdict(int)
 
         # instance-level prompt history
         ph = inst_dir / "prompt_history.jsonl"
-        inst_meta: Dict[str, Any] = {
+        inst_meta: dict[str, Any] = {
             "instance_key": inst_dir.name,
             "instance_path_decoded": decoded,
             "instance_path_public": _safe_public_path(decoded),
@@ -120,7 +119,7 @@ def scan_conversation_archives(
                 continue
             # session UUID-like or subagent id
             sid = child.name
-            sess: Dict[str, Any] = {
+            sess: dict[str, Any] = {
                 "session_id": sid,
                 "artifacts": {},
                 "subdirs": [],
@@ -160,7 +159,7 @@ def scan_conversation_archives(
 
             if sess["mtime_max"]:
                 sess["mtime_iso"] = datetime.fromtimestamp(
-                    sess["mtime_max"], tz=timezone.utc
+                    sess["mtime_max"], tz=UTC
                 ).isoformat()
             sessions.append(sess)
             session_count += 1
@@ -210,7 +209,7 @@ def scan_conversation_archives(
             "(Dissertation-as-OS). Inventory records existence and structure; full chat bodies "
             "stay operator-local (privacy + volume)."
         ),
-        "scanned_at": datetime.now(timezone.utc).isoformat(),
+        "scanned_at": datetime.now(UTC).isoformat(),
         "sessions_root": _safe_public_path(str(root)),
         "vocabulary": {
             "deploy": "private (archives stay local)",
@@ -231,7 +230,7 @@ def scan_conversation_archives(
     return report
 
 
-def write_dissertation_appendix(report: Optional[Dict[str, Any]] = None) -> Dict[str, str]:
+def write_dissertation_appendix(report: dict[str, Any] | None = None) -> dict[str, str]:
     """Write public-safe appendix for dissertation + private full JSONL."""
     report = report or scan_conversation_archives()
     out_priv = Path.home() / ".fusion" / "inventory" / "conversation_archives"
@@ -314,7 +313,7 @@ def write_dissertation_appendix(report: Optional[Dict[str, Any]] = None) -> Dict
         "## Artifact-Zählungen (aggregiert)",
         "",
     ]
-    agg: Dict[str, int] = defaultdict(int)
+    agg: dict[str, int] = defaultdict(int)
     for inst in report.get("instances") or []:
         for k, v in (inst.get("artifact_totals") or {}).items():
             agg[k] += int(v)
@@ -391,7 +390,7 @@ def write_dissertation_appendix(report: Optional[Dict[str, Any]] = None) -> Dict
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     p = Path.home() / ".fusion" / "inventory" / "conversation_archives" / "conversation_archives_full.json"
     if p.exists():
         try:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Daycycle Mem + Central Consolidation — Fusion Hero OS v12.1.0
 
@@ -22,14 +21,13 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import platform
 import re
 import socket
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 PLATFORM = "12.1.0"
@@ -51,8 +49,8 @@ __all__ = [
 ]
 
 
-def load_config() -> Dict[str, Any]:
-    cfg: Dict[str, Any] = {}
+def load_config() -> dict[str, Any]:
+    cfg: dict[str, Any] = {}
     if CONFIG_PATH.exists():
         try:
             import yaml
@@ -71,7 +69,7 @@ def load_config() -> Dict[str, Any]:
     return cfg
 
 
-def _deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+def _deep_merge(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     out = dict(a)
     for k, v in b.items():
         if isinstance(v, dict) and isinstance(out.get(k), dict):
@@ -81,7 +79,7 @@ def _deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
     return out
 
 
-def _cfg() -> Dict[str, Any]:
+def _cfg() -> dict[str, Any]:
     return load_config()
 
 
@@ -114,7 +112,7 @@ def archive_dir() -> Path:
     return p
 
 
-def load_state() -> Dict[str, Any]:
+def load_state() -> dict[str, Any]:
     sp = state_path()
     if sp.exists():
         try:
@@ -134,8 +132,8 @@ def load_state() -> Dict[str, Any]:
     }
 
 
-def save_state(st: Dict[str, Any]) -> None:
-    st["updated_at"] = datetime.now(timezone.utc).isoformat()
+def save_state(st: dict[str, Any]) -> None:
+    st["updated_at"] = datetime.now(UTC).isoformat()
     st["platform"] = PLATFORM
     state_path().write_text(json.dumps(st, indent=2, ensure_ascii=False), encoding="utf-8")
 
@@ -145,7 +143,7 @@ def _now_local() -> datetime:
 
 
 def _now_utc() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _redact(text: str) -> str:
@@ -159,7 +157,7 @@ def _redact(text: str) -> str:
     return out
 
 
-def _git(cwd: Path, *args: str, check: bool = False) -> Tuple[int, str, str]:
+def _git(cwd: Path, *args: str, check: bool = False) -> tuple[int, str, str]:
     r = subprocess.run(
         ["git", *args],
         cwd=str(cwd),
@@ -173,7 +171,7 @@ def _git(cwd: Path, *args: str, check: bool = False) -> Tuple[int, str, str]:
     return r.returncode, r.stdout or "", r.stderr or ""
 
 
-def _gh(*args: str) -> Tuple[int, str, str]:
+def _gh(*args: str) -> tuple[int, str, str]:
     r = subprocess.run(
         ["gh", *args],
         capture_output=True,
@@ -189,7 +187,7 @@ def private_repo_path() -> Path:
     return Path(pr.get("local_path") or r"C:\Users\Admin\fusion-hero-os-daily-plans")
 
 
-def ensure_dev_branch() -> Dict[str, Any]:
+def ensure_dev_branch() -> dict[str, Any]:
     """Ensure private repo exists and `dev` branch is present."""
     repo = private_repo_path()
     if not repo.exists():
@@ -219,7 +217,7 @@ def ensure_dev_branch() -> Dict[str, Any]:
 # Agent protocol (passive unless testtest)
 # ---------------------------------------------------------------------------
 
-def protocol_event(kind: str, message: str, *, meta: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def protocol_event(kind: str, message: str, *, meta: dict[str, Any] | None = None) -> dict[str, Any]:
     """Always-on protocol log (passive)."""
     rec = {
         "ts": _now_utc().isoformat(),
@@ -242,16 +240,16 @@ def is_agent_awake() -> bool:
         return False
     try:
         t = datetime.fromisoformat(until.replace("Z", "+00:00"))
-        return _now_utc() < t.astimezone(timezone.utc)
+        return _now_utc() < t.astimezone(UTC)
     except Exception:
         return False
 
 
-def wake_agent(source: str = "operator") -> Dict[str, Any]:
+def wake_agent(source: str = "operator") -> dict[str, Any]:
     """Activate engagement window after explicit wake word."""
     ap = _cfg().get("agent_protocol") or {}
     ttl = int(ap.get("wake_ttl_minutes") or 30)
-    until = datetime.fromtimestamp(time.time() + ttl * 60, tz=timezone.utc)
+    until = datetime.fromtimestamp(time.time() + ttl * 60, tz=UTC)
     st = load_state()
     st["agent_wake_until"] = until.isoformat()
     st["agent_wake_source"] = source
@@ -272,7 +270,7 @@ def check_wake_word(text: str) -> bool:
 # Minute tick → mem.md
 # ---------------------------------------------------------------------------
 
-def minute_tick(*, note: str = "", traffic_hint: str = "") -> Dict[str, Any]:
+def minute_tick(*, note: str = "", traffic_hint: str = "") -> dict[str, Any]:
     """Append one minute line to local mem.md (day schedule)."""
     cfg = _cfg()
     mem_cfg = cfg.get("mem") or {}
@@ -314,7 +312,7 @@ def minute_tick(*, note: str = "", traffic_hint: str = "") -> Dict[str, Any]:
 # Hourly flush → private dev
 # ---------------------------------------------------------------------------
 
-def hourly_flush(*, reason: str = "hourly") -> Dict[str, Any]:
+def hourly_flush(*, reason: str = "hourly") -> dict[str, Any]:
     """Commit current mem.md to private repo branch dev, push, archive, clear local mem."""
     cfg = _cfg()
     pr = cfg.get("private_repo") or {}
@@ -407,7 +405,7 @@ def hourly_flush(*, reason: str = "hourly") -> Dict[str, Any]:
 # 4h PR cycle
 # ---------------------------------------------------------------------------
 
-def pr_cycle() -> Dict[str, Any]:
+def pr_cycle() -> dict[str, Any]:
     """Open or refresh PR from private dev → main."""
     cfg = _cfg()
     pr = cfg.get("private_repo") or {}
@@ -481,7 +479,7 @@ def pr_cycle() -> Dict[str, Any]:
 # Daily top merge + fanout
 # ---------------------------------------------------------------------------
 
-def daily_top_merge() -> Dict[str, Any]:
+def daily_top_merge() -> dict[str, Any]:
     """Merge open daycycle PR into private main (top)."""
     cfg = _cfg()
     pr = cfg.get("private_repo") or {}
@@ -554,11 +552,11 @@ def daily_top_merge() -> Dict[str, Any]:
     return {"ok": ok, "mode": "gh_pr_merge", "number": number, "stdout": out[-300:], "stderr": err[-300:]}
 
 
-def fanout_updates() -> Dict[str, Any]:
+def fanout_updates() -> dict[str, Any]:
     """Pull latest updates on all registered instance paths (bottom-up fan-out)."""
     cfg = _cfg()
     instances = cfg.get("instances") or []
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     for inst in instances:
         path = Path(inst.get("path") or "")
         branch = inst.get("branch") or "main"
@@ -610,8 +608,8 @@ def log_instance_traffic(
     dest: str = "",
     bytes_n: int = 0,
     note: str = "",
-    meta: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    meta: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Instances log real-world traffic normally (local jsonl)."""
     rec = {
         "ts": _now_utc().isoformat(),
@@ -634,14 +632,14 @@ def log_instance_traffic(
 # Scheduler: run whatever is due
 # ---------------------------------------------------------------------------
 
-def run_due(*, force: Optional[str] = None) -> Dict[str, Any]:
+def run_due(*, force: str | None = None) -> dict[str, Any]:
     """
     Run due daycycle steps.
     force: minute|hourly|pr|daily|fanout|all
     """
     st = load_state()
     now = _now_local()
-    out: Dict[str, Any] = {"ok": True, "ran": [], "platform": PLATFORM, "now": now.isoformat()}
+    out: dict[str, Any] = {"ok": True, "ran": [], "platform": PLATFORM, "now": now.isoformat()}
 
     def _due_hourly() -> bool:
         last = st.get("last_hourly_flush")
@@ -649,7 +647,7 @@ def run_due(*, force: Optional[str] = None) -> Dict[str, Any]:
             return True
         try:
             t = datetime.fromisoformat(last.replace("Z", "+00:00"))
-            return (_now_utc() - t.astimezone(timezone.utc)).total_seconds() >= 3600
+            return (_now_utc() - t.astimezone(UTC)).total_seconds() >= 3600
         except Exception:
             return True
 
@@ -660,7 +658,7 @@ def run_due(*, force: Optional[str] = None) -> Dict[str, Any]:
             return True
         try:
             t = datetime.fromisoformat(last.replace("Z", "+00:00"))
-            return (_now_utc() - t.astimezone(timezone.utc)).total_seconds() >= hours * 3600
+            return (_now_utc() - t.astimezone(UTC)).total_seconds() >= hours * 3600
         except Exception:
             return True
 
@@ -712,7 +710,7 @@ def run_due(*, force: Optional[str] = None) -> Dict[str, Any]:
     return out
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     st = load_state()
     mp = mem_path()
     lines = 0

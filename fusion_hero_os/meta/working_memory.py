@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Working memory as mathematically-defined activation vectors.
 
 ``WorkingMemorySpace`` is a bounded activation buffer. We document the internal
@@ -25,7 +24,6 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from typing import Dict, List, Tuple
 
 
 class WorkingMemoryError(ValueError):
@@ -37,9 +35,9 @@ class ActivationReport:
     step_index: int
     capacity: float
     decay: float
-    active: List[Tuple[str, float]]  # (slot, activation), sorted by -activation then slot
+    active: list[tuple[str, float]]  # (slot, activation), sorted by -activation then slot
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "step_index": self.step_index,
             "capacity": self.capacity,
@@ -53,7 +51,7 @@ class WorkingMemorySpace:
 
     def __init__(
         self,
-        slots: List[str],
+        slots: list[str],
         *,
         capacity: float = 1.0,
         decay: float = 0.9,
@@ -76,7 +74,7 @@ class WorkingMemorySpace:
         self._step_index = 0
 
     @property
-    def slots(self) -> List[str]:
+    def slots(self) -> list[str]:
         return list(self._slots)
 
     @property
@@ -103,7 +101,7 @@ class WorkingMemorySpace:
             raise WorkingMemoryError(f"unknown slot {slot!r}")
         return self._a[self._index[slot]]
 
-    def vector(self) -> List[float]:
+    def vector(self) -> list[float]:
         return list(self._a)
 
     def norm(self) -> float:

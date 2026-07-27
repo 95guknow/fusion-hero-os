@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Hero Autoupdate — logisches Polling + Android-Erinnerung (Held).
 
 Standards (explizite User-Direktive):
@@ -20,9 +19,9 @@ import time
 import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # ---------------------------------------------------------------------------
 # Defaults (kanonisch)
@@ -35,11 +34,11 @@ DEFAULT_STATE_NAME = "hero_autoupdate_state.json"
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _lock = threading.RLock()
-_instance: Optional["HeroAutoupdateService"] = None
+_instance: HeroAutoupdateService | None = None
 
 
 def _utc_now() -> str:
-    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
 def _repo_root() -> Path:
@@ -49,7 +48,7 @@ def _repo_root() -> Path:
     return _REPO_ROOT
 
 
-def _load_yaml_config() -> Dict[str, Any]:
+def _load_yaml_config() -> dict[str, Any]:
     path = _repo_root() / "hero_autoupdate.yaml"
     if not path.is_file():
         return {}
@@ -105,7 +104,7 @@ class HeroAutoupdateConfig:
     android_click_url: str = "http://127.0.0.1:8000/"
 
     @classmethod
-    def load(cls) -> "HeroAutoupdateConfig":
+    def load(cls) -> HeroAutoupdateConfig:
         y = _load_yaml_config()
         android = y.get("android") if isinstance(y.get("android"), dict) else {}
         cfg = cls(
@@ -173,13 +172,13 @@ class HeroAutoupdateState:
     reminder_count: int = 0
     update_notify_count: int = 0
     started_at: str = ""
-    last_events: List[Dict[str, Any]] = field(default_factory=list)
+    last_events: list[dict[str, Any]] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "HeroAutoupdateState":
+    def from_dict(cls, data: dict[str, Any]) -> HeroAutoupdateState:
         known = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore[attr-defined]
         kwargs = {k: v for k, v in data.items() if k in known}
         st = cls(**kwargs)
@@ -191,7 +190,7 @@ class HeroAutoupdateState:
 class HeroAutoupdateService:
     """Singleton service: tick / touch / status."""
 
-    def __init__(self, config: Optional[HeroAutoupdateConfig] = None) -> None:
+    def __init__(self, config: HeroAutoupdateConfig | None = None) -> None:
         self.config = config or HeroAutoupdateConfig.load()
         self._state = HeroAutoupdateState(started_at=_utc_now())
         self._load_state()
@@ -267,7 +266,7 @@ class HeroAutoupdateService:
             pass
         return ""
 
-    def _git_behind_origin(self) -> Optional[int]:
+    def _git_behind_origin(self) -> int | None:
         """Return commits behind origin/main if fetchable; None if unknown."""
         try:
             subprocess.run(
@@ -289,7 +288,7 @@ class HeroAutoupdateService:
             return None
         return None
 
-    def _health(self) -> Dict[str, Any]:
+    def _health(self) -> dict[str, Any]:
         url = self.config.health_url
         try:
             req = urllib.request.Request(url, method="GET")
@@ -310,10 +309,10 @@ class HeroAutoupdateService:
         message: str,
         title: str = "Held",
         *,
-        priority: Optional[str] = None,
-        tags: Optional[str] = None,
-        click: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        priority: str | None = None,
+        tags: str | None = None,
+        click: str | None = None,
+    ) -> dict[str, Any]:
         """Send Android system notification via phone notify path (ntfy webhook)."""
         try:
             from tailscale_phone_notify import send_phone_notification
@@ -342,7 +341,7 @@ class HeroAutoupdateService:
 
     # -- public API ----------------------------------------------------------
 
-    def touch(self, source: str = "api") -> Dict[str, Any]:
+    def touch(self, source: str = "api") -> dict[str, Any]:
         """Mark an interaction with the Held (resets 5-min reminder timer)."""
         with _lock:
             now = time.time()
@@ -362,7 +361,7 @@ class HeroAutoupdateService:
                 return 0.0
             return max(0.0, time.time() - self._state.last_interaction_ts)
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         with _lock:
             idle = self.idle_sec()
             cfg = self.config
@@ -392,7 +391,7 @@ class HeroAutoupdateService:
                 "recent_events": list(self._state.last_events[-10:]),
             }
 
-    def tick(self, *, force_reminder: bool = False, do_fetch: bool = False) -> Dict[str, Any]:
+    def tick(self, *, force_reminder: bool = False, do_fetch: bool = False) -> dict[str, Any]:
         """One logical poll cycle.
 
         - Probes health + git head (+ optional origin behind-count)
@@ -409,7 +408,7 @@ class HeroAutoupdateService:
             version = self._read_version()
             self._state.last_version = version
 
-            actions: List[Dict[str, Any]] = []
+            actions: list[dict[str, Any]] = []
             health = self._health()
             health_label = "ok" if health.get("ok") else "down"
             if health.get("body") and isinstance(health["body"], dict):
@@ -440,7 +439,7 @@ class HeroAutoupdateService:
             if head:
                 self._state.last_git_head = head
 
-            behind: Optional[int] = None
+            behind: int | None = None
             if do_fetch or _env_bool("FUSION_HERO_POLL_FETCH", False):
                 behind = self._git_behind_origin()
                 if behind is not None and behind > 0 and self.config.notify_on_update:
@@ -492,7 +491,7 @@ class HeroAutoupdateService:
                 ),
             }
 
-    def notify_startup(self) -> Dict[str, Any]:
+    def notify_startup(self) -> dict[str, Any]:
         cfg = self.config
         msg = cfg.startup_message.format(
             poll_min=max(1, int(cfg.poll_interval_sec // 60)),

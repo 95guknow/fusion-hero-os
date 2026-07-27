@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """MCP / context fill governor — keep utilization in [40%, 70%] when possible.
 
 Uses Sinnkongruenz autocompression when over target, and optional archive
@@ -17,12 +16,12 @@ import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any
+from collections.abc import Sequence
 
 from fusion_hero_os.core.sinnkongruenz_compressor import (
     MessageUnit,
     compress_to_budget,
-    estimate_tokens,
 )
 
 __all__ = [
@@ -44,7 +43,7 @@ class FillBand:
     fill_target: float = 0.55
 
     @classmethod
-    def from_env(cls) -> "FillBand":
+    def from_env(cls) -> FillBand:
         return cls(
             window_tokens=int(os.getenv("FUSION_MCP_CONTEXT_WINDOW", "128000")),
             fill_min=float(os.getenv("FUSION_MCP_FILL_MIN", "0.40")),
@@ -71,9 +70,9 @@ class FillState:
     fill_pct: float
     band: str  # below | in_band | above
     action: str
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "tokens": self.tokens,
             "fill_pct": round(self.fill_pct, 4),
@@ -86,10 +85,10 @@ class FillState:
 class McpFillGovernor:
     """Keep MCP/context fill between 40% and 70% with Sinnkongruenz compression."""
 
-    def __init__(self, band: Optional[FillBand] = None) -> None:
+    def __init__(self, band: FillBand | None = None) -> None:
         self.band = band or FillBand.from_env()
-        self._archive: List[MessageUnit] = []
-        self._last: Optional[FillState] = None
+        self._archive: list[MessageUnit] = []
+        self._last: FillState | None = None
         _STATE.mkdir(parents=True, exist_ok=True)
 
     def measure(self, units: Sequence[MessageUnit]) -> FillState:
@@ -108,8 +107,8 @@ class McpFillGovernor:
         units: Sequence[MessageUnit],
         *,
         intent: str = "",
-        archive: Optional[Sequence[MessageUnit]] = None,
-    ) -> Dict[str, Any]:
+        archive: Sequence[MessageUnit] | None = None,
+    ) -> dict[str, Any]:
         """Return governed unit list + fill state.
 
         above max → compress to target (sharp Sinnkongruenz)
@@ -123,7 +122,7 @@ class McpFillGovernor:
         st = self.measure(units_list)
         result_units = units_list
         action = "noop"
-        compress_meta: Dict[str, Any] = {}
+        compress_meta: dict[str, Any] = {}
 
         if st.band == "above":
             # lossless Sinnkongruenz compress toward target (no info loss)
@@ -219,7 +218,7 @@ class McpFillGovernor:
             "policy": "maintain_fill_40_70_sinnkongruenz",
         }
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         return {
             "ok": True,
             "last": self._last.to_dict() if self._last else None,
@@ -243,7 +242,7 @@ class McpFillGovernor:
         )
 
 
-_GOV: Optional[McpFillGovernor] = None
+_GOV: McpFillGovernor | None = None
 
 
 def get_mcp_fill_governor() -> McpFillGovernor:
@@ -254,10 +253,10 @@ def get_mcp_fill_governor() -> McpFillGovernor:
 
 
 def govern_messages(
-    messages: Sequence[Dict[str, Any]],
+    messages: Sequence[dict[str, Any]],
     *,
     intent: str = "",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Convenience: list[{role,content}] → governed list + fill stats."""
     units = [
         MessageUnit(

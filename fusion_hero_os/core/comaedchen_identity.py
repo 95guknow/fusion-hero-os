@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Comädchen × alte-frau95g identity — function + visual + free TTS contract.
 
 Protocol: ``protocols/comaedchen_alte_frau_pr0chan.yaml``
@@ -8,9 +7,9 @@ Voice/design: free AI voice models (Voidol-class), corpus, TTS — character mem
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 PROTOCOL_ID = "comaedchen-alte-frau-pr0chan"
 PROTOCOL_SHORT = "cap"
@@ -23,10 +22,10 @@ __all__ = ["status", "propagate", "voice_design_contract", "PROTOCOL_ID"]
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def voice_design_contract() -> Dict[str, Any]:
+def voice_design_contract() -> dict[str, Any]:
     """Clear contract: where voice/design may be used."""
     return {
         "protocol": PROTOCOL_ID,
@@ -60,7 +59,7 @@ def voice_design_contract() -> Dict[str, Any]:
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     """Central clear status for identity propagation."""
     try:
         from fusion_hero_os.core.comaedchen_audio import status as audio_status
@@ -117,7 +116,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def propagate() -> Dict[str, Any]:
+def propagate() -> dict[str, Any]:
     """Write central identity pointer (same pattern as mugen-tsuky.chan)."""
     st = status()
     STATE.parent.mkdir(parents=True, exist_ok=True)

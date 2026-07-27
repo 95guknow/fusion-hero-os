@@ -8,8 +8,8 @@ Dashboard laufende Dispatcher-Aufträge sichtbar zu machen.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from datetime import datetime, UTC
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 
@@ -19,8 +19,8 @@ class TrackedProcess:
     name: str
     status: str  # "running" | "completed" | "failed"
     started_at: str
-    ended_at: Optional[str] = None
-    meta: Dict[str, Any] = field(default_factory=dict)
+    ended_at: str | None = None
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 class LiveProcessTrackingCoreModule(BaseModule):
@@ -30,15 +30,15 @@ class LiveProcessTrackingCoreModule(BaseModule):
 
     def __init__(self) -> None:
         super().__init__()
-        self._processes: Dict[str, TrackedProcess] = {}
+        self._processes: dict[str, TrackedProcess] = {}
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any] | None:
         payload = payload or {}
         name = payload.get("name")
         if not name:
             raise ValueError("payload['name'] ist erforderlich.")
         action = payload.get("action", "status")
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now(UTC).isoformat()
 
         if action == "start":
             self._processes[name] = TrackedProcess(
@@ -56,6 +56,6 @@ class LiveProcessTrackingCoreModule(BaseModule):
         proc = self._processes.get(name)
         return asdict(proc) if proc else None
 
-    def snapshot(self) -> Dict[str, Dict[str, Any]]:
+    def snapshot(self) -> dict[str, dict[str, Any]]:
         """Status aller bekannten Vorgänge (nur Lesezugriff)."""
         return {name: asdict(p) for name, p in self._processes.items()}

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Translate-Controller — je Modul die optimale Sprache, Ist gegen Soll.
 
 Der Controller **uebersetzt nichts**. Er liest das Repo, ordnet jedem Modul
@@ -27,9 +26,10 @@ import argparse
 import json
 import re
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "sprachbindung.yaml"
@@ -49,7 +49,7 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-def _load_yaml(path: Path) -> Dict[str, Any]:
+def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         import yaml  # type: ignore
     except ImportError:
@@ -65,7 +65,7 @@ def _load_yaml(path: Path) -> Dict[str, Any]:
     return {}
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     return _load_yaml(CONFIG)
 
 
@@ -101,7 +101,7 @@ class Modul:
         """
         return self.abweichung and not self.gebunden
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = {
             "name": self.name,
             "pfad": self.pfad,
@@ -135,14 +135,14 @@ _KIND_ZU_SPRACHE = {
 _ENDUNG_ZU_SPRACHE = {".s": "asm", ".c": "c", ".h": "c"}
 
 
-def _kernel_dateien() -> List[Tuple[str, str]]:
+def _kernel_dateien() -> list[tuple[str, str]]:
     """(repo-relativer Pfad, Ist-Sprache) fuer die Kernel-Ebene.
 
     Der Dependency-Atlas kennt nur Python, Rust-Crates und JS-Pakete — die
     Assembly- und C-Ebene faellt bei ihm durch. Ohne diese Ergaenzung haette
     der Controller ausgerechnet ueber den Kern nichts zu sagen.
     """
-    treffer: List[Tuple[str, str]] = []
+    treffer: list[tuple[str, str]] = []
     for basis in ("kernel", "src/normal_os/kernel"):
         wurzel = ROOT / basis
         if not wurzel.is_dir():
@@ -156,7 +156,7 @@ def _kernel_dateien() -> List[Tuple[str, str]]:
     return treffer
 
 
-def _atlas_knoten() -> Tuple[List[Any], str]:
+def _atlas_knoten() -> tuple[list[Any], str]:
     """Knoten aus dem Dependency-Atlas holen. Fehlt er, ist das ein Befund."""
     try:
         from fusion_hero_os.core.dependency_atlas import build_atlas_cached
@@ -167,10 +167,10 @@ def _atlas_knoten() -> Tuple[List[Any], str]:
         return [], f"{type(exc).__name__}: {str(exc)[:160]}"
 
 
-def inventar() -> Dict[str, Any]:
+def inventar() -> dict[str, Any]:
     """Alle Module mit ihrer Ist-Sprache."""
     knoten, atlas_fehler = _atlas_knoten()
-    module: List[Modul] = []
+    module: list[Modul] = []
 
     for n in knoten:
         sprache = _KIND_ZU_SPRACHE.get(getattr(n, "kind", ""), getattr(n, "kind", "?"))
@@ -200,7 +200,7 @@ def inventar() -> Dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def _datei_text(pfad: str) -> Optional[str]:
+def _datei_text(pfad: str) -> str | None:
     p = ROOT / pfad
     if not p.is_file():
         return None
@@ -229,7 +229,7 @@ def _datei_matcht(pfad: str, regexe: Sequence[str]) -> bool:
     return any(re.search(rx, text, re.MULTILINE) for rx in regexe)
 
 
-def zielsprache(m: Modul, regeln: Sequence[Dict[str, Any]]) -> Tuple[str, str, str, str]:
+def zielsprache(m: Modul, regeln: Sequence[dict[str, Any]]) -> tuple[str, str, str, str]:
     """Erste passende Regel gewinnt. Liefert (soll, regel_id, signal, hinweis)."""
     for regel in regeln:
         prefixe = regel.get("pfad_prefix") or []
@@ -275,8 +275,8 @@ def zielsprache(m: Modul, regeln: Sequence[Dict[str, Any]]) -> Tuple[str, str, s
 # ---------------------------------------------------------------------------
 
 
-def _render_markdown(r: Dict[str, Any]) -> str:
-    z: List[str] = []
+def _render_markdown(r: dict[str, Any]) -> str:
+    z: list[str] = []
     z.append("# Sprachbindung — Ist gegen Soll")
     z.append("")
     z.append(f"Platform {r['platform_version']} · `python -m fusion_hero_os.core.translate_controller`")
@@ -337,7 +337,7 @@ def _render_markdown(r: Dict[str, Any]) -> str:
     return "\n".join(z)
 
 
-def report(*, schreiben: bool = True) -> Dict[str, Any]:
+def report(*, schreiben: bool = True) -> dict[str, Any]:
     """Ist gegen Soll fuer alle Module."""
     cfg = load_config()
     regeln = cfg.get("regeln") or []
@@ -345,7 +345,7 @@ def report(*, schreiben: bool = True) -> Dict[str, Any]:
     bindungen = cfg.get("bindungen") or {}
 
     inv = inventar()
-    module: List[Modul] = inv["module"]
+    module: list[Modul] = inv["module"]
 
     for m in module:
         soll, rid, signal, hinweis = zielsprache(m, regeln)
@@ -359,8 +359,8 @@ def report(*, schreiben: bool = True) -> Dict[str, Any]:
     luecken = [m for m in module if m.luecke]
     gebunden = [m for m in abweichungen if m.gebunden]
 
-    def _zaehl(attr: str) -> Dict[str, int]:
-        out: Dict[str, int] = {}
+    def _zaehl(attr: str) -> dict[str, int]:
+        out: dict[str, int] = {}
         for m in module:
             v = getattr(m, attr) or "?"
             out[v] = out.get(v, 0) + 1
@@ -368,9 +368,9 @@ def report(*, schreiben: bool = True) -> Dict[str, Any]:
 
     signale = {m.regel: m.signal for m in luecken if m.regel and m.signal}
 
-    r: Dict[str, Any] = {
+    r: dict[str, Any] = {
         "kind": "SPRACHBINDUNG",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "platform_version": str(cfg.get("platform_version") or "13.0.0"),
         "ok": bool(cfg) and inv["ok"],
         "config_ok": bool(cfg),
@@ -404,7 +404,7 @@ def report(*, schreiben: bool = True) -> Dict[str, Any]:
     return r
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     return {
         "ok": True,
@@ -418,7 +418,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Translate-Controller — je Modul die optimale Sprache, Ist gegen Soll. "
         "Uebersetzt nichts; ordnet zu und weist die Luecke aus."

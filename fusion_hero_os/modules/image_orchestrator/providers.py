@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Protocol
+from typing import Any, Protocol
 
 
 class ImageProvider(Protocol):
-    def render(self, built_prompt: str, *, metadata: Optional[dict] = None) -> Dict[str, Any]: ...
+    def render(self, built_prompt: str, *, metadata: dict | None = None) -> dict[str, Any]: ...
 
 
 class DryRunImageProvider:
     """Kein echter API-Call — liefert Plan-Dict."""
 
-    def render(self, built_prompt: str, *, metadata: Optional[dict] = None) -> Dict[str, Any]:
+    def render(self, built_prompt: str, *, metadata: dict | None = None) -> dict[str, Any]:
         return {
             "would_execute": False,
             "mode": "dry_run",
@@ -29,5 +29,5 @@ class CallableImageProvider:
     def __init__(self, fn) -> None:
         self._fn = fn
 
-    def render(self, built_prompt: str, *, metadata: Optional[dict] = None) -> Dict[str, Any]:
+    def render(self, built_prompt: str, *, metadata: dict | None = None) -> dict[str, Any]:
         return self._fn(built_prompt, metadata=metadata)

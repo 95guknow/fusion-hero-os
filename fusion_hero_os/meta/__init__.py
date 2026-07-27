@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Meta-neural network vertical slice for Fusion Hero OS.
 
 This package implements a privacy-by-default, consent-scoped "meta-neural

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Optionales Rust-Backend für den QUBO-Solver (PyO3-Extension `rust_engine`).
 
 Lädt das kompilierte Rust-Modul. Ist es nicht gebaut, bleibt ``AVAILABLE = False``

@@ -34,7 +34,8 @@ import hashlib
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Callable, Iterable, Sequence
 
 __all__ = [
     "LaneKind",
@@ -66,7 +67,7 @@ class LaneProfile:
     virtual: bool
     detail: str = ""
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> dict[str, Any]:
         return {
             "kind": self.kind.value,
             "workers": self.workers,
@@ -83,12 +84,12 @@ def _pvht_factor(default: float = 2.0) -> float:
         return default
 
 
-def detect_lanes() -> Dict[LaneKind, LaneProfile]:
+def detect_lanes() -> dict[LaneKind, LaneProfile]:
     """Probe der vier Lanes. GPU/QPU werden ehrlich als virtuell markiert,
     wenn keine echte Hardware/Bibliothek vorhanden ist."""
     cores = os.cpu_count() or 2
     factor = _pvht_factor()
-    lanes: Dict[LaneKind, LaneProfile] = {}
+    lanes: dict[LaneKind, LaneProfile] = {}
 
     lanes[LaneKind.CPU] = LaneProfile(
         kind=LaneKind.CPU,
@@ -176,7 +177,7 @@ class ZitterJitter:
 # Tasks + Mesh
 # ---------------------------------------------------------------------------
 
-TaskFn = Callable[[Dict[str, Any]], Any]
+TaskFn = Callable[[dict[str, Any]], Any]
 
 
 @dataclass
@@ -184,9 +185,9 @@ class ZitterTask:
     name: str
     lane: LaneKind
     fn: TaskFn
-    deps: Tuple[str, ...] = ()
+    deps: tuple[str, ...] = ()
     retries: int = 2
-    payload: Dict[str, Any] = field(default_factory=dict)
+    payload: dict[str, Any] = field(default_factory=dict)
 
 
 class MeshValidationError(ValueError):
@@ -199,12 +200,12 @@ class ZitterPolyMesh:
 
     def __init__(
         self,
-        lanes: Optional[Dict[LaneKind, LaneProfile]] = None,
-        jitter: Optional[ZitterJitter] = None,
+        lanes: dict[LaneKind, LaneProfile] | None = None,
+        jitter: ZitterJitter | None = None,
     ):
         self.lanes = lanes or detect_lanes()
         self.jitter = jitter or ZitterJitter()
-        self._tasks: Dict[str, ZitterTask] = {}
+        self._tasks: dict[str, ZitterTask] = {}
 
     def add_task(
         self,
@@ -213,8 +214,8 @@ class ZitterPolyMesh:
         fn: TaskFn,
         deps: Sequence[str] = (),
         retries: int = 2,
-        payload: Optional[Dict[str, Any]] = None,
-    ) -> "ZitterPolyMesh":
+        payload: dict[str, Any] | None = None,
+    ) -> ZitterPolyMesh:
         if name in self._tasks:
             raise MeshValidationError(f"Task doppelt definiert: {name}")
         self._tasks[name] = ZitterTask(
@@ -229,7 +230,7 @@ class ZitterPolyMesh:
 
     # -- Validierung -------------------------------------------------------
 
-    def validate(self) -> List[str]:
+    def validate(self) -> list[str]:
         """Prüft unbekannte Dependencies, unbekannte Lanes und Zyklen (Kahn).
         Gibt die topologische Reihenfolge zurück; wirft MeshValidationError."""
         for t in self._tasks.values():
@@ -242,13 +243,13 @@ class ZitterPolyMesh:
                 raise MeshValidationError(f"Task '{t.name}' nutzt unbekannte Lane '{t.lane}'")
 
         indegree = {name: len(t.deps) for name, t in self._tasks.items()}
-        dependents: Dict[str, List[str]] = {name: [] for name in self._tasks}
+        dependents: dict[str, list[str]] = {name: [] for name in self._tasks}
         for t in self._tasks.values():
             for dep in t.deps:
                 dependents[dep].append(t.name)
 
         queue = sorted(n for n, d in indegree.items() if d == 0)
-        order: List[str] = []
+        order: list[str] = []
         while queue:
             node = queue.pop(0)
             order.append(node)
@@ -264,7 +265,7 @@ class ZitterPolyMesh:
 
     # -- Ausführung --------------------------------------------------------
 
-    def run(self, timeout: float = 300.0) -> Dict[str, Any]:
+    def run(self, timeout: float = 300.0) -> dict[str, Any]:
         self.validate()
         t_start = time.perf_counter()
 
@@ -277,16 +278,16 @@ class ZitterPolyMesh:
         }
 
         cond = threading.Condition()
-        results: Dict[str, Dict[str, Any]] = {}
+        results: dict[str, dict[str, Any]] = {}
         remaining_deps = {name: set(t.deps) for name, t in self._tasks.items()}
-        dependents: Dict[str, List[str]] = {name: [] for name in self._tasks}
+        dependents: dict[str, list[str]] = {name: [] for name in self._tasks}
         for t in self._tasks.values():
             for dep in t.deps:
                 dependents[dep].append(t.name)
         submitted: set = set()
 
         def _run_task(task: ZitterTask) -> None:
-            record: Dict[str, Any] = {
+            record: dict[str, Any] = {
                 "lane": task.lane.value,
                 "attempts": 0,
                 "status": "failed",
@@ -359,7 +360,7 @@ class ZitterPolyMesh:
         for ex in executors.values():
             ex.shutdown(wait=True, cancel_futures=True)
 
-        lane_stats: Dict[str, Dict[str, Any]] = {}
+        lane_stats: dict[str, dict[str, Any]] = {}
         for kind, profile in self.lanes.items():
             lane_tasks = [r for r in results.values() if r["lane"] == kind.value]
             lane_stats[kind.value] = {
@@ -387,7 +388,7 @@ class ZitterPolyMesh:
 # ---------------------------------------------------------------------------
 
 
-def _op_cpu_sum_squares(ctx: Dict[str, Any]) -> Dict[str, Any]:
+def _op_cpu_sum_squares(ctx: dict[str, Any]) -> dict[str, Any]:
     n = int(ctx["payload"].get("n", 200_000))
     total = sum(i * i for i in range(n))
     expected = (n - 1) * n * (2 * n - 1) // 6
@@ -396,7 +397,7 @@ def _op_cpu_sum_squares(ctx: Dict[str, Any]) -> Dict[str, Any]:
     return {"n": n, "sum_squares": total}
 
 
-def _op_mem_shard_roundtrip(ctx: Dict[str, Any]) -> Dict[str, Any]:
+def _op_mem_shard_roundtrip(ctx: dict[str, Any]) -> dict[str, Any]:
     size = int(ctx["payload"].get("bytes", 1_000_000))
     blob = os.urandom(size)
     digest = hashlib.sha256(blob).hexdigest()
@@ -412,7 +413,7 @@ def _op_mem_shard_roundtrip(ctx: Dict[str, Any]) -> Dict[str, Any]:
     return {"bytes": size, "sha256": digest}
 
 
-def _op_gpu_matmul(ctx: Dict[str, Any]) -> Dict[str, Any]:
+def _op_gpu_matmul(ctx: dict[str, Any]) -> dict[str, Any]:
     n = int(ctx["payload"].get("n", 64))
     lane = ctx.get("lane", {})
     if lane.get("backend") == "torch-cuda":  # pragma: no cover - hardwareabhängig
@@ -431,10 +432,10 @@ def _op_gpu_matmul(ctx: Dict[str, Any]) -> Dict[str, Any]:
     return {"n": n, "checksum": c, "backend": backend, "virtual": backend != "torch-cuda"}
 
 
-def _solve_qubo_stdlib(q: Dict[Tuple[int, int], float], n_vars: int, sweeps: int = 400) -> Tuple[List[int], float]:
+def _solve_qubo_stdlib(q: dict[tuple[int, int], float], n_vars: int, sweeps: int = 400) -> tuple[list[int], float]:
     rng = random.Random(42)
 
-    def energy(x: List[int]) -> float:
+    def energy(x: list[int]) -> float:
         return sum(coeff * x[i] * x[j] for (i, j), coeff in q.items())
 
     x = [rng.randint(0, 1) for _ in range(n_vars)]
@@ -452,7 +453,7 @@ def _solve_qubo_stdlib(q: Dict[Tuple[int, int], float], n_vars: int, sweeps: int
     return best, best_e
 
 
-def _op_qpu_min_qubo(ctx: Dict[str, Any]) -> Dict[str, Any]:
+def _op_qpu_min_qubo(ctx: dict[str, Any]) -> dict[str, Any]:
     # Kleines QUBO mit bekanntem Optimum: x0=x1=1, x2=0 → Energie -3
     q = {(0, 0): -2.0, (1, 1): -2.0, (2, 2): 1.0, (0, 1): 1.0, (1, 2): 2.0}
     backend = ctx.get("lane", {}).get("backend", "stdlib-sa")
@@ -475,7 +476,7 @@ def _op_qpu_min_qubo(ctx: Dict[str, Any]) -> Dict[str, Any]:
     return {"bits": bits, "energy": energy, "backend": backend, "virtual": True}
 
 
-def builtin_ops() -> Dict[str, TaskFn]:
+def builtin_ops() -> dict[str, TaskFn]:
     return {
         "cpu_sum_squares": _op_cpu_sum_squares,
         "mem_shard_roundtrip": _op_mem_shard_roundtrip,
@@ -489,7 +490,7 @@ def builtin_ops() -> Dict[str, TaskFn]:
 # ---------------------------------------------------------------------------
 
 
-def load_pipeline(path: os.PathLike | str) -> Dict[str, Any]:
+def load_pipeline(path: os.PathLike | str) -> dict[str, Any]:
     text = Path(path).read_text(encoding="utf-8")
     try:
         import yaml  # type: ignore
@@ -503,10 +504,10 @@ def load_pipeline(path: os.PathLike | str) -> Dict[str, Any]:
 
 
 def mesh_from_pipeline(
-    pipeline: Dict[str, Any],
+    pipeline: dict[str, Any],
     workflow: str,
-    ops: Optional[Dict[str, TaskFn]] = None,
-    lanes: Optional[Dict[LaneKind, LaneProfile]] = None,
+    ops: dict[str, TaskFn] | None = None,
+    lanes: dict[LaneKind, LaneProfile] | None = None,
 ) -> ZitterPolyMesh:
     ops = ops or builtin_ops()
     workflows = pipeline.get("workflows") or {}
@@ -535,7 +536,7 @@ def mesh_from_pipeline(
 # ---------------------------------------------------------------------------
 
 
-def _cli(argv: Optional[Iterable[str]] = None) -> int:
+def _cli(argv: Iterable[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Hyperclusterup Zitterpolymesh")
     parser.add_argument("--probe", action="store_true", help="Lane-Profile als JSON ausgeben")
     parser.add_argument("--validate", action="store_true", help="Pipeline-DAG validieren")

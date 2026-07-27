@@ -8,8 +8,8 @@ kein externer Zugriff.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime, UTC
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 
@@ -32,9 +32,9 @@ class ConversationContextCoreModule(BaseModule):
     def __init__(self, max_turns: int = 50) -> None:
         super().__init__()
         self.max_turns = max_turns
-        self._turns: List[ConversationTurn] = []
+        self._turns: list[ConversationTurn] = []
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         action = payload.get("action", "add")
 
@@ -42,7 +42,7 @@ class ConversationContextCoreModule(BaseModule):
             turn = ConversationTurn(
                 role=payload.get("role", "user"),
                 content=payload.get("content", ""),
-                ts=datetime.now(timezone.utc).isoformat(),
+                ts=datetime.now(UTC).isoformat(),
             )
             self._turns.append(turn)
             if len(self._turns) > self.max_turns:

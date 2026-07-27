@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 AGENTS — Multi-Agent Orchestration Framework (v1.0)
 ===================================================
@@ -42,7 +41,8 @@ import uuid
 import queue
 import threading
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
+from collections.abc import Callable
 
 # Optionaler, deterministischer Modul-RNG im Projektstil (rng = np.random.default_rng(7)).
 # Guarded: fehlt numpy, faellt das Framework auf die Standardbibliothek zurueck.
@@ -68,7 +68,7 @@ class Message:
 
     sender: str
     topic: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     ts: float = field(default_factory=time.time)
 
 
@@ -87,9 +87,9 @@ class MessageBus:
 
     def __init__(self) -> None:
         self._lock = threading.RLock()
-        self._subscribers: Dict[str, List[Callable[[Message], None]]] = {}
-        self._status: Dict[str, Dict[str, Any]] = {}
-        self._history: List[Message] = []
+        self._subscribers: dict[str, list[Callable[[Message], None]]] = {}
+        self._status: dict[str, dict[str, Any]] = {}
+        self._history: list[Message] = []
         self._max_history = 1000
 
     def subscribe(self, topic: str, callback: Callable[[Message], None]) -> None:
@@ -97,7 +97,7 @@ class MessageBus:
         with self._lock:
             self._subscribers.setdefault(topic, []).append(callback)
 
-    def publish(self, sender: str, topic: str, payload: Dict[str, Any]) -> None:
+    def publish(self, sender: str, topic: str, payload: dict[str, Any]) -> None:
         """Veroeffentlicht eine Nachricht; benachrichtigt alle Abonnenten des Themas."""
         msg = Message(sender=sender, topic=topic, payload=dict(payload))
         with self._lock:
@@ -114,25 +114,25 @@ class MessageBus:
                 # Ein fehlerhaftes Callback darf den Bus nicht blockieren.
                 pass
 
-    def update_status(self, agent_id: str, status: Dict[str, Any]) -> None:
+    def update_status(self, agent_id: str, status: dict[str, Any]) -> None:
         """Hinterlegt/aktualisiert den letzten bekannten Status eines Agenten."""
         with self._lock:
             entry = dict(status)
             entry["ts"] = time.time()
             self._status[agent_id] = entry
 
-    def latest_status(self, agent_id: str) -> Optional[Dict[str, Any]]:
+    def latest_status(self, agent_id: str) -> dict[str, Any] | None:
         """Liest den letzten Status eines bestimmten Agenten (oder None)."""
         with self._lock:
             s = self._status.get(agent_id)
             return dict(s) if s is not None else None
 
-    def all_status(self) -> Dict[str, Dict[str, Any]]:
+    def all_status(self) -> dict[str, dict[str, Any]]:
         """Schnappschuss aller bekannten Agenten-Status (flache Kopie)."""
         with self._lock:
             return {aid: dict(s) for aid, s in self._status.items()}
 
-    def history(self) -> List[Message]:
+    def history(self) -> list[Message]:
         """Schnappschuss der Nachrichten-Historie (flache Kopie)."""
         with self._lock:
             return list(self._history)
@@ -147,11 +147,11 @@ class Task:
     """Eine einzelne Arbeitseinheit, die ein Agent ausfuehrt."""
 
     name: str
-    payload: Dict[str, Any] = field(default_factory=dict)
+    payload: dict[str, Any] = field(default_factory=dict)
     task_id: str = field(default_factory=lambda: uuid.uuid4().hex[:8])
     result: Any = None
     done: bool = False
-    assigned_to: Optional[str] = None
+    assigned_to: str | None = None
 
 
 class TaskQueue:
@@ -164,13 +164,13 @@ class TaskQueue:
     """
 
     def __init__(self) -> None:
-        self._q: "queue.Queue[Task]" = queue.Queue()
+        self._q: queue.Queue[Task] = queue.Queue()
 
     def put(self, task: Task) -> None:
         """Reiht eine Aufgabe ein."""
         self._q.put(task)
 
-    def get_nowait(self) -> Optional[Task]:
+    def get_nowait(self) -> Task | None:
         """Nimmt eine Aufgabe ohne Blockieren; None, wenn die Queue leer ist."""
         try:
             return self._q.get_nowait()
@@ -190,7 +190,7 @@ class TaskQueue:
 # DEFAULT EXECUTOR — deterministische, simulierte Arbeit
 # =====================================================================
 
-def default_executor(agent: "Agent", task: Task) -> Any:
+def default_executor(agent: Agent, task: Task) -> Any:
     """
     Standard-Executor: simuliert deterministische Arbeit.
 
@@ -234,8 +234,8 @@ class Agent:
         self,
         name: str,
         role: str = "worker",
-        bus: Optional[MessageBus] = None,
-        executor: Callable[["Agent", Task], Any] = default_executor,
+        bus: MessageBus | None = None,
+        executor: Callable[[Agent, Task], Any] = default_executor,
         heartbeat_interval: float = 0.1,
         work_seconds: float = 0.02,
         poll_interval: float = 0.005,
@@ -253,12 +253,12 @@ class Agent:
         self.inbox: TaskQueue = TaskQueue()
 
         # Roster der angestellten Subagenten (Kinder).
-        self._children: Dict[str, "Agent"] = {}
+        self._children: dict[str, Agent] = {}
         self._children_lock = threading.RLock()
 
         # Lebenszyklus-Steuerung.
         self._stop = threading.Event()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._last_heartbeat = 0.0
 
         # Buchhaltung.
@@ -280,7 +280,7 @@ class Agent:
         """Signalisiert dem Worker-Thread das saubere Beenden (nicht blockierend)."""
         self._stop.set()
 
-    def join(self, timeout: Optional[float] = None) -> None:
+    def join(self, timeout: float | None = None) -> None:
         """Wartet auf das Ende des Worker-Threads."""
         if self._thread is not None:
             self._thread.join(timeout=timeout)
@@ -303,7 +303,7 @@ class Agent:
 
     # ---- Hire / Fire --------------------------------------------------
 
-    def spawn_subagent(self, name: Optional[str] = None, **kwargs: Any) -> "Agent":
+    def spawn_subagent(self, name: str | None = None, **kwargs: Any) -> Agent:
         """
         Stellt einen Subagenten an ("hire").
 
@@ -328,7 +328,7 @@ class Agent:
         self.bus.publish(self.name, "roster", {"event": "hire", "child": child.name, "parent": self.name})
         return child
 
-    def dismiss(self, subagent: "Agent", timeout: float = 2.0) -> bool:
+    def dismiss(self, subagent: Agent, timeout: float = 2.0) -> bool:
         """
         Entlaesst einen Subagenten ("fire") und stoppt dessen Thread sauber.
 
@@ -345,7 +345,7 @@ class Agent:
             )
         return present
 
-    def children(self) -> List["Agent"]:
+    def children(self) -> list[Agent]:
         """Schnappschuss des aktuellen Subagenten-Rosters."""
         with self._children_lock:
             return list(self._children.values())
@@ -357,7 +357,7 @@ class Agent:
         task.assigned_to = self.name
         self.inbox.put(task)
 
-    def _post_heartbeat(self, extra: Optional[Dict[str, Any]] = None) -> None:
+    def _post_heartbeat(self, extra: dict[str, Any] | None = None) -> None:
         """Sendet einen Heartbeat auf den Bus und aktualisiert das Status-Register."""
         status = {
             "id": self.id,
@@ -432,11 +432,11 @@ class Supervisor(Agent):
     def __init__(
         self,
         name: str = "supervisor",
-        bus: Optional[MessageBus] = None,
-        task_queue: Optional[TaskQueue] = None,
-        executor: Callable[["Agent", Task], Any] = default_executor,
+        bus: MessageBus | None = None,
+        task_queue: TaskQueue | None = None,
+        executor: Callable[[Agent, Task], Any] = default_executor,
         min_workers: int = 1,
-        max_workers: Optional[int] = None,
+        max_workers: int | None = None,
         scale_up_threshold: int = 3,
         idle_rounds_before_fire: int = 3,
         tick_interval: float = 0.02,
@@ -497,7 +497,7 @@ class Supervisor(Agent):
                 return True
         return False
 
-    def _least_loaded(self) -> Optional[Agent]:
+    def _least_loaded(self) -> Agent | None:
         """Liefert den Worker mit der geringsten Inbox-Tiefe (oder None, wenn keiner da)."""
         kids = self.children()
         if not kids:
@@ -508,7 +508,7 @@ class Supervisor(Agent):
         """Summe aus Queue-Tiefe und allen noch nicht abgearbeiteten Worker-Inboxen."""
         return self.task_queue.depth() + sum(w.inbox.depth() for w in self.children())
 
-    def summarize(self) -> Dict[str, Any]:
+    def summarize(self) -> dict[str, Any]:
         """
         Aggregiert die aktuellen Worker-Status zu einer Zusammenfassung.
 
@@ -607,7 +607,7 @@ class Supervisor(Agent):
 
     # ---- Komfort ------------------------------------------------------
 
-    def run_until_drained(self, timeout: float = 10.0) -> Dict[str, Any]:
+    def run_until_drained(self, timeout: float = 10.0) -> dict[str, Any]:
         """
         Startet den Supervisor, wartet bis die Queue abgearbeitet ist (oder timeout),
         faehrt dann alles sauber herunter und liefert den Abschlussreport.
@@ -617,7 +617,7 @@ class Supervisor(Agent):
         self.shutdown(timeout=2.0)
         return self.report()
 
-    def report(self) -> Dict[str, Any]:
+    def report(self) -> dict[str, Any]:
         """Erstellt den Abschlussreport (Tasks done, Peak-Belegschaft, Hires, Fires)."""
         # Tasks done summieren wir aus dem letzten bekannten Status der (ehemaligen)
         # Worker — aber NUR fuer die von DIESEM Supervisor angestellten (``_hired_ids``).

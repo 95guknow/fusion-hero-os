@@ -6,7 +6,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class JobStatus(str, Enum):
@@ -25,9 +25,9 @@ class ImageJob:
     status: JobStatus
     created_at: float = field(default_factory=time.time)
     wait_seconds: float = 0.0
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "job_id": self.job_id,
             "prompt": self.prompt,
@@ -41,8 +41,8 @@ class ImageJob:
 
 class ImageJobQueue:
     def __init__(self, max_history: int = 200) -> None:
-        self._jobs: Dict[str, ImageJob] = {}
-        self._order: List[str] = []
+        self._jobs: dict[str, ImageJob] = {}
+        self._order: list[str] = []
         self.max_history = max_history
 
     def create(self, prompt: str, built_prompt: str, **meta: Any) -> ImageJob:
@@ -59,7 +59,7 @@ class ImageJobQueue:
         self._trim()
         return job
 
-    def update(self, job_id: str, status: JobStatus, **fields: Any) -> Optional[ImageJob]:
+    def update(self, job_id: str, status: JobStatus, **fields: Any) -> ImageJob | None:
         job = self._jobs.get(job_id)
         if not job:
             return None
@@ -71,10 +71,10 @@ class ImageJobQueue:
                 job.metadata[k] = v
         return job
 
-    def get(self, job_id: str) -> Optional[ImageJob]:
+    def get(self, job_id: str) -> ImageJob | None:
         return self._jobs.get(job_id)
 
-    def list_recent(self, n: int = 20) -> List[Dict[str, Any]]:
+    def list_recent(self, n: int = 20) -> list[dict[str, Any]]:
         ids = self._order[-n:]
         return [self._jobs[i].to_dict() for i in ids if i in self._jobs]
 
