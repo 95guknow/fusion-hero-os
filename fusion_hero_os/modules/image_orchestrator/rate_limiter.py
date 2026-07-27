@@ -5,7 +5,6 @@ from __future__ import annotations
 import time
 from collections import deque
 from dataclasses import dataclass
-from typing import Deque, Dict, Tuple
 
 
 @dataclass
@@ -19,14 +18,14 @@ class TokenBucketRateLimiter:
 
     def __init__(self, config: RateLimitConfig | None = None) -> None:
         self.config = config or RateLimitConfig()
-        self._timestamps: Deque[float] = deque()
+        self._timestamps: deque[float] = deque()
 
     def _prune(self, now: float) -> None:
         cutoff = now - self.config.window_seconds
         while self._timestamps and self._timestamps[0] < cutoff:
             self._timestamps.popleft()
 
-    def allow(self, now: float | None = None) -> Tuple[bool, float]:
+    def allow(self, now: float | None = None) -> tuple[bool, float]:
         now = now if now is not None else time.time()
         self._prune(now)
         if len(self._timestamps) < self.config.max_requests:
@@ -52,7 +51,7 @@ class DualRateLimiter:
         self.default = TokenBucketRateLimiter(default)
         self.burst = TokenBucketRateLimiter(burst)
 
-    def allow(self, now: float | None = None) -> Tuple[bool, float, str]:
+    def allow(self, now: float | None = None) -> tuple[bool, float, str]:
         ok_d, wait_d = self.default.allow(now)
         if not ok_d:
             return False, wait_d, "default"
@@ -61,5 +60,5 @@ class DualRateLimiter:
             return False, wait_b, "burst"
         return True, 0.0, "ok"
 
-    def status(self) -> Dict[str, dict]:
+    def status(self) -> dict[str, dict]:
         return {"default": self.default.status(), "burst": self.burst.status()}

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 core_modules.py — Lauffaehige Methoden-Module der Heroic Methodology
 =====================================================================
@@ -34,7 +33,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Dict, List, Optional, Tuple
 
 # --- Optionaler Haus-RNG (numpy ist optional; Modul laeuft auch ohne) -------
 try:  # pragma: no cover - reine Verfuegbarkeitsweiche
@@ -64,7 +62,7 @@ class PeerReviewCoreModule:
     """
 
     # (Dimensionsname, Regex-Marker) — bewusst nah an app.py gehalten.
-    DIMENSIONS: List[Tuple[str, str]] = [
+    DIMENSIONS: list[tuple[str, str]] = [
         ("1 Evidenz/Quellen", r"(quelle|source|ref|http|doi|zitat|beleg)"),
         ("2 Logische Kette", r"(→|=>|daher|because|weil|therefore|deshalb|folgt|somit)"),
         ("3 Alternativen", r"(alternativ|gegenargument|jedoch|stattdessen|abwägung|andererseits)"),
@@ -72,7 +70,7 @@ class PeerReviewCoreModule:
         ("5 Risiken/Lücken", r"(risik|unsicher|lücke|tbd|todo|offen|annahme)"),
     ]
 
-    def review(self, text: str) -> Dict[str, object]:
+    def review(self, text: str) -> dict[str, object]:
         """Fuehrt den 5-Dimensionen-Review ueber ``text`` aus.
 
         Rueckgabe-Dict:
@@ -83,7 +81,7 @@ class PeerReviewCoreModule:
             ``passed``     : True ab >= 4 abgedeckten Dimensionen
         """
         t = text or ""
-        dims: List[Dict[str, object]] = []
+        dims: list[dict[str, object]] = []
         for name, pattern in self.DIMENSIONS:
             found = re.findall(pattern, t, flags=re.I)
             dims.append(
@@ -145,7 +143,7 @@ class ErkenntnisprozessCoreModule:
     ``report()`` einen Zwischenbericht im Format der Methodik.
     """
 
-    _STUFEN: List[Tuple[str, str]] = [
+    _STUFEN: list[tuple[str, str]] = [
         ("Scoping & Hypothesen-Formulierung",
          "Scope definieren, erste Hypothesen zu Luecken/Asymmetrien, Meta-Review der Scoping-Qualitaet."),
         ("Systematische Quellen- & Datenerhebung",
@@ -160,18 +158,18 @@ class ErkenntnisprozessCoreModule:
 
     def __init__(self, thema: str = "(unbenannt)") -> None:
         self.thema = thema
-        self.stages: List[_Stage] = [
+        self.stages: list[_Stage] = [
             _Stage(i + 1, t, b) for i, (t, b) in enumerate(self._STUFEN)
         ]
         self._index = 0  # Index der aktuell offenen Stufe (0..5; 5 == fertig)
 
-    def current_stage(self) -> Optional[_Stage]:
+    def current_stage(self) -> _Stage | None:
         """Liefert die aktuell offene Stufe oder ``None``, wenn abgeschlossen."""
         if self.is_complete():
             return None
         return self.stages[self._index]
 
-    def advance(self, notiz: str = "") -> Optional[_Stage]:
+    def advance(self, notiz: str = "") -> _Stage | None:
         """Schliesst die aktuelle Stufe ab und rueckt weiter.
 
         ``notiz`` wird (falls gesetzt) der erledigten Stufe an die
@@ -243,8 +241,8 @@ class FormalMathematicsCoreModule:
     def classify(
         self,
         aussage: str,
-        bewiesen: Optional[bool] = None,
-        annahmen: Optional[List[str]] = None,
+        bewiesen: bool | None = None,
+        annahmen: list[str] | None = None,
     ) -> FormalClassification:
         """Klassifiziert ``aussage`` in eine der vier Geltungskategorien.
 
@@ -302,7 +300,7 @@ class V3_3StructureCoreModule:
 
     ANZAHL_BOEGEN = 6
 
-    def skeleton(self, titel: str, bogen_titel: Optional[List[str]] = None) -> Dict[str, object]:
+    def skeleton(self, titel: str, bogen_titel: list[str] | None = None) -> dict[str, object]:
         """Baut das Gliederungs-Dict fuer ``titel``.
 
         ``bogen_titel`` kann optional die 6 Bogentitel vorgeben; fehlende
@@ -321,7 +319,7 @@ class V3_3StructureCoreModule:
             "anhang": {"quellen": [], "begriffe": [], "hilfsmaterial": []},
         }
 
-    def render_markdown(self, titel: str, bogen_titel: Optional[List[str]] = None) -> str:
+    def render_markdown(self, titel: str, bogen_titel: list[str] | None = None) -> str:
         """Rendert das Skelett als Markdown-Geruest."""
         sk = self.skeleton(titel, bogen_titel)
         lines = [
@@ -356,8 +354,8 @@ class ArchivePlan:
 
     zip_name: str
     uebersicht_md: str
-    files_to_zip: List[str]
-    index: List[str]
+    files_to_zip: list[str]
+    index: list[str]
 
 
 class AutomaticArchivingCoreModule:
@@ -373,12 +371,12 @@ class AutomaticArchivingCoreModule:
     def build_plan(
         self,
         titel: str,
-        artefakte: List[str],
-        entscheidungen: Optional[List[str]] = None,
-        outputs: Optional[List[str]] = None,
-        offene_punkte: Optional[List[str]] = None,
-        chronologie: Optional[List[str]] = None,
-        heute: Optional[date] = None,
+        artefakte: list[str],
+        entscheidungen: list[str] | None = None,
+        outputs: list[str] | None = None,
+        offene_punkte: list[str] | None = None,
+        chronologie: list[str] | None = None,
+        heute: date | None = None,
     ) -> ArchivePlan:
         """Erzeugt den Archivierungs-Plan (ohne Schreiben/Zippen)."""
         heute = heute or date.today()
@@ -386,7 +384,7 @@ class AutomaticArchivingCoreModule:
         slug = re.sub(r"[^a-z0-9]+", "_", (titel or "archiv").lower()).strip("_") or "archiv"
         zip_name = f"{datum}_{slug}.zip"
 
-        def _liste(items: Optional[List[str]], leer: str) -> str:
+        def _liste(items: list[str] | None, leer: str) -> str:
             items = items or []
             if not items:
                 return f"- {leer}"
@@ -436,7 +434,7 @@ class Milestone:
 
     key: str
     titel: str
-    deps: List[str] = field(default_factory=list)
+    deps: list[str] = field(default_factory=list)
     done: bool = False
 
 
@@ -451,9 +449,9 @@ class RoadmapCoreModule:
     """
 
     def __init__(self) -> None:
-        self._milestones: Dict[str, Milestone] = {}
+        self._milestones: dict[str, Milestone] = {}
 
-    def add(self, key: str, titel: str, deps: Optional[List[str]] = None) -> Milestone:
+    def add(self, key: str, titel: str, deps: list[str] | None = None) -> Milestone:
         """Fuegt einen Meilenstein hinzu (Abhaengigkeiten als Liste von keys)."""
         if key in self._milestones:
             raise ValueError(f"Meilenstein '{key}' existiert bereits.")
@@ -470,7 +468,7 @@ class RoadmapCoreModule:
     def _deps_erfuellt(self, m: Milestone) -> bool:
         return all(self._milestones.get(d) and self._milestones[d].done for d in m.deps)
 
-    def next_steps(self) -> List[Milestone]:
+    def next_steps(self) -> list[Milestone]:
         """Liefert alle offenen Meilensteine mit erfuellten Abhaengigkeiten."""
         return [
             m
@@ -478,7 +476,7 @@ class RoadmapCoreModule:
             if not m.done and self._deps_erfuellt(m)
         ]
 
-    def next_step(self) -> Optional[Milestone]:
+    def next_step(self) -> Milestone | None:
         """Liefert den ersten ausfuehrbaren naechsten Schritt (oder ``None``)."""
         steps = self.next_steps()
         return steps[0] if steps else None

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """mainframe_laden — Permanent Auto-Load (P1 wiring, no longer a stub).
 
 Loads the package registry (and optionally the 03_Code module registry)
@@ -13,7 +12,7 @@ MODULE_ID = "mainframe_laden"
 PLATFORM = "10.0.0"
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return {
         "module": MODULE_ID,
         "stub": False,
@@ -23,9 +22,9 @@ def status() -> Dict[str, Any]:
     }
 
 
-def load_all(include_code_registry: bool = True) -> Dict[str, Any]:
+def load_all(include_code_registry: bool = True) -> dict[str, Any]:
     """Load fusion_hero_os Registry + optional 03_Code module_registry probe."""
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "module": MODULE_ID,
         "stub": False,
         "package_registry": {},
@@ -77,7 +76,7 @@ class MainframeLadenModule:
 
     name = MODULE_ID
 
-    def process(self, payload: Any = None) -> Dict[str, Any]:
+    def process(self, payload: Any = None) -> dict[str, Any]:
         include = True
         if isinstance(payload, dict) and "include_code_registry" in payload:
             include = bool(payload["include_code_registry"])

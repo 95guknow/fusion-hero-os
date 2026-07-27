@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Power Mesh Fusion — long-term evolution bottom-up of the dissertation.
 
@@ -24,9 +23,9 @@ import os
 import random
 import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -52,9 +51,9 @@ class StratumState:
     evidence_hit: int
     coverage: float
     bytes_total: int
-    missing: List[str] = field(default_factory=list)
+    missing: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -62,10 +61,10 @@ class StratumState:
 class Genome:
     """Emphasis weights per stratum (normalized)."""
 
-    weights: Dict[str, float]
+    weights: dict[str, float]
     seed_tag: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {"weights": dict(self.weights), "seed_tag": self.seed_tag}
 
 
@@ -74,11 +73,11 @@ class GenerationRecord:
     generation: int
     best_fitness: float
     mean_fitness: float
-    best_genome: Dict[str, float]
+    best_genome: dict[str, float]
     tau_peak: float
     notes: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -89,8 +88,8 @@ class EvolutionReport:
     best_fitness: float
     initial_fitness: float
     fitness_delta: float
-    trajectory: List[GenerationRecord]
-    strata: List[StratumState]
+    trajectory: list[GenerationRecord]
+    strata: list[StratumState]
     fusion_score: float
     mesh_score: float
     power_score: float
@@ -104,7 +103,7 @@ class EvolutionReport:
     direction: str = "bottom_up"
     geltung: str = "Spezifikation+Modell"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["trajectory"] = [
             r.to_dict() if hasattr(r, "to_dict") else r for r in self.trajectory
@@ -113,7 +112,7 @@ class EvolutionReport:
         return d
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "power_mesh_fusion_evolution.yaml"
     if not path.exists():
         return {}
@@ -125,7 +124,7 @@ def load_config() -> Dict[str, Any]:
         return {}
 
 
-def _output_dir(cfg: Optional[Dict[str, Any]] = None) -> Path:
+def _output_dir(cfg: dict[str, Any] | None = None) -> Path:
     cfg = cfg or load_config()
     raw = (cfg.get("evolution") or {}).get("output_dir") or "~/.fusion/power_mesh_evolution"
     p = Path(os.path.expanduser(str(raw)))
@@ -133,7 +132,7 @@ def _output_dir(cfg: Optional[Dict[str, Any]] = None) -> Path:
     return p
 
 
-def _file_bytes(rel: str) -> Optional[int]:
+def _file_bytes(rel: str) -> int | None:
     path = ROOT / rel
     if not path.is_file():
         return None
@@ -143,14 +142,14 @@ def _file_bytes(rel: str) -> Optional[int]:
         return None
 
 
-def scan_strata(cfg: Optional[Dict[str, Any]] = None) -> List[StratumState]:
+def scan_strata(cfg: dict[str, Any] | None = None) -> list[StratumState]:
     cfg = cfg or load_config()
-    out: List[StratumState] = []
+    out: list[StratumState] = []
     for s in cfg.get("strata") or []:
         evidence = list(s.get("evidence") or [])
         hit = 0
         total_b = 0
-        missing: List[str] = []
+        missing: list[str] = []
         for rel in evidence:
             b = _file_bytes(str(rel))
             if b is None:
@@ -176,16 +175,16 @@ def scan_strata(cfg: Optional[Dict[str, Any]] = None) -> List[StratumState]:
     return out
 
 
-def _stratum_map(strata: List[StratumState]) -> Dict[str, StratumState]:
+def _stratum_map(strata: list[StratumState]) -> dict[str, StratumState]:
     return {s.id: s for s in strata}
 
 
-def _normalize(weights: Dict[str, float]) -> Dict[str, float]:
+def _normalize(weights: dict[str, float]) -> dict[str, float]:
     s = sum(max(0.0, float(v)) for v in weights.values()) or 1.0
     return {k: max(0.0, float(v)) / s for k, v in weights.items()}
 
 
-def _default_genome(strata: List[StratumState]) -> Genome:
+def _default_genome(strata: list[StratumState]) -> Genome:
     # Bottom-up bias: lower strata slightly higher initial weight
     n = len(strata) or 1
     w = {}
@@ -195,7 +194,7 @@ def _default_genome(strata: List[StratumState]) -> Genome:
     return Genome(weights=_normalize(w), seed_tag="bottom_up_init")
 
 
-def _component_scores(strata: List[StratumState]) -> Dict[str, float]:
+def _component_scores(strata: list[StratumState]) -> dict[str, float]:
     sm = _stratum_map(strata)
 
     def cov(*ids: str) -> float:
@@ -213,9 +212,9 @@ def _component_scores(strata: List[StratumState]) -> Dict[str, float]:
 
 def fitness(
     genome: Genome,
-    strata: List[StratumState],
-    weights_cfg: Dict[str, float],
-) -> Tuple[float, Dict[str, float], float]:
+    strata: list[StratumState],
+    weights_cfg: dict[str, float],
+) -> tuple[float, dict[str, float], float]:
     """Return (fitness, component_scores, tau_peak)."""
     comps = _component_scores(strata)
     # Genome modulates: reward emphasis that matches actual coverage (honest bottom-up)
@@ -275,8 +274,8 @@ def _crossover(a: Genome, b: Genome, rng: random.Random) -> Genome:
 
 def run_evolution(
     *,
-    generations: Optional[int] = None,
-    seed: Optional[int] = None,
+    generations: int | None = None,
+    seed: int | None = None,
 ) -> EvolutionReport:
     cfg = load_config()
     evo = cfg.get("evolution") or {}
@@ -289,22 +288,22 @@ def run_evolution(
     weights_cfg = dict(evo.get("weights") or {})
 
     t0 = time.time()
-    t_started = datetime.now(timezone.utc).isoformat()
+    t_started = datetime.now(UTC).isoformat()
     strata = scan_strata(cfg)
 
     # Population of genomes; fitness landscape fixed by repo evidence (honest)
     base = _default_genome(strata)
-    pop: List[Genome] = [base]
+    pop: list[Genome] = [base]
     for i in range(mu + lam - 1):
         pop.append(_mutate(base, mut_rate + 0.05, rng))
 
-    trajectory: List[GenerationRecord] = []
+    trajectory: list[GenerationRecord] = []
     best_fit = -1.0
     best_g = base
     initial_fit = 0.0
 
     for g in range(n_gen):
-        scored: List[Tuple[float, Genome, float]] = []
+        scored: list[tuple[float, Genome, float]] = []
         fits = []
         for genome in pop:
             fit, _, tau_p = fitness(genome, strata, weights_cfg)
@@ -327,7 +326,7 @@ def run_evolution(
         )
         # next generation: elites + offspring
         elites = [s[1] for s in scored[: max(1, elite)]]
-        next_pop: List[Genome] = list(elites)
+        next_pop: list[Genome] = list(elites)
         while len(next_pop) < mu + lam:
             p1 = elites[rng.randrange(len(elites))]
             p2 = scored[rng.randrange(min(mu, len(scored)))][1]
@@ -338,7 +337,7 @@ def run_evolution(
 
     comps = _component_scores(strata)
     _, _, tau_final = fitness(best_g, strata, weights_cfg)
-    t_finished = datetime.now(timezone.utc).isoformat()
+    t_finished = datetime.now(UTC).isoformat()
     report = EvolutionReport(
         ok=True,
         generations=n_gen,
@@ -411,7 +410,7 @@ def run_evolution(
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     strata = scan_strata(cfg)
     comps = _component_scores(strata)

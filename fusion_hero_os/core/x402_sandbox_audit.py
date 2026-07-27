@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 x402 Sandbox Security Audit — local, defensive, authorized lab only.
 
@@ -24,9 +23,9 @@ import json
 import secrets
 import time
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -52,7 +51,7 @@ class SandboxConfig:
     # Simulated settlement: if False, grant happens before "finality"
     settlement_finalized: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -78,24 +77,24 @@ class EvidenceCase:
     detail: str
     severity: str = "high"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
 class MockX402Server:
     """In-memory x402-like resource server for defensive property tests."""
 
-    def __init__(self, cfg: SandboxConfig, *, allowlist: Optional[Set[str]] = None):
+    def __init__(self, cfg: SandboxConfig, *, allowlist: set[str] | None = None):
         self.cfg = cfg
         self.allowlist = allowlist or {"https://api.example.local/v1/data"}
-        self._used_nonces: Set[str] = set()
-        self._used_payment_ids: Set[str] = set()
-        self._grants: List[Dict[str, Any]] = []
+        self._used_nonces: set[str] = set()
+        self._used_payment_ids: set[str] = set()
+        self._grants: list[dict[str, Any]] = []
         self.payee_canonical = "0xPAYEE_CANONICAL"
         self.price = "0.01"
         self.resource_path = "https://api.example.local/v1/data"
 
-    def challenge(self, resource: str) -> Dict[str, Any]:
+    def challenge(self, resource: str) -> dict[str, Any]:
         """HTTP 402 analogue."""
         return {
             "status": 402,
@@ -118,7 +117,7 @@ class MockX402Server:
             and auth.payee == self.payee_canonical
         )
 
-    def grant(self, auth: PaymentAuth, *, client_host: str = "agent.local") -> Dict[str, Any]:
+    def grant(self, auth: PaymentAuth, *, client_host: str = "agent.local") -> dict[str, Any]:
         """Attempt to grant resource after payment auth (sandbox)."""
         # Allowlist
         if self.cfg.agent_allowlist and auth.resource not in self.allowlist:
@@ -167,13 +166,13 @@ class MockClient:
     def pay_and_request(
         self,
         *,
-        amount: Optional[str] = None,
-        resource: Optional[str] = None,
-        payee: Optional[str] = None,
+        amount: str | None = None,
+        resource: str | None = None,
+        payee: str | None = None,
         verified: bool = True,
         settled: bool = True,
-        reuse_auth: Optional[PaymentAuth] = None,
-    ) -> Tuple[PaymentAuth, Dict[str, Any]]:
+        reuse_auth: PaymentAuth | None = None,
+    ) -> tuple[PaymentAuth, dict[str, Any]]:
         if reuse_auth is not None:
             return reuse_auth, self.server.grant(reuse_auth)
 
@@ -351,7 +350,7 @@ def simulate_successful_attack(
     *,
     public_damage_eur_cents: float = 0.01,
     dormant_days: int = 900,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Aussagekräftige Angriffssimulation (nur insecure Mock).
 
@@ -379,13 +378,13 @@ def simulate_successful_attack(
         "address_mock": "0xD0RMA17_INACTIVE_LAB_WALLET_NOT_REAL",
         "last_activity_days_ago": int(dormant_days),
         "last_activity_iso": (
-            datetime.now(timezone.utc).timestamp() - dormant_days * 86400
+            datetime.now(UTC).timestamp() - dormant_days * 86400
         ),
         "balance_eur_equivalent_mock": damage_eur,
         "note": "Mock identity only — no private key, no chain broadcast",
     }
     dormant_wallet["last_activity_iso"] = datetime.fromtimestamp(
-        float(dormant_wallet["last_activity_iso"]), tz=timezone.utc
+        float(dormant_wallet["last_activity_iso"]), tz=UTC
     ).isoformat()
 
     # --- INSECURE: all critical controls off ---
@@ -402,7 +401,7 @@ def simulate_successful_attack(
     victim.price = price_str
     victim.payee_canonical = dormant_wallet["address_mock"]  # value notionally from dormant wallet
 
-    timeline: List[Dict[str, Any]] = []
+    timeline: list[dict[str, Any]] = []
     timeline.append(
         {
             "step": 0,
@@ -510,7 +509,7 @@ def simulate_successful_attack(
         "impact": impact,
         "timeline": timeline,
         "secure_block_result": g_secure,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "meaningfulness": (
             "Aussagekräftig durch (1) realistische Micropayment-Größe 0,01 ct, "
             "(2) langzeit-inaktive Wallet als Wertquelle, (3) durchgängigen "
@@ -600,7 +599,7 @@ def simulate_successful_attack(
     return sim
 
 
-def run_sandbox_audit(*, budget_eur: float = 500.0) -> Dict[str, Any]:
+def run_sandbox_audit(*, budget_eur: float = 500.0) -> dict[str, Any]:
     """Run full local sandbox evidence suite + write proof artifacts."""
     # Import math audit for combined evidence
     from fusion_hero_os.core.x402_hackability_audit import audit as threat_audit
@@ -630,7 +629,7 @@ def run_sandbox_audit(*, budget_eur: float = 500.0) -> Dict[str, Any]:
             "github_propagation": "docs_and_evidence_only_no_attack_tools",
         },
         "protocol": "x402",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "evidence_cases": [c.to_dict() for c in cases],
         "proved_count": proved,
         "case_count": len(cases),
@@ -737,7 +736,7 @@ def run_sandbox_audit(*, budget_eur: float = 500.0) -> Dict[str, Any]:
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     p = Path.home() / ".fusion" / "alerts" / "x402_sandbox_evidence.json"
     last = None
     if p.is_file():

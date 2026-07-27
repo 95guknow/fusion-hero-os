@@ -30,7 +30,8 @@ import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Union
+from collections.abc import Callable
 
 from fusion_hero_os.core.race_guard import FileLock, atomic_write_text
 
@@ -43,15 +44,15 @@ __all__ = [
     "AutosaveDaemon",
 ]
 
-MODALITIES: Tuple[str, ...] = ("json", "csv", "b64")
+MODALITIES: tuple[str, ...] = ("json", "csv", "b64")
 _MAGIC_B64 = "FHOS-HORCRUX-B64 v1"
 
 
-def _canonical(payload: Dict[str, Any]) -> str:
+def _canonical(payload: dict[str, Any]) -> str:
     return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
 
-def _checksum(payload: Dict[str, Any]) -> str:
+def _checksum(payload: dict[str, Any]) -> str:
     return hashlib.sha256(_canonical(payload).encode("utf-8")).hexdigest()
 
 
@@ -62,7 +63,7 @@ class HorcruxShard:
     generation: int
     checksum: str
     valid: bool
-    payload: Optional[Dict[str, Any]]
+    payload: dict[str, Any] | None
     error: str = ""
 
 
@@ -71,16 +72,16 @@ class HorcruxShard:
 # ---------------------------------------------------------------------------
 
 
-def _encode_json(meta: Dict[str, Any], payload: Dict[str, Any]) -> str:
+def _encode_json(meta: dict[str, Any], payload: dict[str, Any]) -> str:
     return json.dumps({"meta": meta, "payload": payload}, indent=2, ensure_ascii=False) + "\n"
 
 
-def _decode_json(text: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def _decode_json(text: str) -> tuple[dict[str, Any], dict[str, Any]]:
     doc = json.loads(text)
     return dict(doc["meta"]), dict(doc["payload"])
 
 
-def _encode_csv(meta: Dict[str, Any], payload: Dict[str, Any]) -> str:
+def _encode_csv(meta: dict[str, Any], payload: dict[str, Any]) -> str:
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
     writer.writerow(["key", "value_json"])
@@ -91,9 +92,9 @@ def _encode_csv(meta: Dict[str, Any], payload: Dict[str, Any]) -> str:
     return buf.getvalue()
 
 
-def _decode_csv(text: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-    meta: Dict[str, Any] = {}
-    payload: Dict[str, Any] = {}
+def _decode_csv(text: str) -> tuple[dict[str, Any], dict[str, Any]]:
+    meta: dict[str, Any] = {}
+    payload: dict[str, Any] = {}
     reader = csv.reader(io.StringIO(text))
     header = next(reader, None)
     if header != ["key", "value_json"]:
@@ -110,12 +111,12 @@ def _decode_csv(text: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     return meta, payload
 
 
-def _encode_b64(meta: Dict[str, Any], payload: Dict[str, Any]) -> str:
+def _encode_b64(meta: dict[str, Any], payload: dict[str, Any]) -> str:
     body = base64.b64encode(_canonical(payload).encode("utf-8")).decode("ascii")
     return "\n".join([_MAGIC_B64, json.dumps(meta, sort_keys=True, ensure_ascii=False), body, ""])
 
 
-def _decode_b64(text: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+def _decode_b64(text: str) -> tuple[dict[str, Any], dict[str, Any]]:
     lines = text.splitlines()
     if len(lines) < 3 or lines[0] != _MAGIC_B64:
         raise ValueError("B64-Horkrux: Magic-Header fehlt")
@@ -124,7 +125,7 @@ def _decode_b64(text: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     return meta, payload
 
 
-_CODECS: Dict[str, Tuple[Callable[..., str], Callable[[str], Tuple[Dict[str, Any], Dict[str, Any]]]]] = {
+_CODECS: dict[str, tuple[Callable[..., str], Callable[[str], tuple[dict[str, Any], dict[str, Any]]]]] = {
     "json": (_encode_json, _decode_json),
     "csv": (_encode_csv, _decode_csv),
     "b64": (_encode_b64, _decode_b64),
@@ -161,7 +162,7 @@ class PseudoHorcruxStore:
     def _shard_path(self, modality: str, copy_idx: int) -> Path:
         return self.base_dir / f"horcrux-{modality}-c{copy_idx}.hx"
 
-    def _iter_shard_paths(self) -> List[Tuple[str, Path]]:
+    def _iter_shard_paths(self) -> list[tuple[str, Path]]:
         return [
             (modality, self._shard_path(modality, c))
             for modality in MODALITIES
@@ -188,7 +189,7 @@ class PseudoHorcruxStore:
 
     # -- API ---------------------------------------------------------------
 
-    def preserve(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def preserve(self, payload: dict[str, Any]) -> dict[str, Any]:
         """Schreibt den Zustand als neue Generation in alle Shards.
 
         Serialisiert über FileLock (multi-process-sicher), jede Datei atomar.
@@ -206,28 +207,28 @@ class PseudoHorcruxStore:
                 "modalities": list(MODALITIES),
                 "copies": self.copies,
             }
-            written: List[str] = []
+            written: list[str] = []
             for modality, path in self._iter_shard_paths():
                 encode, _ = _CODECS[modality]
                 atomic_write_text(path, encode(dict(meta, modality=modality), payload))
                 written.append(str(path.name))
             return {"generation": generation, "sha256": meta["sha256"], "shards": written}
 
-    def _best_shard_unlocked(self) -> Optional[HorcruxShard]:
-        best: Optional[HorcruxShard] = None
+    def _best_shard_unlocked(self) -> HorcruxShard | None:
+        best: HorcruxShard | None = None
         for modality, path in self._iter_shard_paths():
             shard = self._read_shard(modality, path)
             if shard.valid and (best is None or shard.generation > best.generation):
                 best = shard
         return best
 
-    def restore(self) -> Optional[Dict[str, Any]]:
+    def restore(self) -> dict[str, Any] | None:
         """Beste gültige Generation über alle Shards; None wenn keiner überlebt hat."""
         with FileLock(self._lock_anchor, timeout=self.lock_timeout):
             best = self._best_shard_unlocked()
         return dict(best.payload) if best and best.payload is not None else None
 
-    def integrity_report(self) -> Dict[str, Any]:
+    def integrity_report(self) -> dict[str, Any]:
         shards = [self._read_shard(m, p) for m, p in self._iter_shard_paths()]
         valid = [s for s in shards if s.valid]
         best_gen = max((s.generation for s in valid), default=-1)
@@ -276,7 +277,7 @@ class AutosaveDaemon:
     def __init__(
         self,
         store: PseudoHorcruxStore,
-        state_provider: Callable[[], Dict[str, Any]],
+        state_provider: Callable[[], dict[str, Any]],
         *,
         interval: float = 30.0,
         debounce: float = 0.5,
@@ -288,12 +289,12 @@ class AutosaveDaemon:
         self.stats = AutosaveStats()
         self._dirty = threading.Event()
         self._stop = threading.Event()
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._stats_lock = threading.Lock()
 
     # -- lifecycle ---------------------------------------------------------
 
-    def start(self) -> "AutosaveDaemon":
+    def start(self) -> AutosaveDaemon:
         if self._thread and self._thread.is_alive():
             return self
         self._stop.clear()
@@ -310,7 +311,7 @@ class AutosaveDaemon:
         if final_save:
             self._save_once()
 
-    def __enter__(self) -> "AutosaveDaemon":
+    def __enter__(self) -> AutosaveDaemon:
         return self.start()
 
     def __exit__(self, *exc: Any) -> None:
@@ -345,7 +346,7 @@ class AutosaveDaemon:
                 self.stats.errors += 1
                 self.stats.last_error = f"{type(exc).__name__}: {exc}"
 
-    def snapshot_stats(self) -> Dict[str, Any]:
+    def snapshot_stats(self) -> dict[str, Any]:
         with self._stats_lock:
             return {
                 "saves": self.stats.saves,

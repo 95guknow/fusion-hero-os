@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 """Bottom-up fan-out: all instances + Horkruxe — Fusion Hero OS v12.1.0"""
 from __future__ import annotations
 
 import json
 import os
 import subprocess
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "horkrux_instances.yaml"
@@ -17,7 +16,7 @@ DOCS = ROOT / "docs" / "ops" / "HORKRUX_BOTTOM_UP.latest.json"
 __all__ = ["load_config", "run_bottom_up", "status"]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     if not CONFIG.exists():
         return {}
     try:
@@ -32,7 +31,7 @@ def _expand(p: str) -> Path:
     return Path(os.path.expanduser(str(p).replace("\\", "/")))
 
 
-def _git(cwd: Path, *args: str) -> Tuple[int, str, str]:
+def _git(cwd: Path, *args: str) -> tuple[int, str, str]:
     r = subprocess.run(
         ["git", *args],
         cwd=str(cwd),
@@ -48,12 +47,12 @@ def _is_git(path: Path) -> bool:
     return path.exists() and (path / ".git").exists()
 
 
-def _sync_git(entry: Dict[str, Any], kanon_tip: Optional[str]) -> Dict[str, Any]:
+def _sync_git(entry: dict[str, Any], kanon_tip: str | None) -> dict[str, Any]:
     path = _expand(str(entry.get("path") or ""))
     branch = entry.get("branch") or "main"
     optional = bool(entry.get("optional"))
     iid = entry.get("id") or path.name
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "id": iid,
         "kind": "git",
         "path": str(path),
@@ -98,7 +97,7 @@ def _sync_git(entry: Dict[str, Any], kanon_tip: Optional[str]) -> Dict[str, Any]
     return out
 
 
-def _check_state_dir(entry: Dict[str, Any]) -> Dict[str, Any]:
+def _check_state_dir(entry: dict[str, Any]) -> dict[str, Any]:
     path = _expand(str(entry.get("path") or ""))
     optional = bool(entry.get("optional"))
     exists = path.exists()
@@ -121,7 +120,7 @@ def _check_state_dir(entry: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _check_skill(entry: Dict[str, Any], platform: str) -> Dict[str, Any]:
+def _check_skill(entry: dict[str, Any], platform: str) -> dict[str, Any]:
     path = _expand(str(entry.get("path") or ""))
     optional = bool(entry.get("optional"))
     if not path.exists():
@@ -158,7 +157,7 @@ def _check_skill(entry: Dict[str, Any], platform: str) -> Dict[str, Any]:
     }
 
 
-def _check_remote(entry: Dict[str, Any], kanon_full: Optional[str]) -> Dict[str, Any]:
+def _check_remote(entry: dict[str, Any], kanon_full: str | None) -> dict[str, Any]:
     repo = _expand(str(entry.get("repo_path") or ROOT))
     remote = entry.get("remote") or "origin"
     ref = entry.get("ref") or "refs/heads/main"
@@ -181,7 +180,7 @@ def _check_remote(entry: Dict[str, Any], kanon_full: Optional[str]) -> Dict[str,
     }
 
 
-def _scan_worktree_root(entry: Dict[str, Any], kanon_tip: Optional[str]) -> Dict[str, Any]:
+def _scan_worktree_root(entry: dict[str, Any], kanon_tip: str | None) -> dict[str, Any]:
     path = _expand(str(entry.get("path") or ""))
     optional = bool(entry.get("optional"))
     if not path.exists():
@@ -193,7 +192,7 @@ def _scan_worktree_root(entry: Dict[str, Any], kanon_tip: Optional[str]) -> Dict
             "reason": "path_missing",
             "path": str(path),
         }
-    found: List[Dict[str, Any]] = []
+    found: list[dict[str, Any]] = []
     candidates = [path]
     wt = path / ".worktrees"
     if wt.is_dir():
@@ -231,7 +230,7 @@ def _scan_worktree_root(entry: Dict[str, Any], kanon_tip: Optional[str]) -> Dict
     }
 
 
-def _preserve_horcrux(payload: Dict[str, Any]) -> Dict[str, Any]:
+def _preserve_horcrux(payload: dict[str, Any]) -> dict[str, Any]:
     store = _expand("~/.fusion/horcrux/bottom_up_v12")
     store.mkdir(parents=True, exist_ok=True)
     try:
@@ -241,16 +240,16 @@ def _preserve_horcrux(payload: Dict[str, Any]) -> Dict[str, Any]:
         gen = ph.preserve(payload)
         return {"ok": True, "store": str(store), "result": gen}
     except Exception as e:  # noqa: BLE001
-        ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
         jp = store / f"bottom_up_{ts}.json"
         jp.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
         return {"ok": True, "store": str(store), "fallback_json": str(jp), "note": str(e)[:160]}
 
 
-def run_bottom_up(*, sync_grok: bool = True) -> Dict[str, Any]:
+def run_bottom_up(*, sync_grok: bool = True) -> dict[str, Any]:
     cfg = load_config()
     layers = cfg.get("layers") or {}
-    t0 = datetime.now(timezone.utc)
+    t0 = datetime.now(UTC)
     kcode, kanon_tip, _ = _git(ROOT, "rev-parse", "--short", "HEAD")
     kcode2, kanon_full, _ = _git(ROOT, "rev-parse", "HEAD")
     ver = (
@@ -258,7 +257,7 @@ def run_bottom_up(*, sync_grok: bool = True) -> Dict[str, Any]:
         if (ROOT / "VERSION").exists()
         else PLATFORM
     )
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     for layer_name in [
         "L0_state",
         "L1_instances",
@@ -326,7 +325,7 @@ def run_bottom_up(*, sync_grok: bool = True) -> Dict[str, Any]:
         "platform": ver,
         "kanon_tip": kanon_tip if kcode == 0 else None,
         "fanout_ok": all(ok_flags) if ok_flags else False,
-        "utc": datetime.now(timezone.utc).isoformat(),
+        "utc": datetime.now(UTC).isoformat(),
         "counts": {
             "total": len(results),
             "ok": sum(1 for r in results if r.get("ok") and not r.get("skipped")),
@@ -337,11 +336,11 @@ def run_bottom_up(*, sync_grok: bool = True) -> Dict[str, Any]:
     horcrux = _preserve_horcrux(payload)
     report = {
         "kind": "HORKRUX_BOTTOM_UP",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "platform_target": PLATFORM,
         "platform_version_file": ver,
         "kanon_tip": kanon_tip if kcode == 0 else None,
-        "duration_sec": round((datetime.now(timezone.utc) - t0).total_seconds(), 2),
+        "duration_sec": round((datetime.now(UTC) - t0).total_seconds(), 2),
         "ok": payload["fanout_ok"],
         "counts": payload["counts"],
         "results": results,
@@ -358,7 +357,7 @@ def run_bottom_up(*, sync_grok: bool = True) -> Dict[str, Any]:
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return {
         "ok": True,
         "platform": PLATFORM,

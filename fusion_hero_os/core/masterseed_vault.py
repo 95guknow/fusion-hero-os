@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Private MasterSeed vault — GPG + QUBO obfuscation, split by module/function.
 
@@ -19,9 +18,9 @@ import struct
 import subprocess
 import time
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 
@@ -53,7 +52,7 @@ class ShardMeta:
     qubo: bool
     path: str
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -65,7 +64,7 @@ def vault_root() -> Path:
     return p
 
 
-def _load_split_config() -> List[Dict[str, Any]]:
+def _load_split_config() -> list[dict[str, Any]]:
     path = ROOT / "masterseed_public_display.yaml"
     if not path.exists():
         return [
@@ -83,11 +82,11 @@ def _load_split_config() -> List[Dict[str, Any]]:
         return []
 
 
-def list_module_split() -> List[Dict[str, Any]]:
+def list_module_split() -> list[dict[str, Any]]:
     return _load_split_config()
 
 
-def _qubo_perm_from_seed(n: int, seed_hex: str, steps: int = 200) -> List[int]:
+def _qubo_perm_from_seed(n: int, seed_hex: str, steps: int = 200) -> list[int]:
     """Derive a permutation of range(n) from a small QUBO solve (local obfuscation)."""
     rng = np.random.default_rng(int(seed_hex[:16], 16) % (2**63))
     # random symmetric Q
@@ -201,7 +200,7 @@ def _gpg_encrypt(plaintext: bytes, out_path: Path) -> bool:
     return r.returncode == 0 and out_path.is_file()
 
 
-def _gpg_decrypt(path: Path) -> Optional[bytes]:
+def _gpg_decrypt(path: Path) -> bytes | None:
     raw = path.read_bytes()
     if raw.startswith(b"NOGPG|"):
         return raw[6:]
@@ -232,9 +231,9 @@ def _gpg_decrypt(path: Path) -> Optional[bytes]:
 def seal_function_shard(
     module_id: str,
     function_id: str,
-    payload: Dict[str, Any],
+    payload: dict[str, Any],
     *,
-    seed: Optional[MasterSeed] = None,
+    seed: MasterSeed | None = None,
 ) -> ShardMeta:
     """QUBO-permute JSON payload then GPG-encrypt into module/function path."""
     view = public_view(seed)
@@ -247,7 +246,7 @@ def seal_function_shard(
     meta = ShardMeta(
         module_id=module_id,
         function_id=function_id,
-        sealed_at=datetime.now(timezone.utc).isoformat(),
+        sealed_at=datetime.now(UTC).isoformat(),
         public_fingerprint_prefix=view.public_fingerprint[:16],
         gpg=gpg_ok,
         qubo=True,
@@ -263,8 +262,8 @@ def open_function_shard(
     module_id: str,
     function_id: str,
     *,
-    seed: Optional[MasterSeed] = None,
-) -> Optional[Dict[str, Any]]:
+    seed: MasterSeed | None = None,
+) -> dict[str, Any] | None:
     view = public_view(seed)
     path = (
         vault_root()
@@ -286,11 +285,11 @@ def open_function_shard(
         return None
 
 
-def seal_all_modules(seed: Optional[MasterSeed] = None) -> Dict[str, Any]:
+def seal_all_modules(seed: MasterSeed | None = None) -> dict[str, Any]:
     """Seal default private refs for each configured module/function (local only)."""
     seed = seed or MasterSeed()
     view = public_view(seed)
-    sealed: List[Dict[str, Any]] = []
+    sealed: list[dict[str, Any]] = []
     for entry in list_module_split():
         mod = entry.get("module") or "unknown"
         for fn in entry.get("functions") or []:
@@ -314,7 +313,7 @@ def seal_all_modules(seed: Optional[MasterSeed] = None) -> Dict[str, Any]:
     }
 
 
-def export_public_display(seed: Optional[MasterSeed] = None) -> Dict[str, Any]:
+def export_public_display(seed: MasterSeed | None = None) -> dict[str, Any]:
     """Write unique public presentation only (no private shards)."""
     view = public_view(seed)
     path = vault_root() / "public" / "display.json"
@@ -327,7 +326,7 @@ def export_public_display(seed: Optional[MasterSeed] = None) -> Dict[str, Any]:
     return data
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     view = public_view()
     root = vault_root()
     private = root / "private" / "modules"

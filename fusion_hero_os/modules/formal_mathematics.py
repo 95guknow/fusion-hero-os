@@ -7,7 +7,7 @@ Wahrheit — hier nur die Anbindung an den Dispatcher-Vertrag).
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.methodology.core_modules import (
@@ -27,7 +27,7 @@ class FormalMathematicsCoreModule(BaseModule):
         super().__init__()
         self._impl = _FormalMathematicsImpl()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         result = self._impl.classify(
             payload.get("aussage", ""),

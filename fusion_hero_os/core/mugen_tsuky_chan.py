@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """mugen-tsuky.chan — clear facade (propagation is central & readable).
 
 Protocol id: **mugen-tsuky.chan** (short: ``mtc``)
@@ -14,9 +13,9 @@ Public language uses mtc_* field names only — not heroic lexicon / GPG-snapsho
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 PROTOCOL_ID = "mugen-tsuky.chan"
 PROTOCOL_SHORT = "mtc"
@@ -30,7 +29,7 @@ def _obf():
     return obf
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     """Central, clear protocol status (no obfuscation in the message)."""
     spec_ok = SPEC_PATH.is_file()
     try:
@@ -71,10 +70,10 @@ def status() -> Dict[str, Any]:
     }
 
 
-def day_hash_1(day_utc: Optional[str] = None, mesh_ip: str = "100.64.104.58") -> Dict[str, Any]:
+def day_hash_1(day_utc: str | None = None, mesh_ip: str = "100.64.104.58") -> dict[str, Any]:
     """Poly-Mesh day hash #1 under mugen-tsuky.chan naming."""
     if not day_utc:
-        day_utc = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+        day_utc = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
     h1 = _obf().polymesh_hash_number_1(day_utc, mesh_ip)
     return {
         "ok": True,
@@ -85,10 +84,10 @@ def day_hash_1(day_utc: Optional[str] = None, mesh_ip: str = "100.64.104.58") ->
     }
 
 
-def roll(day_utc: Optional[str] = None, depth: int = 8, mesh_ip: str = "100.64.104.58") -> Dict[str, Any]:
+def roll(day_utc: str | None = None, depth: int = 8, mesh_ip: str = "100.64.104.58") -> dict[str, Any]:
     """Run day rollation; map outputs to mtc_* clear fields."""
     if not day_utc:
-        day_utc = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+        day_utc = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
     raw = _obf().run_day_rollation(day_utc, mesh_ip=mesh_ip, depth=depth)
 
     # Map to mugen-tsuky.chan public vocabulary
@@ -125,7 +124,7 @@ def roll(day_utc: Optional[str] = None, depth: int = 8, mesh_ip: str = "100.64.1
     return out
 
 
-def mint_once(port: int = 42069, ttl_sec: int = 900, name: Optional[str] = None) -> Dict[str, Any]:
+def mint_once(port: int = 42069, ttl_sec: int = 900, name: str | None = None) -> dict[str, Any]:
     """Single-use mesh URL under mugen-tsuky.chan labels (not heroic lexicon)."""
     from fusion_hero_os.core.poly_mesh_once_url import mint_from_tailscale
 
@@ -165,7 +164,7 @@ def mint_once(port: int = 42069, ttl_sec: int = 900, name: Optional[str] = None)
     }
 
 
-def propagate() -> Dict[str, Any]:
+def propagate() -> dict[str, Any]:
     """Register protocol presence for central mesh ops (idempotent)."""
     st = status()
     # ensure state dirs

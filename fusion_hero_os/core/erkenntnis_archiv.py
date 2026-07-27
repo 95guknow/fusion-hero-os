@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 erkenntnis_archiv.py — Hourly -> Daily -> Weekly -> Monthly -> Yearly rollup
 for Erkenntnisse (insight/finding records) generated during operation.
@@ -22,10 +21,10 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
 from threading import Lock
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = ["ErkenntnisArchiv", "record", "status", "default_archiv"]
 
@@ -38,7 +37,7 @@ def _state_dir() -> Path:
 
 
 def _now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def _read_json(path: Path, default: Any) -> Any:
@@ -55,13 +54,13 @@ def _write_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def _append_jsonl(path: Path, rec: Dict[str, Any]) -> None:
+def _append_jsonl(path: Path, rec: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
-def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
     out = []
@@ -72,8 +71,8 @@ def _read_jsonl(path: Path) -> List[Dict[str, Any]]:
     return out
 
 
-def _summarize_hour(hour_key: str, records: List[Dict[str, Any]]) -> Dict[str, Any]:
-    by_source: Dict[str, int] = {}
+def _summarize_hour(hour_key: str, records: list[dict[str, Any]]) -> dict[str, Any]:
+    by_source: dict[str, int] = {}
     for r in records:
         src = str(r.get("source", "unknown"))
         by_source[src] = by_source.get(src, 0) + 1
@@ -90,7 +89,7 @@ def _summarize_hour(hour_key: str, records: List[Dict[str, Any]]) -> Dict[str, A
 class ErkenntnisArchiv:
     """Hourly Erkenntnis-buffer that rolls up into daily/weekly/monthly/yearly archives."""
 
-    def __init__(self, state_dir: Optional[Path] = None):
+    def __init__(self, state_dir: Path | None = None):
         self.state_dir = state_dir or _state_dir()
         self._lock = Lock()
 
@@ -117,7 +116,7 @@ class ErkenntnisArchiv:
     # -- period keys ---------------------------------------------------------
 
     @staticmethod
-    def _keys(dt: datetime) -> Dict[str, str]:
+    def _keys(dt: datetime) -> dict[str, str]:
         iso_year, iso_week, _ = dt.isocalendar()
         return {
             "hour": dt.strftime("%Y-%m-%dT%H"),
@@ -127,15 +126,15 @@ class ErkenntnisArchiv:
             "year": dt.strftime("%Y"),
         }
 
-    def _last_keys(self) -> Dict[str, str]:
+    def _last_keys(self) -> dict[str, str]:
         return _read_json(self._rollover_state_path(), {})
 
-    def _save_keys(self, keys: Dict[str, str]) -> None:
+    def _save_keys(self, keys: dict[str, str]) -> None:
         _write_json(self._rollover_state_path(), keys)
 
     # -- public API ------------------------------------------------------------
 
-    def record(self, erkenntnis: Dict[str, Any], *, source: str = "unknown") -> None:
+    def record(self, erkenntnis: dict[str, Any], *, source: str = "unknown") -> None:
         """Log one Erkenntnis into the current hour's bucket."""
         with self._lock:
             self._maybe_rollover()
@@ -145,7 +144,7 @@ class ErkenntnisArchiv:
                 **erkenntnis,
             })
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         with self._lock:
             self._maybe_rollover()
             current = _read_jsonl(self._hourly_path())
@@ -155,21 +154,21 @@ class ErkenntnisArchiv:
                 "last_keys": self._last_keys(),
             }
 
-    def force_rollover(self) -> Dict[str, Any]:
+    def force_rollover(self) -> dict[str, Any]:
         """Manually trigger a rollover check (ops tooling / tests)."""
         with self._lock:
             return self._maybe_rollover()
 
     # -- rollover machinery ------------------------------------------------------
 
-    def _maybe_rollover(self) -> Dict[str, Any]:
+    def _maybe_rollover(self) -> dict[str, Any]:
         now_keys = self._keys(_now())
         last_keys = self._last_keys()
         if not last_keys:
             self._save_keys(now_keys)
             return {"rolled": []}
 
-        rolled: List[str] = []
+        rolled: list[str] = []
         if last_keys.get("hour") != now_keys["hour"]:
             self._roll_hour_into_day(last_keys)
             rolled.append("hour")
@@ -187,7 +186,7 @@ class ErkenntnisArchiv:
         self._save_keys(now_keys)
         return {"rolled": rolled}
 
-    def _roll_hour_into_day(self, last_keys: Dict[str, str]) -> None:
+    def _roll_hour_into_day(self, last_keys: dict[str, str]) -> None:
         records = _read_jsonl(self._hourly_path())
         if records:
             day_key = last_keys["day"]
@@ -197,7 +196,7 @@ class ErkenntnisArchiv:
             _write_json(day_path, day_data)
         self._hourly_path().unlink(missing_ok=True)
 
-    def _roll_day_into_week(self, last_keys: Dict[str, str]) -> None:
+    def _roll_day_into_week(self, last_keys: dict[str, str]) -> None:
         day_key = last_keys["day"]
         day_data = _read_json(self._daily_path(day_key), None)
         if day_data is None:
@@ -212,7 +211,7 @@ class ErkenntnisArchiv:
         })
         _write_json(week_path, week_data)
 
-    def _roll_week_into_month(self, last_keys: Dict[str, str]) -> None:
+    def _roll_week_into_month(self, last_keys: dict[str, str]) -> None:
         week_key = last_keys["week"]
         week_data = _read_json(self._weekly_path(week_key), None)
         if week_data is None:
@@ -227,7 +226,7 @@ class ErkenntnisArchiv:
         })
         _write_json(month_path, month_data)
 
-    def _roll_month_into_year(self, last_keys: Dict[str, str]) -> None:
+    def _roll_month_into_year(self, last_keys: dict[str, str]) -> None:
         month_key = last_keys["month"]
         month_data = _read_json(self._monthly_path(month_key), None)
         if month_data is None:
@@ -246,9 +245,9 @@ class ErkenntnisArchiv:
 default_archiv = ErkenntnisArchiv()
 
 
-def record(erkenntnis: Dict[str, Any], *, source: str = "unknown") -> None:
+def record(erkenntnis: dict[str, Any], *, source: str = "unknown") -> None:
     default_archiv.record(erkenntnis, source=source)
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return default_archiv.status()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Schwerkraftserver — dual multi-model control + lossless gate + poly-mesh git ingest.
 
 Protocol coupling: **mugen-tsuky.chan** (clear status; obfuscated crypto body).
@@ -17,9 +16,9 @@ import hashlib
 import json
 import subprocess
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 PROTOCOL = "mugen-tsuky.chan"
@@ -39,7 +38,7 @@ def _sha256(data: bytes) -> str:
 # ---------------------------------------------------------------------------
 # Lossless encryption probe (two independent checkers = dual control)
 # ---------------------------------------------------------------------------
-def control_a_lossless() -> Dict[str, Any]:
+def control_a_lossless() -> dict[str, Any]:
     """Control A: poly_mesh_once_url encrypt/decrypt + mtc roll determinism."""
     t0 = time.time()
     try:
@@ -93,7 +92,7 @@ def control_a_lossless() -> Dict[str, Any]:
         }
 
 
-def control_b_lossless() -> Dict[str, Any]:
+def control_b_lossless() -> dict[str, Any]:
     """Control B: independent re-encode path via mtc obfuscated body + bit-identity."""
     t0 = time.time()
     try:
@@ -143,7 +142,7 @@ def control_b_lossless() -> Dict[str, Any]:
         }
 
 
-def dual_multi_model_control(gravity_threshold: float = 150.0) -> Dict[str, Any]:
+def dual_multi_model_control(gravity_threshold: float = 150.0) -> dict[str, Any]:
     """Doppelte Multi-Model-Kontrolle via Schwerkraftserver."""
     a = control_a_lossless()
     b = control_b_lossless()
@@ -174,7 +173,7 @@ def dual_multi_model_control(gravity_threshold: float = 150.0) -> Dict[str, Any]
 # ---------------------------------------------------------------------------
 # Full git history → poly-mesh (mugen-tsuky.chan seal)
 # ---------------------------------------------------------------------------
-def _git_log_rows(repo: Path) -> List[Dict[str, str]]:
+def _git_log_rows(repo: Path) -> list[dict[str, str]]:
     fmt = "%H%x09%cI%x09%s"
     raw = subprocess.check_output(
         ["git", "-C", str(repo), "log", f"--format={fmt}", "--reverse"],
@@ -192,10 +191,10 @@ def _git_log_rows(repo: Path) -> List[Dict[str, str]]:
 
 
 def ingest_commit_history(
-    repo: Optional[Path] = None,
+    repo: Path | None = None,
     *,
     batch_note: str = "full-history",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Fold entire commit history into poly-mesh chain under mugen-tsuky.chan."""
     repo = repo or ROOT
     rows = _git_log_rows(repo)
@@ -205,7 +204,7 @@ def ingest_commit_history(
     # Rolling Merkle-style chain: C0 = sha256(first), C_{n}=sha256(C_{n-1}||hash_n)
     chain = b""
     for i, row in enumerate(rows):
-        piece = f"{i}|{row['hash']}|{row['date']}|{row['subject']}".encode("utf-8")
+        piece = f"{i}|{row['hash']}|{row['date']}|{row['subject']}".encode()
         chain = hashlib.sha256(chain + piece).digest()
 
     tip = rows[-1]["hash"]
@@ -215,7 +214,7 @@ def ingest_commit_history(
     # Seal with mugen-tsuky.chan day roll (today UTC) + history chain
     from fusion_hero_os.core.mugen_tsuky_chan import roll, PROTOCOL_ID
 
-    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    day = datetime.now(UTC).strftime("%Y-%m-%d")
     mtc = roll(day, depth=6)
     seal = hashlib.sha256(
         bytes.fromhex(chain_hex)
@@ -239,7 +238,7 @@ def ingest_commit_history(
         "schwerkraft_seal": seal,
         "batch_note": batch_note,
         "port_base": PORT_BASE,
-        "ts_iso": datetime.now(timezone.utc).isoformat(),
+        "ts_iso": datetime.now(UTC).isoformat(),
         "banner": (
             f"SCHWERKRAFTSERVER INGEST | commits={len(rows)} | "
             f"tip={tip[:12]}… | chain={chain_hex[:16]}… | seal={seal[:16]}… | {PROTOCOL_ID}"
@@ -249,7 +248,7 @@ def ingest_commit_history(
     # Persist full index (hashes only + meta — subjects truncated already)
     out_dir = _state_dir() / "git_ingest"
     out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     index_path = out_dir / f"history_{stamp}.json"
     # Store compact commit list + seals
     payload = {
@@ -271,14 +270,14 @@ def ingest_commit_history(
 
 
 def execute(
-    repo: Optional[Path] = None,
+    repo: Path | None = None,
     *,
     gravity_threshold: float = 150.0,
     force: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Dual control → if lossless → ingest full git history into poly-mesh."""
     control = dual_multi_model_control(gravity_threshold=gravity_threshold)
-    result: Dict[str, Any] = {
+    result: dict[str, Any] = {
         "ok": True,
         "server": "schwerkraftserver",
         "protocol": PROTOCOL,

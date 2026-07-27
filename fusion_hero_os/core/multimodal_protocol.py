@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fusion Hero OS — Multimodal-Archiv-Protokoll (MAP) v1.0.
 
 Allgemeine Multimodalitaet nach dem Muster der grossen Provider — ehrlich
@@ -37,7 +36,7 @@ import os
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -56,7 +55,7 @@ ARCHIVE_ROOTS = (
 
 EXCLUDED_DIR_NAMES = {"__pycache__", "node_modules", ".git", ".svelte-kit"}
 
-MODALITY_BY_EXT: Dict[str, str] = {
+MODALITY_BY_EXT: dict[str, str] = {
     ".md": "text", ".txt": "text", ".rst": "text", ".toc": "text",
     ".html": "text", ".xml": "text",
     ".py": "code", ".rs": "code", ".js": "code", ".ts": "code",
@@ -78,7 +77,7 @@ MODALITY_BY_EXT: Dict[str, str] = {
 }
 
 # Modalitaet -> benoetigte Provider-Faehigkeit (Routing-Ziel).
-CAPABILITY_BY_MODALITY: Dict[str, str] = {
+CAPABILITY_BY_MODALITY: dict[str, str] = {
     "text": "text-generation",
     "code": "text-generation",
     "data": "text-generation",
@@ -92,7 +91,7 @@ CAPABILITY_BY_MODALITY: Dict[str, str] = {
 
 # Welche Faehigkeiten die konfigurierten Frameworks laut ihrer Modellfamilien
 # abdecken. Bewusst konservativ; 'vision' nur wo Standard-Modelle es koennen.
-FRAMEWORK_CAPABILITIES: Dict[str, List[str]] = {
+FRAMEWORK_CAPABILITIES: dict[str, list[str]] = {
     "grok": ["text-generation", "vision"],
     "claude": ["text-generation", "vision"],
     "gpt": ["text-generation", "vision", "audio-transcription"],
@@ -110,7 +109,7 @@ class InventoryEntry:
     modality: str
     size_bytes: int
     sha256: str
-    extraction: Dict[str, Any] = field(default_factory=dict)
+    extraction: dict[str, Any] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
@@ -124,7 +123,7 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def _extract_text(path: Path) -> Dict[str, Any]:
+def _extract_text(path: Path) -> dict[str, Any]:
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
         return {"status": "ok", "chars": len(text), "lines": text.count("\n") + 1}
@@ -132,7 +131,7 @@ def _extract_text(path: Path) -> Dict[str, Any]:
         return {"status": "error", "error": str(e)[:120]}
 
 
-def _extract_pdf(path: Path) -> Dict[str, Any]:
+def _extract_pdf(path: Path) -> dict[str, Any]:
     try:
         import logging
         from pypdf import PdfReader
@@ -152,7 +151,7 @@ def _extract_pdf(path: Path) -> Dict[str, Any]:
         return {"status": "error", "error": str(e)[:120]}
 
 
-def _extract_image(path: Path) -> Dict[str, Any]:
+def _extract_image(path: Path) -> dict[str, Any]:
     try:
         from PIL import Image
     except ImportError:
@@ -165,7 +164,7 @@ def _extract_image(path: Path) -> Dict[str, Any]:
         return {"status": "error", "error": str(e)[:120]}
 
 
-def _mutagen_info(path: Path) -> Dict[str, Any]:
+def _mutagen_info(path: Path) -> dict[str, Any]:
     """Shared audio/video metadata extraction via mutagen.
 
     mutagen auto-detects the container and reads its own tag/info format;
@@ -185,7 +184,7 @@ def _mutagen_info(path: Path) -> Dict[str, Any]:
     if f is None:
         return {"status": "unsupported_container", "container": path.suffix.lower().lstrip(".")}
     info = f.info
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "status": "ok",
         "duration_seconds": round(getattr(info, "length", 0.0), 3),
     }
@@ -196,11 +195,11 @@ def _mutagen_info(path: Path) -> Dict[str, Any]:
     return out
 
 
-def _extract_audio(path: Path) -> Dict[str, Any]:
+def _extract_audio(path: Path) -> dict[str, Any]:
     return _mutagen_info(path)
 
 
-def _extract_video(path: Path) -> Dict[str, Any]:
+def _extract_video(path: Path) -> dict[str, Any]:
     return _mutagen_info(path)
 
 
@@ -232,8 +231,8 @@ def _iter_archive_files():
             yield path
 
 
-def build_inventory() -> List[InventoryEntry]:
-    entries: List[InventoryEntry] = []
+def build_inventory() -> list[InventoryEntry]:
+    entries: list[InventoryEntry] = []
     for path in _iter_archive_files():
         rel = str(path.relative_to(REPO_ROOT)).replace("\\", "/")
         modality = classify(path)
@@ -259,7 +258,7 @@ def _archive_signature() -> str:
     return f"{count}:{max_mtime:.6f}"
 
 
-def build_inventory_cached() -> List[InventoryEntry]:
+def build_inventory_cached() -> list[InventoryEntry]:
     """Inventar ueber das Quanten-Wörterbuch (Rescan nur bei Archiv-Aenderung)."""
     try:
         from fusion_hero_os.core.quantum_dictionaries import get_quantum_dictionary
@@ -274,7 +273,7 @@ def build_inventory_cached() -> List[InventoryEntry]:
 # Stufe 3: Routen (Zugaenge pruefen, ohne Key-Werte zu lesen)
 # ---------------------------------------------------------------------------
 
-def _load_frameworks() -> Dict[str, Dict[str, Any]]:
+def _load_frameworks() -> dict[str, dict[str, Any]]:
     try:
         import yaml
         data = yaml.safe_load((REPO_ROOT / "llm_frameworks.yaml").read_text(encoding="utf-8"))
@@ -283,13 +282,13 @@ def _load_frameworks() -> Dict[str, Dict[str, Any]]:
         return {}
 
 
-def provider_access_status() -> Dict[str, Dict[str, Any]]:
+def provider_access_status() -> dict[str, dict[str, Any]]:
     """Je Framework: live (Key-Env gesetzt) oder configured_no_key.
 
     Ollama gilt als live-faehig ohne Key (lokal); ob der Daemon laeuft,
     prueft weiterhin der Router zur Laufzeit (kein Netzwerkzwang hier).
     """
-    status: Dict[str, Dict[str, Any]] = {}
+    status: dict[str, dict[str, Any]] = {}
     for name, spec in _load_frameworks().items():
         key_envs = spec.get("api_key_env") or []
         if isinstance(key_envs, str):
@@ -305,10 +304,10 @@ def provider_access_status() -> Dict[str, Dict[str, Any]]:
     return status
 
 
-def routing_matrix() -> Dict[str, Dict[str, Any]]:
+def routing_matrix() -> dict[str, dict[str, Any]]:
     """Modalitaet -> Faehigkeit -> Provider (live zuerst, dann konfiguriert)."""
     providers = provider_access_status()
-    matrix: Dict[str, Dict[str, Any]] = {}
+    matrix: dict[str, dict[str, Any]] = {}
     for modality, capability in CAPABILITY_BY_MODALITY.items():
         live = [n for n, p in providers.items()
                 if capability in p["capabilities"] and p["access"] == "live"]
@@ -327,8 +326,8 @@ def routing_matrix() -> Dict[str, Dict[str, Any]]:
 # Bericht
 # ---------------------------------------------------------------------------
 
-def summary(entries: List[InventoryEntry]) -> Dict[str, Any]:
-    by_modality: Dict[str, Dict[str, Any]] = {}
+def summary(entries: list[InventoryEntry]) -> dict[str, Any]:
+    by_modality: dict[str, dict[str, Any]] = {}
     for e in entries:
         slot = by_modality.setdefault(e.modality, {"files": 0, "bytes": 0,
                                                    "extracted_ok": 0, "extractor_missing": 0,
@@ -351,13 +350,13 @@ def summary(entries: List[InventoryEntry]) -> Dict[str, Any]:
     }
 
 
-def to_dict(entries: List[InventoryEntry]) -> Dict[str, Any]:
+def to_dict(entries: list[InventoryEntry]) -> dict[str, Any]:
     d = summary(entries)
     d["inventory"] = [vars(e) for e in entries]
     return d
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
     parser = argparse.ArgumentParser(description="Multimodal-Archiv-Protokoll")
     parser.add_argument("--scan", action="store_true",

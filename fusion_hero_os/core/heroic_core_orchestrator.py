@@ -27,7 +27,7 @@ import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 try:
     from .universal_llm_router import LLMResult
@@ -115,7 +115,7 @@ class PMSEvidenceSpine:
     def available(self) -> bool:
         return Path(self.kernel_path).is_file() and Path(self.model_path).is_file()
 
-    def _run(self, args: list, payload_json: str) -> Dict[str, Any]:
+    def _run(self, args: list, payload_json: str) -> dict[str, Any]:
         try:
             result = subprocess.run(
                 [self.kernel_path, *args, "--model", self.model_path,
@@ -129,10 +129,10 @@ class PMSEvidenceSpine:
         except Exception as e:  # FAIL-CLOSED: jeder Fehler schliesst die Bruecke
             return {"status": "FAIL_CLOSED", "error": str(e)}
 
-    def execute_operator_chain(self, operator_id: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def execute_operator_chain(self, operator_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         return self._run(["--operator", operator_id], json.dumps(payload))
 
-    def validate_chain(self, chain_id: str) -> Dict[str, Any]:
+    def validate_chain(self, chain_id: str) -> dict[str, Any]:
         return self._run(["--validate-chain", chain_id], "")
 
 
@@ -154,7 +154,7 @@ class QuadCoreBridge:
         self.seed = seed or MasterSeed()
         self.mode = mode.upper()  # "HEROIC" | "ASCENSION" | "PHOENIX"
         self.volatile_history: list = []
-        self.volatile_cache: Dict[str, Any] = {}
+        self.volatile_cache: dict[str, Any] = {}
 
         # Heroic Track (lazy import: vermeidet den Zirkular-Import
         # orchestrator -> heroic_core -> orchestrator beim Modul-Laden)
@@ -167,7 +167,7 @@ class QuadCoreBridge:
 
         # Ascension Track (jetzt mit substantiellem AscensionCore v9.4);
         # lazy import — siehe Modulkopf (Zyklus-Befund dependency_atlas)
-        self.ascension: Optional["AscensionCore"] = None
+        self.ascension: AscensionCore | None = None
         try:
             from ascension_os.core.ascension_core import get_ascension_core
             self.ascension = get_ascension_core()
@@ -190,7 +190,7 @@ class QuadCoreBridge:
         self.volatile_cache.clear()
 
     def process_query(self, domain: str, operator_id: str,
-                      payload: Dict[str, Any]) -> Any:
+                      payload: dict[str, Any]) -> Any:
         if domain not in VALID_DOMAINS:
             raise ValueError(
                 f"Ungueltige Domaene: {domain}. Quad-Core-Architektur verletzt "
@@ -202,8 +202,8 @@ class QuadCoreBridge:
         self.volatile_history.append({"domain": domain, "operator": operator_id})
         return {"status": "SUCCESS", "message": f"via {self.mode} Core"}
 
-    def ask_llm(self, prompt: str, system_prompt: Optional[str] = None,
-                force_provider: Optional[str] = None):
+    def ask_llm(self, prompt: str, system_prompt: str | None = None,
+                force_provider: str | None = None):
         """LLM-Anfrage; im ASCENSION-Modus zuerst ueber den AscensionCore."""
         if self.mode == "ASCENSION" and self.ascension:
             print("[ASCENSION] Using enhanced AscensionCore")
@@ -221,7 +221,7 @@ class QuadCoreBridge:
             print(f"[{self.mode}] {assignment['provider']} (score={assignment['score']:.3f})")
         return self.llm.ask(prompt, system_prompt, force_provider, context="heroic")
 
-    def run_ascension_generation(self, generations: int = 5) -> Dict[str, Any]:
+    def run_ascension_generation(self, generations: int = 5) -> dict[str, Any]:
         if self.ascension:
             return self.ascension.run_generation(generations=generations)
         return {"status": "AscensionCore nicht verfuegbar"}

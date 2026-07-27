@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """mining_qubo.py — Profit-Switching als QUBO für den HEROIC-Core-Annealer.
 
 ==============================================================================
@@ -38,7 +37,8 @@ strukturierten DRY-RUN-Plan. Import ist seiteneffektfrei.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -80,7 +80,7 @@ class ExcavatorConnector(BaseConnector):  # type: ignore[misc]
 
     skill_module = "ExcavatorMiningConnector"
 
-    def _call(self, method: str, params: Optional[Sequence[Any]] = None) -> Dict[str, Any]:
+    def _call(self, method: str, params: Sequence[Any] | None = None) -> dict[str, Any]:
         """Plant/führt einen JSON-RPC-Lesecall aus (DRY-RUN ohne Client)."""
         params = list(params or [])
         if not getattr(self, "available", False):
@@ -106,15 +106,15 @@ class ExcavatorConnector(BaseConnector):  # type: ignore[misc]
             "result": result,
         }
 
-    def info(self) -> Dict[str, Any]:
+    def info(self) -> dict[str, Any]:
         """Versions-/Uptime-Info (Lese-Operation)."""
         return self._call("info")
 
-    def speeds(self) -> Dict[str, Any]:
+    def speeds(self) -> dict[str, Any]:
         """Aktuelle Hashraten je Worker/Algorithmus (Lese-Operation)."""
         return self._call("algorithm.print.speeds")
 
-    def workers(self) -> Dict[str, Any]:
+    def workers(self) -> dict[str, Any]:
         """Laufende Worker je GPU (Lese-Operation)."""
         return self._call("worker.list")
 
@@ -159,8 +159,8 @@ def estimate_profit_matrix(
 # ---------------------------------------------------------------------------
 def build_profit_switching_qubo(
     profit: np.ndarray,
-    penalty: Optional[float] = None,
-) -> Tuple[np.ndarray, float]:
+    penalty: float | None = None,
+) -> tuple[np.ndarray, float]:
     """Baut die QUBO-Matrix Q für das Profit-Switching.
 
     Variablen: ``x[g, a] = 1`` <=> GPU g schürft Algorithmus a. Geflacht auf
@@ -215,7 +215,7 @@ def build_profit_switching_qubo(
     return Q, P
 
 
-def decode_assignment(solution: np.ndarray, G: int, A: int) -> Dict[int, int]:
+def decode_assignment(solution: np.ndarray, G: int, A: int) -> dict[int, int]:
     """Dekodiert die binäre Lösung zu ``{GPU g: Algorithmus a}``.
 
     Robust gegen leichte Constraint-Verletzungen: pro GPU wird der Algorithmus
@@ -226,7 +226,7 @@ def decode_assignment(solution: np.ndarray, G: int, A: int) -> Dict[int, int]:
     return {g: int(np.argmax(x[g])) for g in range(G)}
 
 
-def assignment_profit(assignment: Dict[int, int], profit: np.ndarray) -> float:
+def assignment_profit(assignment: dict[int, int], profit: np.ndarray) -> float:
     """Summe des Netto-Profits (€/h) für eine konkrete GPU->Algo-Zuweisung."""
     profit = np.asarray(profit, dtype=np.float64)
     return float(sum(profit[g, a] for g, a in assignment.items()))
@@ -239,9 +239,9 @@ def optimize_switching(
     profit: np.ndarray,
     steps: int = 15000,
     T0: float = 1.5,
-    n_restarts: Optional[int] = 32,
-    penalty: Optional[float] = None,
-) -> Dict[str, Any]:
+    n_restarts: int | None = 32,
+    penalty: float | None = None,
+) -> dict[str, Any]:
     """Löst das Profit-Switching mit dem Parallel-Annealer aus mainframe.py.
 
     Greift auf ``parallel_anneal`` zu (Multi-Start-SA über alle Kerne) und gibt
@@ -278,7 +278,7 @@ def optimize_switching(
 # ---------------------------------------------------------------------------
 # 5) DEMO (nur bei direktem Aufruf; keine Netzwerk-/Schreib-Seiteneffekte)
 # ---------------------------------------------------------------------------
-def _mock_rig(G: int = 8, A: int = 4) -> Tuple[np.ndarray, np.ndarray, List[float]]:
+def _mock_rig(G: int = 8, A: int = 4) -> tuple[np.ndarray, np.ndarray, list[float]]:
     """Erzeugt ein deterministisches Mock-Rig (8 GPUs × 4 Algorithmen).
 
     Steht stellvertretend für das, was der ExcavatorConnector im LIVE-Betrieb

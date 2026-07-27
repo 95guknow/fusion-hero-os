@@ -21,7 +21,8 @@ import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterator, Optional, Union
+from typing import Any, Union
+from collections.abc import Callable, Iterator
 
 PathLike = Union[str, Path]
 
@@ -80,7 +81,7 @@ class FileLock:
                     fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 self._fh = fh
                 return
-            except (OSError, BlockingIOError, IOError):
+            except (OSError, BlockingIOError):
                 fh.close()
                 if time.monotonic() >= deadline:
                     raise TimeoutError(
@@ -111,7 +112,7 @@ class FileLock:
                 pass
             self._fh = None
 
-    def __enter__(self) -> "FileLock":
+    def __enter__(self) -> FileLock:
         self.acquire()
         return self
 
@@ -209,7 +210,7 @@ def locked_atomic_write_json(
 # ---------------------------------------------------------------------------
 
 
-def _read_json(path: Path) -> Optional[Dict[str, Any]]:
+def _read_json(path: Path) -> dict[str, Any] | None:
     if not path.is_file():
         return None
     try:
@@ -220,12 +221,12 @@ def _read_json(path: Path) -> Optional[Dict[str, Any]]:
 
 def compare_and_swap_json(
     path: PathLike,
-    mutate: Callable[[Optional[Dict[str, Any]]], Dict[str, Any]],
+    mutate: Callable[[dict[str, Any] | None], dict[str, Any]],
     *,
     timeout: float = 30.0,
     max_retries: int = 8,
-    expected_generation: Optional[int] = None,
-) -> Dict[str, Any]:
+    expected_generation: int | None = None,
+) -> dict[str, Any]:
     """Lock, read, mutate, write with ``_generation`` bump.
 
     If ``expected_generation`` is set and file generation differs, raises
@@ -234,7 +235,7 @@ def compare_and_swap_json(
     Returns the written object.
     """
     path = _as_path(path)
-    last_err: Optional[Exception] = None
+    last_err: Exception | None = None
     for attempt in range(max_retries):
         try:
             with FileLock(path, timeout=timeout):
@@ -276,7 +277,7 @@ class RaceConditionGuard:
     """Facade used by mesh coordinator / file share / fractal mesh."""
 
     default_timeout: float = 30.0
-    stats: Dict[str, int] = field(default_factory=lambda: {
+    stats: dict[str, int] = field(default_factory=lambda: {
         "writes": 0,
         "locks": 0,
         "cas": 0,
@@ -310,9 +311,9 @@ class RaceConditionGuard:
     def cas(
         self,
         path: PathLike,
-        mutate: Callable[[Optional[Dict[str, Any]]], Dict[str, Any]],
+        mutate: Callable[[dict[str, Any] | None], dict[str, Any]],
         **kwargs: Any,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         with self._thread_lock:
             self.stats["cas"] += 1
         return compare_and_swap_json(path, mutate, timeout=self.default_timeout, **kwargs)
@@ -323,7 +324,7 @@ def race_stress_test(
     *,
     n_workers: int = 8,
     n_writes_each: int = 20,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Concurrent writers; verifies final ``_generation`` == total writes and JSON intact."""
     path = _as_path(path)
     if path.exists():
@@ -342,7 +343,7 @@ def race_stress_test(
         try:
             barrier.wait(timeout=10)
             for i in range(n_writes_each):
-                def mut(cur: Optional[Dict[str, Any]], _w=wid, _i=i) -> Dict[str, Any]:
+                def mut(cur: dict[str, Any] | None, _w=wid, _i=i) -> dict[str, Any]:
                     base = dict(cur or {})
                     hist = list(base.get("history") or [])
                     hist.append(f"w{_w}-{_i}")

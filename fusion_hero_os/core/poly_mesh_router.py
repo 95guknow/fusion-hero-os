@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Poly-Mesh Router — single authority for placement routing.
 
@@ -19,9 +18,9 @@ import os
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "mesh_service_coordination.yaml"
@@ -65,7 +64,7 @@ __all__ = [
 ]
 
 
-def load_catalog() -> Dict[str, Any]:
+def load_catalog() -> dict[str, Any]:
     if not CATALOG.is_file():
         return {}
     try:
@@ -76,7 +75,7 @@ def load_catalog() -> Dict[str, Any]:
         return {}
 
 
-def _find_kubectl() -> Optional[str]:
+def _find_kubectl() -> str | None:
     env = os.environ.get("FUSION_KUBECTL", "").strip()
     if env and Path(env).is_file():
         return env
@@ -87,10 +86,10 @@ def _find_kubectl() -> Optional[str]:
     return which
 
 
-def probe_gke(timeout: int = 45) -> Dict[str, Any]:
+def probe_gke(timeout: int = 45) -> dict[str, Any]:
     """Live GKE probe — Ready nodes required for L3_online."""
     kubectl = _find_kubectl()
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "ok": False,
         "kubectl": kubectl,
         "ready_nodes": 0,
@@ -144,10 +143,10 @@ def probe_gke(timeout: int = 45) -> Dict[str, Any]:
     return out
 
 
-def _online_tiers_from_tailscale(catalog: Dict[str, Any]) -> Tuple[set, Dict[str, Any]]:
+def _online_tiers_from_tailscale(catalog: dict[str, Any]) -> tuple[set, dict[str, Any]]:
     """Reuse coordinator inventory if importable; else minimal self-only."""
     tiers: set = set()
-    inv: Dict[str, Any] = {}
+    inv: dict[str, Any] = {}
     try:
         sys.path.insert(0, str(ROOT / "scripts"))
         # import as module path
@@ -170,12 +169,12 @@ def _online_tiers_from_tailscale(catalog: Dict[str, Any]) -> Tuple[set, Dict[str
 
 
 def _pick_tier(
-    candidates: List[str],
+    candidates: list[str],
     online: set,
     *,
     force_cluster: bool,
     prefer_high: bool = True,
-) -> Tuple[Optional[str], str]:
+) -> tuple[str | None, str]:
     """Return (chosen_tier, status)."""
     online_cands = [c for c in candidates if c in online or c == "L4_external_saas"]
     if force_cluster:
@@ -203,10 +202,10 @@ def _pick_tier(
 def route(
     capability_id: str,
     *,
-    catalog: Optional[Dict[str, Any]] = None,
-    gke: Optional[Dict[str, Any]] = None,
+    catalog: dict[str, Any] | None = None,
+    gke: dict[str, Any] | None = None,
     allow_local_dual: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Single decision for one capability. allow_local_dual=False is default (no conflicts)."""
     catalog = catalog or load_catalog()
     gke = gke if gke is not None else probe_gke()
@@ -264,7 +263,7 @@ def route(
             "error": gke.get("error"),
         },
         "path": svc.get("path"),
-        "decided_at": datetime.now(timezone.utc).isoformat(),
+        "decided_at": datetime.now(UTC).isoformat(),
         "router": "poly_mesh_router",
         "sole_authority": True,
     }
@@ -275,7 +274,7 @@ def route(
     return decision
 
 
-def route_all() -> Dict[str, Any]:
+def route_all() -> dict[str, Any]:
     catalog = load_catalog()
     gke = probe_gke()
     results = []
@@ -286,7 +285,7 @@ def route_all() -> Dict[str, Any]:
     local = [r for r in results if r.get("chosen") == "L1_mainframe"]
     report = {
         "ok": True,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "gke_live": bool(gke.get("ok")),
         "gke": gke,
         "counts": {
@@ -324,7 +323,7 @@ def route_all() -> Dict[str, Any]:
     return report
 
 
-def assert_not_local_dual_start(capability_id: str) -> Dict[str, Any]:
+def assert_not_local_dual_start(capability_id: str) -> dict[str, Any]:
     """Call before any local heavy job — raises SystemExit if denied."""
     d = route(capability_id)
     if d.get("deny_local_dual_start") or d.get("status") == "blocked_refuse_local_dual_start":
@@ -349,7 +348,7 @@ def assert_not_local_dual_start(capability_id: str) -> Dict[str, Any]:
     return {"allowed": True, "decision": d}
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     gke = probe_gke()
     last = STATE_DIR / "route_all.json"
     last_data = None

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Poly-Mesh Cost Function v2.0 (2026-07-16).
 
 Formal, measured-first cost model for Fusion Hero OS on L0–L4:
@@ -27,7 +26,7 @@ import os
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "COST_FUNCTION_VERSION",
@@ -45,7 +44,7 @@ COST_FUNCTION_VERSION = "2.1.0"
 
 # EUR rates — europe-west3 / Senfkorn 2026-07 (angemessene Defaults)
 # v2.1: L4 LLM token burn from public provider list prices (provider_token_costs)
-RATES_EUR: Dict[str, float] = {
+RATES_EUR: dict[str, float] = {
     "gce_e2_micro_month": 7.50,
     "gce_e2_micro_hour": 7.50 / 730.0,
     "gcs_storage_gb_month": 0.023,  # STANDARD europe
@@ -63,7 +62,7 @@ RATES_EUR: Dict[str, float] = {
 }
 
 # Soft placement bases (relative, not EUR) — lower = preferred when free
-PLACEMENT_BASE: Dict[str, float] = {
+PLACEMENT_BASE: dict[str, float] = {
     "L0_edge": 0.05,
     "L1_mainframe": 0.15,
     "L2_mesh_anchor": 0.35,
@@ -81,7 +80,7 @@ class BurnBreakdown:
     l3_eur_h: float = 0.0
     l4_eur_h: float = 0.0
     fixed_month_eur: float = 0.0
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
 
     @property
     def total_eur_h(self) -> float:
@@ -91,7 +90,7 @@ class BurnBreakdown:
     def total_eur_month(self) -> float:
         return self.fixed_month_eur + self.total_eur_h * _HOURS_PER_MONTH
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["total_eur_h"] = round(self.total_eur_h, 6)
         d["total_eur_month"] = round(self.total_eur_month, 2)
@@ -107,12 +106,12 @@ def compute_burn(
     coordination_jobs_running: int = 0,
     mesh_exit_nodes: int = 1,
     gcs_gb: float = 10.0,
-    l1_power_eur_h: Optional[float] = None,
+    l1_power_eur_h: float | None = None,
     l4_saas_active: bool = False,
     llm_tokens_in_per_h: float = 0.0,
     llm_tokens_out_per_h: float = 0.0,
     llm_provider_id: str = "anthropic_claude_sonnet",
-    rates: Optional[Dict[str, float]] = None,
+    rates: dict[str, float] | None = None,
 ) -> BurnBreakdown:
     """Aggregate real EUR/h burn across poly-mesh tiers.
 
@@ -216,7 +215,7 @@ def compute_feu(
     grid_eur_per_kwh: float = 0.35,
     pue: float = 1.25,
     feu_per_eur: float = 100.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Energy + FEU from EUR burn."""
     grid = max(grid_eur_per_kwh, 0.01)
     energy_kwh_h = (eur_h / grid) * pue if eur_h > 0 else 0.0
@@ -237,9 +236,9 @@ def resolve_margin(
     *,
     target_margin: float = 1.50,
     floor_margin: float = 0.35,
-    ceiling_1k: Optional[float] = None,
+    ceiling_1k: float | None = None,
     competitive: bool = True,
-) -> Tuple[float, bool]:
+) -> tuple[float, bool]:
     """Return (margin_pct, is_competitive)."""
     if not competitive or ceiling_1k is None:
         return target_margin, True
@@ -261,10 +260,10 @@ def tier_price(
     *,
     target_margin: float = 1.50,
     floor_margin: float = 0.35,
-    ceiling_eur_per_1m: Optional[float] = None,
+    ceiling_eur_per_1m: float | None = None,
     min_price_1k: float = 0.002,
     competitive: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """P_1k from real hour burn and tier capacity."""
     cap = max(1, int(tokens_per_hour_capacity))
     cost_1k = (eur_h / cap) * 1000.0
@@ -298,7 +297,7 @@ def placement_cost(
     online: bool = True,
     force_cluster: bool = False,
     gke_live: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Soft placement cost Π for orchestration (hard constraints separate)."""
     base = PLACEMENT_BASE.get(tier, 1.0)
     if not online and tier != "L4_external_saas":
@@ -339,12 +338,12 @@ def placement_cost(
 
 def evaluate_full(
     *,
-    burn: Optional[BurnBreakdown] = None,
-    gke: Optional[Dict[str, Any]] = None,
-    energy_model: Optional[Dict[str, Any]] = None,
-    pricing_cfg: Optional[Dict[str, Any]] = None,
-    online_tiers: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    burn: BurnBreakdown | None = None,
+    gke: dict[str, Any] | None = None,
+    energy_model: dict[str, Any] | None = None,
+    pricing_cfg: dict[str, Any] | None = None,
+    online_tiers: list[str] | None = None,
+) -> dict[str, Any]:
     """Full cost-function evaluation for API / orchestrator."""
     gke = gke or {}
     if burn is None:
@@ -458,10 +457,10 @@ def evaluate_full(
     }
 
 
-def cost_function_status() -> Dict[str, Any]:
+def cost_function_status() -> dict[str, Any]:
     """Live status using cost daemon snapshot when available."""
-    gke_info: Dict[str, Any] = {"mesh_exit_nodes": 1, "gcs_gb": 10.0}
-    online: List[str] = ["L1_mainframe"]
+    gke_info: dict[str, Any] = {"mesh_exit_nodes": 1, "gcs_gb": 10.0}
+    online: list[str] = ["L1_mainframe"]
     try:
         from fusion_hero_os.core.poly_mesh_os_port import inventory_mesh
 
@@ -525,7 +524,7 @@ def cost_function_status() -> Dict[str, Any]:
     except Exception:
         pass
 
-    bp: Dict[str, Any] = {}
+    bp: dict[str, Any] = {}
     try:
         import yaml
 

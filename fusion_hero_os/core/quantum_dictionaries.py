@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fusion Hero OS — Quanten-Wörterbücher (zentrale Lookup-/Memoisierungs-Register).
 
 Ehrliche Begriffsklaerung (Code-Honesty, Praezedenz: VirtualGPUHTCache bleibt
@@ -32,7 +31,8 @@ import json
 import threading
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Optional
+from typing import Any
+from collections.abc import Callable
 
 __all__ = ["QuantumDictionary", "get_quantum_dictionary", "canonical_key", "registry_stats"]
 
@@ -47,18 +47,18 @@ def canonical_key(obj: Any) -> str:
 @dataclass
 class _Entry:
     value: Any
-    signature: Optional[str]
+    signature: str | None
     stored_at: float = field(default_factory=time.time)
 
 
 class QuantumDictionary:
     """Zentrales Nachschlagewerk mit deterministischen Adressen + Invalidierung."""
 
-    def __init__(self, name: str, ttl_sec: Optional[float] = None, max_entries: int = 256):
+    def __init__(self, name: str, ttl_sec: float | None = None, max_entries: int = 256):
         self.name = name
         self.ttl_sec = ttl_sec
         self.max_entries = max_entries
-        self._entries: Dict[str, _Entry] = {}
+        self._entries: dict[str, _Entry] = {}
         self._lock = threading.Lock()
         self._hits = 0
         self._misses = 0
@@ -68,7 +68,7 @@ class QuantumDictionary:
         self,
         key_obj: Any,
         compute: Callable[[], Any],
-        signature: Optional[str] = None,
+        signature: str | None = None,
     ) -> Any:
         """Liefert den Eintrag zu key_obj oder berechnet ihn neu.
 
@@ -108,7 +108,7 @@ class QuantumDictionary:
             self._invalidations += n
             return n
 
-    def stats(self) -> Dict[str, Any]:
+    def stats(self) -> dict[str, Any]:
         with self._lock:
             return {
                 "name": self.name,
@@ -121,11 +121,11 @@ class QuantumDictionary:
             }
 
 
-_registry: Dict[str, QuantumDictionary] = {}
+_registry: dict[str, QuantumDictionary] = {}
 _registry_lock = threading.Lock()
 
 
-def get_quantum_dictionary(name: str, ttl_sec: Optional[float] = None,
+def get_quantum_dictionary(name: str, ttl_sec: float | None = None,
                            max_entries: int = 256) -> QuantumDictionary:
     """Zentrales Register: gleicher Name -> gleiches Woerterbuch (prozessweit)."""
     with _registry_lock:
@@ -134,7 +134,7 @@ def get_quantum_dictionary(name: str, ttl_sec: Optional[float] = None,
         return _registry[name]
 
 
-def registry_stats() -> Dict[str, Dict[str, Any]]:
+def registry_stats() -> dict[str, dict[str, Any]]:
     """Statistik aller Woerterbuecher — fuer /api/architecture/atlas u.a."""
     with _registry_lock:
         return {name: qd.stats() for name, qd in _registry.items()}

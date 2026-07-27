@@ -21,7 +21,7 @@ import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = [
     "GrokNode",
@@ -48,7 +48,7 @@ class GrokNode:
     label: str
     path_or_url: str = ""
     online: bool = False
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -65,13 +65,13 @@ class InterconnectGraph:
     version: str = "1.0"
     captured_at: float = 0.0
     platform: str = "10.0.0"
-    nodes: List[GrokNode] = field(default_factory=list)
-    edges: List[GrokEdge] = field(default_factory=list)
+    nodes: list[GrokNode] = field(default_factory=list)
+    edges: list[GrokEdge] = field(default_factory=list)
     health_score: float = 0.0
-    recommendations: List[str] = field(default_factory=list)
-    evolved: Dict[str, Any] = field(default_factory=dict)
+    recommendations: list[str] = field(default_factory=list)
+    evolved: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "version": self.version,
             "captured_at": self.captured_at,
@@ -90,7 +90,7 @@ class InterconnectGraph:
         }
 
 
-def probe_http(url: str, timeout: float = 2.5) -> Dict[str, Any]:
+def probe_http(url: str, timeout: float = 2.5) -> dict[str, Any]:
     try:
         req = urllib.request.Request(url, method="GET")
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -112,7 +112,7 @@ def _tcp_open(host: str, port: int, timeout: float = 1.0) -> bool:
         return False
 
 
-def _read_json(path: Path) -> Dict[str, Any]:
+def _read_json(path: Path) -> dict[str, Any]:
     if not path.is_file():
         return {}
     try:
@@ -124,8 +124,8 @@ def _read_json(path: Path) -> Dict[str, Any]:
 def capture(*, dash_base: str = "http://127.0.0.1:8000") -> InterconnectGraph:
     """Abgreifen: build live interconnect graph of all Grok-related nodes."""
     g = InterconnectGraph(captured_at=time.time())
-    nodes: List[GrokNode] = []
-    edges: List[GrokEdge] = []
+    nodes: list[GrokNode] = []
+    edges: list[GrokEdge] = []
 
     # --- CLI ---
     cli_st = _read_json(_CLI_STATUS)
@@ -261,7 +261,7 @@ def capture(*, dash_base: str = "http://127.0.0.1:8000") -> InterconnectGraph:
 
     # --- Mesh / Tailscale ---
     mesh_online = False
-    mesh_detail: Dict[str, Any] = {}
+    mesh_detail: dict[str, Any] = {}
     try:
         r = subprocess.run(
             ["tailscale", "status", "--json"],
@@ -382,7 +382,7 @@ def capture(*, dash_base: str = "http://127.0.0.1:8000") -> InterconnectGraph:
     )
 
     # recommendations
-    rec: List[str] = []
+    rec: list[str] = []
     if not skill_ok:
         rec.append("Run sync_grok_intern.ps1 to restore fusion-hero-os skill")
     if not cli_ok:
@@ -403,7 +403,7 @@ def capture(*, dash_base: str = "http://127.0.0.1:8000") -> InterconnectGraph:
     return g
 
 
-def evolve(graph: Optional[InterconnectGraph] = None) -> InterconnectGraph:
+def evolve(graph: InterconnectGraph | None = None) -> InterconnectGraph:
     """Weiterentwickeln: enrich graph with action routes and intent map."""
     g = graph or capture()
     # Intent → target surface map (extends grok_bridge)
@@ -432,7 +432,7 @@ def evolve(graph: Optional[InterconnectGraph] = None) -> InterconnectGraph:
         growth.append("coord_state_present")
 
     # merge canonical route table (alles umgeroutet)
-    route_table: Dict[str, Any] = {}
+    route_table: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.grok_route_table import ROUTE_TABLE, all_routes
 
@@ -468,7 +468,7 @@ def evolve(graph: Optional[InterconnectGraph] = None) -> InterconnectGraph:
     return g
 
 
-def get_graph(*, refresh: bool = False) -> Dict[str, Any]:
+def get_graph(*, refresh: bool = False) -> dict[str, Any]:
     if not refresh and _STATE.is_file():
         age = time.time() - _STATE.stat().st_mtime
         if age < 30:

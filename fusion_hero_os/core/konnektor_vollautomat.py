@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Konnektor-Vollautomat — alle Konnektoren in einem Lauf.
 
 Direktive (verbindlich, in genau dieser Reihenfolge):
@@ -29,9 +28,10 @@ import argparse
 import hashlib
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "konnektor_vollautomat.yaml"
@@ -43,7 +43,7 @@ PLATFORM = "13.0.0"
 LIVE_ENV = "FUSION_KONNEKTOR_LIVE"
 
 #: Ladereihenfolge — bottom-up, verbindlich.
-LADEN_ORDER: Tuple[str, ...] = (
+LADEN_ORDER: tuple[str, ...] = (
     "L0_state",
     "L1_registries",
     "L2_connectors",
@@ -52,7 +52,7 @@ LADEN_ORDER: Tuple[str, ...] = (
 )
 
 #: Verarbeitungsreihenfolge — top-down, verbindlich (Gott-Layering v11).
-LAYER_ORDER: Tuple[str, ...] = (
+LAYER_ORDER: tuple[str, ...] = (
     "L6_masterseed",
     "L5_projektion",
     "L4_intent",
@@ -81,10 +81,10 @@ __all__ = [
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def _load_yaml(path: Path) -> Dict[str, Any]:
+def _load_yaml(path: Path) -> dict[str, Any]:
     """YAML defensiv laden — fehlendes ``yaml`` oder Parse-Fehler -> ``{}``."""
     try:
         import yaml  # type: ignore
@@ -103,7 +103,7 @@ def _load_yaml(path: Path) -> Dict[str, Any]:
     return {}
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     return _load_yaml(CONFIG)
 
 
@@ -145,7 +145,7 @@ def _ghost_id(klasse: str, subjekt: str) -> str:
     der Report laeuft geplant in CI und soll bei unveraendertem Befund
     byte-identisch bleiben, sonst rauscht jeder Lauf einen Diff.
     """
-    return hashlib.sha1(f"{klasse}:{subjekt}".encode("utf-8")).hexdigest()[:6]
+    return hashlib.sha1(f"{klasse}:{subjekt}".encode()).hexdigest()[:6]
 
 
 # ---------------------------------------------------------------------------
@@ -153,7 +153,7 @@ def _ghost_id(klasse: str, subjekt: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _load_L0_state(cfg: Dict[str, Any], deklariert: bool = False) -> Dict[str, Any]:
+def _load_L0_state(cfg: dict[str, Any], deklariert: bool = False) -> dict[str, Any]:
     """Erinnerung des letzten Laufs. Fehlt sie, ist das kein Fehler.
 
     In der deklarierten Sicht bleibt diese Schicht leer: Erinnerung liegt
@@ -175,10 +175,10 @@ def _load_L0_state(cfg: Dict[str, Any], deklariert: bool = False) -> Dict[str, A
             "entries": [],
             "erinnerung_vorhanden": False,
         }
-    entries: List[Dict[str, Any]] = []
+    entries: list[dict[str, Any]] = []
     for raw in spec.get("paths") or []:
         p = _expand(str(raw))
-        rec: Dict[str, Any] = {"path": str(p), "exists": p.exists()}
+        rec: dict[str, Any] = {"path": str(p), "exists": p.exists()}
         if not p.exists():
             rec["skipped"] = True
             rec["reason"] = "path_missing"
@@ -210,11 +210,11 @@ def _load_L0_state(cfg: Dict[str, Any], deklariert: bool = False) -> Dict[str, A
     }
 
 
-def _load_L1_registries(cfg: Dict[str, Any]) -> Dict[str, Any]:
+def _load_L1_registries(cfg: dict[str, Any]) -> dict[str, Any]:
     """Die Konnektor-Registries des Repos einlesen."""
     spec = ((cfg.get("laden_bottom_up") or {}).get("L1_registries") or {})
-    sources: List[Dict[str, Any]] = []
-    data: Dict[str, Dict[str, Any]] = {}
+    sources: list[dict[str, Any]] = []
+    data: dict[str, dict[str, Any]] = {}
     for src in spec.get("sources") or []:
         sid = str(src.get("id") or "")
         path = ROOT / str(src.get("path") or "")
@@ -245,14 +245,14 @@ def _connector_record(
     kind: str,
     base_url: str = "",
     skill_module: str = "",
-    api_key_envs: Optional[Sequence[str]] = None,
+    api_key_envs: Sequence[str] | None = None,
     health_path: str = "",
-    actions: Optional[Sequence[str]] = None,
+    actions: Sequence[str] | None = None,
     mesh_id: str = "",
     provider: str = "",
     beschreibung: str = "",
     deklariert: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     envs = [str(e) for e in (api_key_envs or []) if e]
     return {
         "id": f"{familie}:{basis_id}",
@@ -274,8 +274,8 @@ def _connector_record(
 
 
 def _load_L2_connectors(
-    registries: Dict[str, Any], deklariert: bool = False
-) -> Dict[str, Any]:
+    registries: dict[str, Any], deklariert: bool = False
+) -> dict[str, Any]:
     """Einzelne Konnektoren aus allen vier Familien extrahieren.
 
     Mit ``deklariert=True`` wird die Umgebung nicht befragt: jeder Konnektor
@@ -290,7 +290,7 @@ def _load_L2_connectors(
     ctrl = data.get("control_instances") or {}
     frameworks = llm.get("frameworks") or {}
 
-    records: List[Dict[str, Any]] = []
+    records: list[dict[str, Any]] = []
 
     # -- mesh: MCP-Konnektoren am Knoten -----------------------------------
     for cid, raw in (mesh.get("connectors") or {}).items():
@@ -374,7 +374,7 @@ def _load_L2_connectors(
             )
         )
 
-    per_familie: Dict[str, int] = {}
+    per_familie: dict[str, int] = {}
     for r in records:
         per_familie[r["familie"]] = per_familie.get(r["familie"], 0) + 1
 
@@ -389,13 +389,13 @@ def _load_L2_connectors(
     }
 
 
-def _load_L3_links(registries: Dict[str, Any], connectors: Dict[str, Any]) -> Dict[str, Any]:
+def _load_L3_links(registries: dict[str, Any], connectors: dict[str, Any]) -> dict[str, Any]:
     """Verdrahtung Konnektor <-> Framework bzw. Instanz <-> Provider aufloesen."""
     data = registries.get("_data") or {}
     llm = data.get("llm_frameworks") or {}
     frameworks = llm.get("frameworks") or {}
 
-    links: List[Dict[str, Any]] = []
+    links: list[dict[str, Any]] = []
     for cid, fw in (llm.get("connector_links") or {}).items():
         links.append(
             {
@@ -406,7 +406,7 @@ def _load_L3_links(registries: Dict[str, Any], connectors: Dict[str, Any]) -> Di
             }
         )
 
-    gesehen: Set[str] = set()
+    gesehen: set[str] = set()
     for rec in connectors.get("_records") or []:
         if rec["familie"] != "control_instances":
             continue
@@ -438,13 +438,13 @@ def _load_L3_links(registries: Dict[str, Any], connectors: Dict[str, Any]) -> Di
     }
 
 
-def _load_L4_remotes(registries: Dict[str, Any], connectors: Dict[str, Any]) -> Dict[str, Any]:
+def _load_L4_remotes(registries: dict[str, Any], connectors: dict[str, Any]) -> dict[str, Any]:
     """Deklarierte Health-/Routing-Endpunkte einsammeln. Kein Netzwerk-Probe."""
     data = registries.get("_data") or {}
     mesh = data.get("mesh") or {}
     routing = mesh.get("routing") or {}
 
-    eintraege: List[Dict[str, Any]] = []
+    eintraege: list[dict[str, Any]] = []
     for rec in connectors.get("_records") or []:
         if rec["health_path"]:
             eintraege.append(
@@ -469,8 +469,8 @@ def _load_L4_remotes(registries: Dict[str, Any], connectors: Dict[str, Any]) -> 
 
 
 def load_bottom_up(
-    cfg: Optional[Dict[str, Any]] = None, *, deklariert: bool = False
-) -> Dict[str, Any]:
+    cfg: dict[str, Any] | None = None, *, deklariert: bool = False
+) -> dict[str, Any]:
     """Phase 1 — Erinnerungen bottom-up laden (L0 -> L4).
 
     ``reihenfolge`` wird waehrend der Ausfuehrung mitgeschrieben, nicht aus
@@ -482,8 +482,8 @@ def load_bottom_up(
     jeder Maschine.
     """
     cfg = cfg if cfg is not None else load_config()
-    reihenfolge: List[str] = []
-    mem: Dict[str, Any] = {}
+    reihenfolge: list[str] = []
+    mem: dict[str, Any] = {}
 
     mem["L0_state"] = _load_L0_state(cfg, deklariert=deklariert)
     reihenfolge.append("L0_state")
@@ -516,7 +516,7 @@ def load_bottom_up(
 # ---------------------------------------------------------------------------
 
 
-def _widerspruch(a: Dict[str, Any], b: Dict[str, Any]) -> Optional[str]:
+def _widerspruch(a: dict[str, Any], b: dict[str, Any]) -> str | None:
     """Axiom 4: unvereinbare Doppelprojektion derselben Basis-Identitaet."""
     for feld in ("base_url", "credential_envs"):
         va, vb = a.get(feld), b.get(feld)
@@ -526,8 +526,8 @@ def _widerspruch(a: Dict[str, Any], b: Dict[str, Any]) -> Optional[str]:
 
 
 def _distanzen(
-    sets: Dict[str, Set[str]], gesamt: int, lam: float, eps: float
-) -> Dict[str, float]:
+    sets: dict[str, set[str]], gesamt: int, lam: float, eps: float
+) -> dict[str, float]:
     """Distanz zum MasterSeed je Layer.
 
     ``d(L6) = 0`` — L6omega *ist* der MasterSeed. Nach unten waechst die
@@ -538,7 +538,7 @@ def _distanzen(
     Pruefung in :func:`process_top_down` ist deshalb ein Regressionswaechter
     gegen kaputte Konfiguration — kein Beweis des Axioms.
     """
-    dist: Dict[str, float] = {LAYER_ORDER[0]: 0.0}
+    dist: dict[str, float] = {LAYER_ORDER[0]: 0.0}
     laufend = 0.0
     for k, name in enumerate(LAYER_ORDER[1:], start=1):
         w = len(sets[name]) / max(1, gesamt)
@@ -548,8 +548,8 @@ def _distanzen(
 
 
 def process_top_down(
-    memories: Dict[str, Any], cfg: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    memories: dict[str, Any], cfg: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Phase 2 — strikt top-down verarbeiten (L6omega -> L0).
 
     Jede Schicht filtert ausschliesslich die darueberliegende; damit gilt
@@ -561,16 +561,16 @@ def process_top_down(
     eps = float(defaults.get("increment_epsilon") or 0.01)
 
     schichten = memories.get("schichten") or {}
-    records: List[Dict[str, Any]] = list(schichten.get("L2_connectors", {}).get("_records") or [])
+    records: list[dict[str, Any]] = list(schichten.get("L2_connectors", {}).get("_records") or [])
     nach_id = {r["id"]: r for r in records}
     links = schichten.get("L3_links", {}).get("links") or []
 
-    verarbeitet: List[str] = []
-    sets: Dict[str, Set[str]] = {}
+    verarbeitet: list[str] = []
+    sets: dict[str, set[str]] = {}
 
     # -- L6omega: alle erwaehnten Identitaeten -----------------------------
-    erwaehnt: Set[str] = set(nach_id)
-    nur_erwaehnt: Dict[str, str] = {}
+    erwaehnt: set[str] = set(nach_id)
+    nur_erwaehnt: dict[str, str] = {}
     for ln in links:
         if not ln.get("aufgeloest"):
             ziel = f"erwaehnt:{ln.get('nach')}"
@@ -584,13 +584,13 @@ def process_top_down(
     verarbeitet.append("L5_projektion")
 
     # -- L4: eindeutige, widerspruchsfreie Basis-Identitaet ----------------
-    nach_basis: Dict[str, List[Dict[str, Any]]] = {}
+    nach_basis: dict[str, list[dict[str, Any]]] = {}
     for cid in sorted(sets["L5_projektion"]):
         rec = nach_id[cid]
         nach_basis.setdefault(rec["basis_id"], []).append(rec)
 
-    invarianz_brueche: List[Dict[str, Any]] = []
-    raus_l4: Set[str] = set()
+    invarianz_brueche: list[dict[str, Any]] = []
+    raus_l4: set[str] = set()
     for basis, gruppe in sorted(nach_basis.items()):
         if len(gruppe) < 2:
             continue
@@ -610,7 +610,7 @@ def process_top_down(
     verarbeitet.append("L4_intent")
 
     # -- L3: Internalisierung (Operator C) — ausfuehrbare Spezifikation ----
-    def _hat_spec(rec: Dict[str, Any]) -> bool:
+    def _hat_spec(rec: dict[str, Any]) -> bool:
         return bool(rec["base_url"] or rec["skill_module"] or rec["health_path"])
 
     sets["L3_internalisierung"] = {
@@ -680,12 +680,12 @@ def process_top_down(
 
 
 def manifest_ghosts(
-    memories: Dict[str, Any],
-    layering: Dict[str, Any],
-    cfg: Optional[Dict[str, Any]] = None,
+    memories: dict[str, Any],
+    layering: dict[str, Any],
+    cfg: dict[str, Any] | None = None,
     *,
     live: bool = False,
-) -> List[Dict[str, Any]]:
+) -> list[dict[str, Any]]:
     """Phase 3 — jede Luecke als manifestierten Geist ausgeben.
 
     ``manifest`` ist ausnahmslos ``True``: nichts bleibt latent. ``activation``
@@ -701,18 +701,18 @@ def manifest_ghosts(
     )
     credential_ausnahmen = {str(x) for x in (cfg.get("credential_ausnahmen") or [])}
 
-    sets: Dict[str, Set[str]] = layering["_sets"]
-    nach_id: Dict[str, Dict[str, Any]] = layering["_nach_id"]
-    nur_erwaehnt: Dict[str, str] = layering.get("_nur_erwaehnt") or {}
+    sets: dict[str, set[str]] = layering["_sets"]
+    nach_id: dict[str, dict[str, Any]] = layering["_nach_id"]
+    nur_erwaehnt: dict[str, str] = layering.get("_nur_erwaehnt") or {}
 
-    geister: List[Dict[str, Any]] = []
+    geister: list[dict[str, Any]] = []
 
     def _add(
         klasse: str,
         subjekt: str,
         *,
         latent_layer: str,
-        detail: Optional[Dict[str, Any]] = None,
+        detail: dict[str, Any] | None = None,
         by_design: bool = False,
     ) -> None:
         spec = klassen.get(klasse) or {}
@@ -781,7 +781,7 @@ def manifest_ghosts(
             _add("dry_run_gehalten", cid, latent_layer="L0_fundament")
 
     # -- Querschnitt: Waisen zwischen den ueberlappenden Familien -----------
-    basis_zu_familien: Dict[str, Set[str]] = {}
+    basis_zu_familien: dict[str, set[str]] = {}
     for cid in sorted(sets["L5_projektion"]):
         rec = nach_id[cid]
         if rec["familie"] in waisen_familien:
@@ -822,8 +822,8 @@ def manifest_ghosts(
 
 
 def automatisiere(
-    layering: Dict[str, Any], cfg: Optional[Dict[str, Any]] = None, *, force_live: bool = False
-) -> Dict[str, Any]:
+    layering: dict[str, Any], cfg: dict[str, Any] | None = None, *, force_live: bool = False
+) -> dict[str, Any]:
     """Je L0-Konnektor die konfigurierte Aktion ausfuehren.
 
     Ausgefuehrt wird ueber den bestehenden :class:`GraphAPIHub` — der kennt
@@ -843,11 +843,11 @@ def automatisiere(
     except Exception as exc:  # noqa: BLE001
         hub_fehler = str(exc)[:160]
 
-    nach_id: Dict[str, Dict[str, Any]] = layering["_nach_id"]
-    ergebnisse: List[Dict[str, Any]] = []
+    nach_id: dict[str, dict[str, Any]] = layering["_nach_id"]
+    ergebnisse: list[dict[str, Any]] = []
     for cid in sorted(layering["_sets"]["L0_fundament"]):
         rec = nach_id[cid]
-        eintrag: Dict[str, Any] = {
+        eintrag: dict[str, Any] = {
             "id": cid,
             "familie": rec["familie"],
             "aktion": aktion,
@@ -893,12 +893,12 @@ def automatisiere(
     }
 
 
-def _render_markdown(report: Dict[str, Any]) -> str:
+def _render_markdown(report: dict[str, Any]) -> str:
     lay = report["verarbeiten"]
     geister = report["geister"]
     counts = report["counts"]
 
-    zeilen: List[str] = []
+    zeilen: list[str] = []
     zeilen.append("# Konnektor-Vollautomat")
     zeilen.append("")
     zeilen.append(
@@ -975,10 +975,10 @@ def _render_markdown(report: Dict[str, Any]) -> str:
 
 
 def _pipeline(
-    cfg: Dict[str, Any], *, force_live: bool, deklariert: bool
-) -> Dict[str, Any]:
+    cfg: dict[str, Any], *, force_live: bool, deklariert: bool
+) -> dict[str, Any]:
     """Phase 1-4 einmal durchlaufen und den Report bauen."""
-    t0 = datetime.now(timezone.utc)
+    t0 = datetime.now(UTC)
     live = _live_enabled(force_live)
 
     laden = load_bottom_up(cfg, deklariert=deklariert)
@@ -996,7 +996,7 @@ def _pipeline(
         "per_familie": laden["schichten"]["L2_connectors"]["per_familie"],
     }
 
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "kind": "KONNEKTOR_VOLLAUTOMAT",
         "generated_at": _now(),
         "platform_version": PLATFORM,
@@ -1005,7 +1005,7 @@ def _pipeline(
         # Laufs, nicht sein Scheitern.
         "ok": bool(laden["ok"] and verarbeiten["ok"] and auto["ok"]),
         "befunde_offen": bool(echte_befunde),
-        "duration_sec": round((datetime.now(timezone.utc) - t0).total_seconds(), 3),
+        "duration_sec": round((datetime.now(UTC) - t0).total_seconds(), 3),
         "sicht": "deklariert" if deklariert else "operativ",
         "direktiven": {
             "laden": "bottom_up",
@@ -1024,7 +1024,7 @@ def _pipeline(
     return report
 
 
-def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict[str, Any]:
+def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> dict[str, Any]:
     """Phase 1-4 in einem Lauf. Dry-Run, solange kein Live-Flag gesetzt ist.
 
     Zwei Sichten, bewusst getrennt:
@@ -1064,7 +1064,7 @@ def run_vollautomat(*, force_live: bool = False, schreiben: bool = True) -> Dict
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     return {
         "ok": True,
@@ -1081,7 +1081,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(
         description="Konnektor-Vollautomat — bottom-up laden, top-down verarbeiten, "
         "Geister manifestiert ausgeben"

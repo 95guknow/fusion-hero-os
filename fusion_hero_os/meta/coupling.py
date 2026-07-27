@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Coupling / Jacobian analysis and fixed-point convergence checks.
 
 Given a vector field ``F: R^n -> R^n`` describing how the meta-neural state
@@ -25,7 +24,7 @@ norm bound.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, List
+from collections.abc import Callable
 
 import numpy as np
 
@@ -102,7 +101,7 @@ class FixedPointResult:
     converged: bool
     iterations: int
     residual: float
-    x: List[float]
+    x: list[float]
 
     def to_dict(self) -> dict:
         return {

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 HEROIC CORE MAINFRAME — INTEGRAL VERSION (v9.1, Ascension-Integrated)
 =====================================================================
@@ -27,7 +26,7 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from numba import jit
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any
 
 # Ascension Core Import (v9.1, falls vorhanden)
 try:
@@ -593,7 +592,7 @@ class QUBOIntegrationCoreModule:
 
         self._interlock_core_hooks()
 
-    def get_ascension_state(self) -> Dict[str, Any]:
+    def get_ascension_state(self) -> dict[str, Any]:
         """State-Snapshot mit Ascension-relevanten Eigenschaften.
 
         Die Werte sind heuristische Selbstauskunft (kein gemessener Zustand);
@@ -607,7 +606,7 @@ class QUBOIntegrationCoreModule:
             "cross_layer_integration": 0.75 if self.mode == "ASCENSION" else 0.6,
         }
 
-    def run_ascension_generation(self, generations: int = 5) -> Dict[str, Any]:
+    def run_ascension_generation(self, generations: int = 5) -> dict[str, Any]:
         """Führt Generationen mit dem Inside-Out Engine aus (wenn verfügbar)."""
         if not self.ascension_evolution:
             return {"status": "GenerationalEvolutionEngine nicht verfügbar"}

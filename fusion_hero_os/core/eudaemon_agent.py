@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Eudaemon Agent — Korridor begehen, jenseits handeln (Meister Hasch Labor).
 
@@ -20,10 +19,10 @@ import hashlib
 import json
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 MEISTER_DISK = Path(r"C:\Dissertation_95guknow\meister_hasch.png")
@@ -55,18 +54,18 @@ EUDAIMONIA_ENERGY_CEILING = 1e6
 @dataclass
 class CorridorStep:
     path: str
-    status: Optional[int]
+    status: int | None
     bytes: int
     content_type: str
     kind: str  # spa_shell | static_asset | unknown | error
     plane_hint: str  # business | hyperraum | public | asset
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _plane_hint(path: str) -> str:
@@ -103,9 +102,9 @@ def walk_corridor(
     base: str = CLOUD_RUN,
     paths: tuple = CORRIDOR_PATHS,
     timeout: float = 12.0,
-) -> List[CorridorStep]:
+) -> list[CorridorStep]:
     """Begehe den öffentlichen Korridor (read-only HTTP GET)."""
-    steps: List[CorridorStep] = []
+    steps: list[CorridorStep] = []
     for path in paths:
         url = base.rstrip("/") + path
         try:
@@ -152,8 +151,8 @@ def walk_corridor(
     return steps
 
 
-def meister_integrity() -> Dict[str, Any]:
-    out: Dict[str, Any] = {"binding": True, "frame": "labor_sandkasten"}
+def meister_integrity() -> dict[str, Any]:
+    out: dict[str, Any] = {"binding": True, "frame": "labor_sandkasten"}
     for label, p in (("disk", MEISTER_DISK), ("repo", MEISTER_REPO)):
         if p.is_file():
             raw = p.read_bytes()
@@ -174,9 +173,9 @@ def meister_integrity() -> Dict[str, Any]:
     return out
 
 
-def eudaimonia_corridor_check(energy: float = 0.0) -> Dict[str, Any]:
+def eudaimonia_corridor_check(energy: float = 0.0) -> dict[str, Any]:
     """Local EudaimoniaGuard-style corridor: energy must stay inside bounds."""
-    alerts: List[str] = []
+    alerts: list[str] = []
     if energy > EUDAIMONIA_ENERGY_CEILING:
         alerts.append("Divergenter Energiewert außerhalb des eudaimonischen Korridors.")
     return {
@@ -188,11 +187,11 @@ def eudaimonia_corridor_check(energy: float = 0.0) -> Dict[str, Any]:
     }
 
 
-def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
+def act_other_side(*, seed: int = 0) -> dict[str, Any]:
     """
     Jenseits des SPA-Korridors: operator-local eudaemon actions.
     """
-    actions: List[Dict[str, Any]] = []
+    actions: list[dict[str, Any]] = []
 
     # 1) Meister Hasch integrity
     mi = meister_integrity()
@@ -205,7 +204,7 @@ def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
     )
 
     # 2) Daemon self-heal field study (if available)
-    heal: Dict[str, Any] = {}
+    heal: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.daemon_self_heal_field_study import run_field_study
 
@@ -286,8 +285,8 @@ def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
     }
 
 
-def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> Dict[str, Any]:
-    corridor: List[CorridorStep] = []
+def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> dict[str, Any]:
+    corridor: list[CorridorStep] = []
     if walk:
         corridor = walk_corridor()
 
@@ -414,7 +413,7 @@ def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> Dict[
     return report
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
 
     p = argparse.ArgumentParser(description="Eudaemon: walk corridor, act on other side")

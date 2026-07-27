@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Pseudo-Inhouse Creative Hub — image, video, PDF, graphics.
 
@@ -17,9 +16,9 @@ import subprocess
 import textwrap
 import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "CreativeResult",
@@ -43,17 +42,17 @@ class CreativeResult:
     ok: bool
     modality: str
     engine: str
-    path: Optional[str] = None
-    paths: List[str] = field(default_factory=list)
+    path: str | None = None
+    paths: list[str] = field(default_factory=list)
     mime: str = "application/octet-stream"
     latency_ms: float = 0.0
-    meta: Dict[str, Any] = field(default_factory=dict)
-    error: Optional[str] = None
+    meta: dict[str, Any] = field(default_factory=dict)
+    error: str | None = None
     pseudo_inhouse: bool = True
     freemium: bool = False
     platform: str = PLATFORM
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -67,7 +66,7 @@ def output_dir() -> Path:
     return p
 
 
-def _load_yaml() -> Dict[str, Any]:
+def _load_yaml() -> dict[str, Any]:
     path = ROOT / "creative_inhouse_services.yaml"
     if not path.exists():
         return {}
@@ -79,7 +78,7 @@ def _load_yaml() -> Dict[str, Any]:
         return {}
 
 
-def catalog() -> Dict[str, Any]:
+def catalog() -> dict[str, Any]:
     data = _load_yaml()
     return {
         "ok": True,
@@ -116,7 +115,7 @@ def _font(size: int = 28):
     return ImageFont.load_default()
 
 
-def _parse_size(size: str, default: Tuple[int, int] = (1024, 768)) -> Tuple[int, int]:
+def _parse_size(size: str, default: tuple[int, int] = (1024, 768)) -> tuple[int, int]:
     try:
         w, h = size.lower().split("x")
         return max(64, int(w)), max(64, int(h))
@@ -130,12 +129,12 @@ def _slug(text: str, n: int = 40) -> str:
 
 
 def _stamp(prefix: str, ext: str) -> Path:
-    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     h = hashlib.sha1(f"{prefix}{ts}{os.getpid()}".encode()).hexdigest()[:8]
     return output_dir() / f"{prefix}_{ts}_{h}.{ext}"
 
 
-def _palette(seed: str) -> Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]]:
+def _palette(seed: str) -> tuple[tuple[int, int, int], tuple[int, int, int], tuple[int, int, int]]:
     h = int(hashlib.md5(seed.encode()).hexdigest()[:6], 16)
     bg = (10 + (h % 30), 16 + (h >> 4) % 40, 28 + (h >> 8) % 50)
     accent = (0, 180 + (h % 50), 150 + (h >> 2) % 60)
@@ -148,7 +147,7 @@ def create_image(
     *,
     size: str = "1024x768",
     style: str = "poster",
-    title: Optional[str] = None,
+    title: str | None = None,
 ) -> CreativeResult:
     t0 = time.time()
     try:
@@ -281,7 +280,7 @@ def _xml_escape(s: str) -> str:
 def create_pdf(
     prompt: str,
     *,
-    title: Optional[str] = None,
+    title: str | None = None,
     pages: int = 2,
 ) -> CreativeResult:
     """Multi-page PDF via Pillow (no freemium SaaS)."""
@@ -465,7 +464,7 @@ def create(
     )
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     engines = {
         "pillow_canvas": True,
         "pillow_pdf": True,
@@ -501,7 +500,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def list_artifacts(limit: int = 30) -> Dict[str, Any]:
+def list_artifacts(limit: int = 30) -> dict[str, Any]:
     d = output_dir()
     files = sorted(d.glob("*"), key=lambda p: p.stat().st_mtime, reverse=True)
     items = []
@@ -518,7 +517,7 @@ def list_artifacts(limit: int = 30) -> Dict[str, Any]:
     return {"ok": True, "count": len(items), "items": items, "dir": str(d)}
 
 
-def openai_image_response(result: CreativeResult) -> Dict[str, Any]:
+def openai_image_response(result: CreativeResult) -> dict[str, Any]:
     """OpenAI-like images.generations shape (local path as b64-less url file)."""
     return {
         "created": int(time.time()),

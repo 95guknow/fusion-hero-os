@@ -13,12 +13,12 @@ Blackbox zu sein.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 
 #: (Achsenname, Default-Gewicht, Kurzbeschreibung). Werte werden 0..1 erwartet.
-DEFAULT_AXES: List[Tuple[str, float, str]] = [
+DEFAULT_AXES: list[tuple[str, float, str]] = [
     ("stakeholder_breadth", 0.25, "Wie viele/verschiedene Betroffene hat die Entscheidung?"),
     ("reversibility", 0.25, "Wie leicht ist sie rückgängig zu machen? (1 = leicht reversibel)"),
     ("time_horizon", 0.25, "Wie langfristig wirkt sie? (1 = sehr langfristig)"),
@@ -31,7 +31,7 @@ class WeltraudaimoniaModule(BaseModule):
     und liefert einen gewichteten Gesamtscore plus Achsen-Aufschlüsselung.
     """
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         scores = payload.get("scores", {})
         weight_overrides = payload.get("weights", {})

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 x402 Foundation protocol — defensive hackability audit via Heroic Mathematics.
 
@@ -19,9 +18,9 @@ import hashlib
 import json
 import os
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -37,7 +36,7 @@ __all__ = [
 ]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "x402_hackability.yaml"
     if not path.exists():
         return {}
@@ -57,7 +56,7 @@ class GateResult:
     description: str
     note: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -69,7 +68,7 @@ class MathCheck:
     detail: str
     geltung: str = "MODELL"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -80,16 +79,16 @@ class AuditReport:
     risk_score: float
     level: str  # ok | warn | critical
     warn: bool
-    gates: List[GateResult]
-    math_checks: List[MathCheck]
-    open_attacks: List[Dict[str, Any]]
+    gates: list[GateResult]
+    math_checks: list[MathCheck]
+    open_attacks: list[dict[str, Any]]
     controls_ok: int
     controls_total: int
     generated_at: str
-    emergency_paths: List[str] = field(default_factory=list)
+    emergency_paths: list[str] = field(default_factory=list)
     summary: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["gates"] = [g.to_dict() if hasattr(g, "to_dict") else g for g in self.gates]
         d["math_checks"] = [
@@ -98,7 +97,7 @@ class AuditReport:
         return d
 
 
-def heroic_math_checks(seed: int = 402) -> List[MathCheck]:
+def heroic_math_checks(seed: int = 402) -> list[MathCheck]:
     """Formal properties used as *analogues* for x402 safety (MODELL, not HTTP proof)."""
     from fusion_hero_os.core.heroic_math_engine import (
         OrthogonalProjector,
@@ -107,7 +106,7 @@ def heroic_math_checks(seed: int = 402) -> List[MathCheck]:
     )
 
     rng = np.random.default_rng(seed)
-    out: List[MathCheck] = []
+    out: list[MathCheck] = []
 
     # --- Projector: single-use grant analogue (idempotent apply) ---
     try:
@@ -212,7 +211,7 @@ def heroic_math_checks(seed: int = 402) -> List[MathCheck]:
     return out
 
 
-def _default_gate_answers(cfg: Dict[str, Any]) -> Dict[str, bool]:
+def _default_gate_answers(cfg: dict[str, Any]) -> dict[str, bool]:
     """
     Default: assume gates NOT implemented in Fusion (honest).
     Override via env FUSION_X402_GATES=json or config fusion_gates.
@@ -232,14 +231,14 @@ def _default_gate_answers(cfg: Dict[str, Any]) -> Dict[str, bool]:
 
 def audit(
     *,
-    gate_answers: Optional[Dict[str, bool]] = None,
+    gate_answers: dict[str, bool] | None = None,
     emit: bool = True,
 ) -> AuditReport:
     cfg = load_config()
     gates_cfg = list(cfg.get("control_gates") or [])
     answers = gate_answers if gate_answers is not None else _default_gate_answers(cfg)
 
-    gate_results: List[GateResult] = []
+    gate_results: list[GateResult] = []
     for g in gates_cfg:
         gid = str(g.get("id"))
         ok = bool(answers.get(gid, False))
@@ -284,7 +283,7 @@ def audit(
         open_attacks=open_attacks,
         controls_ok=controls_ok,
         controls_total=len(gate_results),
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        generated_at=datetime.now(UTC).isoformat(),
         summary=summary,
     )
 
@@ -296,10 +295,10 @@ def audit(
 
 
 def risk_score(
-    cfg: Dict[str, Any],
-    gates: List[GateResult],
-    math_checks: List[MathCheck],
-) -> Tuple[float, List[Dict[str, Any]]]:
+    cfg: dict[str, Any],
+    gates: list[GateResult],
+    math_checks: list[MathCheck],
+) -> tuple[float, list[dict[str, Any]]]:
     """Score 0..100 from open attacks (failed gates) + math model failures."""
     scoring = cfg.get("scoring") or {}
     weights = scoring.get("weights") or {
@@ -314,7 +313,7 @@ def risk_score(
         if not g.ok and g.attack:
             open_ids.add(g.attack)
 
-    open_list: List[Dict[str, Any]] = []
+    open_list: list[dict[str, Any]] = []
     score = 0.0
     for aid in open_ids:
         a = attacks.get(aid) or {"id": aid, "severity": "high", "name": aid}
@@ -345,9 +344,9 @@ def risk_score(
 
 
 def _persist_report(
-    report: AuditReport, cfg: Dict[str, Any], *, emergency: bool
-) -> List[str]:
-    paths: List[str] = []
+    report: AuditReport, cfg: dict[str, Any], *, emergency: bool
+) -> list[str]:
+    paths: list[str] = []
     alert_dir = Path.home() / ".fusion" / "alerts"
     alert_dir.mkdir(parents=True, exist_ok=True)
     name = "x402_emergency.json" if emergency else "x402_audit_latest.json"
@@ -382,7 +381,7 @@ def _persist_report(
     return paths
 
 
-def emit_warning(report: AuditReport, cfg: Optional[Dict[str, Any]] = None) -> List[str]:
+def emit_warning(report: AuditReport, cfg: dict[str, Any] | None = None) -> list[str]:
     """Emergency warning path — files + optional print (no external send without keys)."""
     cfg = cfg or load_config()
     paths = _persist_report(report, cfg, emergency=True)
@@ -482,7 +481,7 @@ def emit_warning(report: AuditReport, cfg: Optional[Dict[str, Any]] = None) -> L
     return paths
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     alert = Path.home() / ".fusion" / "alerts" / "x402_emergency.json"
     latest = None

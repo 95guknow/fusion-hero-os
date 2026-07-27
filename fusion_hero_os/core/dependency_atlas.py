@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fusion Hero OS — Dependency Atlas (polyglotte Fraktal-Layer-Architektur als Code).
 
 Leitet den tatsaechlichen Abhaengigkeitsgraphen des Repos maschinell aus dem
@@ -33,7 +32,8 @@ import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Set, Tuple
+from typing import Any
+from collections.abc import Iterator
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -61,7 +61,7 @@ ROOTED_INTERNAL = ("fusion_hero_os", "ascension_os")
 
 # Bekannte, dokumentierte Zyklen (Paare von Modulnamen, richtungslos).
 # Leer = Ziel; Eintraege hier MUESSEN einen Kommentar mit Grund tragen.
-CYCLE_WHITELIST: Set[frozenset] = set()
+CYCLE_WHITELIST: set[frozenset] = set()
 
 # Marker fuer ehrlich deklarierte Stubs (Repo-Kultur: Code-Honesty).
 # Zusammengesetzt, damit der Atlas sich nicht selbst als Treffer zaehlt.
@@ -99,13 +99,13 @@ class Edge:
 
 @dataclass
 class Atlas:
-    nodes: Dict[str, Node] = field(default_factory=dict)
-    edges: List[Edge] = field(default_factory=list)
-    external: Dict[str, int] = field(default_factory=dict)   # externer Import -> Nutzungen
-    unresolved: List[Dict[str, str]] = field(default_factory=list)
-    cycles: List[List[str]] = field(default_factory=list)
+    nodes: dict[str, Node] = field(default_factory=dict)
+    edges: list[Edge] = field(default_factory=list)
+    external: dict[str, int] = field(default_factory=dict)   # externer Import -> Nutzungen
+    unresolved: list[dict[str, str]] = field(default_factory=list)
+    cycles: list[list[str]] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "generated_from": "fusion_hero_os.core.dependency_atlas",
             "nodes": [vars(n) for n in self.nodes.values()],
@@ -116,7 +116,7 @@ class Atlas:
             "epistemik": self.epistemik_summary(),
         }
 
-    def epistemik_summary(self) -> Dict[str, Any]:
+    def epistemik_summary(self) -> dict[str, Any]:
         marked = sorted(
             ((n.path, n.placeholder_markers) for n in self.nodes.values() if n.placeholder_markers),
             key=lambda kv: -kv[1],
@@ -136,7 +136,7 @@ class Atlas:
 
 # Fallback fuer Pfade, die fusion_unified.yaml keinem Layer zuweist.
 # Bewusst grob: lieber ehrlich 'unassigned' als falsch einsortiert.
-_FALLBACK_PREFIXES: List[Tuple[str, str]] = [
+_FALLBACK_PREFIXES: list[tuple[str, str]] = [
     ("fusion_hero_os/engine", "mainframe"),
     ("fusion_hero_os/providers", "intelligence"),
     ("fusion_hero_os/core", "knowledge"),
@@ -157,9 +157,9 @@ _FALLBACK_PREFIXES: List[Tuple[str, str]] = [
 ]
 
 
-def _layer_prefixes_from_unified() -> List[Tuple[str, str]]:
+def _layer_prefixes_from_unified() -> list[tuple[str, str]]:
     """Leitet (pfad-prefix -> layer) aus fusion_unified.yaml layers ab."""
-    prefixes: List[Tuple[str, str]] = []
+    prefixes: list[tuple[str, str]] = []
     try:
         import yaml
         data = yaml.safe_load((REPO_ROOT / "fusion_unified.yaml").read_text(encoding="utf-8"))
@@ -169,7 +169,7 @@ def _layer_prefixes_from_unified() -> List[Tuple[str, str]]:
     for layer_name, spec in layers.items():
         if not isinstance(spec, dict):
             continue
-        candidates: List[str] = []
+        candidates: list[str] = []
         module = spec.get("module") or ""
         if isinstance(module, str) and module and module not in ("docs-only",):
             candidates.append(module.replace(".", "/"))
@@ -187,7 +187,7 @@ def _layer_prefixes_from_unified() -> List[Tuple[str, str]]:
     return prefixes
 
 
-def assign_layer(rel_path: str, unified_prefixes: List[Tuple[str, str]]) -> str:
+def assign_layer(rel_path: str, unified_prefixes: list[tuple[str, str]]) -> str:
     p = rel_path.replace("\\", "/")
     for prefix, layer in unified_prefixes:
         norm = prefix.replace("\\", "/")
@@ -220,7 +220,7 @@ def _module_name(py_path: Path) -> str:
     return ".".join(parts)
 
 
-def _top_level_imports(tree: ast.AST) -> Iterator[Tuple[ast.AST, bool]]:
+def _top_level_imports(tree: ast.AST) -> Iterator[tuple[ast.AST, bool]]:
     """Liefert (Import-Node, deferred). deferred = nicht auf Modulebene."""
     top_level_ids = {id(n) for n in ast.iter_child_nodes(tree)}
     # try/except auf Modulebene zaehlt als top-level (Repo-Muster fuer
@@ -235,7 +235,7 @@ def _top_level_imports(tree: ast.AST) -> Iterator[Tuple[ast.AST, bool]]:
             yield node, id(node) not in top_level_ids
 
 
-def _resolve_absolute(target: str) -> Optional[Path]:
+def _resolve_absolute(target: str) -> Path | None:
     base = REPO_ROOT / Path(target.replace(".", "/"))
     for cand in (base.with_suffix(".py"), base / "__init__.py"):
         if cand.is_file():
@@ -243,7 +243,7 @@ def _resolve_absolute(target: str) -> Optional[Path]:
     return None
 
 
-def _resolve_relative(src_file: Path, level: int, module: str) -> Optional[Path]:
+def _resolve_relative(src_file: Path, level: int, module: str) -> Path | None:
     pkg_dir = src_file.parent
     for _ in range(level - 1):
         pkg_dir = pkg_dir.parent
@@ -254,9 +254,9 @@ def _resolve_relative(src_file: Path, level: int, module: str) -> Optional[Path]
     return None
 
 
-def scan_python(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
-    basename_index: Dict[str, List[Path]] = {}
-    files: List[Path] = []
+def scan_python(atlas: Atlas, unified_prefixes: list[tuple[str, str]]) -> None:
+    basename_index: dict[str, list[Path]] = {}
+    files: list[Path] = []
     for root_name in PYTHON_ROOTS:
         root = REPO_ROOT / root_name
         if not root.is_dir():
@@ -330,7 +330,7 @@ def scan_python(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
 # Rust- und JS-Scan (Manifeste)
 # ---------------------------------------------------------------------------
 
-def _parse_cargo_dependencies(cargo_toml: Path) -> List[str]:
+def _parse_cargo_dependencies(cargo_toml: Path) -> list[str]:
     try:
         import tomllib
         data = tomllib.loads(cargo_toml.read_text(encoding="utf-8"))
@@ -346,7 +346,7 @@ def _parse_cargo_dependencies(cargo_toml: Path) -> List[str]:
         return deps
 
 
-def scan_rust(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
+def scan_rust(atlas: Atlas, unified_prefixes: list[tuple[str, str]]) -> None:
     for crate_dir in ("rust_engine_crate", "pms_rust_kernel_crate"):
         cargo = REPO_ROOT / crate_dir / "Cargo.toml"
         if not cargo.is_file():
@@ -360,7 +360,7 @@ def scan_rust(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
             atlas.external[f"crates.io:{dep}"] = atlas.external.get(f"crates.io:{dep}", 0) + 1
 
 
-def scan_js(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
+def scan_js(atlas: Atlas, unified_prefixes: list[tuple[str, str]]) -> None:
     pkg = REPO_ROOT / "package.json"
     if not pkg.is_file():
         return
@@ -380,9 +380,9 @@ def scan_js(atlas: Atlas, unified_prefixes: List[Tuple[str, str]]) -> None:
 # Analyse
 # ---------------------------------------------------------------------------
 
-def find_cycles(atlas: Atlas) -> List[List[str]]:
+def find_cycles(atlas: Atlas) -> list[list[str]]:
     """Tarjan-SCC ueber Top-Level-Kanten; SCCs > 1 = echte Import-Zyklen."""
-    graph: Dict[str, Set[str]] = {}
+    graph: dict[str, set[str]] = {}
     for e in atlas.edges:
         if e.deferred:
             continue
@@ -390,11 +390,11 @@ def find_cycles(atlas: Atlas) -> List[List[str]]:
         graph.setdefault(e.dst, set())
 
     index_counter = [0]
-    index: Dict[str, int] = {}
-    lowlink: Dict[str, int] = {}
-    on_stack: Set[str] = set()
-    stack: List[str] = []
-    sccs: List[List[str]] = []
+    index: dict[str, int] = {}
+    lowlink: dict[str, int] = {}
+    on_stack: set[str] = set()
+    stack: list[str] = []
+    sccs: list[list[str]] = []
 
     def strongconnect(v: str) -> None:
         index[v] = lowlink[v] = index_counter[0]
@@ -472,7 +472,7 @@ def _repo_state_signature() -> str:
     return f"{count}:{max_mtime:.6f}"
 
 
-def _layer_prefixes_cached() -> List[Tuple[str, str]]:
+def _layer_prefixes_cached() -> list[tuple[str, str]]:
     """Layer-Prefixe aus fusion_unified.yaml, memoisiert auf dessen mtime."""
     try:
         from fusion_hero_os.core.quantum_dictionaries import get_quantum_dictionary
@@ -510,14 +510,14 @@ def _package_key(node: Node) -> str:
 
 
 def render_mermaid(atlas: Atlas) -> str:
-    pkg_layer: Dict[str, str] = {}
-    node_pkg: Dict[str, str] = {}
+    pkg_layer: dict[str, str] = {}
+    node_pkg: dict[str, str] = {}
     for n in atlas.nodes.values():
         pkg = _package_key(n)
         node_pkg[n.name] = pkg
         pkg_layer.setdefault(pkg, n.layer)
 
-    agg_edges: Set[Tuple[str, str]] = set()
+    agg_edges: set[tuple[str, str]] = set()
     for e in atlas.edges:
         s, d = node_pkg.get(e.src), node_pkg.get(e.dst)
         if s and d and s != d:
@@ -526,7 +526,7 @@ def render_mermaid(atlas: Atlas) -> str:
     def nid(pkg: str) -> str:
         return re.sub(r"[^A-Za-z0-9_]", "_", pkg)
 
-    by_layer: Dict[str, List[str]] = {}
+    by_layer: dict[str, list[str]] = {}
     for pkg, layer in pkg_layer.items():
         by_layer.setdefault(layer, []).append(pkg)
 
@@ -591,7 +591,7 @@ def render_markdown(atlas: Atlas) -> str:
 # CLI
 # ---------------------------------------------------------------------------
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
     parser = argparse.ArgumentParser(description="Fusion Hero OS Dependency Atlas")
     parser.add_argument("--check", action="store_true",

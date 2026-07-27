@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -15,12 +15,12 @@ class LLMResult:
     provider: str
     response: str
     latency_ms: float = 0.0
-    fallback_chain: List[str] = field(default_factory=list)
-    meta: Dict[str, Any] = field(default_factory=dict)
+    fallback_chain: list[str] = field(default_factory=list)
+    meta: dict[str, Any] = field(default_factory=dict)
     success: bool = True
-    error: Optional[str] = None
+    error: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "provider": self.provider,
             "response": self.response,
@@ -37,14 +37,14 @@ class BaseLLMProvider(ABC):
 
     name: str = "base"
     # Capability scores [0.0 - 1.0] per category. Router uses these for dynamic non-fixed assignment.
-    capabilities: Dict[str, float] = field(default_factory=dict)
+    capabilities: dict[str, float] = field(default_factory=dict)
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         self.config = config or {}
         self._request_count: int = 0
         self._failure_count: int = 0
         self._last_latency: float = 0.0
-        self._last_error: Optional[str] = None
+        self._last_error: str | None = None
         # Default capabilities (overridden in concrete providers)
         if not self.capabilities:
             self.capabilities = {
@@ -61,10 +61,10 @@ class BaseLLMProvider(ABC):
         ...
 
     @abstractmethod
-    def generate(self, prompt: str, system_prompt: Optional[str] = None, **kwargs: Any) -> LLMResult:
+    def generate(self, prompt: str, system_prompt: str | None = None, **kwargs: Any) -> LLMResult:
         ...
 
-    def health(self) -> Dict[str, Any]:
+    def health(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "available": self.is_available(),
@@ -75,7 +75,7 @@ class BaseLLMProvider(ABC):
             "capabilities": self.capabilities,
         }
 
-    def _record(self, success: bool, latency_ms: float, error: Optional[str] = None) -> None:
+    def _record(self, success: bool, latency_ms: float, error: str | None = None) -> None:
         self._request_count += 1
         self._last_latency = latency_ms
         if success:

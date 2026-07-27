@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fusion Hero OS v8.3 — Layer-Registry (alles mit allem).
 
 Liest die Konfigurations-Registries des Repos maschinell ein und liefert
@@ -16,7 +15,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -30,7 +29,7 @@ ERKENNTNISSE_INDEX = REPO_ROOT / "docs" / "v8" / "erkenntnisse_index.yaml"
 PUSH_LAYER_GUARD = REPO_ROOT / "push_layer_guard.yaml"
 
 
-def _load_yaml(path: Path) -> Dict[str, Any]:
+def _load_yaml(path: Path) -> dict[str, Any]:
     try:
         import yaml
     except ImportError:
@@ -63,9 +62,9 @@ class LayerStatus:
     config_ok: bool
     module: str = ""
     health: str = ""
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "layer": self.layer,
             "present": self.present,
@@ -76,7 +75,7 @@ class LayerStatus:
         }
 
 
-def _paths_from_config(config: Any) -> List[Path]:
+def _paths_from_config(config: Any) -> list[Path]:
     """Normalisiert das config-Feld eines Layers auf Repo-Pfade."""
     if config is None:
         return []
@@ -113,7 +112,7 @@ def _check_kernel_layer(status: LayerStatus) -> None:
 
 
 def _check_ascension_layer(status: LayerStatus) -> None:
-    info: Dict[str, Any] = {"importable": False}
+    info: dict[str, Any] = {"importable": False}
     try:
         from ascension_os.core.ascension_core import get_ascension_core
 
@@ -132,7 +131,7 @@ def _check_ascension_layer(status: LayerStatus) -> None:
 def _check_knowledge_layer(status: LayerStatus) -> None:
     proof = _load_yaml(PROOF_REGISTRY)
     claims = proof.get("claims") or []
-    by_status: Dict[str, int] = {}
+    by_status: dict[str, int] = {}
     for claim in claims:
         st = str((claim or {}).get("status", "?"))
         by_status[st] = by_status.get(st, 0) + 1
@@ -159,15 +158,15 @@ _EXTRA_CHECKS = {
 }
 
 
-def erkenntnisse_summary() -> Dict[str, Any]:
+def erkenntnisse_summary() -> dict[str, Any]:
     """Zusammenfassung des Erkenntnis-Index (docs/v8/erkenntnisse_index.yaml)."""
     index = _load_yaml(ERKENNTNISSE_INDEX)
     docs = index.get("docs") or []
     if not docs:
         return {"ok": False, "error": "erkenntnisse_index.yaml fehlt oder leer",
                 "path": str(ERKENNTNISSE_INDEX.relative_to(REPO_ROOT))}
-    by_status: Dict[str, int] = {}
-    missing: List[str] = []
+    by_status: dict[str, int] = {}
+    missing: list[str] = []
     for doc in docs:
         st = str((doc or {}).get("status", "?"))
         by_status[st] = by_status.get(st, 0) + 1
@@ -187,7 +186,7 @@ def erkenntnisse_summary() -> Dict[str, Any]:
     }
 
 
-def get_layer_status(layer_id: str) -> Optional[LayerStatus]:
+def get_layer_status(layer_id: str) -> LayerStatus | None:
     unified = _load_yaml(UNIFIED_CONFIG)
     cfg = (unified.get("layers") or {}).get(layer_id)
     if cfg is None:
@@ -195,7 +194,7 @@ def get_layer_status(layer_id: str) -> Optional[LayerStatus]:
     return _build_status(layer_id, cfg)
 
 
-def _build_status(layer_id: str, cfg: Dict[str, Any]) -> LayerStatus:
+def _build_status(layer_id: str, cfg: dict[str, Any]) -> LayerStatus:
     paths = _paths_from_config(cfg.get("config"))
     existing = [p for p in paths if p.exists()]
     remote = bool(cfg.get("remote"))
@@ -221,7 +220,7 @@ def _build_status(layer_id: str, cfg: Dict[str, Any]) -> LayerStatus:
     return status
 
 
-def get_all_layer_status() -> Dict[str, Any]:
+def get_all_layer_status() -> dict[str, Any]:
     """Status ALLER Layer aus fusion_unified.yaml + Layer-Kanten."""
     unified = _load_yaml(UNIFIED_CONFIG)
     layers = unified.get("layers") or {}

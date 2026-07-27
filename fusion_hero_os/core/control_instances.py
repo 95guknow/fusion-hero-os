@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Multi-model control instances — force highest accuracy on each.
 
@@ -17,9 +16,9 @@ import re
 import sys
 import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 for p in (str(ROOT), str(ROOT / "03_Code")):
@@ -64,12 +63,12 @@ class ControlResult:
     latency_ms: float = 0.0
     source: str = ""
     model: str = ""
-    error: Optional[str] = None
+    error: str | None = None
     raw_text: str = ""
-    checks: List[str] = field(default_factory=list)
+    checks: list[str] = field(default_factory=list)
     temperature: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -79,19 +78,19 @@ class ControlReport:
     prompt: str
     instances_run: int
     instances_ok: int
-    consensus: Dict[str, Any]
-    results: List[ControlResult]
-    accuracy_force: Dict[str, Any]
+    consensus: dict[str, Any]
+    results: list[ControlResult]
+    accuracy_force: dict[str, Any]
     generated_at: str
     platform: str = "10.0.0"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["results"] = [r.to_dict() if hasattr(r, "to_dict") else r for r in self.results]
         return d
 
 
-def _load_cfg() -> Dict[str, Any]:
+def _load_cfg() -> dict[str, Any]:
     path = ROOT / "control_instances.yaml"
     if not path.exists():
         return {}
@@ -103,13 +102,13 @@ def _load_cfg() -> Dict[str, Any]:
         return {}
 
 
-def _load_dotenv(cfg: Optional[Dict[str, Any]] = None) -> List[str]:
+def _load_dotenv(cfg: dict[str, Any] | None = None) -> list[str]:
     """Load operator API keys into env without logging values."""
     cfg = cfg or _load_cfg()
     sl = cfg.get("secret_load") or {}
     if not sl.get("enabled", True):
         return []
-    loaded: List[str] = []
+    loaded: list[str] = []
     paths = list(sl.get("dotenv_paths") or [".env", ".env.local"])
     for rel in paths:
         if str(rel).startswith("~"):
@@ -138,12 +137,12 @@ def _load_dotenv(cfg: Optional[Dict[str, Any]] = None) -> List[str]:
     return loaded
 
 
-def list_instances() -> List[Dict[str, Any]]:
+def list_instances() -> list[dict[str, Any]]:
     cfg = _load_cfg()
     return list(cfg.get("instances") or [])
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = _load_cfg()
     dotenv = _load_dotenv(cfg)
     acc = cfg.get("accuracy_force") or {}
@@ -235,7 +234,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def _parse_json_answer(text: str) -> Dict[str, Any]:
+def _parse_json_answer(text: str) -> dict[str, Any]:
     text = (text or "").strip()
     if not text:
         return {}
@@ -259,8 +258,8 @@ def _invoke_accuracy(
     temperature: float = 0.0,
     max_tokens: int = 2048,
     timeout: int = 120,
-    model_override: Optional[str] = None,
-) -> Tuple[bool, str, str, float, Optional[str], str]:
+    model_override: str | None = None,
+) -> tuple[bool, str, str, float, str | None, str]:
     """Returns ok, text, model, latency_ms, error, source."""
     t0 = time.time()
     if provider == "internal":
@@ -391,7 +390,7 @@ def _answer_key(answer: str) -> str:
     return hashlib.sha256(a.encode("utf-8")).hexdigest()[:16]
 
 
-def _consensus(results: List[ControlResult], band: float = 15.0) -> Dict[str, Any]:
+def _consensus(results: list[ControlResult], band: float = 15.0) -> dict[str, Any]:
     ok_results = [r for r in results if r.ok and r.answer]
     if not ok_results:
         return {
@@ -402,7 +401,7 @@ def _consensus(results: List[ControlResult], band: float = 15.0) -> Dict[str, An
             "clusters": 0,
             "note": "no successful control instances",
         }
-    clusters: Dict[str, List[ControlResult]] = {}
+    clusters: dict[str, list[ControlResult]] = {}
     for r in ok_results:
         k = _answer_key(r.answer)
         clusters.setdefault(k, []).append(r)
@@ -429,7 +428,7 @@ def _consensus(results: List[ControlResult], band: float = 15.0) -> Dict[str, An
 def run_control_panel(
     prompt: str,
     *,
-    providers: Optional[List[str]] = None,
+    providers: list[str] | None = None,
     force_all_configured: bool = True,
 ) -> ControlReport:
     """Run all (or selected) control instances with max accuracy."""
@@ -446,7 +445,7 @@ def run_control_panel(
         want = set(providers)
         instances = [i for i in instances if i.get("provider") in want or i.get("id") in want]
 
-    results: List[ControlResult] = []
+    results: list[ControlResult] = []
     for inst in instances:
         pid = str(inst.get("provider") or "")
         iid = str(inst.get("id") or pid)
@@ -484,7 +483,7 @@ def run_control_panel(
         acc_s = float(parsed.get("accuracy_self") or conf or 0)
         geltung = str(parsed.get("geltung") or "Unbekannt")
         raw_checks = parsed.get("checks")
-        check_items: List[Any] = list(raw_checks) if isinstance(raw_checks, list) else []
+        check_items: list[Any] = list(raw_checks) if isinstance(raw_checks, list) else []
         results.append(
             ControlResult(
                 instance_id=iid,
@@ -519,7 +518,7 @@ def run_control_panel(
             "max_tokens": max_tokens,
             "timeout_sec": timeout,
         },
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        generated_at=datetime.now(UTC).isoformat(),
     )
 
     # persist private operator report
