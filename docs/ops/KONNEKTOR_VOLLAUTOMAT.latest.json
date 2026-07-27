@@ -1,0 +1,2144 @@
+{
+  "kind": "KONNEKTOR_VOLLAUTOMAT",
+  "generated_at": "2026-07-27T06:51:42.385347+00:00",
+  "platform_version": "13.0.0",
+  "ok": true,
+  "befunde_offen": true,
+  "duration_sec": 0.066,
+  "direktiven": {
+    "laden": "bottom_up",
+    "verarbeiten": "top_down",
+    "ausgabe": "geister_manifestiert"
+  },
+  "laden": {
+    "ok": true,
+    "richtung": "bottom_up",
+    "reihenfolge": [
+      "L0_state",
+      "L1_registries",
+      "L2_connectors",
+      "L3_links",
+      "L4_remotes"
+    ],
+    "schichten": {
+      "L0_state": {
+        "layer": "L0_state",
+        "kind": "state",
+        "ok": true,
+        "optional": true,
+        "entries": [
+          {
+            "path": "/root/.fusion/ops/konnektor_vollautomat.latest.json",
+            "exists": false,
+            "skipped": true,
+            "reason": "path_missing"
+          },
+          {
+            "path": "/root/.fusion/horcrux/bottom_up_v12",
+            "exists": false,
+            "skipped": true,
+            "reason": "path_missing"
+          }
+        ],
+        "erinnerung_vorhanden": false
+      },
+      "L1_registries": {
+        "layer": "L1_registries",
+        "kind": "registry",
+        "ok": true,
+        "sources": [
+          {
+            "id": "mesh",
+            "path": "mesh_connectors.yaml",
+            "present": true,
+            "parsed": true,
+            "top_level_keys": [
+              "agents",
+              "connectors",
+              "fractal_mesh",
+              "integration_hub",
+              "live_inventory",
+              "mesh_version",
+              "node_types",
+              "nodes",
+              "ontology",
+              "platform_version",
+              "principle",
+              "routing"
+            ]
+          },
+          {
+            "id": "graph_api",
+            "path": "graph_api_connectors.yaml",
+            "present": true,
+            "parsed": true,
+            "top_level_keys": [
+              "connectors",
+              "defaults",
+              "freemium",
+              "platform_version",
+              "policy",
+              "principle",
+              "version"
+            ]
+          },
+          {
+            "id": "llm_frameworks",
+            "path": "llm_frameworks.yaml",
+            "present": true,
+            "parsed": true,
+            "top_level_keys": [
+              "connector_links",
+              "cross_mesh",
+              "frameworks",
+              "health_endpoint",
+              "integration_hub",
+              "per_provider",
+              "platform_version",
+              "principle",
+              "pseudo_inhouse",
+              "trinity_order",
+              "unified_config",
+              "unified_endpoint"
+            ]
+          },
+          {
+            "id": "control_instances",
+            "path": "control_instances.yaml",
+            "present": true,
+            "parsed": true,
+            "top_level_keys": [
+              "accuracy_force",
+              "consensus",
+              "instances",
+              "platform_version",
+              "principle",
+              "secret_load",
+              "version"
+            ]
+          }
+        ]
+      },
+      "L2_connectors": {
+        "layer": "L2_connectors",
+        "kind": "connectors",
+        "ok": true,
+        "gesamt": 66,
+        "per_familie": {
+          "mesh": 10,
+          "graph_api": 10,
+          "llm_frameworks": 12,
+          "control_instances": 34
+        }
+      },
+      "L3_links": {
+        "layer": "L3_links",
+        "kind": "links",
+        "ok": true,
+        "gesamt": 23,
+        "aufgeloest": 22,
+        "offen": 1,
+        "links": [
+          {
+            "quelle": "connector_links",
+            "von": "github",
+            "nach": "grok",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "gmail",
+            "nach": "claude",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "google_drive",
+            "nach": "gpt",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "google_calendar",
+            "nach": "gpt",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "canva",
+            "nach": "gemini",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "gamma",
+            "nach": "gpt",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "notion",
+            "nach": "claude",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "vercel",
+            "nach": "grok",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "hyperframes",
+            "nach": "gemini",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "connector_links",
+            "von": "tasks",
+            "nach": "claude",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "gemini",
+            "nach": "gemini",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "grok",
+            "nach": "grok",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "claude",
+            "nach": "claude",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "gpt",
+            "nach": "gpt",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "groq",
+            "nach": "groq",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "openrouter",
+            "nach": "openrouter",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "openrouter_free",
+            "nach": "openrouter_free",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "huggingface",
+            "nach": "huggingface",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "nvidia",
+            "nach": "nvidia",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "github_models",
+            "nach": "github_models",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "cloudflare_ai",
+            "nach": "cloudflare_ai",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "ollama",
+            "nach": "ollama",
+            "aufgeloest": true
+          },
+          {
+            "quelle": "control_instances.provider",
+            "von": "internal",
+            "nach": "internal",
+            "aufgeloest": false
+          }
+        ]
+      },
+      "L4_remotes": {
+        "layer": "L4_remotes",
+        "kind": "remotes",
+        "ok": true,
+        "probe_durchgefuehrt": false,
+        "hinweis": "Nur Deklaration — dieser Automat fuehrt keine Health-Probes aus.",
+        "base_url": "https://mainframe.example.ts.net",
+        "per_connector_template": "/mesh/{connector_id}/status",
+        "mit_health_path": 22,
+        "eintraege": [
+          {
+            "id": "mesh:github",
+            "health_path": "/mesh/github/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:gmail",
+            "health_path": "/mesh/gmail/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:google_drive",
+            "health_path": "/mesh/google_drive/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:google_calendar",
+            "health_path": "/mesh/google_calendar/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:canva",
+            "health_path": "/mesh/canva/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:gamma",
+            "health_path": "/mesh/gamma/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:notion",
+            "health_path": "/mesh/notion/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:vercel",
+            "health_path": "/mesh/vercel/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:hyperframes",
+            "health_path": "/mesh/hyperframes/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "mesh:tasks",
+            "health_path": "/mesh/tasks/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:grok",
+            "health_path": "/llm/grok/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:claude",
+            "health_path": "/llm/claude/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:gpt",
+            "health_path": "/llm/gpt/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:gemini",
+            "health_path": "/llm/gemini/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:openrouter",
+            "health_path": "/llm/openrouter/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:ollama",
+            "health_path": "/llm/ollama/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:nvidia",
+            "health_path": "/llm/nvidia/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:openrouter_free",
+            "health_path": "/llm/openrouter_free/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:groq",
+            "health_path": "/llm/groq/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:huggingface",
+            "health_path": "/llm/huggingface/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:cloudflare_ai",
+            "health_path": "/llm/cloudflare_ai/status",
+            "quelle": "registry"
+          },
+          {
+            "id": "llm_frameworks:github_models",
+            "health_path": "/llm/github_models/status",
+            "quelle": "registry"
+          }
+        ]
+      }
+    }
+  },
+  "verarbeiten": {
+    "ok": true,
+    "richtung": "top_down",
+    "reihenfolge": [
+      "L6_masterseed",
+      "L5_projektion",
+      "L4_intent",
+      "L3_internalisierung",
+      "L2_bindung",
+      "L1_verkoerperung",
+      "L0_fundament"
+    ],
+    "lambda_contract": 0.78,
+    "epsilon": 0.01,
+    "masterseed": {
+      "platform_version": "13.0.0",
+      "policy": "dry_run_default",
+      "bounds": {
+        "offense": "FORBIDDEN",
+        "sandbox_only": true,
+        "secrets_in_output": false,
+        "vault_in_git": false
+      }
+    },
+    "mengen": {
+      "L6_masterseed": [
+        "control_instances:control_claude",
+        "control_instances:control_claude_haiku",
+        "control_instances:control_claude_opus",
+        "control_instances:control_claude_sonnet",
+        "control_instances:control_cloudflare_ai",
+        "control_instances:control_gemini",
+        "control_instances:control_gemini_15_flash",
+        "control_instances:control_gemini_15_pro",
+        "control_instances:control_gemini_25_flash",
+        "control_instances:control_gemini_25_pro",
+        "control_instances:control_gemini_flash",
+        "control_instances:control_gemini_flash_lite",
+        "control_instances:control_github_models",
+        "control_instances:control_gpt",
+        "control_instances:control_gpt_4_1",
+        "control_instances:control_gpt_4o",
+        "control_instances:control_gpt_4o_mini",
+        "control_instances:control_grok",
+        "control_instances:control_grok_2",
+        "control_instances:control_grok_3",
+        "control_instances:control_groq",
+        "control_instances:control_groq_llama70",
+        "control_instances:control_groq_mixtral",
+        "control_instances:control_huggingface",
+        "control_instances:control_internal",
+        "control_instances:control_nvidia",
+        "control_instances:control_ollama",
+        "control_instances:control_ollama_llama32",
+        "control_instances:control_ollama_mistral",
+        "control_instances:control_openrouter",
+        "control_instances:control_openrouter_free",
+        "control_instances:control_or_free_gemma",
+        "control_instances:control_or_free_llama",
+        "control_instances:control_or_free_qwen",
+        "erwaehnt:internal",
+        "graph_api:canva",
+        "graph_api:drive",
+        "graph_api:facebook",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "graph_api:gmail",
+        "graph_api:instagram",
+        "graph_api:notion",
+        "graph_api:vercel",
+        "graph_api:x_api",
+        "llm_frameworks:claude",
+        "llm_frameworks:cloudflare_ai",
+        "llm_frameworks:gemini",
+        "llm_frameworks:github_models",
+        "llm_frameworks:gpt",
+        "llm_frameworks:grok",
+        "llm_frameworks:groq",
+        "llm_frameworks:huggingface",
+        "llm_frameworks:nvidia",
+        "llm_frameworks:ollama",
+        "llm_frameworks:openrouter",
+        "llm_frameworks:openrouter_free",
+        "mesh:canva",
+        "mesh:gamma",
+        "mesh:github",
+        "mesh:gmail",
+        "mesh:google_calendar",
+        "mesh:google_drive",
+        "mesh:hyperframes",
+        "mesh:notion",
+        "mesh:tasks",
+        "mesh:vercel"
+      ],
+      "L5_projektion": [
+        "control_instances:control_claude",
+        "control_instances:control_claude_haiku",
+        "control_instances:control_claude_opus",
+        "control_instances:control_claude_sonnet",
+        "control_instances:control_cloudflare_ai",
+        "control_instances:control_gemini",
+        "control_instances:control_gemini_15_flash",
+        "control_instances:control_gemini_15_pro",
+        "control_instances:control_gemini_25_flash",
+        "control_instances:control_gemini_25_pro",
+        "control_instances:control_gemini_flash",
+        "control_instances:control_gemini_flash_lite",
+        "control_instances:control_github_models",
+        "control_instances:control_gpt",
+        "control_instances:control_gpt_4_1",
+        "control_instances:control_gpt_4o",
+        "control_instances:control_gpt_4o_mini",
+        "control_instances:control_grok",
+        "control_instances:control_grok_2",
+        "control_instances:control_grok_3",
+        "control_instances:control_groq",
+        "control_instances:control_groq_llama70",
+        "control_instances:control_groq_mixtral",
+        "control_instances:control_huggingface",
+        "control_instances:control_internal",
+        "control_instances:control_nvidia",
+        "control_instances:control_ollama",
+        "control_instances:control_ollama_llama32",
+        "control_instances:control_ollama_mistral",
+        "control_instances:control_openrouter",
+        "control_instances:control_openrouter_free",
+        "control_instances:control_or_free_gemma",
+        "control_instances:control_or_free_llama",
+        "control_instances:control_or_free_qwen",
+        "graph_api:canva",
+        "graph_api:drive",
+        "graph_api:facebook",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "graph_api:gmail",
+        "graph_api:instagram",
+        "graph_api:notion",
+        "graph_api:vercel",
+        "graph_api:x_api",
+        "llm_frameworks:claude",
+        "llm_frameworks:cloudflare_ai",
+        "llm_frameworks:gemini",
+        "llm_frameworks:github_models",
+        "llm_frameworks:gpt",
+        "llm_frameworks:grok",
+        "llm_frameworks:groq",
+        "llm_frameworks:huggingface",
+        "llm_frameworks:nvidia",
+        "llm_frameworks:ollama",
+        "llm_frameworks:openrouter",
+        "llm_frameworks:openrouter_free",
+        "mesh:canva",
+        "mesh:gamma",
+        "mesh:github",
+        "mesh:gmail",
+        "mesh:google_calendar",
+        "mesh:google_drive",
+        "mesh:hyperframes",
+        "mesh:notion",
+        "mesh:tasks",
+        "mesh:vercel"
+      ],
+      "L4_intent": [
+        "control_instances:control_claude",
+        "control_instances:control_claude_haiku",
+        "control_instances:control_claude_opus",
+        "control_instances:control_claude_sonnet",
+        "control_instances:control_cloudflare_ai",
+        "control_instances:control_gemini",
+        "control_instances:control_gemini_15_flash",
+        "control_instances:control_gemini_15_pro",
+        "control_instances:control_gemini_25_flash",
+        "control_instances:control_gemini_25_pro",
+        "control_instances:control_gemini_flash",
+        "control_instances:control_gemini_flash_lite",
+        "control_instances:control_github_models",
+        "control_instances:control_gpt",
+        "control_instances:control_gpt_4_1",
+        "control_instances:control_gpt_4o",
+        "control_instances:control_gpt_4o_mini",
+        "control_instances:control_grok",
+        "control_instances:control_grok_2",
+        "control_instances:control_grok_3",
+        "control_instances:control_groq",
+        "control_instances:control_groq_llama70",
+        "control_instances:control_groq_mixtral",
+        "control_instances:control_huggingface",
+        "control_instances:control_internal",
+        "control_instances:control_nvidia",
+        "control_instances:control_ollama",
+        "control_instances:control_ollama_llama32",
+        "control_instances:control_ollama_mistral",
+        "control_instances:control_openrouter",
+        "control_instances:control_openrouter_free",
+        "control_instances:control_or_free_gemma",
+        "control_instances:control_or_free_llama",
+        "control_instances:control_or_free_qwen",
+        "graph_api:canva",
+        "graph_api:drive",
+        "graph_api:facebook",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "graph_api:gmail",
+        "graph_api:instagram",
+        "graph_api:notion",
+        "graph_api:vercel",
+        "graph_api:x_api",
+        "llm_frameworks:claude",
+        "llm_frameworks:cloudflare_ai",
+        "llm_frameworks:gemini",
+        "llm_frameworks:github_models",
+        "llm_frameworks:gpt",
+        "llm_frameworks:grok",
+        "llm_frameworks:groq",
+        "llm_frameworks:huggingface",
+        "llm_frameworks:nvidia",
+        "llm_frameworks:ollama",
+        "llm_frameworks:openrouter",
+        "llm_frameworks:openrouter_free",
+        "mesh:canva",
+        "mesh:gamma",
+        "mesh:github",
+        "mesh:gmail",
+        "mesh:google_calendar",
+        "mesh:google_drive",
+        "mesh:hyperframes",
+        "mesh:notion",
+        "mesh:tasks",
+        "mesh:vercel"
+      ],
+      "L3_internalisierung": [
+        "control_instances:control_claude",
+        "control_instances:control_claude_haiku",
+        "control_instances:control_claude_opus",
+        "control_instances:control_claude_sonnet",
+        "control_instances:control_cloudflare_ai",
+        "control_instances:control_gemini",
+        "control_instances:control_gemini_15_flash",
+        "control_instances:control_gemini_15_pro",
+        "control_instances:control_gemini_25_flash",
+        "control_instances:control_gemini_25_pro",
+        "control_instances:control_gemini_flash",
+        "control_instances:control_gemini_flash_lite",
+        "control_instances:control_github_models",
+        "control_instances:control_gpt",
+        "control_instances:control_gpt_4_1",
+        "control_instances:control_gpt_4o",
+        "control_instances:control_gpt_4o_mini",
+        "control_instances:control_grok",
+        "control_instances:control_grok_2",
+        "control_instances:control_grok_3",
+        "control_instances:control_groq",
+        "control_instances:control_groq_llama70",
+        "control_instances:control_groq_mixtral",
+        "control_instances:control_huggingface",
+        "control_instances:control_nvidia",
+        "control_instances:control_ollama",
+        "control_instances:control_ollama_llama32",
+        "control_instances:control_ollama_mistral",
+        "control_instances:control_openrouter",
+        "control_instances:control_openrouter_free",
+        "control_instances:control_or_free_gemma",
+        "control_instances:control_or_free_llama",
+        "control_instances:control_or_free_qwen",
+        "graph_api:canva",
+        "graph_api:drive",
+        "graph_api:facebook",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "graph_api:gmail",
+        "graph_api:instagram",
+        "graph_api:notion",
+        "graph_api:vercel",
+        "graph_api:x_api",
+        "llm_frameworks:claude",
+        "llm_frameworks:cloudflare_ai",
+        "llm_frameworks:gemini",
+        "llm_frameworks:github_models",
+        "llm_frameworks:gpt",
+        "llm_frameworks:grok",
+        "llm_frameworks:groq",
+        "llm_frameworks:huggingface",
+        "llm_frameworks:nvidia",
+        "llm_frameworks:ollama",
+        "llm_frameworks:openrouter",
+        "llm_frameworks:openrouter_free",
+        "mesh:canva",
+        "mesh:gamma",
+        "mesh:github",
+        "mesh:gmail",
+        "mesh:google_calendar",
+        "mesh:google_drive",
+        "mesh:hyperframes",
+        "mesh:notion",
+        "mesh:tasks",
+        "mesh:vercel"
+      ],
+      "L2_bindung": [
+        "control_instances:control_claude",
+        "control_instances:control_claude_haiku",
+        "control_instances:control_claude_opus",
+        "control_instances:control_claude_sonnet",
+        "control_instances:control_cloudflare_ai",
+        "control_instances:control_gemini",
+        "control_instances:control_gemini_15_flash",
+        "control_instances:control_gemini_15_pro",
+        "control_instances:control_gemini_25_flash",
+        "control_instances:control_gemini_25_pro",
+        "control_instances:control_gemini_flash",
+        "control_instances:control_gemini_flash_lite",
+        "control_instances:control_github_models",
+        "control_instances:control_gpt",
+        "control_instances:control_gpt_4_1",
+        "control_instances:control_gpt_4o",
+        "control_instances:control_gpt_4o_mini",
+        "control_instances:control_grok",
+        "control_instances:control_grok_2",
+        "control_instances:control_grok_3",
+        "control_instances:control_groq",
+        "control_instances:control_groq_llama70",
+        "control_instances:control_groq_mixtral",
+        "control_instances:control_huggingface",
+        "control_instances:control_nvidia",
+        "control_instances:control_openrouter",
+        "control_instances:control_openrouter_free",
+        "control_instances:control_or_free_gemma",
+        "control_instances:control_or_free_llama",
+        "control_instances:control_or_free_qwen",
+        "graph_api:canva",
+        "graph_api:drive",
+        "graph_api:facebook",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "graph_api:gmail",
+        "graph_api:instagram",
+        "graph_api:notion",
+        "graph_api:vercel",
+        "graph_api:x_api",
+        "llm_frameworks:claude",
+        "llm_frameworks:cloudflare_ai",
+        "llm_frameworks:gemini",
+        "llm_frameworks:github_models",
+        "llm_frameworks:gpt",
+        "llm_frameworks:grok",
+        "llm_frameworks:groq",
+        "llm_frameworks:huggingface",
+        "llm_frameworks:nvidia",
+        "llm_frameworks:openrouter",
+        "llm_frameworks:openrouter_free"
+      ],
+      "L1_verkoerperung": [
+        "control_instances:control_github_models",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "llm_frameworks:github_models"
+      ],
+      "L0_fundament": [
+        "control_instances:control_github_models",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "llm_frameworks:github_models"
+      ]
+    },
+    "groessen": {
+      "L6_masterseed": 67,
+      "L5_projektion": 66,
+      "L4_intent": 66,
+      "L3_internalisierung": 65,
+      "L2_bindung": 51,
+      "L1_verkoerperung": 4,
+      "L0_fundament": 4
+    },
+    "distanz_zum_masterseed": {
+      "L6_masterseed": 0.0,
+      "L5_projektion": 0.776158,
+      "L4_intent": 1.381562,
+      "L3_internalisierung": 1.846693,
+      "L2_bindung": 2.132151,
+      "L1_verkoerperung": 2.152275,
+      "L0_fundament": 2.167972
+    },
+    "axiome": {
+      "1_top_down_teilmengen": true,
+      "2_kontraktion_strikt_monoton": true,
+      "3_integration_ueber_operator_c": true,
+      "4_invarianz": true
+    },
+    "invarianz_brueche": []
+  },
+  "geister": [
+    {
+      "id": "554ef8",
+      "klasse": "keine_internalisierung",
+      "label": "control_instances:control_internal",
+      "activation": 0.85,
+      "manifest": true,
+      "latent_layer": "L3_internalisierung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor deklariert, aber ohne ausfuehrbare Spezifikation (faellt vor L3)",
+      "detail": {}
+    },
+    {
+      "id": "75a4fe",
+      "klasse": "link_ins_leere",
+      "label": "internal",
+      "activation": 0.6,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "connector_link zeigt auf ein Framework, das nicht existiert",
+      "detail": {
+        "quelle": "control_instances.provider"
+      }
+    },
+    {
+      "id": "54cb7a",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_claude",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "ANTHROPIC_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "bff9e7",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_claude_haiku",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "ANTHROPIC_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "a4c25b",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_claude_opus",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "ANTHROPIC_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "9a5d33",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_claude_sonnet",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "ANTHROPIC_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "6af008",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_cloudflare_ai",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "CLOUDFLARE_API_TOKEN",
+          "CF_API_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "5e4a51",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "cd4bad",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_15_flash",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "0337dc",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_15_pro",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "b24761",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_25_flash",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "e8b259",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_25_pro",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "ecec3f",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_flash",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "8f52e1",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gemini_flash_lite",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "e38887",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gpt",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "afc76e",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gpt_4_1",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "dbc99f",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gpt_4o",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "958ccb",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_gpt_4o_mini",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "d17079",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_grok",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "XAI_API_KEY",
+          "GROK_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "0673f1",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_grok_2",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "XAI_API_KEY",
+          "GROK_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "0f17be",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_grok_3",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "XAI_API_KEY",
+          "GROK_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "c5a243",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_groq",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GROQ_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "ccc083",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_groq_llama70",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GROQ_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "a56ab8",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_groq_mixtral",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GROQ_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "b5b29c",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_huggingface",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "HF_TOKEN",
+          "HUGGINGFACE_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "6b0f40",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_nvidia",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "NVIDIA_API_KEY",
+          "NGC_API_KEY",
+          "NVAPI_KEY"
+        ]
+      }
+    },
+    {
+      "id": "4db2a4",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_openrouter",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "1699e2",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_openrouter_free",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "84af88",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_or_free_gemma",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "c48796",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_or_free_llama",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "883565",
+      "klasse": "credential_fehlt",
+      "label": "control_instances:control_or_free_qwen",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "4788fd",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:canva",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "CANVA_API_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "ecae33",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:drive",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "159b9a",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:facebook",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "META_ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "a60334",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:gmail",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "a7d9f3",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:instagram",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "INSTAGRAM_ACCESS_TOKEN",
+          "META_ACCESS_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "7df1cb",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:notion",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "NOTION_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "fbe529",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:vercel",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "VERCEL_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "98433c",
+      "klasse": "credential_fehlt",
+      "label": "graph_api:x_api",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "X_BEARER_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "72e123",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:claude",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "ANTHROPIC_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "a1b181",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:cloudflare_ai",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "CLOUDFLARE_API_TOKEN",
+          "CF_API_TOKEN"
+        ]
+      }
+    },
+    {
+      "id": "478e74",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:gemini",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GOOGLE_API_KEY",
+          "GEMINI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "1717f1",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:gpt",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENAI_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "af2eb3",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:grok",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "XAI_API_KEY",
+          "GROK_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "f8b19e",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:groq",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "GROQ_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "08d2d2",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:huggingface",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "HF_TOKEN",
+          "HUGGINGFACE_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "7309b9",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:nvidia",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "NVIDIA_API_KEY",
+          "NGC_API_KEY",
+          "NVAPI_KEY"
+        ]
+      }
+    },
+    {
+      "id": "542130",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:openrouter",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "737786",
+      "klasse": "credential_fehlt",
+      "label": "llm_frameworks:openrouter_free",
+      "activation": 0.55,
+      "manifest": true,
+      "latent_layer": "L1_verkoerperung",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Credential-Quelle deklariert, Token aber nicht gesetzt (faellt vor L1)",
+      "detail": {
+        "envs": [
+          "OPENROUTER_API_KEY"
+        ]
+      }
+    },
+    {
+      "id": "f5baa3",
+      "klasse": "registry_waise",
+      "label": "drive",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "be3db2",
+      "klasse": "registry_waise",
+      "label": "facebook",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "76e865",
+      "klasse": "registry_waise",
+      "label": "gamma",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "9b6300",
+      "klasse": "registry_waise",
+      "label": "github",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "f10efb",
+      "klasse": "registry_waise",
+      "label": "github_graphql",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "6a872f",
+      "klasse": "registry_waise",
+      "label": "github_rest",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "b5e2ca",
+      "klasse": "registry_waise",
+      "label": "google_calendar",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "b27693",
+      "klasse": "registry_waise",
+      "label": "google_drive",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "d0fb27",
+      "klasse": "registry_waise",
+      "label": "hyperframes",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "9a7f46",
+      "klasse": "registry_waise",
+      "label": "instagram",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "08c03d",
+      "klasse": "registry_waise",
+      "label": "tasks",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "mesh"
+        ],
+        "fehlt_in": [
+          "graph_api"
+        ]
+      }
+    },
+    {
+      "id": "efd0f8",
+      "klasse": "registry_waise",
+      "label": "x_api",
+      "activation": 0.4,
+      "manifest": true,
+      "latent_layer": "L5_projektion",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Konnektor nur in einer Registry bekannt, in den anderen unbekannt",
+      "detail": {
+        "bekannt_in": [
+          "graph_api"
+        ],
+        "fehlt_in": [
+          "mesh"
+        ]
+      }
+    },
+    {
+      "id": "40e9bb",
+      "klasse": "keine_credential_bindung",
+      "label": "control_instances:control_ollama",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "control_instances",
+        "grund": "lokal/self-hosted"
+      }
+    },
+    {
+      "id": "be3204",
+      "klasse": "keine_credential_bindung",
+      "label": "control_instances:control_ollama_llama32",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "control_instances",
+        "grund": "lokal/self-hosted"
+      }
+    },
+    {
+      "id": "ee9826",
+      "klasse": "keine_credential_bindung",
+      "label": "control_instances:control_ollama_mistral",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "control_instances",
+        "grund": "lokal/self-hosted"
+      }
+    },
+    {
+      "id": "fc780d",
+      "klasse": "keine_credential_bindung",
+      "label": "llm_frameworks:ollama",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "llm_frameworks",
+        "grund": "lokal/self-hosted"
+      }
+    },
+    {
+      "id": "d80f58",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:canva",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "0eedfd",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:gamma",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "9f7d76",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:github",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "004c56",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:gmail",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "5887dd",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:google_calendar",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "13b519",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:google_drive",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "8f4c3f",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:hyperframes",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "049394",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:notion",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "ee396e",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:tasks",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "c82b51",
+      "klasse": "keine_credential_bindung",
+      "label": "mesh:vercel",
+      "activation": 0.175,
+      "manifest": true,
+      "latent_layer": "L2_bindung",
+      "manifest_layer": "ausgabe",
+      "by_design": true,
+      "bedeutung": "Spezifikation vorhanden, aber keine Credential-Quelle deklariert (faellt vor L2)",
+      "detail": {
+        "familie": "mesh",
+        "grund": "keine env-Quelle deklariert"
+      }
+    },
+    {
+      "id": "706a54",
+      "klasse": "dry_run_gehalten",
+      "label": "control_instances:control_github_models",
+      "activation": 0.15,
+      "manifest": true,
+      "latent_layer": "L0_fundament",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
+      "detail": {}
+    },
+    {
+      "id": "a42c95",
+      "klasse": "dry_run_gehalten",
+      "label": "graph_api:github_graphql",
+      "activation": 0.15,
+      "manifest": true,
+      "latent_layer": "L0_fundament",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
+      "detail": {}
+    },
+    {
+      "id": "f8097b",
+      "klasse": "dry_run_gehalten",
+      "label": "graph_api:github_rest",
+      "activation": 0.15,
+      "manifest": true,
+      "latent_layer": "L0_fundament",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
+      "detail": {}
+    },
+    {
+      "id": "74f15e",
+      "klasse": "dry_run_gehalten",
+      "label": "llm_frameworks:github_models",
+      "activation": 0.15,
+      "manifest": true,
+      "latent_layer": "L0_fundament",
+      "manifest_layer": "ausgabe",
+      "by_design": false,
+      "bedeutung": "Vollstaendig bereit, bewusst im Dry-Run gehalten (Policy, kein Defekt)",
+      "detail": {}
+    }
+  ],
+  "automatisierung": {
+    "ok": true,
+    "live_enabled": false,
+    "modus": "DRY-RUN",
+    "aktion": "status",
+    "hub_verfuegbar": true,
+    "ausgefuehrt": 0,
+    "ergebnisse": [
+      {
+        "id": "control_instances:control_github_models",
+        "familie": "control_instances",
+        "aktion": "status",
+        "token_present": true,
+        "live_enabled": false,
+        "ok": true,
+        "would_execute": false,
+        "reason": "kein Ausfuehrungspfad ausserhalb des Graph-Hubs"
+      },
+      {
+        "id": "graph_api:github_graphql",
+        "familie": "graph_api",
+        "aktion": "status",
+        "token_present": true,
+        "live_enabled": false,
+        "ok": true,
+        "would_execute": false
+      },
+      {
+        "id": "graph_api:github_rest",
+        "familie": "graph_api",
+        "aktion": "status",
+        "token_present": true,
+        "live_enabled": false,
+        "ok": true,
+        "would_execute": false
+      },
+      {
+        "id": "llm_frameworks:github_models",
+        "familie": "llm_frameworks",
+        "aktion": "status",
+        "token_present": true,
+        "live_enabled": false,
+        "ok": true,
+        "would_execute": false,
+        "reason": "kein Ausfuehrungspfad ausserhalb des Graph-Hubs"
+      }
+    ]
+  },
+  "counts": {
+    "konnektoren_gesamt": 67,
+    "l0_fundament": 4,
+    "geister": 79,
+    "geister_latent": 0,
+    "geister_echte_befunde": 61,
+    "per_familie": {
+      "mesh": 10,
+      "graph_api": 10,
+      "llm_frameworks": 12,
+      "control_instances": 34
+    }
+  },
+  "geltung": "Registry-/Pfad-Ergebnisse = Satz · fehlende optionale Quelle = Bedingt skip · Live-Ausfuehrung = Spezifikation solange would_execute=false"
+}
