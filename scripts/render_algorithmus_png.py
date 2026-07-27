@@ -13,7 +13,10 @@ Damit veraltet das Bild nicht still: fehlt ein Report, sagt das Skript es,
 statt Platzhalterzahlen zu malen.
 
 Aufruf:
-    python3 scripts/render_algorithmus_png.py [--dpi 200] [--out PFAD]
+    python3 scripts/render_algorithmus_png.py [--dpi 200] [--out PFAD] [--svg]
+
+PNG ist der Standard (hohe Aufloesung, ueberall darstellbar). ``--svg``
+legt zusaetzlich eine Vektorfassung daneben — verlustfrei zoombar.
 
 Geltung: Darstellung = Satz, soweit die Reports es sind (sie tragen ihre
 eigene Geltungsmarke mit).
@@ -87,7 +90,7 @@ def _titel(ax, x, y, nummer, text, farbe):
     ax.text(x + 0.028, y, text, color=FG, fontsize=15, fontweight="bold", va="center")
 
 
-def render(dpi: int, out: Path) -> int:
+def render(dpi: int, out: Path, auch_svg: bool = False) -> int:
     va = _load(VOLLAUTOMAT)
     sp = _load(SPRACHEN)
 
@@ -280,20 +283,40 @@ def render(dpi: int, out: Path) -> int:
             fontsize=10.5, ha="right", family="monospace")
 
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=dpi, facecolor=BG)
-    px = (int(fig.get_figwidth() * dpi), int(fig.get_figheight() * dpi))
-    print(f"[OK] {out.relative_to(ROOT)}  {px[0]}x{px[1]} px  @{dpi} dpi  "
-          f"({out.stat().st_size / 1024:.0f} KiB)")
+    ziele = [out]
+    if auch_svg and out.suffix.lower() != ".svg":
+        ziele.append(out.with_suffix(".svg"))
+
+    for ziel in ziele:
+        if ziel.suffix.lower() == ".svg":
+            # Vektor: dpi ist bedeutungslos, dafuer verlustfrei zoombar.
+            # svg.fonttype='path' wandelt Text in Pfade — der Text ist dann
+            # nicht mehr markierbar, dafuer sieht die Datei ueberall gleich
+            # aus, auch ohne die verwendeten Schriften.
+            with matplotlib.rc_context({"svg.fonttype": "path"}):
+                fig.savefig(ziel, format="svg", facecolor=BG)
+            print(f"[OK] {ziel.relative_to(ROOT)}  Vektor, verlustfrei zoombar  "
+                  f"({ziel.stat().st_size / 1024:.0f} KiB)")
+        else:
+            fig.savefig(ziel, dpi=dpi, facecolor=BG)
+            px = (int(fig.get_figwidth() * dpi), int(fig.get_figheight() * dpi))
+            print(f"[OK] {ziel.relative_to(ROOT)}  {px[0]}x{px[1]} px  @{dpi} dpi  "
+                  f"({ziel.stat().st_size / 1024:.0f} KiB)")
     return 0
 
 
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Gesamtalgorithmus als PNG rendern.")
+    ap = argparse.ArgumentParser(
+        description="Gesamtalgorithmus als Bild rendern (PNG oder SVG).")
     ap.add_argument("--dpi", type=int, default=200,
                     help="Aufloesung; 200 ergibt ~5200x3400 px (Standard)")
-    ap.add_argument("--out", type=Path, default=STANDARD_OUT)
+    ap.add_argument("--out", type=Path, default=STANDARD_OUT,
+                    help="Zielpfad; Endung .svg erzeugt Vektor statt Raster")
+    ap.add_argument("--svg", action="store_true",
+                    help="zusaetzlich eine .svg neben die .png legen "
+                         "(verlustfrei zoombar)")
     a = ap.parse_args(argv)
-    return render(a.dpi, a.out)
+    return render(a.dpi, a.out, auch_svg=a.svg)
 
 
 if __name__ == "__main__":
