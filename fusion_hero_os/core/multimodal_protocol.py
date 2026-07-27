@@ -65,7 +65,13 @@ MODALITY_BY_EXT: Dict[str, str] = {
     ".csv": "data", ".spec": "data",
     ".pdf": "pdf",
     ".jpg": "image", ".jpeg": "image", ".png": "image", ".webp": "image",
-    ".gif": "image", ".svg": "image",
+    ".gif": "image",
+    # SVG ist XML, kein Rasterbild. Als "image" gefuehrt landete es bei
+    # PIL.Image.open und scheiterte dort zwangslaeufig ("cannot identify image
+    # file") — das Archiv-Inventar brach an jeder SVG-Datei ab. Als Text ist es
+    # sowohl extrahierbar als auch richtig geroutet: ein Sprachmodell liest
+    # SVG-Quelle direkt, waehrend "vision" erst eine Rasterung braeuchte.
+    ".svg": "text",
     ".mp3": "audio", ".wav": "audio", ".ogg": "audio", ".flac": "audio", ".m4a": "audio",
     ".mp4": "video", ".mkv": "video", ".webm": "video", ".mov": "video",
     ".zip": "bundle", ".tar": "bundle", ".gz": "bundle", ".7z": "bundle",
