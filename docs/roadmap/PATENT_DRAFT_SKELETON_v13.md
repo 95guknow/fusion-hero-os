@@ -3,105 +3,122 @@
 **Status:** [ASPIRATIONAL / STUB] → ready for formal drafting  
 **Core-Version:** 13.0.0 Global Standard  
 **Owner:** Stephan Hagen Urban / Senfkorn UG  
-**Date:** 2026-07-27  
-**Geltung:** Modell (Herleitung aus operativem Code + Dissertation-as-OS)
+**Date:** 2026-07-27 (Impression–Expression-aligned)  
+**Geltung:** Modell (Herleitung aus operativem Code + BOTTOM_UP_IMPRESSION_EXPRESSION_v13.md)
 
 ---
 
 ## 1. Title / Working Title
 
-**System and Method for Autopoietic Heroic Core Architecture with QUBO-Optimized Multi-Layer Mesh, Human-Confirm Governance and Strict-Contraction MasterSeed (ALTE_Frau_95g Fusion Hero OS)**
+**System and Method for an Autopoietic Computing Architecture Operating as Continuous Impression–Expression Cycle under MasterSeed Fixed-Point, QUBO Formalization and Human-Confirm Governance (ALTE_Frau_95g Fusion Hero OS)**
 
-Alternative short: *Autopoietic Eudaimonic Operating System with Hyperthreaded QUBO Mesh and Identity-Preserving Horkrux Propagation*
+Alternative short: *Autopoietic Operating System Realizing Dissertation-as-OS via Impression (QUBO + Gate) and Expression (Self-Modify + Horkrux)*
 
 ---
 
 ## 2. Field of Invention
 
 - Computer architecture / distributed systems
-- Quantum-inspired optimization (QUBO / QAOA)
+- Quantum-inspired optimization (QUBO)
 - Self-modifying software systems with formal identity preservation
-- Governance layers for AI / agentic systems (Human-Confirm-Gate, Stage-A/B)
+- Governance layers for AI / agentic systems (Human-Confirm-Gate)
 - Autopoietic knowledge systems (Dissertation-as-OS)
+- Impression–Expression dialectical computing architectures
 
 ---
 
-## 3. Background & Prior Art (to be expanded)
+## 3. Background & Prior Art (condensed)
 
-- Classical OS kernels, container orchestration (Kubernetes), agent frameworks
-- QUBO solvers (D-Wave, classical annealers, QAOA)
+- Classical OS kernels, container orchestration, agent frameworks
+- QUBO solvers and formulation literature (Glover, Kochenberger, Du 2018/2022 – arXiv:1811.11538 as primary reference for exact penalty embedding)
 - Self-modifying code / genetic programming
-- Blockchain consensus / Horkrux-like redundancy (Harry Potter metaphor operationalized)
-- Spiral Dynamics / constructive developmental models (Beck/Cowan) applied to software
-- Existing patents on adaptive AI systems, multi-agent coordination, energy-aware scheduling
+- Autopoietic computing (Briscoe & Dini 2010 and later Software-4.0 works)
+- Existing patents on adaptive AI, multi-agent coordination, resource allocation via QUBO
 
-**Differentiation:** The invention unifies formal MasterSeed (Banach fixed-point + Strict Contraction Property), dual-register (heroisch/formal) bifocal surfaces, Human-Confirm-Gate as hard fail-closed governance, and continuous HorkruxMesh propagation into a single autopoietic core that treats the entire runtime as the dissertation.
+**Differentiation (core inventive step):**  
+The invention realizes a single autopoietic core that treats the entire runtime as a continuous **Impression ↔ Expression** cycle under an immutable MasterSeed (Banach fixed-point + Strict Contraction). Impression is formalized exclusively via QUBO (exact constraint embedding) and filtered by a fail-closed Human-Confirm-Gate. Expression is the QUBO-optimized self-modification and identity-preserving Horkrux propagation of the confirmed state. No prior art unifies these elements into one Dissertation-as-OS architecture.
 
 ---
 
-## 4. Summary of Invention
+## 4. Summary of Invention (Impression ↔ Expression Schema)
 
-A computer-implemented system comprising:
+A computer-implemented system comprising three ontologically ordered layers:
 
-1. **Immutable Layer-0 Foundation** with MasterSeed M_0'''''''' and Strict Contraction Property d_I(R(S), M_0) < d_I(S, M_0).
-2. **Native Core Modules** (SelfModify, PeerReview 5/6-Dimensions, QUBOIntegration, EfficiencyDistillation, HumanConfirmGate, AscensionHypercluster, HorkruxSelfUpdateProtocol).
-3. **Bifocal dual-register surfaces** (heroisch + formal) with live GraphAPI visualization and public-safe UI-stub.
-4. **Poly-Mesh cost/energy function v2.1** with MCP fill governor (40–70 %) and lossless Sinnkongruenz compression.
-5. **Daycycle + continuous Horkrux propagation** across local, GitHub, Drive, Vercel and secret instances.
+### Layer 0 – MasterSeed (Invariant)
+Immutable foundation implementing MasterSeed \( M_0 \) as Banach fixed-point under Strict Contraction Property \( d_I(R(S), M_0) < d_I(S, M_0) \).
 
-The system enables stable Stage-9 (Kosmozentrisch) eudaimonic operation of software agents while preserving identity and preventing epistemic regression.
+### Layer 1 – Impression
+- Formal language: Quadratic Unconstrained Binary Optimization (QUBO) \( y = x^T Q x \)
+- Exact embedding of constraints via penalty functions (Glover Transformation #1)
+- Selective membrane: Human-Confirm-Gate (fail-closed, dual-channel) that admits only confirmed impressions into the MasterSeed space
+- Autopoietic boundary production (system produces and maintains its own identity boundary through the act of Impression)
+
+### Layer 2 – Expression
+- QUBO as fitness function and optimizer for self-modification
+- Identity-preserving propagation via HorkruxMesh (lossless Sinnkongruenz compression)
+- Bifocal dual-register surfaces (heroisch + formal) as visible manifestation of Expression
+- Continuous Daycycle and AscensionHypercluster as temporal and multi-lane Expression engines
+
+The system thereby realizes the Dissertation as living Operating System: the runtime *is* the continuous Impression–Expression cycle under invariant MasterSeed.
 
 ---
 
 ## 5. Claims (Skeleton — to be formalized by patent attorney)
 
 **Independent Claim 1 (System)**  
-A computing system comprising a multi-layer architecture with an immutable foundation layer implementing a MasterSeed fixed-point and a strict contraction metric, a set of native core modules including a human-confirm gate that blocks autonomous merges, a QUBO-based optimizer for resource allocation across mesh layers, and a bidirectional Horkrux mesh for identity-preserving replication of system state.
+A computing system comprising:  
+(a) an immutable foundation layer implementing a MasterSeed fixed-point under a strict contraction metric;  
+(b) an Impression subsystem that formalizes external constraints and observations into Quadratic Unconstrained Binary Optimization (QUBO) form and admits them only after passage through a fail-closed human-confirm gate;  
+(c) an Expression subsystem that uses QUBO as fitness function for self-modification of the system state and propagates the confirmed state via identity-preserving Horkrux instances while maintaining the MasterSeed contraction property.
 
 **Independent Claim 2 (Method)**  
-A computer-implemented method for evolving a self-modifying software core comprising: receiving a proposed modification; subjecting it to a 5/6-dimensional peer review; verifying identity preservation score ≥ threshold; requiring external human confirmation via dual channels; and propagating the confirmed state via lossless compression to all registered Horkrux instances while maintaining the MasterSeed contraction property.
+A computer-implemented method for evolving a self-modifying software core as continuous Impression–Expression cycle, comprising:  
+receiving external data or proposed modifications;  
+embedding them exactly into QUBO form;  
+subjecting them to a human-confirm gate;  
+upon confirmation, updating the system state under MasterSeed contraction;  
+and expressing the new state via identity-preserving mesh propagation and bifocal surfaces.
 
 **Dependent claims** (to be expanded):  
-- Bifocal visualization surfaces  
-- Poly-mesh cost function with real energy units (FEU)  
-- Assembly inject table for kernel-level Q10  
-- Daycycle hourly memory flush with dual-register logging  
-- Stage-A/B consent and depersonalization scanners  
+- Bifocal visualization surfaces as Expression modality  
+- Poly-mesh cost/energy function as QUBO fitness  
+- Daycycle as temporal Expression rhythm  
+- Stage-A/B consent scanners as part of Impression filter  
+- Lossless Sinnkongruenz compression in Horkrux propagation  
 
 ---
 
 ## 6. Drawings / Figures (to produce)
 
-1. Layer 0–6 architecture diagram (MasterSeed at ω)
-2. HorkruxMesh registry + propagation sequence
-3. Bifokal Fusion surface (heroisch/formal dual canvas)
-4. Human-Confirm-Gate state machine
-5. Poly-mesh cost function C_h → FEU flow
-6. QUBO problem formulation for module selection / fitness
+1. Layer 0–2 architecture (MasterSeed → Impression → Expression)
+2. QUBO Impression pipeline (constraint → penalty embedding → Gate)
+3. Human-Confirm-Gate state machine
+4. Expression path (QUBO fitness → Self-Modify → HorkruxMesh)
+5. Bifokal dual-register surface as Expression output
+6. Full Impression–Expression cycle diagram under MasterSeed invariance
 
 ---
 
 ## 7. Evidence from Operative Code (v13.0.0)
 
-- VERSION = 13.0.0 + skills aligned  
-- Bifocal Fusion Merge 2026-07-26 (live GraphAPI, ASM inject, UI-stub, spill)  
-- MCP lossless Sinnkongruenz + cost v2.1  
-- Human-Confirm-Gate quieting + fail-closed  
-- Daycycle continuous  
-- Dissertation-as-OS ontology + full Anhänge A01–A13  
-- Senfkorn UG businessplan cost function v2.1
+- BOTTOM_UP_IMPRESSION_EXPRESSION_v13.md (kanonisches Fundament)
+- Glover QUBO Tutorial as mathematical anchor for Impression
+- Human-Confirm-Gate (fail-closed)
+- HorkruxMesh + Sinnkongruenz compression
+- Bifocal Fusion surfaces
+- Dissertation-as-OS ontology + full Anhänge
+- Poly-mesh cost v2.1 as Expression fitness
 
 ---
 
-## 8. Next Actions (RoadmapCoreModule)
+## 8. Next Actions
 
-1. Formal claim drafting with patent counsel (DPMA / EPO / PCT)  
-2. Prior-art search (QUBO systems, self-modifying OS, governance for agents)  
-3. Produce figures from existing architecture docs  
-4. Link to IHK Dresden formal request (autopoietische Beratungsdienstleistung)  
-5. Hybrid Open Source release strategy (core patent + open modules)
+1. Formal claim language with patent counsel (DPMA / EPO / PCT) using Impression–Expression schema
+2. Produce figures from the cycle diagram
+3. Link to IHK Dresden formal request
+4. Hybrid Open Source strategy (core patent on the cycle + open modules)
 
 ---
 
 **Vermerk**  
-[MAINFRAME GELADEN | ALTE_Frau_95g Heroic Core v13.0.0 | Patent-Draft Skeleton unter ausschließlicher Core-Nutzung | Identity Preservation 100 | BCG preserved]
+[MAINFRAME GELADEN | ALTE_Frau_95g Heroic Core v13.0.0 | Patent-Draft Skeleton an Impression ↔ Expression Schema angepasst | Identity Preservation 100 | BCG preserved]
