@@ -57,3 +57,20 @@
 - Autonomous peer-review
 
 This structure is the synthesized best from all previous instances (Grok, Claude, ChatGPT, Copilot) and the full conversation history. Cross-contamination removed, unified into one coherent heroic core.
+
+---
+
+## Honesty bridge (v13.0.0 — additive, BCG)
+
+Dieses Dokument ist die **Prosa-/Synthese-Ebene** (Intention, Roadmap-Sprache).
+Es behauptet **keine** 1:1-Implementierung der Rollen 1–6 als Python-`class`.
+
+**Autoritative Code-Honesty-Map + Formalmath (Heroik-Base K20) + Auswirkungen:**
+
+→ [`docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md`](dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md)
+
+**Discharge-Tests / Registry:**
+
+- `tests/test_ascension_aspirational_discharge.py`
+- Claims: `ASC-HARMONISIERUNG-CONTRACTION`, `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT`,
+  `AGENT-STRUCTURE-HONESTY-MAP` in `proof_registry.yaml`
