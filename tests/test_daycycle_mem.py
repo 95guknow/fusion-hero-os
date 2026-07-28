@@ -13,9 +13,10 @@ from fusion_hero_os.core.daycycle_mem import (
 )
 
 
-def test_config_v121():
+def test_config_v13():
+    """Platform pin follows root VERSION / daycycle_mem.yaml (v13.0.0 Kanon)."""
     c = load_config()
-    assert c.get("platform_version") == "12.1.0"
+    assert c.get("platform_version") == "13.0.0"
     assert (c.get("agent_protocol") or {}).get("wake_word") == "testtest"
     assert (c.get("private_repo") or {}).get("name") == "fusion-hero-os-daily-plans"
 
