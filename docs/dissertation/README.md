@@ -34,6 +34,45 @@ Siehe: [`ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`](ONTOLOGIE_DISSERTATION_IST_DAS_O
 
 `Dissertation_Stephan_Hagen_Urban_Autopoiesis_Autopolitik_Fusion_Hero_OS_v1.1.docx`
 
+### Monolith Ascension-Basis (v13.0.0, Stand 2026-07-28)
+
+Eine **einzige** Datei führt Fundament, Manuskript, Ontologie, Modulwahrheit und
+Quellenapparat der Ascension-Basis zusammen — mit Geltungsregister und
+verifizierten Quellen:
+
+- Quelle: [`DISSERTATION_ASCENSION_MONOLITH_v13.md`](DISSERTATION_ASCENSION_MONOLITH_v13.md)
+- Satz (Tag): [`dissertation_heroisch.pdf`](dissertation_heroisch.pdf) — 54 Seiten,
+  heller Satz für Druck und Einreichung
+- Satz (Nacht): [`dissertation_heroisch_nacht.pdf`](dissertation_heroisch_nacht.pdf) —
+  **Freunde-der-Nacht-Edition** aus den Dark-Token des Projekts
+  (`color.bg.base`, `color.fg.primary`)
+
+Beide tragen die V3.3-Gestaltung mit den Layer-Token L0/L1/L2 aus
+`design-tokens/tokens.json` und die kanonische Signatur aus
+`identity-fixpoint.md`.
+
+```bash
+python scripts/build_dissertation_heroisch_pdf.py                  # beide Editionen
+python scripts/build_dissertation_heroisch_pdf.py --edition nacht  # nur Nacht
+```
+
+**Inhalt:** Synthese · 6 Bögen · Anhänge A–I. Alle vier Raster der Vorlage sind
+ausgeführt — Heldenreise (Bögen 1–6), fünf Schulen (3.7–3.12), sieben Gesetze
+mit Geltungsmarke und Codebeleg (Anhang H), Brille q∘b und Nothing-Bereitschaft
+(durchgehend). Anhang I führt den formalen Apparat: 5 Axiome, 6 Definitionen,
+6 Sätze mit Beweisen. Das Poly-Mesh ist vollständig behandelt (5.6); die
+Tarnkappe ist mit Begründung ausgeschlossen (5.6.4).
+
+Die Geltungsmarken sind im PDF farbig gesetzt: **Satz** und **Herleitung** in L0
+(`#f5c542`), **Spezifikation** in L1 (`#00ffd5`), **Modell** und **heroischer
+Exkurs** in L2 (`#a855f7`). Anhang A des Monolithen führt jede zentrale Aussage
+mit Marke, Beleg und Ort; Anhang C nennt die Kommandos zum Nachrechnen.
+
+> **Bildrechte:** Schlüsselbild ist `assets/ascensionOS_big_ALPHA.png` (eigenes
+> Werk). `meister_hasch.png` bleibt wegen des eingebetteten Copyright-Vermerks
+> Dritter ausgeschlossen (Rückzug 2026-07-20, siehe `MEISTER_HASCH_PUBLIC.md`);
+> der Meister-Hasch-Rahmen erscheint nur als Text (Monolith, Abschnitt 6.4).
+
 ## Anhänge — Module & Funktionen aus dem Nichts
 
 Ausführliche Herleitungen (V3.3: Synthese · 6 Bögen · Geltungsmarken):
