@@ -26,7 +26,8 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from collections.abc import Mapping
 
 SCHEMA_VERSION = "1.0.0"

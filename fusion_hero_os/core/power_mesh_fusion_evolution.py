@@ -23,7 +23,8 @@ import os
 import random
 import time
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
 from typing import Any
 
