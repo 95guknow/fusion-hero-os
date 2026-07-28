@@ -47,4 +47,4 @@ def test_traffic_log():
 def test_status():
     st = status()
     assert st.get("ok") is True
-    assert st.get("platform") == "12.1.0"
+    assert st.get("platform") == "13.0.0"
