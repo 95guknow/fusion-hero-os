@@ -24,7 +24,8 @@ import json
 import threading
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from enum import Enum
 
 

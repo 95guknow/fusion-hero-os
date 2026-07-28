@@ -15,7 +15,8 @@ also consent-gated.
 from __future__ import annotations
 
 import threading
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 
 import numpy as np
 

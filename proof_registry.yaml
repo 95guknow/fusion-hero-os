@@ -370,3 +370,32 @@ claims:
       - tests/test_coworking_workflow.py::test_workflow_contains_no_merge_or_approve_call
       - tests/test_coworking_workflow.py::test_workflow_permissions_are_bounded
       - tests/test_coworking_workflow.py::test_third_party_actions_are_pinned_to_commit_sha
+
+  # ---- Ascension aspirational discharge (Heroik-Base K20, 2026-07-28) -----
+  - id: ASC-HARMONISIERUNG-CONTRACTION
+    statement: "HarmonisierungsCoreModule (ascension_os/core/harmonisierung_module.py): fuer alpha_q, alpha_b in (0,1) ist H = 1/2*(b o q + q o b) eine Banach-Kontraktion auf der K20-Base (BanachContractionSeed); is_contraction=True, final_gap < initial_gap bei ungleichen Partnern, gemeinsamer eindeutiger Fixpunkt; propose_self_modification schlaegt NUR bei is_contraction vor (Proposal-only, kein Self-Apply). Psychologische Deutung von q/b bleibt MODELL, nicht Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_is_contraction_by_construction
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_strictly_reduces_gap_when_states_differ
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_fixpoint_is_unique_k20_instance
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_self_mod_only_when_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_alpha_out_of_range_rejected
+    notes: "Discharge 2026-07-28: aspirational v9.6-Modul → BEWIESEN ueber K20-Instanz."
+
+  - id: ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT
+    statement: "Geisterjagdmodul (ascension_os/core/geisterjagd_module.py): hunt liefert bei ||A||_2 < 1 konvergenten Manifest-Fixpunkt x*=(I-A)^{-1}c (K20) inkl. geometrischer Fehlerbound; bei ||A||_2 >= 1 ehrlich Nothing (converged=False, manifest=None, steps=0) — keine Fake-Konvergenz. Deutung 'Geister = LLM-Latenz' ist MODELL, nicht Claim."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_converges_under_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_nothing_when_not_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_geometric_error_bound_via_k20
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_hunt_multiple_all_or_nothing_consistent
+    notes: "Discharge 2026-07-28: Nothing-Bereitschaft ist der scharfe Integritaets-Satz."
+
+  - id: AGENT-STRUCTURE-HONESTY-MAP
+    statement: "docs/DETAILED_AGENT_STRUCTURE_v1.md und docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md trennen dokumentierte Rollen (Aspirational/Modell) von im Repo existierenden Agent-/Orchestrator-Klassen; der Ehrlichkeitstest listet mindestens BaseAgent, AgentRegistry, DynamicOrchestrationCoreModule und bestaetigt, dass die reinen Rollen-Labels Masterinstanz/ASR-Agent/Manifest-Guardian KEINE class-Definitionen im Code-Tree tragen (Code-Honesty)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent
+    notes: "Wirkung: verhindert, dass Prosa-Agenten als implementiert gelesen werden."

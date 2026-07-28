@@ -13,7 +13,8 @@ import json
 import struct
 import subprocess
 import time
-from datetime import datetime, timedelta, UTC
+from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
 from typing import Any
 

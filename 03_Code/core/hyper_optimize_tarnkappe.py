@@ -351,7 +351,10 @@ def check_tailscale_hyper() -> Tuple[float, List[str], List[str], Dict[str, Any]
         "tailscale_ip": (self_d.get("TailscaleIPs") or [None])[0],
         "peers": len(peers),
         "peers_online": online_peers,
-        "tailnet": (data.get("CurrentTailnet") or {}).get("Name"),
+        # Public ops artefacts must not re-emit personal tailnet account names
+        # (Tailscale names personal/small-org tailnets after the owning account).
+        # Keep topology signal offline; publish only a neutral placeholder.
+        "tailnet": "operator@example.com",
     }
     findings.append(f"self_online:{meta['online']}")
     findings.append(f"peers:{meta['peers']}_online:{online_peers}")
