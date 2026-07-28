@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Poly-FA Write Gate — desktop-only write, on request, multi-factor.
 
@@ -30,8 +29,10 @@ import secrets
 import socket
 import time
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Set
+from typing import Any
+from collections.abc import Sequence
 
 __all__ = [
     "POLICY_PATH",
@@ -73,7 +74,7 @@ GOD_SCOPES = frozenset(
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _now_ts() -> float:
@@ -101,7 +102,7 @@ def _token_hash(raw: str) -> str:
     return hashlib.sha256(_norm_token(raw).encode("utf-8")).hexdigest()
 
 
-def default_policy() -> Dict[str, Any]:
+def default_policy() -> dict[str, Any]:
     host = hostname() or "DESKTOP-UNKNOWN"
     return {
         "version": 1,
@@ -155,7 +156,7 @@ def default_policy() -> Dict[str, Any]:
     }
 
 
-def load_policy() -> Dict[str, Any]:
+def load_policy() -> dict[str, Any]:
     if not POLICY_PATH.is_file():
         return default_policy()
     try:
@@ -165,7 +166,7 @@ def load_policy() -> Dict[str, Any]:
         return default_policy()
 
 
-def save_policy(policy: Dict[str, Any]) -> Path:
+def save_policy(policy: dict[str, Any]) -> Path:
     OP_DIR.mkdir(parents=True, exist_ok=True)
     POLICY_PATH.write_text(
         json.dumps(policy, indent=2, ensure_ascii=False) + "\n",
@@ -176,9 +177,9 @@ def save_policy(policy: Dict[str, Any]) -> Path:
 
 def install_handover_policy(
     *,
-    authorized_hosts: Optional[Sequence[str]] = None,
+    authorized_hosts: Sequence[str] | None = None,
     hear_speak: str = "full",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Install desktop-only / request / poly-FA policy (operator-local)."""
     pol = default_policy()
     hosts = list(authorized_hosts) if authorized_hosts else [hostname()]
@@ -206,12 +207,12 @@ def install_handover_policy(
     }
 
 
-def _save_json(path: Path, data: Dict[str, Any]) -> None:
+def _save_json(path: Path, data: dict[str, Any]) -> None:
     OP_DIR.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def _load_json(path: Path, key: str) -> List[Dict[str, Any]]:
+def _load_json(path: Path, key: str) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
     try:
@@ -222,7 +223,7 @@ def _load_json(path: Path, key: str) -> List[Dict[str, Any]]:
         return []
 
 
-def is_authorized_desktop(host: Optional[str] = None) -> bool:
+def is_authorized_desktop(host: str | None = None) -> bool:
     pol = load_policy()
     h = (host or hostname()).upper()
     allow = [str(x).upper() for x in (pol.get("write") or {}).get("authorized_hosts") or []]
@@ -277,7 +278,7 @@ def request_write(
     reason: str,
     requested_by: str = "operator",
     poly_plane: str = "desktop",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Open an explicit write request (does not grant yet)."""
     pol = load_policy()
     if not pol.get("active", True):
@@ -331,12 +332,12 @@ def approve_request_with_poly_fa(
     *,
     request_id: str,
     confirmation: str,
-    poly_plane: Optional[str] = None,
-    ttl_sec: Optional[int] = None,
-) -> Dict[str, Any]:
+    poly_plane: str | None = None,
+    ttl_sec: int | None = None,
+) -> dict[str, Any]:
     """Approve a pending request if all Poly-FA factors pass → time-boxed grant."""
     pol = load_policy()
-    factors: Dict[str, bool] = {}
+    factors: dict[str, bool] = {}
     factors["F1_person_phrase"] = _phrase_ok(confirmation)
     factors["F2_desktop_host"] = is_authorized_desktop()
     items = _load_json(REQUESTS_PATH, "requests")
@@ -370,7 +371,7 @@ def approve_request_with_poly_fa(
         "poly_plane": plane,
         "created_at": _now(),
         "expires_ts": exp,
-        "expires_at": datetime.fromtimestamp(exp, tz=timezone.utc).isoformat(),
+        "expires_at": datetime.fromtimestamp(exp, tz=UTC).isoformat(),
         "factors_passed": factors,
         "active": True,
     }
@@ -399,7 +400,7 @@ def approve_request_with_poly_fa(
     }
 
 
-def _active_grants() -> List[Dict[str, Any]]:
+def _active_grants() -> list[dict[str, Any]]:
     now = _now_ts()
     grants = _load_json(GRANTS_PATH, "grants")
     active = []
@@ -420,7 +421,7 @@ def _active_grants() -> List[Dict[str, Any]]:
     return active
 
 
-def can_write_now(*, scope: str = "god_layer") -> Dict[str, Any]:
+def can_write_now(*, scope: str = "god_layer") -> dict[str, Any]:
     """Check whether a god/structure write is allowed under Poly-FA policy."""
     pol = load_policy()
     if not pol.get("active", True):
@@ -473,7 +474,7 @@ def can_write_now(*, scope: str = "god_layer") -> Dict[str, Any]:
     }
 
 
-def revoke_grant(grant_id: str) -> Dict[str, Any]:
+def revoke_grant(grant_id: str) -> dict[str, Any]:
     grants = _load_json(GRANTS_PATH, "grants")
     found = False
     for g in grants:
@@ -485,7 +486,7 @@ def revoke_grant(grant_id: str) -> Dict[str, Any]:
     return {"ok": found, "action": "revoked" if found else "not_found", "grant_id": grant_id}
 
 
-def public_status() -> Dict[str, Any]:
+def public_status() -> dict[str, Any]:
     """Safe status — no legal names, no phrases."""
     pol = load_policy()
     write = pol.get("write") or {}
@@ -519,7 +520,7 @@ def public_status() -> Dict[str, Any]:
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return public_status()
 
 

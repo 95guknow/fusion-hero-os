@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Inference-Scheduling-QUBO - v1 (Layer/Batch-Granularitaet, ehrliche Fassung)
 
@@ -56,7 +55,6 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional
 
 import numpy as np
 
@@ -133,8 +131,8 @@ def greedy_schedule(problem: ScheduleProblem) -> np.ndarray:
 
 
 def solve_schedule(problem: ScheduleProblem, steps: int = 4000,
-                   n_restarts: Optional[int] = None,
-                   base_seed: int = 0) -> Dict:
+                   n_restarts: int | None = None,
+                   base_seed: int = 0) -> dict:
     """Loest das Scheduling: SA auf dem QUBO, Greedy als garantierte Basis.
 
     Rueckgabe enthaelt beide Loesungen; 'assignment' ist die bessere

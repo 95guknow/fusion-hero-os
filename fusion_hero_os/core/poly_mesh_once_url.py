@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Poly-Mesh once-URLs + encrypted mesh-IP DNS labels (heroic naming).
 
 - **Encrypted mesh IP**: URL-safe token wrapping Tailscale 100.x (+ optional port)
@@ -19,7 +18,7 @@ import secrets
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 # Heroic name pool (Fusion / Senfkorn / Hypermoderne lexicon)
 HEROIC_NAMES = (
@@ -91,10 +90,10 @@ def _b64url_decode(s: str) -> bytes:
     return base64.urlsafe_b64decode(s + pad)
 
 
-def encrypt_mesh_ip(ip: str, port: int = DEFAULT_PORT, secret: Optional[bytes] = None) -> str:
+def encrypt_mesh_ip(ip: str, port: int = DEFAULT_PORT, secret: bytes | None = None) -> str:
     """Pack mesh IP+port into authenticated encrypted blob (XOR stream + HMAC)."""
     secret = secret or get_or_create_secret()
-    payload = f"{ip}:{int(port)}".encode("utf-8")
+    payload = f"{ip}:{int(port)}".encode()
     nonce = secrets.token_bytes(12)
     # stream key
     stream = hashlib.sha256(secret + nonce).digest()
@@ -105,7 +104,7 @@ def encrypt_mesh_ip(ip: str, port: int = DEFAULT_PORT, secret: Optional[bytes] =
     return _b64url(nonce + mac + cipher)
 
 
-def decrypt_mesh_ip(token: str, secret: Optional[bytes] = None) -> Tuple[str, int]:
+def decrypt_mesh_ip(token: str, secret: bytes | None = None) -> tuple[str, int]:
     secret = secret or get_or_create_secret()
     raw = _b64url_decode(token)
     if len(raw) < 12 + 16 + 1:
@@ -130,7 +129,7 @@ def heroic_dns_label(name: str, enc_token: str) -> str:
     return f"{slug}.polymesh.{short}.mesh.local"
 
 
-def pick_heroic_name(rng: Optional[secrets.SystemRandom] = None) -> str:
+def pick_heroic_name(rng: secrets.SystemRandom | None = None) -> str:
     r = rng or secrets.SystemRandom()
     base = r.choice(HEROIC_NAMES)
     # rare compound
@@ -139,7 +138,7 @@ def pick_heroic_name(rng: Optional[secrets.SystemRandom] = None) -> str:
     return base
 
 
-def _load_ledger() -> Dict[str, Any]:
+def _load_ledger() -> dict[str, Any]:
     p = _ledger_path()
     if not p.exists():
         return {"tokens": {}}
@@ -149,7 +148,7 @@ def _load_ledger() -> Dict[str, Any]:
         return {"tokens": {}}
 
 
-def _save_ledger(data: Dict[str, Any]) -> None:
+def _save_ledger(data: dict[str, Any]) -> None:
     _ledger_path().write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
@@ -176,7 +175,7 @@ class OnceUrl:
         base = self.mesh_base.rstrip("/")
         return f"{base}{self.path}"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "heroic_name": self.name,
             "once_url": self.once_url,
@@ -200,7 +199,7 @@ def mint_once_url(
     ttl_sec: int = DEFAULT_TTL_SEC,
     public_base: str = f"https://{MESH_HOST}",
     mesh_base: str = f"https://{MESH_HOST}",
-    name: Optional[str] = None,
+    name: str | None = None,
     target_path: str = "/",
 ) -> OnceUrl:
     """Create a single-use heroic once-URL pointing at mesh service."""
@@ -236,7 +235,7 @@ def mint_once_url(
     )
 
 
-def redeem_once(once_id: str) -> Dict[str, Any]:
+def redeem_once(once_id: str) -> dict[str, Any]:
     """Consume once-token; returns target or error. Single use."""
     ledger = _load_ledger()
     rec = (ledger.get("tokens") or {}).get(once_id)
@@ -264,7 +263,7 @@ def redeem_once(once_id: str) -> Dict[str, Any]:
 def mint_from_tailscale(
     port: int = DEFAULT_PORT,
     **kwargs: Any,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Read local Tailscale IPv4 and mint once-URL."""
     import json
     import shutil

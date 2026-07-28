@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Comädchen Audio Channel — voice path Operator ↔ Nummer 2 (Comet).
 
@@ -18,8 +17,9 @@ import os
 import subprocess
 import time
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 STATE = Path.home() / ".fusion" / "comaedchen_audio.json"
@@ -29,10 +29,10 @@ __all__ = ["activate", "status", "deactivate_route_note"]
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def _ps(script: str, timeout: int = 60) -> Dict[str, Any]:
+def _ps(script: str, timeout: int = 60) -> dict[str, Any]:
     """Run a short PowerShell snippet; return stdout/stderr/rc."""
     try:
         r = subprocess.run(
@@ -59,8 +59,8 @@ def _ps(script: str, timeout: int = 60) -> Dict[str, Any]:
         return {"ok": False, "error": str(e)[:200]}
 
 
-def _process_running(names: List[str]) -> Dict[str, Any]:
-    found: List[Dict[str, Any]] = []
+def _process_running(names: list[str]) -> dict[str, Any]:
+    found: list[dict[str, Any]] = []
     for name in names:
         try:
             r = subprocess.run(
@@ -79,7 +79,7 @@ def _process_running(names: List[str]) -> Dict[str, Any]:
     return {"running": bool(found), "processes": found}
 
 
-def _ensure_comet() -> Dict[str, Any]:
+def _ensure_comet() -> dict[str, Any]:
     st = _process_running(["comet", "Comet"])
     if st["running"]:
         return {"ok": True, "already": True, "processes": st["processes"]}
@@ -94,7 +94,7 @@ def _ensure_comet() -> Dict[str, Any]:
         return {"ok": False, "error": str(e)[:200]}
 
 
-def _ensure_audiorelay() -> Dict[str, Any]:
+def _ensure_audiorelay() -> dict[str, Any]:
     st = _process_running(["AudioRelay", "audiorelay-backend"])
     if st["running"]:
         return {"ok": True, "already": True, "processes": st["processes"]}
@@ -125,7 +125,7 @@ def _ensure_audiorelay() -> Dict[str, Any]:
         return {"ok": False, "error": str(e)[:200]}
 
 
-def _svv_path() -> Optional[Path]:
+def _svv_path() -> Path | None:
     cands = [
         ROOT / "workstation" / "tools" / "SoundVolumeView.exe",
         ROOT / "workstation" / "tools" / "soundvolumeview" / "SoundVolumeView.exe",
@@ -136,7 +136,7 @@ def _svv_path() -> Optional[Path]:
     return None
 
 
-def _set_default_endpoint(device_name: str) -> Dict[str, Any]:
+def _set_default_endpoint(device_name: str) -> dict[str, Any]:
     """Set Windows default playback device via SoundVolumeView if available."""
     svv = _svv_path()
     if not svv:
@@ -163,7 +163,7 @@ def _set_default_endpoint(device_name: str) -> Dict[str, Any]:
         return {"ok": False, "error": str(e)[:200]}
 
 
-def _phone_online() -> Dict[str, Any]:
+def _phone_online() -> dict[str, Any]:
     ts = Path(r"C:\Program Files\Tailscale\tailscale.exe")
     if not ts.is_file():
         return {"ok": False, "online": False, "error": "tailscale_missing"}
@@ -197,7 +197,7 @@ def _phone_online() -> Dict[str, Any]:
         return {"ok": False, "online": False, "error": str(e)[:200]}
 
 
-def _open_comet_surface() -> Dict[str, Any]:
+def _open_comet_surface() -> dict[str, Any]:
     """Bring operator to Comet (Nummer-2 surface) without forcing a Google route."""
     try:
         from fusion_hero_os.core.browser_egress import open_url
@@ -219,7 +219,7 @@ def activate(
     mode: str = "auto",
     open_surface: bool = True,
     route_audio: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Activate Operator ↔ Comädchen audio channel.
 
@@ -233,7 +233,7 @@ def activate(
     if mode == "auto":
         mode = "phone" if phone.get("online") else "local"
 
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "ok": False,
         "channel": "comaedchen_audio",
         "version": "1.0.0",
@@ -331,8 +331,8 @@ def activate(
     return report
 
 
-def status() -> Dict[str, Any]:
-    out: Dict[str, Any] = {
+def status() -> dict[str, Any]:
+    out: dict[str, Any] = {
         "ok": True,
         "channel": "comaedchen_audio",
         "comet": _process_running(["comet", "Comet"]),
@@ -349,7 +349,7 @@ def status() -> Dict[str, Any]:
     return out
 
 
-def deactivate_route_note() -> Dict[str, Any]:
+def deactivate_route_note() -> dict[str, Any]:
     """Advisory only — restore local speakers if AudioRelay was forced."""
     return {
         "ok": True,

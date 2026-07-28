@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Meister Hasch — Fable5 + Mythos5 bifocal optimize under Hypertarnkappe + Hyperpanzerknacker.
 
@@ -25,8 +24,9 @@ import json
 import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -37,7 +37,7 @@ CANONICAL_SHA256 = (
 CANONICAL_SIZE = 654464
 SOURCE_DISK = Path(r"C:\Dissertation_95guknow\meister_hasch.png")
 
-PUBLIC_ASSET_RELPATHS: Tuple[str, ...] = (
+PUBLIC_ASSET_RELPATHS: tuple[str, ...] = (
     "docs/dissertation/assets/meister_hasch.png",
     "docs/dissertation/assets/meister_hasch.sha256",
     "memes/meister_hasch.png",
@@ -46,7 +46,7 @@ PUBLIC_ASSET_RELPATHS: Tuple[str, ...] = (
     "journal/meister_hasch.png",
 )
 
-PUBLIC_DOC_RELPATHS: Tuple[str, ...] = (
+PUBLIC_DOC_RELPATHS: tuple[str, ...] = (
     "docs/dissertation/MEISTER_HASCH_PUBLIC.md",
     "docs/dissertation/MEISTER_HASCH_ALL_CHANNELS.md",
     "docs/dissertation/MEISTER_HASCH_BIFOKAL.md",
@@ -57,7 +57,7 @@ PUBLIC_DOC_RELPATHS: Tuple[str, ...] = (
 
 # Actual secret material (not policy prose that *forbids* secrets).
 # Docs may name forbidden classes; only real key/token *bodies* fail.
-PRIVATE_PATTERN_HINTS: Tuple[str, ...] = (
+PRIVATE_PATTERN_HINTS: tuple[str, ...] = (
     r"-----BEGIN (?:RSA |OPENSSH |EC |PGP )?PRIVATE KEY-----",
     r"-----BEGIN PGP PRIVATE KEY BLOCK-----",
     # Live token shapes (not the bare env var name in policy docs)
@@ -69,7 +69,7 @@ PRIVATE_PATTERN_HINTS: Tuple[str, ...] = (
 )
 
 # Local-only vault/private markers (expected outside git public surfaces)
-VAULT_PRIVATE_MARKERS: Tuple[str, ...] = (
+VAULT_PRIVATE_MARKERS: tuple[str, ...] = (
     ".fusion/vault",
     "masterseed_vault",
     ".env",
@@ -100,7 +100,7 @@ class OptimizeConfig:
     # Hyperpanzerknacker never leaves the lab — hard-coded True in code path
     sandbox_only: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -114,7 +114,7 @@ class ProbeResult:
     severity: str = "info"  # info | low | medium | high
     geltung: str = "Spezifikation"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -123,7 +123,7 @@ class LensReport:
     name: str
     role: str
     honesty_note: str
-    probes: List[ProbeResult] = field(default_factory=list)
+    probes: list[ProbeResult] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
@@ -135,7 +135,7 @@ class LensReport:
             return 0.0
         return sum(1 for p in self.probes if p.passed) / len(self.probes)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "role": self.role,
@@ -154,8 +154,8 @@ class OptimizeReport:
     integrity_ok: bool
     dry_run: bool
     sandbox_only: bool
-    lenses: Dict[str, LensReport]
-    optimizations: List[str]
+    lenses: dict[str, LensReport]
+    optimizations: list[str]
     policy: str
     generated_at: str
     public_safe: bool = True
@@ -164,7 +164,7 @@ class OptimizeReport:
     def overall_passed(self) -> bool:
         return self.integrity_ok and all(lr.passed for lr in self.lenses.values())
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "platform_version": self.platform_version,
             "asset_sha256": self.asset_sha256,
@@ -197,12 +197,12 @@ def _sha256_file(path: Path) -> str:
 
 
 def _now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def _fable5_probes(cfg: OptimizeConfig) -> LensReport:
     """Engineering integrity — hash, size, public path presence, docs."""
-    probes: List[ProbeResult] = []
+    probes: list[ProbeResult] = []
     asset = ROOT / "docs/dissertation/assets/meister_hasch.png"
 
     if asset.is_file():
@@ -265,7 +265,7 @@ def _fable5_probes(cfg: OptimizeConfig) -> LensReport:
                 )
             )
 
-    missing_assets: List[str] = []
+    missing_assets: list[str] = []
     for rel in PUBLIC_ASSET_RELPATHS:
         p = ROOT / rel
         if not p.is_file():
@@ -327,7 +327,7 @@ def _fable5_probes(cfg: OptimizeConfig) -> LensReport:
 
 def _mythos5_probes() -> LensReport:
     """Narrative / Geltung organ — honesty that Mythos ≠ independent second reviewer."""
-    probes: List[ProbeResult] = []
+    probes: list[ProbeResult] = []
 
     backlog = ROOT / "docs/meta_neural/IMPROVEMENT_BACKLOG_v10.md"
     honesty_ok = False
@@ -414,11 +414,11 @@ def _mythos5_probes() -> LensReport:
 
 def _hypertarnkappe_probes() -> LensReport:
     """Privacy cloak — private material must not appear on public Meister surfaces."""
-    probes: List[ProbeResult] = []
+    probes: list[ProbeResult] = []
     compiled = [re.compile(p, re.IGNORECASE) for p in PRIVATE_PATTERN_HINTS]
 
-    hits: List[str] = []
-    scan_paths: List[Path] = []
+    hits: list[str] = []
+    scan_paths: list[Path] = []
     for rel in list(PUBLIC_DOC_RELPATHS) + list(PUBLIC_ASSET_RELPATHS):
         p = ROOT / rel
         if p.is_file() and p.suffix.lower() in {".md", ".txt", ".sha256", ".json"}:
@@ -494,7 +494,7 @@ def _hypertarnkappe_probes() -> LensReport:
 
 def _hyperpanzerknacker_probes(cfg: OptimizeConfig) -> LensReport:
     """Lab-only integrity probe — property tests of the sandbox frame, not exploits."""
-    probes: List[ProbeResult] = []
+    probes: list[ProbeResult] = []
 
     probes.append(
         ProbeResult(
@@ -580,9 +580,9 @@ def _hyperpanzerknacker_probes(cfg: OptimizeConfig) -> LensReport:
     )
 
 
-def _optimizations_from_lenses(lenses: Dict[str, LensReport]) -> List[str]:
+def _optimizations_from_lenses(lenses: dict[str, LensReport]) -> list[str]:
     """Additive, public-safe optimization recommendations (no secret handling)."""
-    tips: List[str] = []
+    tips: list[str] = []
     tips.append(
         "Keep Meister public surface = image + SHA256 + labor-frame docs only "
         "(Hypertarnkappe)."
@@ -611,7 +611,7 @@ def _optimizations_from_lenses(lenses: Dict[str, LensReport]) -> List[str]:
     return tips
 
 
-def run_optimize(cfg: Optional[OptimizeConfig] = None) -> OptimizeReport:
+def run_optimize(cfg: OptimizeConfig | None = None) -> OptimizeReport:
     """Run bifocal Meister Hasch optimize (dry-run default, public-safe report)."""
     cfg = cfg or OptimizeConfig()
     if not cfg.sandbox_only:
@@ -620,7 +620,7 @@ def run_optimize(cfg: Optional[OptimizeConfig] = None) -> OptimizeReport:
             "Hyperpanzerknacker/Meister optimize refuses sandbox_only=False"
         )
 
-    lenses: Dict[str, LensReport] = {}
+    lenses: dict[str, LensReport] = {}
     if cfg.fable5_engineering:
         lenses["fable5"] = _fable5_probes(cfg)
     if cfg.mythos5_narrative:
@@ -679,7 +679,7 @@ def run_optimize(cfg: Optional[OptimizeConfig] = None) -> OptimizeReport:
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     """Lightweight status for registry / health endpoints."""
     asset = ROOT / "docs/dissertation/assets/meister_hasch.png"
     ok = False

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """skill_creator — Dynamic skill scaffold proposals (P1 wiring, no longer a stub).
 
 Produces *declarative* skill skeletons for human/CI review — does not auto-write
@@ -14,13 +13,13 @@ MODULE_ID = "skill_creator"
 PLATFORM = "10.0.0"
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     root = Path(__file__).resolve().parents[3]
     skill_dirs = [
         root / "01_Framework" / "skills",
         root / ".grok" / "skills",
     ]
-    found: List[str] = []
+    found: list[str] = []
     for d in skill_dirs:
         if d.is_dir():
             found.extend(sorted(p.name for p in d.iterdir() if p.is_dir()))
@@ -37,8 +36,8 @@ def status() -> Dict[str, Any]:
 def propose_skill(
     name: str,
     purpose: str = "",
-    triggers: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    triggers: list[str] | None = None,
+) -> dict[str, Any]:
     """Build a SKILL.md skeleton (declarative only)."""
     slug = re.sub(r"[^a-z0-9_-]+", "-", name.strip().lower()).strip("-") or "new-skill"
     triggers = triggers or [slug.replace("-", " ")]
@@ -79,7 +78,7 @@ Proposals via SelfModify / peer review before core integration.
 class SkillCreatorModule:
     name = MODULE_ID
 
-    def process(self, payload: Any = None) -> Dict[str, Any]:
+    def process(self, payload: Any = None) -> dict[str, Any]:
         if not payload:
             return status()
         if isinstance(payload, dict):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """builder_profile — Heroic Core Foundation gate (P1 wiring, no longer a stub)."""
 from __future__ import annotations
 
@@ -18,9 +17,9 @@ def _find_foundation_roots() -> list[Path]:
     ]
 
 
-def status(probe_text: str = "[Modell] builder profile probe") -> Dict[str, Any]:
+def status(probe_text: str = "[Modell] builder profile probe") -> dict[str, Any]:
     """Run foundation gate if available; never raise."""
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "module": MODULE_ID,
         "stub": False,
         "platform_version": PLATFORM,
@@ -64,7 +63,7 @@ def status(probe_text: str = "[Modell] builder profile probe") -> Dict[str, Any]
 class BuilderProfileModule:
     name = MODULE_ID
 
-    def process(self, payload: Any = None) -> Dict[str, Any]:
+    def process(self, payload: Any = None) -> dict[str, Any]:
         text = "[Modell] builder profile probe"
         if isinstance(payload, dict) and payload.get("text"):
             text = str(payload["text"])

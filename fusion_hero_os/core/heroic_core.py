@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fusion Hero OS v8.8 — HeroicCore (zentraler Aggregator)
 
@@ -19,7 +18,7 @@ können sich hier registrieren oder die Methoden nutzen, um "heroic" zu werden.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 # Getrennte try-Bloecke: schlaegt EIN Import fehl (z.B. zirkulaer waehrend
 # des Bootstraps), bleiben die uebrigen Namen trotzdem verfuegbar.
@@ -57,28 +56,28 @@ class HeroicCore:
     Fundament interagieren.
     """
 
-    def __init__(self, quad_core: Optional[QuadCoreBridge] = None):
+    def __init__(self, quad_core: QuadCoreBridge | None = None):
         self.quad_core = quad_core
-        self.masterseed: Optional[MasterSeed] = getattr(quad_core, "seed", None) if quad_core else None
-        self.llm: Optional[UnifiedHeroicLLMCore] = (
+        self.masterseed: MasterSeed | None = getattr(quad_core, "seed", None) if quad_core else None
+        self.llm: UnifiedHeroicLLMCore | None = (
             get_unified_llm_core(heroic_core=quad_core)
             if (quad_core and get_unified_llm_core) else None
         )
-        self.sisyphos: Optional[SisyphosCycle] = getattr(self.llm, "sisyphos", None) if self.llm else None
-        self.psycholysis: Optional[PsycholysisTrigger] = getattr(self.llm, "psycholysis", None) if self.llm else None
+        self.sisyphos: SisyphosCycle | None = getattr(self.llm, "sisyphos", None) if self.llm else None
+        self.psycholysis: PsycholysisTrigger | None = getattr(self.llm, "psycholysis", None) if self.llm else None
         self.fail_closed = FailClosed if FailClosed else None
 
-        self.registered_modules: Dict[str, Any] = {}
+        self.registered_modules: dict[str, Any] = {}
 
     def register_module(self, name: str, module: Any) -> None:
         """Registriert ein beliebiges Modul (QUBO, Agent, SelfModify, ...), damit es
         später heroic-Verhalten nutzen oder triggern kann."""
         self.registered_modules[name] = module
 
-    def get_llm(self) -> Optional[UnifiedHeroicLLMCore]:
+    def get_llm(self) -> UnifiedHeroicLLMCore | None:
         return self.llm
 
-    def get_sisyphos_state(self) -> Dict[str, Any]:
+    def get_sisyphos_state(self) -> dict[str, Any]:
         if self.sisyphos:
             return self.sisyphos.get_state()
         return {}
@@ -97,12 +96,12 @@ class HeroicCore:
             yield
         return _dummy()
 
-    def trigger_psycholysis_if_needed(self, load: float = 0.8) -> Optional[Dict[str, Any]]:
+    def trigger_psycholysis_if_needed(self, load: float = 0.8) -> dict[str, Any] | None:
         if self.psycholysis and self.sisyphos and self.sisyphos.load > load:
             return self.psycholysis.trigger({"source": "heroic_core", "load": load})
         return None
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         return {
             "version": "v8.8-heroic-core-aggregator",
             "masterseed_integrity": self.masterseed.verify_integrity(self.masterseed.state_hash()) if self.masterseed else None,
@@ -113,9 +112,9 @@ class HeroicCore:
         }
 
 
-_heroic_core_instance: Optional[HeroicCore] = None
+_heroic_core_instance: HeroicCore | None = None
 
-def get_heroic_core(quad_core: Optional[QuadCoreBridge] = None) -> HeroicCore:
+def get_heroic_core(quad_core: QuadCoreBridge | None = None) -> HeroicCore:
     global _heroic_core_instance
     if _heroic_core_instance is None:
         _heroic_core_instance = HeroicCore(quad_core=quad_core)

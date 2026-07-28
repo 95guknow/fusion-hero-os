@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """God-Layer Seal — private-person route + write lock until operator unlock.
 
 After a milestone seal:
@@ -17,8 +16,9 @@ import json
 import os
 import re
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "SEAL_PATH",
@@ -42,7 +42,7 @@ DEFAULT_UNLOCK_TOKEN = "=====stephanhagenurban"
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _norm_token(raw: str) -> str:
@@ -60,7 +60,7 @@ def _default_unlock_hash() -> str:
     return _token_hash(DEFAULT_UNLOCK_TOKEN)
 
 
-def _load() -> Dict[str, Any]:
+def _load() -> dict[str, Any]:
     if not SEAL_PATH.is_file():
         return {
             "sealed": False,
@@ -76,7 +76,7 @@ def _load() -> Dict[str, Any]:
         return {"sealed": True, "error": "unreadable_seal", "write_rights": "locked"}
 
 
-def _save(data: Dict[str, Any]) -> Path:
+def _save(data: dict[str, Any]) -> Path:
     OP_DIR.mkdir(parents=True, exist_ok=True)
     SEAL_PATH.write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n",
@@ -159,7 +159,7 @@ def can_write(*, scope: str = "god_layer") -> bool:
     return scope in surface_ok
 
 
-def require_write(*, scope: str = "god_layer") -> Tuple[bool, str]:
+def require_write(*, scope: str = "god_layer") -> tuple[bool, str]:
     """Return (ok, reason)."""
     if can_write(scope=scope):
         return True, "write_allowed"
@@ -173,9 +173,9 @@ def require_write(*, scope: str = "god_layer") -> Tuple[bool, str]:
 def seal_god_layer(
     *,
     reason: str = "post-milestone private-person route",
-    unlock_token: Optional[str] = None,
+    unlock_token: str | None = None,
     route_private_person: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Seal god layer and optionally bind private-person vault (local only)."""
     token = unlock_token or DEFAULT_UNLOCK_TOKEN
     th = _token_hash(token)
@@ -232,7 +232,7 @@ def _bind_private_person_vault() -> Path:
     Names come from env if set, else known local bind from operator directive.
     """
     OP_DIR.mkdir(parents=True, exist_ok=True)
-    existing: Dict[str, Any] = {}
+    existing: dict[str, Any] = {}
     if VAULT_PATH.is_file():
         try:
             existing = json.loads(VAULT_PATH.read_text(encoding="utf-8"))
@@ -288,7 +288,7 @@ def _bind_private_person_vault() -> Path:
     return VAULT_PATH
 
 
-def try_unlock(confirmation: str) -> Dict[str, Any]:
+def try_unlock(confirmation: str) -> dict[str, Any]:
     """Open god-layer write rights if confirmation matches sealed token hash."""
     d = _load()
     if not d.get("sealed"):
@@ -357,11 +357,11 @@ def try_unlock(confirmation: str) -> Dict[str, Any]:
     return out
 
 
-def public_status() -> Dict[str, Any]:
+def public_status() -> dict[str, Any]:
     """Safe status — no legal names, no raw tokens."""
     d = _load()
     sealed = bool(d.get("sealed"))
-    poly: Dict[str, Any] = {}
+    poly: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.poly_fa_write_gate import public_status as poly_status
 
@@ -401,7 +401,7 @@ def public_status() -> Dict[str, Any]:
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return public_status()
 
 

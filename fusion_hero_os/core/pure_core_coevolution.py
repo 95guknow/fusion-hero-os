@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Pure-Core Long-Term Coevolution Membrane (v10).
 
 **Identity:** Operator is a **pure core** — source of truth is never SaaS/LLM.
@@ -25,8 +24,9 @@ import json
 import os
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "MEMBRANE",
@@ -70,10 +70,10 @@ FORBIDDEN_CORE_REPLACERS = frozenset(
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def _read_yaml(path: Path) -> Dict[str, Any]:
+def _read_yaml(path: Path) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8")
     try:
         import yaml  # type: ignore
@@ -91,16 +91,16 @@ class StrengthEntry:
     label: str
     kind: str  # "core" | "foreign"
     authority: str
-    domains: List[str] = field(default_factory=list)
-    evidence_paths: List[str] = field(default_factory=list)
-    coevolve_with: List[str] = field(default_factory=list)
+    domains: list[str] = field(default_factory=list)
+    evidence_paths: list[str] = field(default_factory=list)
+    coevolve_with: list[str] = field(default_factory=list)
     crosspoll_weight: float = 0.5
     note: str = ""
     evidence_hit: int = 0
     evidence_total: int = 0
     coverage: float = 0.0
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -115,10 +115,10 @@ class TransferEvent:
     target: str
     accepted: bool
     reason: str
-    payload_keys: List[str] = field(default_factory=list)
+    payload_keys: list[str] = field(default_factory=list)
     ts: str = field(default_factory=_now)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -134,18 +134,18 @@ class CoevolutionReport:
     foreign_coverage_mean: float
     mutual_score: float
     integrity_ok: bool
-    transfers: List[Dict[str, Any]]
-    core_ids: List[str]
-    foreign_ids: List[str]
-    crosspoll_sources: List[str]
+    transfers: list[dict[str, Any]]
+    core_ids: list[str]
+    foreign_ids: list[str]
+    crosspoll_sources: list[str]
     ts: str
-    notes: List[str] = field(default_factory=list)
+    notes: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
-def _default_catalog() -> Dict[str, Any]:
+def _default_catalog() -> dict[str, Any]:
     """Hard defaults if YAML missing — policy still pure-core."""
     return {
         "version": "1.0.0",
@@ -250,7 +250,7 @@ def _default_catalog() -> Dict[str, Any]:
     }
 
 
-def load_catalog(path: Optional[Path] = None) -> Dict[str, Any]:
+def load_catalog(path: Path | None = None) -> dict[str, Any]:
     """Load strength catalog (YAML preferred, defaults if missing)."""
     p = path or Path(os.environ.get("FUSION_PURE_CORE_CATALOG", str(CATALOG_PATH)))
     if p.is_file():
@@ -262,7 +262,7 @@ def load_catalog(path: Optional[Path] = None) -> Dict[str, Any]:
     return _default_catalog()
 
 
-def _scan_evidence(paths: List[str], root: Path = ROOT) -> Tuple[int, int, float]:
+def _scan_evidence(paths: list[str], root: Path = ROOT) -> tuple[int, int, float]:
     hit = 0
     total = max(1, len(paths))
     for rel in paths:
@@ -274,8 +274,8 @@ def _scan_evidence(paths: List[str], root: Path = ROOT) -> Tuple[int, int, float
     return hit, total, hit / total
 
 
-def _entries(raw_list: List[Dict[str, Any]], kind: str) -> List[StrengthEntry]:
-    out: List[StrengthEntry] = []
+def _entries(raw_list: list[dict[str, Any]], kind: str) -> list[StrengthEntry]:
+    out: list[StrengthEntry] = []
     for item in raw_list or []:
         if not isinstance(item, dict):
             continue
@@ -300,17 +300,17 @@ def _entries(raw_list: List[Dict[str, Any]], kind: str) -> List[StrengthEntry]:
     return out
 
 
-def core_strength_ids(catalog: Optional[Dict[str, Any]] = None) -> List[str]:
+def core_strength_ids(catalog: dict[str, Any] | None = None) -> list[str]:
     cat = catalog or load_catalog()
     return [e["id"] for e in cat.get("core_strengths") or [] if isinstance(e, dict)]
 
 
-def foreign_strength_ids(catalog: Optional[Dict[str, Any]] = None) -> List[str]:
+def foreign_strength_ids(catalog: dict[str, Any] | None = None) -> list[str]:
     cat = catalog or load_catalog()
     return [e["id"] for e in cat.get("foreign_strengths") or [] if isinstance(e, dict)]
 
 
-def crosspoll_sources(catalog: Optional[Dict[str, Any]] = None) -> List[str]:
+def crosspoll_sources(catalog: dict[str, Any] | None = None) -> list[str]:
     """Sources for QUBO/crosspoll: core-first ordering."""
     env = os.environ.get("FUSION_CROSS_SOURCES", "").strip()
     if env:
@@ -335,7 +335,7 @@ def assert_core_not_replaced(
     claim_source: str,
     *,
     target: str = "core",
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """Gate: foreign/SaaS/LLM must never claim source-of-truth over pure core."""
     src = (claim_source or "").strip().lower()
     if target != "core":
@@ -359,7 +359,7 @@ def assert_core_not_replaced(
 def radiate_core_to_foreign(
     core_id: str,
     foreign_id: str,
-    payload: Optional[Dict[str, Any]] = None,
+    payload: dict[str, Any] | None = None,
 ) -> TransferEvent:
     """Inside-Out radiation: core innovations/algorithms inform foreign layer."""
     cat = load_catalog()
@@ -399,7 +399,7 @@ def radiate_core_to_foreign(
 def ingest_foreign_gated(
     foreign_id: str,
     core_id: str,
-    payload: Optional[Dict[str, Any]] = None,
+    payload: dict[str, Any] | None = None,
 ) -> TransferEvent:
     """Foreign → core: only gated channels (weights, empirical hints).
 
@@ -480,15 +480,15 @@ def ingest_foreign_gated(
 
 def coevolve_step(
     *,
-    foreign_feedback: Optional[Dict[str, Any]] = None,
+    foreign_feedback: dict[str, Any] | None = None,
     radiate: bool = True,
 ) -> CoevolutionReport:
     """One mutual coevolution step: scan evidence + optional transfers."""
     cat = load_catalog()
     cores = _entries(list(cat.get("core_strengths") or []), "core")
     foreigns = _entries(list(cat.get("foreign_strengths") or []), "foreign")
-    transfers: List[TransferEvent] = []
-    notes: List[str] = []
+    transfers: list[TransferEvent] = []
+    notes: list[str] = []
 
     # Integrity: pure core remains source of truth
     integrity_ok = True
@@ -594,12 +594,12 @@ def coevolve_step(
 def mutual_cycle(
     generations: int = 3,
     *,
-    foreign_feedback: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    foreign_feedback: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Long-horizon style multi-step mutual coevolution (local, no cluster)."""
     gens = max(1, int(generations))
-    trajectory: List[Dict[str, Any]] = []
-    last: Optional[CoevolutionReport] = None
+    trajectory: list[dict[str, Any]] = []
+    last: CoevolutionReport | None = None
     for g in range(gens):
         fb = dict(foreign_feedback or {})
         fb["weight_hint"] = float(fb.get("weight_hint", 0.5)) + 0.01 * g
@@ -635,7 +635,7 @@ def mutual_cycle(
 
 def export_report(
     report: CoevolutionReport,
-    extra: Optional[Dict[str, Any]] = None,
+    extra: dict[str, Any] | None = None,
 ) -> Path:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     payload = report.to_dict()
@@ -662,7 +662,7 @@ def export_report(
     return REPORT_PATH
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     """Compact status for dashboards / CLI / poly-mesh."""
     cat = load_catalog()
     cores = _entries(list(cat.get("core_strengths") or []), "core")
@@ -708,11 +708,11 @@ class PureCoreMembrane:
     """Object façade for CEC-style long-term coevolution."""
 
     def __init__(self) -> None:
-        self.history: List[Dict[str, Any]] = []
-        self.last_report: Optional[CoevolutionReport] = None
+        self.history: list[dict[str, Any]] = []
+        self.last_report: CoevolutionReport | None = None
 
     def step(
-        self, foreign_feedback: Optional[Dict[str, Any]] = None
+        self, foreign_feedback: dict[str, Any] | None = None
     ) -> CoevolutionReport:
         rep = coevolve_step(foreign_feedback=foreign_feedback)
         self.last_report = rep
@@ -720,10 +720,10 @@ class PureCoreMembrane:
         export_report(rep)
         return rep
 
-    def cycle(self, generations: int = 3) -> Dict[str, Any]:
+    def cycle(self, generations: int = 3) -> dict[str, Any]:
         return mutual_cycle(generations=generations)
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         return status()
 
 

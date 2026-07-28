@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.methodology.core_modules import PeerReviewCoreModule
 
@@ -25,9 +25,9 @@ def fitness_function(
 
 def score_with_peer_review(
     text: str,
-    context: Dict[str, Any],
-    reviewer: Optional[PeerReviewCoreModule] = None,
-) -> Dict[str, float]:
+    context: dict[str, Any],
+    reviewer: PeerReviewCoreModule | None = None,
+) -> dict[str, float]:
     """Nutzt echten 5-Dim-PeerReview wenn nicht in context vorgegeben."""
     if "peer_review_score" in context:
         peer = float(context["peer_review_score"])

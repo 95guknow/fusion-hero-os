@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
-from typing import Set
 
 
 def _env_int(name: str, default: int) -> int:
@@ -21,7 +20,7 @@ def _env_int(name: str, default: int) -> int:
         return default
 
 
-def _env_set(name: str) -> Set[str]:
+def _env_set(name: str) -> set[str]:
     raw = os.getenv(name, "")
     return {item.strip() for item in raw.split(",") if item.strip()}
 
@@ -39,7 +38,7 @@ class DispatcherConfig:
     """
 
     max_workers: int | None = field(default_factory=lambda: _max_workers_or_none())
-    disabled_modules: Set[str] = field(default_factory=lambda: _env_set("FUSION_DISABLED_MODULES"))
+    disabled_modules: set[str] = field(default_factory=lambda: _env_set("FUSION_DISABLED_MODULES"))
 
 
 def _max_workers_or_none() -> int | None:

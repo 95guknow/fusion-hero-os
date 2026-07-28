@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Top-provider LLM token real-cost table (public list prices).
 
 Geltung: **Bedingt** — public API list prices as of 2026-H1/H2 synthesis;
@@ -12,8 +11,7 @@ Used to:
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = [
     "PROVIDER_RATES_USD_PER_1M",
@@ -26,7 +24,7 @@ __all__ = [
 
 # USD per 1M tokens — top public list prices (2026 synthesis; Bedingt)
 # Prefer mid-tier flagship + fast tiers used in practice.
-PROVIDER_RATES_USD_PER_1M: Dict[str, Dict[str, Any]] = {
+PROVIDER_RATES_USD_PER_1M: dict[str, dict[str, Any]] = {
     "openai_gpt4o": {
         "provider": "OpenAI",
         "model": "GPT-4o",
@@ -119,9 +117,9 @@ def analyse_providers(
     *,
     in_share: float = 0.70,
     out_share: float = 0.30,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Rank providers by blended cost for typical chat mix (70% in / 30% out)."""
-    rows: List[Dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
     for key, r in PROVIDER_RATES_USD_PER_1M.items():
         blend_usd = r["input"] * in_share + r["output"] * out_share
         blend_eur = usd_to_eur(blend_usd)
@@ -159,7 +157,7 @@ def analyse_providers(
     }
 
 
-def _median(xs: List[float]) -> Optional[float]:
+def _median(xs: list[float]) -> float | None:
     if not xs:
         return None
     s = sorted(xs)
@@ -169,8 +167,8 @@ def _median(xs: List[float]) -> Optional[float]:
     return round((s[n // 2 - 1] + s[n // 2]) / 2, 4)
 
 
-def _top_per_provider(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
-    best: Dict[str, Any] = {}
+def _top_per_provider(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    best: dict[str, Any] = {}
     for r in rows:
         p = r["provider"]
         if p not in best or r["eur_blend_per_1m"] < best[p]["eur_blend_per_1m"]:
@@ -187,7 +185,7 @@ def blended_top_tier_eur_per_1m(*, prefer: str = "flagship") -> float:
     return float(a.get("flagship_median_eur_per_1m") or 8.0)
 
 
-def market_ceilings_eur_per_1m() -> Dict[str, float]:
+def market_ceilings_eur_per_1m() -> dict[str, float]:
     """Ceilings for internal subcontractor tiers from real market out-prices."""
     a = analyse_providers()
     # map internal tiers → market ceilings (EUR / 1M tokens, output-heavy)
@@ -212,7 +210,7 @@ def estimate_llm_burn_eur_h(
     tokens_out_per_h: float = 0.0,
     *,
     provider_id: str = "anthropic_claude_sonnet",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """EUR/h LLM burn from token throughput and a provider rate row."""
     r = PROVIDER_RATES_USD_PER_1M.get(provider_id) or PROVIDER_RATES_USD_PER_1M["anthropic_claude_sonnet"]
     cost_usd = (tokens_in_per_h / 1e6) * r["input"] + (tokens_out_per_h / 1e6) * r["output"]

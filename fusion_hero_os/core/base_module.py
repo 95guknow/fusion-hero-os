@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -38,7 +38,7 @@ class EvolutionProposal:
     module: str
     summary: str
     rationale: str
-    diff: Optional[str] = None
+    diff: str | None = None
     requires_review: bool = True
 
 
@@ -54,7 +54,7 @@ class ReviewResult:
     """Ergebnis einer Peer-Review-Prüfung gegen ein Kriterien-Set."""
 
     module: str
-    criteria: List[ReviewCriterion] = field(default_factory=list)
+    criteria: list[ReviewCriterion] = field(default_factory=list)
 
     @property
     def passed(self) -> bool:
@@ -91,7 +91,7 @@ class BaseModule(ABC):
         """Führt die Kernaufgabe des Moduls aus."""
         raise NotImplementedError
 
-    def propose_evolution(self, context: Any = None) -> Optional[EvolutionProposal]:
+    def propose_evolution(self, context: Any = None) -> EvolutionProposal | None:
         """Liefert optional einen Verbesserungsvorschlag. Default: keiner."""
         return None
 

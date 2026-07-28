@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fusion_hero_os.modules.timespace_token.bottleneck import (
     build_competition_qubo,
@@ -40,13 +40,13 @@ class TimespaceTrack:
 
 @dataclass
 class AllocationReport:
-    allocations: Dict[str, int]
-    priorities: Dict[str, float]
-    geometry: List[Dict[str, float]]
-    qubo_energy: Optional[float] = None
-    fidelity_applied: Dict[str, bool] = field(default_factory=dict)
+    allocations: dict[str, int]
+    priorities: dict[str, float]
+    geometry: list[dict[str, float]]
+    qubo_energy: float | None = None
+    fidelity_applied: dict[str, bool] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "allocations": self.allocations,
             "priorities": self.priorities,
@@ -71,7 +71,7 @@ class TimespaceTokenManager:
         self,
         base_tokens: int = 10000,
         fidelity_multiplier: float = 3.0,
-        manifold: Optional[TimespaceManifold] = None,
+        manifold: TimespaceManifold | None = None,
         bottleneck_budget_slots: int = 3,
     ) -> None:
         self.tms = TokenManagementSystem(base_tokens=base_tokens, fidelity_multiplier=fidelity_multiplier)
@@ -89,15 +89,15 @@ class TimespaceTokenManager:
 
     def allocate(
         self,
-        tracks: List[TimespaceTrack],
-        extra_priorities: Optional[Dict[str, float]] = None,
-    ) -> Dict[str, int]:
+        tracks: list[TimespaceTrack],
+        extra_priorities: dict[str, float] | None = None,
+    ) -> dict[str, int]:
         return self.allocate_with_report(tracks, extra_priorities).allocations
 
     def allocate_with_report(
         self,
-        tracks: List[TimespaceTrack],
-        extra_priorities: Optional[Dict[str, float]] = None,
+        tracks: list[TimespaceTrack],
+        extra_priorities: dict[str, float] | None = None,
     ) -> AllocationReport:
         states = {t.name: t.state for t in tracks}
         adapt = self.tms.detect_and_adapt_to_bottleneck_shift(states)
@@ -107,8 +107,8 @@ class TimespaceTokenManager:
         )
         neighbor = self.manifold.neighbor_compression([(t.name, t.coordinate) for t in tracks])
 
-        priorities: Dict[str, float] = {}
-        fidelity_applied: Dict[str, bool] = {}
+        priorities: dict[str, float] = {}
+        fidelity_applied: dict[str, bool] = {}
         for track in tracks:
             geo = self.manifold.geometric_priority(track.coordinate)
             fid = self._fidelity_boost(track, geo)
@@ -143,10 +143,10 @@ class TimespaceTokenManager:
             fidelity_applied=fidelity_applied,
         )
 
-    def evolve_from_feedback(self, feedback: Dict[str, Any]) -> List[str]:
+    def evolve_from_feedback(self, feedback: dict[str, Any]) -> list[str]:
         """Self-Modification via TMS + optional Manifold-Anpassung."""
         self.tms.evolve_cost_function(feedback)
-        changes: List[str] = list(self.tms.self_modify_history[-2:])
+        changes: list[str] = list(self.tms.self_modify_history[-2:])
         if feedback.get("expand_macro_radius"):
             for scale in self.manifold.compression_radius:
                 if scale == Timescale.MACRO:

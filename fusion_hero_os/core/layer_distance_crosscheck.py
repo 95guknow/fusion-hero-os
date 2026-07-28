@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Fusion Hero OS — Layer-Graph Distance-N Crosscheck (v2.0, axiomatisch verankert).
 
 Operationalisiert die im Gemini-Brainstorm vom 2026-07-24 vorgeschlagene
@@ -31,12 +30,12 @@ Ehrlicher Status:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Set
+from typing import Any
 
-Graph = Dict[str, Set[str]]
+Graph = dict[str, set[str]]
 
 
-def build_adjacency(layer_edges: List[Dict[str, Any]]) -> Graph:
+def build_adjacency(layer_edges: list[dict[str, Any]]) -> Graph:
     """Baut eine ungerichtete Adjazenzliste aus layer_edges ({from, to, ...})."""
     adjacency: Graph = {}
     for edge in layer_edges:
@@ -49,7 +48,7 @@ def build_adjacency(layer_edges: List[Dict[str, Any]]) -> Graph:
     return adjacency
 
 
-def distance_n_neighbors(adjacency: Graph, start: str, n: int) -> Set[str]:
+def distance_n_neighbors(adjacency: Graph, start: str, n: int) -> set[str]:
     """BFS: Knoten mit Kuerzeste-Pfad-Distanz genau n von start.
 
     n=0 -> {start}. Knoten, die von start aus unerreichbar sind (oder n
@@ -60,11 +59,11 @@ def distance_n_neighbors(adjacency: Graph, start: str, n: int) -> Set[str]:
         raise ValueError("n muss >= 0 sein")
     if n == 0:
         return {start}
-    visited: Dict[str, int] = {start: 0}
+    visited: dict[str, int] = {start: 0}
     frontier = [start]
     dist = 0
     while frontier and dist < n:
-        nxt: List[str] = []
+        nxt: list[str] = []
         for node in frontier:
             for neighbor in adjacency.get(node, ()):
                 if neighbor not in visited:
@@ -80,10 +79,10 @@ class BlindSpotCandidate:
     """origin und alle direkten Nachbarn healthy, aber ein Distanz-2-Knoten nicht."""
 
     origin: str
-    healthy_distance_1: List[str]
+    healthy_distance_1: list[str]
     unhealthy_distance_2: str
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "origin": self.origin,
             "healthy_distance_1": list(self.healthy_distance_1),
@@ -92,8 +91,8 @@ class BlindSpotCandidate:
 
 
 def find_blind_spot_candidates(
-    adjacency: Graph, health: Dict[str, bool], origin: str
-) -> List[BlindSpotCandidate]:
+    adjacency: Graph, health: dict[str, bool], origin: str
+) -> list[BlindSpotCandidate]:
     """Kern-Crosscheck: origin UND alle Distanz-1-Nachbarn healthy, aber ein
     Distanz-2-Nachbar NICHT healthy -> Blind-Spot-Kandidat. Genau der Fall,
     den reine Adjazenz-Pruefung (nur Distanz-1) niemals sieht."""
@@ -114,9 +113,9 @@ def find_blind_spot_candidates(
     ]
 
 
-def crosscheck_all(adjacency: Graph, health: Dict[str, bool]) -> List[BlindSpotCandidate]:
+def crosscheck_all(adjacency: Graph, health: dict[str, bool]) -> list[BlindSpotCandidate]:
     """Blind-Spot-Kandidaten fuer jeden Knoten des Graphen (deterministische Ordnung)."""
-    out: List[BlindSpotCandidate] = []
+    out: list[BlindSpotCandidate] = []
     for origin in sorted(adjacency):
         out.extend(find_blind_spot_candidates(adjacency, health, origin))
     return out
@@ -130,7 +129,7 @@ def build_adjacency_from_fusion_unified() -> Graph:
     return build_adjacency(result.get("layer_edges") or [])
 
 
-def crosscheck_real_layers() -> List[BlindSpotCandidate]:
+def crosscheck_real_layers() -> list[BlindSpotCandidate]:
     """Crosscheck ueber den echten Layer-Graphen + dessen present/config_ok-Status."""
     from fusion_hero_os.core.layer_registry import get_all_layer_status
 

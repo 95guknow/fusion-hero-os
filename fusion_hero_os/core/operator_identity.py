@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Operator Identity Membrane — extract person from role (v10 Stage-B+).
 
 **Principle (Autopolitik):**
@@ -36,8 +35,9 @@ from __future__ import annotations
 import json
 import os
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 __all__ = [
     "ROLE_OPERATOR",
@@ -59,7 +59,7 @@ MEMBRANE = "operator_identity_v1"
 PLATFORM = "10.0.0"
 
 # Public placeholders only — never legal names in package defaults
-_DEFAULT_PUBLIC: Dict[str, Any] = {
+_DEFAULT_PUBLIC: dict[str, Any] = {
     "role": ROLE_OPERATOR,
     "operator_id": "OP_LOCAL",
     "display_handle": "operator",
@@ -81,10 +81,10 @@ _DEFAULT_PUBLIC: Dict[str, Any] = {
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def load_identity() -> Dict[str, Any]:
+def load_identity() -> dict[str, Any]:
     """Load operator-local identity; fall back to public abstract role."""
     env_path = os.environ.get("FUSION_OPERATOR_IDENTITY", "").strip()
     path = Path(env_path) if env_path else VAULT_PATH
@@ -153,7 +153,7 @@ def operator_id() -> str:
     return str(load_identity().get("operator_id") or "OP_LOCAL")
 
 
-def author_for_publication() -> Dict[str, Any]:
+def author_for_publication() -> dict[str, Any]:
     """Author fields for *publication* tooling only.
 
     Returns empty names unless vault binds them **and**
@@ -183,10 +183,10 @@ def author_for_publication() -> Dict[str, Any]:
     }
 
 
-def public_operator_view() -> Dict[str, Any]:
+def public_operator_view() -> dict[str, Any]:
     """Safe view for logs, mesh, GCS, dissertation *structure* appendices."""
     ident = load_identity()
-    seal: Dict[str, Any] = {}
+    seal: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.god_layer_seal import public_status as seal_status
 
@@ -214,7 +214,7 @@ def is_person_bound() -> bool:
     return bool(load_identity().get("person_bound"))
 
 
-def extract_status() -> Dict[str, Any]:
+def extract_status() -> dict[str, Any]:
     """Status of the Urban/person extraction (role vs person split)."""
     ident = load_identity()
     pub = author_for_publication()

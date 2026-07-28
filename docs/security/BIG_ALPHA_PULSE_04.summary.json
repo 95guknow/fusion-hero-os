@@ -1,0 +1,112 @@
+{
+  "generated_at": "2026-07-27T07:12:47.195104+00:00",
+  "platform_version": "13.0.0",
+  "direktiven": {
+    "laden": "bottom_up",
+    "verarbeiten": "top_down",
+    "ausgabe": "geister_manifestiert"
+  },
+  "sicht": "deklariert",
+  "meister": {
+    "report_inhalts_sha256": "f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612",
+    "config_sha256": "7cd510b5521d4dd8adb3ff9b98ca99fc4888cd42b64be758f7612ea1460fd091",
+    "modul_sha256": "283cdd9f08b413d6b3abaf58a67fe19272de62c81ce883b346ce15801e991043"
+  },
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "secrets_in_output": false,
+    "health_probe_ausgefuehrt": false,
+    "vault_in_git": false
+  },
+  "kind": "BIG_ALPHA_PULSE",
+  "pulse": 4,
+  "titel": "Vollautomatisierung scharf",
+  "executed": [
+    "run_vollautomat",
+    "automatisiere",
+    "pytest"
+  ],
+  "verarbeiten_reihenfolge": [
+    "L6_masterseed",
+    "L5_projektion",
+    "L4_intent",
+    "L3_internalisierung",
+    "L2_bindung",
+    "L1_verkoerperung",
+    "L0_fundament"
+  ],
+  "axiome": {
+    "1_top_down_teilmengen": true,
+    "2_kontraktion_strikt_monoton": true,
+    "3_integration_ueber_operator_c": true,
+    "4_invarianz": true
+  },
+  "kontraktion": {
+    "lambda": 0.78,
+    "epsilon": 0.01,
+    "distanzfolge": [
+      0.0,
+      0.776158,
+      1.381562,
+      1.846693,
+      2.132151,
+      2.135038,
+      2.13729
+    ],
+    "inkremente": [
+      0.776158,
+      0.605404,
+      0.465131,
+      0.285458,
+      0.002887,
+      0.002252
+    ],
+    "strikt_monoton": true,
+    "inkremente_kontrahieren": true,
+    "hinweis": "Strikte Monotonie ist durch epsilon>0 konstruktiv garantiert; der Test ist Regressionswaechter, kein Beweis."
+  },
+  "dry_run_siegel": {
+    "operativ": {
+      "beschreibung": "Umgebung befragt - Pin, nicht eingecheckt",
+      "l0_konnektoren": [
+        "control_instances:control_github_models",
+        "graph_api:github_graphql",
+        "graph_api:github_rest",
+        "llm_frameworks:github_models"
+      ],
+      "would_execute_anzahl": 0,
+      "modus": "DRY-RUN"
+    },
+    "deklariert": {
+      "beschreibung": "credential-blind - docs/ops, eingecheckt",
+      "l0_konnektoren": [],
+      "would_execute_anzahl": 0,
+      "modus": "DRY-RUN"
+    },
+    "live_bedingung": "flag FUSION_KONNEKTOR_LIVE=1 UND Token gesetzt"
+  },
+  "tests": {
+    "puls_suite": {
+      "passed": 26,
+      "failed": 0
+    },
+    "gesamt_sammelbar": {
+      "passed": 470,
+      "failed": 29
+    },
+    "baseline_origin_main": {
+      "passed": 444,
+      "failed": 29
+    },
+    "regress": false,
+    "hinweis": "Die 29 Fehlschlaege sind vorbestehend und dependency-bedingt (numba, dwave, PIL, pyo3)."
+  },
+  "automat": {
+    "entrypoint": "python -m fusion_hero_os.core.konnektor_vollautomat",
+    "workflow": ".github/workflows/konnektor-vollautomat.yml",
+    "cron_utc": "0 5 * * *",
+    "ci_immer_dry_run": true
+  },
+  "geltung": "Lauf + Axiome = Satz · Live-Ausfuehrung = Spezifikation solange would_execute=false"
+}

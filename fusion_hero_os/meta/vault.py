@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Public/private data boundary — the ``VaultResolver``.
 
 The public repository (``95guknow/fusion-hero-os``) contains **only**
@@ -26,7 +25,7 @@ import hashlib
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Mapping, Optional
+from collections.abc import Mapping
 
 PUBLIC_REPO = "95guknow/fusion-hero-os"
 VAULT_REPO = "95guknow/fusion-hero-vault"
@@ -55,8 +54,8 @@ class SubjectRef:
     subject_id: str
 
     @staticmethod
-    def derive(natural_key: str, *, namespace: str = "fusion-hero") -> "SubjectRef":
-        digest = hashlib.sha256(f"{namespace}:{natural_key}".encode("utf-8")).hexdigest()
+    def derive(natural_key: str, *, namespace: str = "fusion-hero") -> SubjectRef:
+        digest = hashlib.sha256(f"{namespace}:{natural_key}".encode()).hexdigest()
         return SubjectRef(subject_id=f"subj_{digest[:32]}")
 
 
@@ -106,8 +105,8 @@ class InMemoryVaultResolver(VaultResolver):
     Do not load real personal data into it in the public repository.
     """
 
-    def __init__(self, records: Optional[Dict[str, Mapping[str, object]]] = None) -> None:
-        self._records: Dict[str, Mapping[str, object]] = dict(records or {})
+    def __init__(self, records: dict[str, Mapping[str, object]] | None = None) -> None:
+        self._records: dict[str, Mapping[str, object]] = dict(records or {})
 
     def put(self, subject_id: str, attributes: Mapping[str, object]) -> None:
         self._records[subject_id] = dict(attributes)

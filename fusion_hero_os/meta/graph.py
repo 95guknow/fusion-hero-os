@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Typed, versioned multidimensional property graph — the 'meta-neural network'.
 
 "Meta-neural" is a *graph architecture metaphor*, not a claim of cognition. The
@@ -28,7 +27,8 @@ import hashlib
 import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Dict, FrozenSet, List, Mapping, Optional, Tuple
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
+from collections.abc import Mapping
 
 SCHEMA_VERSION = "1.0.0"
 
@@ -38,7 +38,7 @@ class GraphError(ValueError):
 
 
 def _utcnow_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _canonical_number(x: float) -> float:
@@ -53,10 +53,10 @@ class Provenance:
 
     created_by: str
     created_at: str
-    purpose: Optional[str] = None
-    grant_id: Optional[str] = None
+    purpose: str | None = None
+    grant_id: str | None = None
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "created_by": self.created_by,
             "created_at": self.created_at,
@@ -65,8 +65,8 @@ class Provenance:
         }
 
     @staticmethod
-    def now(created_by: str, *, purpose: Optional[str] = None,
-            grant_id: Optional[str] = None) -> "Provenance":
+    def now(created_by: str, *, purpose: str | None = None,
+            grant_id: str | None = None) -> Provenance:
         return Provenance(created_by=created_by, created_at=_utcnow_iso(),
                           purpose=purpose, grant_id=grant_id)
 
@@ -76,11 +76,11 @@ class GraphSchema:
     """Registered node/edge types and the allowed dimension names."""
 
     version: str
-    node_types: FrozenSet[str]
-    edge_types: FrozenSet[str]
-    dimensions: FrozenSet[str]
+    node_types: frozenset[str]
+    edge_types: frozenset[str]
+    dimensions: frozenset[str]
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "version": self.version,
             "node_types": sorted(self.node_types),
@@ -97,7 +97,7 @@ class Node:
     attributes: Mapping[str, object]
     provenance: Provenance
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "node_id": self.node_id,
             "type": self.type,
@@ -117,7 +117,7 @@ class Edge:
     attributes: Mapping[str, object]
     provenance: Provenance
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "edge_id": self.edge_id,
             "type": self.type,
@@ -139,8 +139,8 @@ class PropertyGraph:
 
     def __init__(self, schema: GraphSchema) -> None:
         self.schema = schema
-        self._nodes: Dict[str, Node] = {}
-        self._edges: Dict[str, Edge] = {}
+        self._nodes: dict[str, Node] = {}
+        self._edges: dict[str, Edge] = {}
 
     # -- nodes -----------------------------------------------------------
     def add_node(
@@ -148,8 +148,8 @@ class PropertyGraph:
         node_id: str,
         type: str,
         *,
-        dimensions: Optional[Mapping[str, float]] = None,
-        attributes: Optional[Mapping[str, object]] = None,
+        dimensions: Mapping[str, float] | None = None,
+        attributes: Mapping[str, object] | None = None,
         provenance: Provenance,
     ) -> Node:
         if type not in self.schema.node_types:
@@ -179,7 +179,7 @@ class PropertyGraph:
         target: str,
         *,
         weight: float = 1.0,
-        attributes: Optional[Mapping[str, object]] = None,
+        attributes: Mapping[str, object] | None = None,
         provenance: Provenance,
     ) -> Edge:
         if type not in self.schema.edge_types:
@@ -202,13 +202,13 @@ class PropertyGraph:
         self._edges[edge_id] = edge
         return edge
 
-    def nodes(self) -> List[Node]:
+    def nodes(self) -> list[Node]:
         return list(self._nodes.values())
 
-    def edges(self) -> List[Edge]:
+    def edges(self) -> list[Edge]:
         return list(self._edges.values())
 
-    def snapshot(self, *, snapshot_id: Optional[str] = None) -> "GraphSnapshot":
+    def snapshot(self, *, snapshot_id: str | None = None) -> GraphSnapshot:
         return GraphSnapshot.build(
             schema=self.schema,
             nodes=list(self._nodes.values()),
@@ -223,10 +223,10 @@ class GraphSnapshot:
     def __init__(
         self,
         schema: GraphSchema,
-        nodes: Tuple[Node, ...],
-        edges: Tuple[Edge, ...],
+        nodes: tuple[Node, ...],
+        edges: tuple[Edge, ...],
         content_hash: str,
-        snapshot_id: Optional[str] = None,
+        snapshot_id: str | None = None,
     ) -> None:
         self._schema = schema
         self._nodes = nodes
@@ -239,11 +239,11 @@ class GraphSnapshot:
         return self._schema
 
     @property
-    def nodes(self) -> Tuple[Node, ...]:
+    def nodes(self) -> tuple[Node, ...]:
         return self._nodes
 
     @property
-    def edges(self) -> Tuple[Edge, ...]:
+    def edges(self) -> tuple[Edge, ...]:
         return self._edges
 
     @property
@@ -259,10 +259,10 @@ class GraphSnapshot:
         cls,
         *,
         schema: GraphSchema,
-        nodes: List[Node],
-        edges: List[Edge],
-        snapshot_id: Optional[str] = None,
-    ) -> "GraphSnapshot":
+        nodes: list[Node],
+        edges: list[Edge],
+        snapshot_id: str | None = None,
+    ) -> GraphSnapshot:
         cls._validate(schema, nodes, edges)
         ordered_nodes = tuple(sorted(nodes, key=lambda n: n.node_id))
         ordered_edges = tuple(sorted(edges, key=lambda e: e.edge_id))
@@ -270,7 +270,7 @@ class GraphSnapshot:
         return cls(schema, ordered_nodes, ordered_edges, content_hash, snapshot_id)
 
     @staticmethod
-    def _validate(schema: GraphSchema, nodes: List[Node], edges: List[Edge]) -> None:
+    def _validate(schema: GraphSchema, nodes: list[Node], edges: list[Edge]) -> None:
         node_ids = set()
         for n in nodes:
             if n.type not in schema.node_types:
@@ -293,8 +293,8 @@ class GraphSnapshot:
 
     @staticmethod
     def _canonical_payload(
-        schema: GraphSchema, nodes: Tuple[Node, ...], edges: Tuple[Edge, ...]
-    ) -> Dict[str, object]:
+        schema: GraphSchema, nodes: tuple[Node, ...], edges: tuple[Edge, ...]
+    ) -> dict[str, object]:
         return {
             "schema": schema.to_dict(),
             "schema_version": schema.version,
@@ -304,7 +304,7 @@ class GraphSnapshot:
 
     @classmethod
     def _hash(
-        cls, schema: GraphSchema, nodes: Tuple[Node, ...], edges: Tuple[Edge, ...]
+        cls, schema: GraphSchema, nodes: tuple[Node, ...], edges: tuple[Edge, ...]
     ) -> str:
         payload = cls._canonical_payload(schema, nodes, edges)
         # Exclude provenance timestamps from the identity hash so that two
@@ -328,10 +328,10 @@ class GraphSnapshot:
         payload["content_hash"] = self._content_hash
         return self.to_canonical_json_static(payload)
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return json.loads(self.to_canonical_json())
 
-    def node_matrix(self, dimensions: Optional[List[str]] = None) -> Tuple[List[str], List[List[float]]]:
+    def node_matrix(self, dimensions: list[str] | None = None) -> tuple[list[str], list[list[float]]]:
         """Return (node_ids, matrix) with one row per node over ``dimensions``.
 
         Deterministic node order (sorted by node_id) and dimension order.
@@ -341,7 +341,7 @@ class GraphSnapshot:
         matrix = [[float(n.dimensions.get(d, 0.0)) for d in dims] for n in self._nodes]
         return ids, matrix
 
-    def adjacency(self) -> Tuple[List[str], List[List[float]]]:
+    def adjacency(self) -> tuple[list[str], list[list[float]]]:
         """Symmetric weighted adjacency matrix over sorted node ids."""
         ids = [n.node_id for n in self._nodes]
         index = {nid: i for i, nid in enumerate(ids)}

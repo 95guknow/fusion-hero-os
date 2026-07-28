@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """End-to-end orchestration of the meta-neural vertical slice.
 
 Flow (each step fails closed on missing consent):
@@ -17,7 +16,7 @@ from __future__ import annotations
 
 import threading
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Tuple
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 
 import numpy as np
 
@@ -43,17 +42,17 @@ class MetaNeuralService:
         self,
         *,
         schema: GraphSchema = DEFAULT_SCHEMA,
-        consent_store: Optional[ConsentStore] = None,
+        consent_store: ConsentStore | None = None,
         wm_capacity: float = 1.0,
         wm_decay: float = 0.9,
-        admin_token: Optional[str] = None,
+        admin_token: str | None = None,
     ) -> None:
         self.schema = schema
         self.consent = consent_store or ConsentStore()
-        self._graphs: Dict[str, PropertyGraph] = {}
-        self._snapshots: Dict[str, GraphSnapshot] = {}
-        self._wm: Dict[str, WorkingMemorySpace] = {}
-        self._hebbian: Dict[str, HebbianAssociationMemory] = {}
+        self._graphs: dict[str, PropertyGraph] = {}
+        self._snapshots: dict[str, GraphSnapshot] = {}
+        self._wm: dict[str, WorkingMemorySpace] = {}
+        self._hebbian: dict[str, HebbianAssociationMemory] = {}
         self._wm_capacity = wm_capacity
         self._wm_decay = wm_decay
         # Cross-subject audit reads require this explicit admin capability.
@@ -79,8 +78,8 @@ class MetaNeuralService:
 
     # -- erasure / retention --------------------------------------------
     def _purge_subject_state(
-        self, subject_id: str, *, reason: str, at: Optional[datetime] = None
-    ) -> Dict[str, int]:
+        self, subject_id: str, *, reason: str, at: datetime | None = None
+    ) -> dict[str, int]:
         """Deterministically remove all in-memory state for ``subject_id``.
 
         Drops the property graph, the cached snapshot, the working-memory space
@@ -102,21 +101,21 @@ class MetaNeuralService:
         return counts
 
     def revoke_consent(
-        self, subject_id: str, grant_id: str, *, at: Optional[datetime] = None
-    ) -> Dict[str, int]:
+        self, subject_id: str, grant_id: str, *, at: datetime | None = None
+    ) -> dict[str, int]:
         """Revoke a grant and immediately purge the subject's derived state."""
         self.consent.revoke(grant_id, at=at)
         return self._purge_subject_state(subject_id, reason="revocation", at=at)
 
     def _purge_if_expired(
-        self, subject_id: str, *, at: Optional[datetime] = None
-    ) -> Dict[str, int]:
+        self, subject_id: str, *, at: datetime | None = None
+    ) -> dict[str, int]:
         """Purge a subject's state if no consent grant remains active.
 
         Called before privileged reads/writes so expiry (not just explicit
         revocation) deterministically triggers erasure of derived state.
         """
-        at = at or datetime.now(tz=timezone.utc)
+        at = at or datetime.now(tz=UTC)
         with self._lock:
             has_state = subject_id in self._graphs or subject_id in self._wm
         if not has_state:
@@ -129,11 +128,11 @@ class MetaNeuralService:
             return {}
         return self._purge_subject_state(subject_id, reason="expiry", at=at)
 
-    def sweep_expired(self, *, at: Optional[datetime] = None) -> Dict[str, Dict[str, int]]:
+    def sweep_expired(self, *, at: datetime | None = None) -> dict[str, dict[str, int]]:
         """Purge every subject whose consent has fully expired/been revoked."""
         with self._lock:
             subjects = set(self._graphs) | set(self._wm) | set(self._hebbian)
-        removed: Dict[str, Dict[str, int]] = {}
+        removed: dict[str, dict[str, int]] = {}
         for sid in subjects:
             counts = self._purge_if_expired(sid, at=at)
             if counts:
@@ -145,8 +144,8 @@ class MetaNeuralService:
         self,
         subject_id: str,
         grant_id: str,
-        nodes: List[dict],
-        edges: List[dict],
+        nodes: list[dict],
+        edges: list[dict],
     ) -> GraphSnapshot:
         self._purge_if_expired(subject_id)
         grant = self._require(subject_id, grant_id, Purpose.INGEST, "graph.ingest")
@@ -195,7 +194,7 @@ class MetaNeuralService:
         self,
         subject_id: str,
         grant_id: str,
-        activations: Dict[str, float],
+        activations: dict[str, float],
         steps: int = 1,
     ) -> ActivationReport:
         self._purge_if_expired(subject_id)
@@ -270,7 +269,7 @@ class MetaNeuralService:
         grant_id: str,
         *,
         selection_dimension: str = "salience",
-        cardinality: Optional[int] = None,
+        cardinality: int | None = None,
         backend: str = "numpy",
         seed: int = 7,
         steps: int = 2000,
@@ -307,8 +306,8 @@ class MetaNeuralService:
         grant_id: str,
         *,
         include_all: bool = False,
-        admin_token: Optional[str] = None,
-    ) -> Tuple[bool, list]:
+        admin_token: str | None = None,
+    ) -> tuple[bool, list]:
         """Return ``(chain_intact, events)`` scoped to ``subject_id``.
 
         By default a subject with AUDIT_READ sees only its own records. A

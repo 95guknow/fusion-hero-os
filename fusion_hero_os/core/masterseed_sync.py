@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """MasterSeed-Sync — gegenseitige Optimierung als BEWIESENER Satz.
 
 Anforderung (User-Direktive 2026-07-04): "Syncs mit anderen MasterSeeds
@@ -39,7 +38,7 @@ Operationen, nach denen der Seed-Hash unveraendert war, skaliert auf 0..100.
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from typing import Any, List, Tuple
+from typing import Any
 
 from fusion_hero_os.core.heroic_core_orchestrator import MasterSeed
 
@@ -54,13 +53,13 @@ class SyncState:
     seed: MasterSeed
     elite_payload: Any
     elite_fitness: float
-    sync_log: List[dict] = field(default_factory=list)
+    sync_log: list[dict] = field(default_factory=list)
 
     def state_hash(self) -> str:
         return self.seed.state_hash()
 
 
-def mutual_sync(a: SyncState, b: SyncState) -> Tuple[SyncState, SyncState]:
+def mutual_sync(a: SyncState, b: SyncState) -> tuple[SyncState, SyncState]:
     """Gegenseitig optimierender Sync (Satz oben; fail-closed bei Manipulation).
 
     Rueckgabe: (a', b') mit elite_fitness' = max(f_a, f_b) auf BEIDEN Seiten

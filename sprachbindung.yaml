@@ -1,0 +1,155 @@
+# Sprachbindung — je Modul die optimale Sprache, und wie sie erreichbar ist
+#
+# Grundsatz: nicht eine Sprache fuer alles, sondern je Ebene die passende.
+# Der Kern liegt maschinennah, die aufbauenden Elemente in der Sprache mit der
+# niedrigsten Schwelle. Das ist keine neue Idee dieser Datei — sie steht
+# bereits in docs/architecture/KERNEL_ASSEMBLY_MAX_INJECTABILITY.md; hier wird
+# sie fuer das ganze Repo ausbuchstabiert und pruefbar gemacht.
+#
+# Diese Datei uebersetzt nichts. Sie legt fest, was wo hingehoert, und der
+# translate_controller stellt Ist gegen Soll.
+#
+# Platform: Fusion Hero OS v13.0.0
+
+version: "1.0"
+platform_version: "13.0.0"
+
+geltung: >
+  Ist-Sprache = Satz (aus dem Dependency-Atlas bzw. der Dateiendung abgelesen) ·
+  Soll-Sprache = Spezifikation (Regel, nicht Messung) ·
+  Luecke = Bedingt, solange die Zielsprache nicht gebaut und gebunden ist
+
+# ---------------------------------------------------------------------------
+# Sprachkatalog — Rolle und Kriterium, nicht Geschmack
+# ---------------------------------------------------------------------------
+sprachen:
+  asm:
+    rolle: Wahrheit der Hooks — Slot-Tabelle, Dispatch, Boot
+    kriterium: Was der Kernel selbst ist. Keine Laufzeit unter sich.
+    schwelle: hoch
+    bindung: kein_import   # wird gelinkt, nicht importiert
+  c:
+    rolle: Duenner freestanding Glue — console, smp-Helfer
+    kriterium: Nur wo Assembly unzumutbar und Rust nicht freestanding tragbar ist.
+    schwelle: hoch
+    bindung: link
+  rust:
+    rolle: Rechenheisse Kerne mit Speichersicherheit
+    kriterium: >
+      Belegt heisser Pfad — im Repo daran erkennbar, dass der Python-Code
+      numba/@jit braucht. Wer einen JIT noetig hat, ist ein Kandidat fuer eine
+      kompilierte Sprache.
+    schwelle: mittel
+    bindung: pyo3_cdylib
+  python:
+    rolle: Steuerung, Konnektoren, Orchestrierung, Ops, Doku-Werkzeuge
+    kriterium: >
+      Der Normalfall. Niedrigste Schwelle — hier soll alles liegen, was nicht
+      aus belegtem Grund tiefer muss.
+    schwelle: niedrig
+    bindung: nativ
+  js:
+    rolle: Oeffentliche Oberflaeche
+    kriterium: Was im Browser laeuft.
+    schwelle: niedrig
+    bindung: http
+
+# ---------------------------------------------------------------------------
+# Bindungsmuster — wie eine Sprachgrenze ueberquert wird
+# ---------------------------------------------------------------------------
+bindungen:
+  nativ:
+    beschreibung: Keine Grenze — direkter Import.
+  pyo3_cdylib:
+    beschreibung: >
+      Rust-Crate als PyO3-Extension (crate-type cdylib, abi3), aus Python
+      importiert. Pflicht: ehrliche Degradation, wenn die Extension nicht
+      gebaut ist — kein Crash, kein vorgetaeuschter Erfolg.
+    referenz: fusion_hero_os/engine/rust_backend.py
+    # Woran der Controller erkennt, dass ein Modul diese Bindung bereits nutzt.
+    # Trifft eines zu, ist die Luecke durch Bindung geschlossen — das Modul
+    # muss nicht portiert werden, es ruft die Zielsprache schon auf.
+    erkennung: ["rust_backend", "rust_engine"]
+    muster:
+      - try-import mit AVAILABLE-Flag
+      - Echtheitspruefung der Extension (hasattr auf eine erwartete Funktion),
+        damit ein gleichnamiger Quellordner nicht als verfuegbar durchgeht
+      - Fallback auf die Python-/numba-Implementierung
+      - expliziter RuntimeError, wenn trotzdem aufgerufen
+      - identischer Rueckgabe-Vertrag wie die Python-Variante
+    bauen: cd <crate> && maturin build --release && pip install target/wheels/*.whl
+  link:
+    beschreibung: Objektdatei wird in kernel.bin gelinkt. Keine Laufzeitbindung.
+  kein_import:
+    beschreibung: Assembly-Symbol, ueber die Slot-Tabelle erreichbar (fhos_inject_call).
+  http:
+    beschreibung: Ueber die Routing-Ebene aus mesh_connectors.yaml.
+
+# ---------------------------------------------------------------------------
+# Zuordnungsregeln — erste Treffer gewinnt
+#
+# Jede Regel nennt ihr Signal. Ohne Signal keine Regel: eine Zuordnung, die
+# sich nicht am Repo festmachen laesst, waere geraten.
+# ---------------------------------------------------------------------------
+regeln:
+  - id: kernel_assembly
+    signal: Dateiendung .s unterhalb kernel/
+    pfad_prefix: ["kernel/", "src/normal_os/kernel/"]
+    endung: [".s"]
+    soll: asm
+
+  - id: kernel_glue
+    signal: C-Datei unterhalb kernel/
+    pfad_prefix: ["kernel/", "src/normal_os/kernel/"]
+    endung: [".c", ".h"]
+    soll: c
+
+  - id: bestehende_crates
+    signal: Ist bereits ein Rust-Crate (Atlas kind = rust-crate)
+    ist_kind: ["rust-crate"]
+    soll: rust
+
+  - id: bestehende_js_pakete
+    signal: >
+      Ist bereits ein JS-Paket (Atlas kind = js-package). Ohne diese Regel
+      faellt ein package.json ausserhalb von web/ in den Normalfall und
+      wuerde als "nach Python zu uebersetzen" ausgewiesen — falsch.
+    ist_kind: ["js-package"]
+    soll: js
+
+  - id: heisser_pfad
+    signal: >
+      Python-Modul nutzt numba/@jit — der Code sagt selbst, dass er einen
+      Compiler braucht. Das ist der belegte Rust-Kandidat.
+    # Zeilenverankerte Regexe, nicht Teilstrings: ein blosses Vorkommen von
+    # "@jit" in einem Text oder Kommentar ist kein heisser Pfad. Genau darueber
+    # ist diese Regel schon einmal gestolpert — das Render-Skript nennt
+    # "numba/@jit" in einer Beschriftung und galt prompt als Rust-Kandidat.
+    enthaelt_regex:
+      - '^\s*(from|import)\s+numba\b'
+      - '^\s*@n?jit\b'
+      - '^\s*@numba\.'
+    soll: rust
+    hinweis: >
+      Kandidat, kein Auftrag. Eine Portierung lohnt nur, wenn sie gemessen
+      schneller ist als der numba-Pfad — sonst bleibt Python richtig.
+
+  - id: oberflaeche
+    signal: Web-/UI-Pfad
+    pfad_prefix: ["web/", "static/", "ui-stub/", "03_Code/Dashboard/static/"]
+    soll: js
+
+  - id: normalfall
+    signal: Alles Uebrige
+    soll: python
+
+# ---------------------------------------------------------------------------
+# Ausgabe
+# ---------------------------------------------------------------------------
+report:
+  json: docs/ops/SPRACHBINDUNG.latest.json
+  markdown: docs/ops/SPRACHBINDUNG.md
+
+bounds:
+  automatische_uebersetzung: false   # der Controller uebersetzt nichts
+  aenderung_am_code: false           # er liest und berichtet

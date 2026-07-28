@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Canonical port base for Fusion Hero OS / Poly-Mesh (worktree port/42069).
 
 Everything public-facing and dashboard-related defaults to **42069** unless

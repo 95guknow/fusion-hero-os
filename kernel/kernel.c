@@ -1,5 +1,5 @@
-#include "../include/stdint.h"
-#include "../smp/smp.h"
+#include "include/stdint.h"
+#include "smp/smp.h"
 #include "inject/include/inject.h"
 
 // Kernel entry point - called from boot.s (Assembly-first)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Consent, purpose, retention and append-only audit for the meta-neural slice.
 
 Design goals (GDPR-oriented):
@@ -26,12 +25,12 @@ import threading
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from enum import Enum
-from typing import Dict, List, Optional
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class Purpose(str, Enum):
@@ -62,9 +61,9 @@ class ConsentGrant:
     purpose: Purpose
     granted_at: datetime
     retention: timedelta
-    revoked_at: Optional[datetime] = None
+    revoked_at: datetime | None = None
 
-    def is_active(self, at: Optional[datetime] = None) -> bool:
+    def is_active(self, at: datetime | None = None) -> bool:
         at = at or _utcnow()
         if self.revoked_at is not None and at >= self.revoked_at:
             return False
@@ -74,7 +73,7 @@ class ConsentGrant:
     def expires_at(self) -> datetime:
         return self.granted_at + self.retention
 
-    def to_public_dict(self) -> Dict[str, object]:
+    def to_public_dict(self) -> dict[str, object]:
         """Serialise without any personal data (subject_id is an opaque id)."""
         return {
             "grant_id": self.grant_id,
@@ -100,14 +99,14 @@ class AuditEvent:
     event_id: str
     timestamp: datetime
     action: str
-    subject_id: Optional[str]
-    purpose: Optional[str]
+    subject_id: str | None
+    purpose: str | None
     decision: str  # "granted" | "denied" | "n/a"
-    detail: Dict[str, object]
+    detail: dict[str, object]
     prev_hash: str
     event_hash: str
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "seq": self.seq,
             "event_id": self.event_id,
@@ -122,8 +121,8 @@ class AuditEvent:
         }
 
 
-def _hash_event(seq: int, timestamp: str, action: str, subject_id: Optional[str],
-                purpose: Optional[str], decision: str, detail: Dict[str, object],
+def _hash_event(seq: int, timestamp: str, action: str, subject_id: str | None,
+                purpose: str | None, decision: str, detail: dict[str, object],
                 prev_hash: str) -> str:
     payload = json.dumps(
         {
@@ -148,7 +147,7 @@ class AuditLog:
     GENESIS_HASH = "0" * 64
 
     def __init__(self) -> None:
-        self._events: List[AuditEvent] = []
+        self._events: list[AuditEvent] = []
         self._lock = threading.RLock()
 
     def append(
@@ -156,10 +155,10 @@ class AuditLog:
         action: str,
         *,
         decision: str = "n/a",
-        subject_id: Optional[str] = None,
-        purpose: Optional[str] = None,
-        detail: Optional[Dict[str, object]] = None,
-        at: Optional[datetime] = None,
+        subject_id: str | None = None,
+        purpose: str | None = None,
+        detail: dict[str, object] | None = None,
+        at: datetime | None = None,
     ) -> AuditEvent:
         with self._lock:
             seq = len(self._events)
@@ -201,11 +200,11 @@ class AuditLog:
                 prev = ev.event_hash
             return True
 
-    def events(self) -> List[AuditEvent]:
+    def events(self) -> list[AuditEvent]:
         with self._lock:
             return list(self._events)
 
-    def events_for(self, subject_id: str) -> List[AuditEvent]:
+    def events_for(self, subject_id: str) -> list[AuditEvent]:
         """Return only the events belonging to ``subject_id`` (subject-scoped).
 
         Used to enforce that a subject with AUDIT_READ can only see its own
@@ -225,8 +224,8 @@ class ConsentStore:
     grant exists for the (subject, purpose) pair. Every check is audited.
     """
 
-    def __init__(self, audit_log: Optional[AuditLog] = None) -> None:
-        self._grants: Dict[str, ConsentGrant] = {}
+    def __init__(self, audit_log: AuditLog | None = None) -> None:
+        self._grants: dict[str, ConsentGrant] = {}
         self.audit = audit_log or AuditLog()
         self._lock = threading.RLock()
 
@@ -236,7 +235,7 @@ class ConsentStore:
         purpose: Purpose,
         *,
         retention: timedelta = timedelta(days=30),
-        at: Optional[datetime] = None,
+        at: datetime | None = None,
     ) -> ConsentGrant:
         if not subject_id:
             raise ConsentError("subject_id is required")
@@ -261,7 +260,7 @@ class ConsentStore:
         )
         return grant
 
-    def revoke(self, grant_id: str, *, at: Optional[datetime] = None) -> ConsentGrant:
+    def revoke(self, grant_id: str, *, at: datetime | None = None) -> ConsentGrant:
         at = at or _utcnow()
         with self._lock:
             existing = self._grants.get(grant_id)
@@ -287,8 +286,8 @@ class ConsentStore:
         return revoked
 
     def find_active(
-        self, subject_id: str, purpose: Purpose, *, at: Optional[datetime] = None
-    ) -> Optional[ConsentGrant]:
+        self, subject_id: str, purpose: Purpose, *, at: datetime | None = None
+    ) -> ConsentGrant | None:
         at = at or _utcnow()
         purpose = Purpose(purpose)
         with self._lock:
@@ -307,8 +306,8 @@ class ConsentStore:
         purpose: Purpose,
         *,
         action: str,
-        at: Optional[datetime] = None,
-        expected_grant_id: Optional[str] = None,
+        at: datetime | None = None,
+        expected_grant_id: str | None = None,
     ) -> ConsentGrant:
         """Return the live grant or raise :class:`ConsentError` (fail closed).
 

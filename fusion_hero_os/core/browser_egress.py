@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Browser egress — controlled URL opening for Fusion Hero OS.
 
@@ -16,7 +15,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 __all__ = ["load_config", "open_url", "open_urls", "status", "resolve_profile"]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "browser_egress.yaml"
     if not path.exists():
         return {}
@@ -40,7 +39,7 @@ def _expand(s: str) -> str:
     return os.path.expandvars(os.path.expanduser(str(s)))
 
 
-def resolve_profile(name: Optional[str] = None, *, url: str = "") -> Dict[str, Any]:
+def resolve_profile(name: str | None = None, *, url: str = "") -> dict[str, Any]:
     cfg = load_config()
     profiles = cfg.get("profiles") or {}
     routes = cfg.get("routes") or {}
@@ -67,7 +66,7 @@ def resolve_profile(name: Optional[str] = None, *, url: str = "") -> Dict[str, A
     return prof
 
 
-def open_url(url: str, *, profile: Optional[str] = None) -> Dict[str, Any]:
+def open_url(url: str, *, profile: str | None = None) -> dict[str, Any]:
     """Open one URL via configured egress profile."""
     url = (url or "").strip()
     if not url:
@@ -130,7 +129,7 @@ def open_url(url: str, *, profile: Optional[str] = None) -> Dict[str, Any]:
         return {"ok": False, "error": str(e)[:200], "url": url, "profile": prof.get("id")}
 
 
-def open_urls(urls: List[str], *, profile: Optional[str] = None, stagger_ms: int = 350) -> Dict[str, Any]:
+def open_urls(urls: list[str], *, profile: str | None = None, stagger_ms: int = 350) -> dict[str, Any]:
     import time
 
     results = []
@@ -146,7 +145,7 @@ def open_urls(urls: List[str], *, profile: Optional[str] = None, stagger_ms: int
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     return {
         "ok": True,

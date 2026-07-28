@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Persona-Signatur-Trigger ``=====stephanhagenurban`` (membran-konform).
 
 Der Trigger expandiert zur kanonischen "Vorgelegt von …"-Signatur mit dem
@@ -19,7 +18,8 @@ from __future__ import annotations
 
 import json
 import sys
-from typing import Any, Dict, Iterable, Optional
+from typing import Any
+from collections.abc import Iterable
 
 from fusion_hero_os.core.operator_identity import (
     MEMBRANE,
@@ -42,7 +42,7 @@ _FIXPOINT_LINE = (
 )
 
 
-def _display_name() -> Dict[str, Any]:
+def _display_name() -> dict[str, Any]:
     author = author_for_publication()
     display = (author.get("display") or "Operator").strip() or "Operator"
     return {"display": display, "bound": bool(author.get("bound"))}
@@ -67,7 +67,7 @@ def expand_signature_triggers(text: str, *, markdown: bool = False) -> str:
     return text.replace(SIGNATURE_TRIGGER, signature_block(markdown=markdown))
 
 
-def signature_status() -> Dict[str, Any]:
+def signature_status() -> dict[str, Any]:
     ident = _display_name()
     return {
         "ok": True,
@@ -84,7 +84,7 @@ def signature_status() -> Dict[str, Any]:
     }
 
 
-def main(argv: Optional[Iterable[str]] = None) -> int:
+def main(argv: Iterable[str] | None = None) -> int:
     import argparse
 
     ap = argparse.ArgumentParser(description="Persona-Signatur-Trigger")

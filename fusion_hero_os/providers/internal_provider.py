@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Dict, Optional
+from typing import Any
 
 from .base import BaseLLMProvider, LLMResult
 
@@ -19,7 +19,7 @@ class InternalFallbackProvider(BaseLLMProvider):
         "default": 0.55,
     }
 
-    def __init__(self, heroic_core: Any = None, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, heroic_core: Any = None, config: dict[str, Any] | None = None) -> None:
         super().__init__(config)
         self.heroic_core = heroic_core
 
@@ -42,7 +42,7 @@ class InternalFallbackProvider(BaseLLMProvider):
         except Exception:
             return "Fusion Hero OS v8.5 — Heroic Core (reduzierter Kontext)"
 
-    def generate(self, prompt: str, system_prompt: Optional[str] = None, **kwargs: Any) -> LLMResult:
+    def generate(self, prompt: str, system_prompt: str | None = None, **kwargs: Any) -> LLMResult:
         start = time.time()
         ctx = self._build_heroic_context()
         latency = (time.time() - start) * 1000

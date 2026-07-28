@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """MCP-Autokompression: geschärft, **ohne Informationsverlust**.
 
 Pipeline (strict order):
@@ -20,7 +19,8 @@ import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 __all__ = [
     "MessageUnit",
@@ -47,14 +47,14 @@ _STATE = Path(
 class MessageUnit:
     role: str  # system | user | assistant | tool | archive
     content: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
     @property
     def tokens(self) -> int:
         return estimate_tokens(self.content)
 
     def content_hash(self) -> str:
-        raw = f"{self.role}\n{normalize_lossless(self.content or '')}".encode("utf-8")
+        raw = f"{self.role}\n{normalize_lossless(self.content or '')}".encode()
         return hashlib.sha256(raw).hexdigest()[:16]
 
 
@@ -73,7 +73,7 @@ def normalize_lossless(text: str) -> str:
         return ""
     # normalize newlines, strip trailing spaces per line, collapse blank runs
     lines = [ln.rstrip() for ln in text.replace("\r\n", "\n").replace("\r", "\n").split("\n")]
-    out: List[str] = []
+    out: list[str] = []
     blank_run = 0
     for ln in lines:
         if not ln.strip():
@@ -95,7 +95,7 @@ def densify_lines_lossless(text: str) -> str:
     """Keep every unique non-empty line in first-seen order; drop pure dups."""
     text = normalize_lossless(text)
     seen = set()
-    kept: List[str] = []
+    kept: list[str] = []
     for ln in text.split("\n"):
         key = ln.strip()
         if not key:
@@ -198,7 +198,7 @@ def _archive_write(unit: MessageUnit) -> str:
     return h
 
 
-def rehydrate_from_archive(hash_id: str) -> Optional[MessageUnit]:
+def rehydrate_from_archive(hash_id: str) -> MessageUnit | None:
     path = get_archive_path() / f"{hash_id}.json"
     if not path.is_file():
         return None
@@ -210,7 +210,7 @@ def rehydrate_from_archive(hash_id: str) -> Optional[MessageUnit]:
     )
 
 
-def _lossless_pass(units: List[MessageUnit]) -> Tuple[List[MessageUnit], Dict[str, int]]:
+def _lossless_pass(units: list[MessageUnit]) -> tuple[list[MessageUnit], dict[str, int]]:
     """Steps 1–4: normalize, densify, dedupe, merge — no archive."""
     stats = {
         "normalized": 0,
@@ -222,7 +222,7 @@ def _lossless_pass(units: List[MessageUnit]) -> Tuple[List[MessageUnit], Dict[st
     before = sum(u.tokens for u in units)
 
     # 1–2 normalize + densify per unit
-    step1: List[MessageUnit] = []
+    step1: list[MessageUnit] = []
     for u in units:
         raw = u.content or ""
         norm = normalize_lossless(raw)
@@ -242,7 +242,7 @@ def _lossless_pass(units: List[MessageUnit]) -> Tuple[List[MessageUnit], Dict[st
 
     # 3 exact / normalized dedupe (keep first)
     seen_hash: set = set()
-    step2: List[MessageUnit] = []
+    step2: list[MessageUnit] = []
     for u in step1:
         h = u.content_hash()
         if h in seen_hash and not (u.meta.get("pin") or u.meta.get("immutable")):
@@ -252,7 +252,7 @@ def _lossless_pass(units: List[MessageUnit]) -> Tuple[List[MessageUnit], Dict[st
         step2.append(u)
 
     # 4 merge consecutive same-role non-pinned into line-union (order preserved)
-    step3: List[MessageUnit] = []
+    step3: list[MessageUnit] = []
     i = 0
     while i < len(step2):
         u = step2[i]
@@ -261,7 +261,7 @@ def _lossless_pass(units: List[MessageUnit]) -> Tuple[List[MessageUnit], Dict[st
             i += 1
             continue
         j = i + 1
-        lines: List[str] = []
+        lines: list[str] = []
         seen_ln: set = set()
         for ln in (u.content or "").split("\n"):
             k = ln.strip()
@@ -305,7 +305,7 @@ def compress_to_budget(
     intent: str = "",
     summarize_dropped: bool = True,  # kept for API compat; means "emit rehydrate stubs"
     lossless: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Compress to token budget **without information loss**.
 
     Default path is fully reversible: offloaded content lives in
@@ -354,7 +354,7 @@ def compress_to_budget(
         ),
     )
     keep_mask = [True] * n
-    offloaded: List[Dict[str, Any]] = []
+    offloaded: list[dict[str, Any]] = []
     tokens_now = sum(u.tokens for u in worked)
 
     for i in ranked:
@@ -424,7 +424,7 @@ def compress_to_budget(
     }
 
 
-def compress_report(result: Dict[str, Any]) -> str:
+def compress_report(result: dict[str, Any]) -> str:
     return (
         f"Sinnkongruenz-lossless: {result.get('action')} "
         f"{result.get('tokens_before')}→{result.get('tokens_after')} tok "

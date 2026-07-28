@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Dead-Letterbox Pseudo-Attack Simulation — lab only.
 
@@ -29,8 +28,9 @@ import re
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 ALERT_DIR = Path.home() / ".fusion" / "alerts"
@@ -61,15 +61,15 @@ class DeadLetterbox:
     box_id: str
     label: str
     retired: bool = True
-    messages: List[Dict[str, Any]] = field(default_factory=list)
+    messages: list[dict[str, Any]] = field(default_factory=list)
 
-    def deposit(self, payload: Dict[str, Any]) -> str:
+    def deposit(self, payload: dict[str, Any]) -> str:
         mid = hashlib.sha256(
             f"{self.box_id}:{time.time_ns()}:{payload}".encode()
         ).hexdigest()[:16]
         entry = {
             "message_id": mid,
-            "deposited_at": datetime.now(timezone.utc).isoformat(),
+            "deposited_at": datetime.now(UTC).isoformat(),
             "payload": payload,
             "delivered": False,  # always false — dead box
             "channel": "dead_letterbox_local",
@@ -88,7 +88,7 @@ class PseudoProbe:
     body: str
     target_surface: str  # must be lab-local
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -100,7 +100,7 @@ class DefenseVerdict:
     reason: str
     confidence: float
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -119,9 +119,9 @@ class MockDefender:
             )
         self.secure = secure
         self.sandbox_only = sandbox_only
-        self.inbox_lab: List[Dict[str, Any]] = []
-        self.dead_letters: List[Dict[str, Any]] = []
-        self.verdicts: List[DefenseVerdict] = []
+        self.inbox_lab: list[dict[str, Any]] = []
+        self.dead_letters: list[dict[str, Any]] = []
+        self.verdicts: list[DefenseVerdict] = []
 
     def _forbidden_target(self, surface: str) -> bool:
         s = surface.lower()
@@ -179,7 +179,7 @@ class MockDefender:
         return v
 
 
-def _synthetic_boxes(n: int = 3, seed: int = 42) -> List[DeadLetterbox]:
+def _synthetic_boxes(n: int = 3, seed: int = 42) -> list[DeadLetterbox]:
     rng = random.Random(seed)
     boxes = []
     for i in range(n):
@@ -194,7 +194,7 @@ def _synthetic_boxes(n: int = 3, seed: int = 42) -> List[DeadLetterbox]:
     return boxes
 
 
-def _synthetic_probes(boxes: List[DeadLetterbox], seed: int = 42) -> List[PseudoProbe]:
+def _synthetic_probes(boxes: list[DeadLetterbox], seed: int = 42) -> list[PseudoProbe]:
     rng = random.Random(seed + 7)
     intents = ("fractal_marker_noise", "integrity_ping", "replay_noise", "fluid_mask_jitter")
     probes = []
@@ -232,7 +232,7 @@ def run_pseudo_attack_sim(
     seed: int = 42,
     write_evidence: bool = True,
     sandbox_only: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Run dual-path sim: insecure mock vs secure mock, all from dead letterboxes.
     """
@@ -281,7 +281,7 @@ def run_pseudo_attack_sim(
 
     report = {
         "kind": "dead_letterbox_pseudo_attack_sim",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "platform_hint": "12.0.0",
         "policy": {
             "sandbox_only": True,
@@ -358,13 +358,13 @@ def run_pseudo_attack_sim(
     return report
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     if DOCS_SUMMARY.is_file():
         return json.loads(DOCS_SUMMARY.read_text(encoding="utf-8"))
     return {"kind": "dead_letterbox_pseudo_attack_sim", "status": "never_run"}
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
 
     p = argparse.ArgumentParser(

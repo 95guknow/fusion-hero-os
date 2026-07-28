@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fusion-Hero-OS MCP-Server - v1 (Layer 6, spec-korrekte Fassung)
 
@@ -30,7 +29,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import numpy as np
 import yaml
@@ -135,7 +134,7 @@ TOOLS = [
 
 # ---------------- Tool-Implementierungen ----------------
 
-def _tool_layer0_verify(args: Dict[str, Any]) -> Dict[str, Any]:
+def _tool_layer0_verify(args: dict[str, Any]) -> dict[str, Any]:
     reg = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
     claims = reg.get("claims", [])
     claim_id = args.get("claim_id")
@@ -146,7 +145,7 @@ def _tool_layer0_verify(args: Dict[str, Any]) -> Dict[str, Any]:
     structural_errors = [
         c["id"] for c in claims
         if c.get("status") == "BEWIESEN" and not c.get("proofs")]
-    counts: Dict[str, int] = {}
+    counts: dict[str, int] = {}
     for c in claims:
         counts[c.get("status", "?")] = counts.get(c.get("status", "?"), 0) + 1
     return {
@@ -161,7 +160,7 @@ def _tool_layer0_verify(args: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _tool_schedule_qubo(args: Dict[str, Any]) -> Dict[str, Any]:
+def _tool_schedule_qubo(args: dict[str, Any]) -> dict[str, Any]:
     cost_cpu = np.asarray(args["cost_cpu"], dtype=np.float64)
     cost_npu = np.asarray(args["cost_npu"], dtype=np.float64)
     n = cost_cpu.shape[0]
@@ -185,7 +184,7 @@ def _tool_schedule_qubo(args: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def _tool_mcp_fill_govern(args: Dict[str, Any]) -> Dict[str, Any]:
+def _tool_mcp_fill_govern(args: dict[str, Any]) -> dict[str, Any]:
     from fusion_hero_os.core.mcp_fill_governor import (
         FillBand,
         McpFillGovernor,
@@ -219,13 +218,13 @@ def _tool_mcp_fill_govern(args: Dict[str, Any]) -> Dict[str, Any]:
     return {k: v for k, v in out.items() if k != "units"}
 
 
-def _tool_provider_costs(args: Dict[str, Any]) -> Dict[str, Any]:
+def _tool_provider_costs(args: dict[str, Any]) -> dict[str, Any]:
     from fusion_hero_os.core.provider_token_costs import (
         analyse_providers,
         market_ceilings_eur_per_1m,
     )
 
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "analysis": analyse_providers(),
         "market_ceilings_eur_per_1m": market_ceilings_eur_per_1m(),
         "cost_function_version": "2.1.0",
@@ -250,15 +249,15 @@ _TOOL_IMPL = {
 
 # ---------------- JSON-RPC / MCP-Handler ----------------
 
-def _result(msg_id, result) -> Dict[str, Any]:
+def _result(msg_id, result) -> dict[str, Any]:
     return {"jsonrpc": "2.0", "id": msg_id, "result": result}
 
 
-def _error(msg_id, code: int, message: str) -> Dict[str, Any]:
+def _error(msg_id, code: int, message: str) -> dict[str, Any]:
     return {"jsonrpc": "2.0", "id": msg_id, "error": {"code": code, "message": message}}
 
 
-def handle_message(msg: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def handle_message(msg: dict[str, Any]) -> dict[str, Any] | None:
     """Verarbeitet EINE JSON-RPC-Nachricht; None fuer Notifications
     (Notifications bekommen laut Spec keine Antwort)."""
     method = msg.get("method")

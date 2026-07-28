@@ -5,7 +5,6 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Tuple
 
 
 class Timescale(str, Enum):
@@ -24,7 +23,7 @@ class TimespaceCoordinate:
     space_depth: float
     timescale: Timescale = Timescale.MESO
 
-    def distance_to(self, other: "TimespaceCoordinate") -> float:
+    def distance_to(self, other: TimespaceCoordinate) -> float:
         scale_weight = {
             Timescale.MICRO: 1.2,
             Timescale.MESO: 1.0,
@@ -43,11 +42,11 @@ class TimespaceManifold:
     Layer-bewusste Mannigfaltigkeit: Ursprung pro Layer, Kompressionsradius pro Skala.
     """
 
-    layer_origins: Dict[int, TimespaceCoordinate]
-    compression_radius: Dict[Timescale, float]
+    layer_origins: dict[int, TimespaceCoordinate]
+    compression_radius: dict[Timescale, float]
 
     @classmethod
-    def default(cls) -> "TimespaceManifold":
+    def default(cls) -> TimespaceManifold:
         return cls(
             layer_origins={
                 0: TimespaceCoordinate(0.0, 0.0, Timescale.MACRO),
@@ -74,9 +73,9 @@ class TimespaceManifold:
             return max(0.2, 1.0 - (dist - radius) * 0.12)
         return 1.0 + (radius - dist) * 0.06
 
-    def neighbor_compression(self, tracks: List[Tuple[str, TimespaceCoordinate]]) -> Dict[str, float]:
+    def neighbor_compression(self, tracks: list[tuple[str, TimespaceCoordinate]]) -> dict[str, float]:
         """Tracks in dichter Nachbarschaft teilen Kompressionsdruck."""
-        pressure: Dict[str, float] = {name: 1.0 for name, _ in tracks}
+        pressure: dict[str, float] = {name: 1.0 for name, _ in tracks}
         for i, (name_a, coord_a) in enumerate(tracks):
             for name_b, coord_b in tracks[i + 1:]:
                 if coord_a.distance_to(coord_b) < 1.0:
