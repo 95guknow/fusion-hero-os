@@ -1,5 +1,5 @@
 """
-Daycycle Mem + Central Consolidation — Fusion Hero OS v12.1.0
+Daycycle Mem + Central Consolidation — Fusion Hero OS v13.0.0
 
 - Minute: append day-schedule line to local mem.md
 - Hourly: flush mem.md → private repo `dev` (commit+push), then clear mem.md
@@ -31,7 +31,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-PLATFORM = "12.1.0"
+PLATFORM = "13.0.0"
 CONFIG_PATH = ROOT / "daycycle_mem.yaml"
 
 __all__ = [
