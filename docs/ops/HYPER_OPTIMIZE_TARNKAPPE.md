@@ -28,7 +28,7 @@ Privacy cloak on public social surfaces. **Not** fake likes / engagement fraud.
   "tailscale_ip": "100.75.140.40",
   "peers": 2,
   "peers_online": 1,
-  "tailnet": "stephan95v@gmail.com"
+  "tailnet": "operator@example.com"
 }
 ```
 

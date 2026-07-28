@@ -130,8 +130,8 @@ def compute_burn(
             estimate_llm_burn_eur_h,
         )
 
-        r["llm_flagship_blend_eur_per_1m"] = blended_top_tier_eur_per_1m("flagship")
-        r["llm_fast_blend_eur_per_1m"] = blended_top_tier_eur_per_1m("fast")
+        r["llm_flagship_blend_eur_per_1m"] = blended_top_tier_eur_per_1m(prefer="flagship")
+        r["llm_fast_blend_eur_per_1m"] = blended_top_tier_eur_per_1m(prefer="fast")
         llm_burn = estimate_llm_burn_eur_h(
             llm_tokens_in_per_h,
             llm_tokens_out_per_h,
