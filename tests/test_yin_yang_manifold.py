@@ -32,23 +32,29 @@ DEVIL_CHRISTUS = (PolePair("devil_christus", "devil", "christus"),)
 # Struktur (Satz)
 # --------------------------------------------------------------------------
 
-@pytest.mark.parametrize("n_pairs,n", [(1, 1), (1, 12), (3, 12), (5, 7)])
-def test_dimension_is_two_k_n(n_pairs: int, n: int) -> None:
+# NICHT parametrisiert: dieser Knoten wird in proof_registry.yaml zitiert, und
+# der Registry-Checker prueft die nackte Node-ID gegen die pytest-Collection.
+# Parametrisierung wuerde sie zu test_...[1-12] machen und den Claim brechen.
+def test_dimension_is_two_k_n() -> None:
     """Dimension des Zustandsraums ist exakt 2*k*n."""
-    spec = ManifoldSpec(n_pairs=n_pairs, n_checkpoints=n)
-    assert spec.dimension == 2 * n_pairs * n
+    for n_pairs, n in [(1, 1), (1, 12), (3, 12), (5, 7)]:
+        spec = ManifoldSpec(n_pairs=n_pairs, n_checkpoints=n)
+        assert spec.dimension == 2 * n_pairs * n
 
-    pairs = tuple(PolePair(f"p{i}", "yin", "yang") for i in range(n_pairs))
-    Q = build_yin_yang_qubo(n, pairs=pairs)
-    assert Q.shape == (2 * n_pairs * n, 2 * n_pairs * n)
+        pairs = tuple(PolePair(f"p{i}", "yin", "yang") for i in range(n_pairs))
+        Q = build_yin_yang_qubo(n, pairs=pairs)
+        assert Q.shape == (2 * n_pairs * n, 2 * n_pairs * n)
 
 
-@pytest.mark.parametrize("n", [1, 2, 12, 25])
-def test_q_is_symmetric(n: int) -> None:
+# NICHT parametrisiert — in proof_registry.yaml zitiert (siehe oben).
+def test_q_is_symmetric() -> None:
     """Q ist symmetrisch — mit und ohne Kreuzkopplung."""
-    for coupling in (0.0, 0.75):
-        Q = build_yin_yang_qubo(n, cross_pair_coupling=coupling)
-        assert np.allclose(Q, Q.T), f"unsymmetrisch bei coupling={coupling}"
+    for n in (1, 2, 12, 25):
+        for coupling in (0.0, 0.75):
+            Q = build_yin_yang_qubo(n, cross_pair_coupling=coupling)
+            assert np.allclose(Q, Q.T), (
+                f"unsymmetrisch bei n={n}, coupling={coupling}"
+            )
 
 
 def test_indices_are_unique_and_cover_the_space() -> None:
@@ -84,13 +90,14 @@ def test_build_rejects_empty_and_degenerate_input() -> None:
 # Reproduktion des zweipoligen Falls (Satz) — kein Fork der Semantik
 # --------------------------------------------------------------------------
 
-@pytest.mark.parametrize("n", [1, 2, 5, 12, 30])
-def test_single_pair_reproduces_devil_christus_bitwise(n: int) -> None:
+# NICHT parametrisiert — in proof_registry.yaml zitiert (siehe oben).
+def test_single_pair_reproduces_devil_christus_bitwise() -> None:
     """k=1 liefert bitgenau die bestehende Devil-vs-Christus-Matrix."""
-    expected = build_devil_christus_qubo(n)
-    got = build_yin_yang_qubo(n, pairs=DEVIL_CHRISTUS)
-    assert got.shape == expected.shape
-    assert np.array_equal(got, expected)
+    for n in (1, 2, 5, 12, 30):
+        expected = build_devil_christus_qubo(n)
+        got = build_yin_yang_qubo(n, pairs=DEVIL_CHRISTUS)
+        assert got.shape == expected.shape
+        assert np.array_equal(got, expected), f"Abweichung bei n={n}"
 
 
 def test_single_pair_reproduces_with_custom_parameters() -> None:
@@ -153,31 +160,33 @@ def test_incoherence_bound_predicate() -> None:
     assert not incoherence_is_dominated(12, base_bias=3.0, incoherence_penalty=2.0)
 
 
-@pytest.mark.parametrize("n", [1, 3, 8])
-def test_incoherent_state_is_strictly_more_expensive(n: int) -> None:
+# NICHT parametrisiert — in proof_registry.yaml zitiert (siehe oben).
+def test_incoherent_state_is_strictly_more_expensive() -> None:
     """Unter der Schranke ist 'beide Pole aktiv' strikt teurer als 'nur Yang'.
 
     Geprueft an JEDEM Paar und JEDEM Checkpoint, mit sonst leerem Zustand.
     """
     base_bias, penalty = 1.0, 2.0
-    assert incoherence_is_dominated(n, base_bias, penalty)
-    Q = build_yin_yang_qubo(
-        n, base_bias=base_bias, incoherence_penalty=penalty
-    )
-    spec = ManifoldSpec(n_pairs=len(TRIPLE_CANON), n_checkpoints=n)
+    for n in (1, 3, 8):
+        assert incoherence_is_dominated(n, base_bias, penalty)
+        Q = build_yin_yang_qubo(
+            n, base_bias=base_bias, incoherence_penalty=penalty
+        )
+        spec = ManifoldSpec(n_pairs=len(TRIPLE_CANON), n_checkpoints=n)
 
-    for p in range(spec.n_pairs):
-        for i in range(n):
-            both = np.zeros(spec.dimension, dtype=int)
-            both[spec.index(p, "yin", i)] = 1
-            both[spec.index(p, "yang", i)] = 1
+        for p in range(spec.n_pairs):
+            for i in range(n):
+                both = np.zeros(spec.dimension, dtype=int)
+                both[spec.index(p, "yin", i)] = 1
+                both[spec.index(p, "yang", i)] = 1
 
-            only_yang = both.copy()
-            only_yang[spec.index(p, "yin", i)] = 0
+                only_yang = both.copy()
+                only_yang[spec.index(p, "yin", i)] = 0
 
-            assert energy(Q, both) > energy(Q, only_yang), (
-                f"Inkohaerenz nicht bestraft bei Paar {p}, Checkpoint {i}"
-            )
+                assert energy(Q, both) > energy(Q, only_yang), (
+                    f"Inkohaerenz nicht bestraft bei n={n}, "
+                    f"Paar {p}, Checkpoint {i}"
+                )
 
 
 def test_incoherence_penalty_appears_in_energy_exactly_once() -> None:
