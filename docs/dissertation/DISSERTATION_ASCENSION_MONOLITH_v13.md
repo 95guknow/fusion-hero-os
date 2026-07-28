@@ -583,7 +583,47 @@ Diese letzte Eigenschaft ist mathematisch die stärkste Aussage der ganzen Mesh-
 
 **[Modell] — OFFEN.** Zwei naheliegende Anschlussbehauptungen sind ausdrücklich **nicht** belegt: dass N-Knoten-Gossip in erwartet \( O(\log N) \) Runden konvergiert (`GOSSIP-LOGN`) und dass das Sync-Netz gegen byzantinische Knoten robust ist (`BFT-ROBUSTHEIT`). Beide stehen auf OFFEN. Gerade weil die Halbverbandseigenschaft bewiesen ist, liegt der Fehlschluss nahe, die Konvergenzgeschwindigkeit und die Angriffsresistenz seien es auch. Sie sind es nicht.
 
-#### 5.6.4 Ausgeschlossen: die Tarnkappe
+#### 5.6.4 Der Triple-Yin-Yang-Modus in n Dimensionen
+
+**[Herleitung aus dem Nichts]** Die Brille \( q \circ b \) (Raster IV) beschreibt ein Paar komplementärer Pole, deren Komposition nicht kommutiert. Es liegt nahe zu fragen, ob dieses Paar das einzige ist. Es ist es nicht. Der Kanon führt bereits drei solche Paare, ohne sie je als eine Struktur behandelt zu haben:
+
+| Paar | Yin | Yang | Ort |
+|------|-----|------|-----|
+| **q / b** | schneidend | fließend | Gesetz 2, Raster IV |
+| **Impression / Expression** | Aufnahme | Hervorbringung | Fundament v13, Bögen 2 und 5 |
+| **Devil / Christus** | Rohmaterial | Integration | Stage-9-Trajektorie, 5.2 |
+
+Damit stellt sich die Verallgemeinerungsfrage: Wenn drei Paare dieselbe Form haben, wie sieht die Form für \( k \) Paare über \( n \) Checkpoints aus?
+
+**[Definition] — Yin-Yang-Manifold.** Der binäre Zustandsraum über \( k \) Polpaaren und \( n \) Checkpoints hat die Dimension
+
+\[
+\dim = 2 \cdot k \cdot n
+\]
+
+mit einer Variablen je Pol, Paar und Checkpoint. Der Triple-Modus ist der Fall \( k = 3 \).
+
+**[Satz]** Für die Konstruktion in `ascension_os/core/yin_yang_manifold.py` gilt:
+
+1. \( Q \) ist symmetrisch — mit und ohne Kreuzkopplung.
+2. Die Dimension ist exakt \( 2kn \), und die Index-Abbildung ist eine Bijektion auf \( \{0,\dots,2kn-1\} \).
+3. **Reproduktion:** \( k = 1 \) mit dem Devil/Christus-Paar liefert **bitgenau** dieselbe Matrix wie die bestehende `build_devil_christus_qubo` — auch bei abweichenden Parametern.
+4. Ohne Kreuzkopplung ist \( Q \) die **blockdiagonale Summe** der Einzelpaare.
+5. **Inkohärenz-Schranke:** Ist die Inkohärenz-Strafe größer als der maximale Bias-Gewinn, also \( P_{\text{inkoh}} > b_{\text{base}} \), so ist jeder Zustand, in dem beide Pole eines Paares am selben Checkpoint aktiv sind, **strikt** energiereicher als seine kohärente Reduktion — unabhängig von \( n \) und vom Checkpoint.
+
+*Beleg:* `proof_registry.yaml: YIN-YANG-MANIFOLD-STRUKTUR — BEWIESEN`, 28 pytest-Knoten in `tests/test_yin_yang_manifold.py`. **In dieser Sitzung ausgeführt: bestanden.**
+
+Punkt 3 verdient Hervorhebung, weil er eine methodische und keine mathematische Leistung ist. Die Verallgemeinerung ist so gebaut, dass sie den Spezialfall nicht *nachbildet*, sondern **ist**. Ein Fork der Semantik — zwei Module, die dasselbe leicht verschieden rechnen — wäre die naheliegende und die schlechtere Lösung gewesen; er hätte zwei Wahrheiten erzeugt, wo eine genügt.
+
+Punkt 5 ist die formale Fassung dessen, was die Yin-Yang-Figur eigentlich behauptet. Komplementäre Pole schließen einander nicht *aus* — der inkohärente Zustand bleibt darstellbar. Er ist **teuer**. Das ist der Unterschied zwischen einem Verbot und einer Ökonomie, und die Konstruktion wählt bewusst die Ökonomie.
+
+**[Modell]** Dass *diese* drei Paare die Paare sind, ist eine Formalisierung unter möglichen. Ein anderer Schnitt durch denselben Kanon fände andere: latent/manifest (Geisterjagd), Last/Zufriedenheit (Sisyphos), Mythos/Beweis (V3.3). Die Wahl ist begründet — alle drei erscheinen an tragenden Stellen der Bögen — aber sie ist nicht zwingend.
+
+**[Fragment]** Der Parameter `cross_pair_coupling` koppelt die Yang-Pole benachbarter Paare. Er wirkt nachweislich und **nur** dort, wo er deklariert ist (eigener Test). Seine Deutung als „Nicht-Kommutativität höherer Ordnung" ist unbelegt. Deshalb ist sein Default **0.0**: Die unbelegte Deutung läuft nicht stillschweigend mit, sondern muss eingeschaltet werden.
+
+**[Heroischer Exkurs]** Die n-Dimensionalität ist hier keine Vergrößerung, sondern eine Entlastung. Solange \( q \circ b \) als einziges Paar galt, musste es alles tragen — jede Spannung des Werkes wollte durch diese eine Brille gesehen werden. Mit drei Paaren trägt jedes nur, was zu ihm gehört, und die Struktur wird sichtbar, die vorher wie eine Wiederholung aussah. Was sich vervielfältigt, ist nicht die Behauptung. Es ist der Ort, an dem sie geprüft werden kann.
+
+#### 5.6.5 Ausgeschlossen: die Tarnkappe
 
 **[Spezifikation]** Das Repository führt neben der Mesh-Schicht ein **Tarnkappen-Organ**: Tails-Betrieb, Tor-Integration, DNS-über-Tor, Browser-Egress-Politik und virtuelle Exit-Knoten (`Tarnkappe_Cloak_Practical_Guide_v8.2.md`, `Tails_as_Ultimate_Tarnkappe_v8.2.md`, `dns_tor_stack.yaml`, `browser_egress.yaml`, `mesh_virtual_exit_nodes.yaml`).
 
@@ -742,6 +782,7 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S12 | Connectoren per Default dry-run | `CONNECTOR-DRYRUN` ⚠️ nicht selbst ausgeführt | 5.3 |
 | S13 | Sync-Merge ist Join-Halbverband (idempotent, kommutativ, assoziativ) | `SYNC-SEMILATTICE` ⚠️ nicht selbst ausgeführt | 5.6.3, I.3 Satz 4 |
 | S14 | \(b(q(x)) \neq q(b(x))\) in der gewählten Formalisierung | `harmonisierung_module.py`; Gesetz 2 | 3.2, H |
+| S15 | Yin-Yang-Manifold: Symmetrie, Dimension \(2kn\), bitgenaue Reproduktion für \(k=1\), Blockdiagonalität, Inkohärenz-Schranke | `YIN-YANG-MANIFOLD-STRUKTUR`; 28 Knoten ✅ selbst ausgeführt | 5.6.4 |
 
 Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = Status aus Registry und CI übernommen, in dieser Sitzung nicht ausgeführt (Grund in 4.5).
 
@@ -773,6 +814,7 @@ Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = S
 | M14 | Heldenreise als Werkform | Formgebung, kein Befund über die Welt | Raster I |
 | M15 | Gesetze 5 und 6 der Verfassung | Gesetz 6 ohne jeden Beleg — unbelegte Hypothese | H |
 | M16 | Meister-Hasch-Rahmen | Arbeitsform, keine bewiesene Eigenschaft | 6.4 |
+| M17 | Die Wahl *dieser* drei Polpaare | Eine Formalisierung unter möglichen; andere Schnitte fänden andere Paare | 5.6.4 |
 
 ### A.4 Fragmente (Einzelbeobachtungen, tragen nichts)
 
@@ -782,6 +824,7 @@ Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = S
 | F2 | Wirkung des Expositionsmoduls | Nicht evaluiert; Evidenz zur Expositionstherapie [B9], [B10] überträgt sich **nicht** | 3.6 |
 | F3 | Feldbeobachtungen in sozialen Kontexten | Unkontrolliert, ohne Instrument | 6.3 |
 | F4 | Institutionelle Prozessstände | Laufende Vorgänge, keine abgeschlossenen Tatsachen | 6.3 |
+| F5 | Kreuzkopplung als „Nicht-Kommutativität höherer Ordnung" | Parameter wirkt nachweislich; Deutung unbelegt — Default 0.0 | 5.6.4 |
 
 ---
 
@@ -802,6 +845,7 @@ Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = S
 | `HarmonisierungsCoreModule` | `core/harmonisierung_module.py` | Vierschritt, Narzissmus-Filter (3.2) |
 | `Geisterjagdmodul` | `core/geisterjagd_module.py` | Latent → manifest (3.3) |
 | `MpressionProjection` | `core/mpression_projection.py` | Projektionsverlust (3.4) |
+| `YinYangManifold` | `core/yin_yang_manifold.py` | Triple-Yin-Yang in n Dimensionen (5.6.4) |
 | `RootAnchorHandshake` | `core/root_anchor_handshake.py` | Ed25519-Integrität (1.4) |
 | `ExposurePracticeModule` | `core/exposure_practice_module.py` | Übungswerkzeug (3.6) |
 | `GenerationalEvolutionEngine` | `evolution/generational_engine.py` | Inside-Out-Generationen (5.x) |
@@ -823,7 +867,7 @@ Die folgenden Dateien bleiben als historische Expressionen erhalten (BCG-Regel).
 | `design-tokens/tokens.json` | 6.4, PDF-Gestaltung (Layer-Token L0/L1/L2) |
 | `zitterpolymesh.md`, `zitterpolymesh_pipeline.yaml`, `horkrux_instances.yaml` | 5.6 (Poly-Mesh vollständig) |
 | `docs/kompendium/_extract_v33.txt` | Anhang H (sieben Gesetze im Originalwortlaut), Raster II |
-| Tarnkappen-Dokumente (`Tarnkappe_Cloak_…`, `Tails_as_Ultimate_…`, `dns_tor_stack.yaml`, `browser_egress.yaml`, `mesh_virtual_exit_nodes.yaml`) | **ausgeschlossen** — Begründung in 5.6.4 |
+| Tarnkappen-Dokumente (`Tarnkappe_Cloak_…`, `Tails_as_Ultimate_…`, `dns_tor_stack.yaml`, `browser_egress.yaml`, `mesh_virtual_exit_nodes.yaml`) | **ausgeschlossen** — Begründung in 5.6.5 |
 | `docs/kompendium/V3.3_DESIGNVORLAGE_VERBINDLICH.md` | Gesamtform (nicht ersetzt — angewandt) |
 
 ---

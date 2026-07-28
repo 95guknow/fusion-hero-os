@@ -343,6 +343,16 @@ claims:
       - tests/test_mpression_projection.py::test_pythagoras_identity_holds
       - tests/test_mpression_projection.py::test_relative_loss_is_between_zero_and_one
 
+  - id: YIN-YANG-MANIFOLD-STRUKTUR
+    statement: "build_yin_yang_qubo (ascension_os/core/yin_yang_manifold.py) verallgemeinert die zweipolige Devil-vs-Christus-QUBO auf k Polpaare ueber n Checkpoints: Q ist symmetrisch (mit und ohne Kreuzkopplung), die Dimension ist exakt 2*k*n, die Index-Abbildung ist eine Bijektion, und k=1 reproduziert build_devil_christus_qubo BITGENAU (kein Fork der Semantik). Ohne Kreuzkopplung ist Q die blockdiagonale Summe der Einzelpaare. Ist incoherence_penalty > base_bias, so ist jeder Zustand mit beiden Polen eines Paares am selben Checkpoint STRIKT energiereicher als seine kohaerente Reduktion. Die WAHL der drei Paare (q/b, Impression/Expression, Devil/Christus) ist MODELL und die Deutung der Kreuzkopplung ist FRAGMENT — beides ist NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_yin_yang_manifold.py::test_dimension_is_two_k_n
+      - tests/test_yin_yang_manifold.py::test_q_is_symmetric
+      - tests/test_yin_yang_manifold.py::test_single_pair_reproduces_devil_christus_bitwise
+      - tests/test_yin_yang_manifold.py::test_pairs_are_block_diagonal_without_coupling
+      - tests/test_yin_yang_manifold.py::test_incoherent_state_is_strictly_more_expensive
+
   # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
   - id: REGISTRY-NO-STUBS
     statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."
