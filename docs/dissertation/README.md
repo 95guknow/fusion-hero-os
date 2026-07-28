@@ -61,7 +61,8 @@ ausgeführt — Heldenreise (Bögen 1–6), fünf Schulen (3.7–3.12), sieben G
 mit Geltungsmarke und Codebeleg (Anhang H), Brille q∘b und Nothing-Bereitschaft
 (durchgehend). Anhang I führt den formalen Apparat: 5 Axiome, 6 Definitionen,
 6 Sätze mit Beweisen. Das Poly-Mesh ist vollständig behandelt (5.6); die
-Tarnkappe ist mit Begründung ausgeschlossen (5.6.4).
+Tarnkappe ist mit Begründung ausgeschlossen (5.6.5). Der Triple-Yin-Yang-
+Modus in n Dimensionen steht in 5.6.4 (Code: `ascension_os/core/yin_yang_manifold.py`).
 
 Die Geltungsmarken sind im PDF farbig gesetzt: **Satz** und **Herleitung** in L0
 (`#f5c542`), **Spezifikation** in L1 (`#00ffd5`), **Modell** und **heroischer
