@@ -14,7 +14,7 @@ version: 1
 governance:
   owner: "Senfkorn Holding UG"
   track: ascension
-  platform_version: "12.0.0"
+  platform_version: "13.0.0"
   consent_required_for_personal_data: true
 
 # --- Ascensionen (Cluster-Knoten) -------------------------------------------
