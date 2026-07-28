@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Internal algorithm source for **mugen-tsuky.chan** (clear protocol elsewhere).
 
 Prefer public API: ``fusion_hero_os.core.mugen_tsuky_chan``.
@@ -14,9 +13,9 @@ import json
 import struct
 import subprocess
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fusion_hero_os.ports import PORT_BASE
 
@@ -97,7 +96,7 @@ def polymesh_hash_number_1(day_utc: str, mesh_ip: str = "100.64.104.58") -> str:
       H1 = SHA256( H0 || rotl(H0, 13) || day_utc || \"#1\" )   ← nummer 1
     """
     h0 = polymesh_day_seed(day_utc, mesh_ip)
-    h1 = _sha256(h0 + _rotl_bytes(h0, 13) + f"{day_utc}#1".encode("utf-8"))
+    h1 = _sha256(h0 + _rotl_bytes(h0, 13) + f"{day_utc}#1".encode())
     return h1.hex()
 
 
@@ -108,8 +107,8 @@ def doppelrekursionsrollation(
     depth_b: int = 8,
     rot_a: int = 7,
     rot_b: int = 11,
-    prng_seed: Optional[int] = None,
-) -> Dict[str, Any]:
+    prng_seed: int | None = None,
+) -> dict[str, Any]:
     """Double recursive rollation.
 
     Recursion A (SHA path):  a_{n+1} = SHA256( a_n || rotl(a_n, rot_a) || n )
@@ -121,7 +120,7 @@ def doppelrekursionsrollation(
     if len(a) != 32:
         a = _sha256(a)
 
-    chain_a: List[str] = [a.hex()]
+    chain_a: list[str] = [a.hex()]
     for n in range(depth_a):
         a = _sha256(a + _rotl_bytes(a, rot_a + n) + struct.pack(">I", n))
         chain_a.append(a.hex())
@@ -132,7 +131,7 @@ def doppelrekursionsrollation(
     pcg = PCG64(prng_seed & ((1 << 64) - 1), seq=0xC0FFEE50C0FFEE51 ^ 0xDEADBEEF)
 
     b = _sha512(a + pcg.fill(32) + b"PRNG-LAYER-B")
-    chain_b: List[str] = [b.hex()]
+    chain_b: list[str] = [b.hex()]
     for n in range(depth_b):
         pad = pcg.fill(32)
         b = _sha512(b + pad + _rotl_bytes(b[:32], rot_b + n) + struct.pack(">I", n))
@@ -162,7 +161,7 @@ def gpg_hash_payload(
     payload: bytes,
     *,
     algo: str = "SHA512",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """GPG-mediated digest using ``gpg --print-md`` (independent hash path).
 
     Falls back to pure hashlib if gpg unavailable.
@@ -209,7 +208,7 @@ def gpg_hash_with_prng(
     *,
     nbytes: int = 64,
     algo: str = "SHA512",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Feed GPG a buffer expanded by PCG64 (different PRNG system than SHA-stream)."""
     seed_int = int(seed_hex[:16], 16) if seed_hex else 1
     # Second PRNG domain: different stream constant than doppel layer B
@@ -223,15 +222,15 @@ def gpg_hash_with_prng(
 
 
 def run_day_rollation(
-    day_utc: Optional[str] = None,
+    day_utc: str | None = None,
     *,
     mesh_ip: str = "100.64.104.58",
     depth: int = 8,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Full pipeline: day hash #1 → doppel rollation → GPG+PRNG hash."""
     if not day_utc:
         # "letzten tages" = yesterday UTC
-        day_utc = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+        day_utc = (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d")
 
     h1 = polymesh_hash_number_1(day_utc, mesh_ip)
     doppel = doppelrekursionsrollation(h1, depth_a=depth, depth_b=depth)
@@ -261,7 +260,7 @@ def run_day_rollation(
             f"gpg={gpg['digest_hex'][:16]}… | seal={seal.hex()[:16]}…"
         ),
         "ts": time.time(),
-        "ts_iso": datetime.now(timezone.utc).isoformat(),
+        "ts_iso": datetime.now(UTC).isoformat(),
     }
 
     # Persist day chain

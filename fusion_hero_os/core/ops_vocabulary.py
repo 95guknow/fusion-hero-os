@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Ops vocabulary — deploy=private · push=public · merge=both (dual timeline).
 
@@ -8,7 +7,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "ops_vocabulary.yaml"
@@ -35,7 +34,7 @@ OPS = {
 }
 
 
-def load_ops() -> Dict[str, Any]:
+def load_ops() -> dict[str, Any]:
     if not CONFIG.exists():
         return {
             "operations": {
@@ -65,7 +64,7 @@ def meaning_of(op: str) -> str:
     return OPS.get(op, "unknown")
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     data = load_ops()
     return {
         "ok": True,

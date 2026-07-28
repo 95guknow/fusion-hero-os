@@ -9,12 +9,12 @@ Behauptung über reale Optimalität.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 
 #: (Komponentenname, Gewicht). Werte werden 0..1 erwartet.
-DEFAULT_COMPONENTS: List[Tuple[str, float]] = [
+DEFAULT_COMPONENTS: list[tuple[str, float]] = [
     ("stability", 0.4),
     ("capacity", 0.3),
     ("alignment", 0.3),
@@ -26,7 +26,7 @@ class MERModule(BaseModule):
     und liefert den gewichteten MER-Index plus Komponenten-Aufschlüsselung.
     """
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         values = payload.get("values", {})
         components = [
@@ -37,7 +37,7 @@ class MERModule(BaseModule):
         index = sum(c["weight"] * c["value"] for c in components) / weight_sum if weight_sum else 0.0
         return {"mer_index": round(index, 4), "components": components}
 
-    def optimize(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def optimize(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         """Priorisiert Komponenten nach ``weight * (1 - value)`` (Gewicht mal
         verbleibendem Spielraum) — die Komponente mit dem größten erwarteten
         Hebel auf den Gesamtindex steht zuerst. Reine Priorisierungsheuristik,

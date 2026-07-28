@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Pseudo-Inhouse AI Hub — local facade only (no freemium product surface).
 
@@ -15,7 +14,7 @@ import sys
 import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 _CODE = ROOT / "03_Code"
@@ -59,16 +58,16 @@ class PseudoInhouseResult:
     response: str
     latency_ms: float = 0.0
     source: str = "api"
-    tried: List[str] = field(default_factory=list)
-    error: Optional[str] = None
+    tried: list[str] = field(default_factory=list)
+    error: str | None = None
     inhouse: bool = True
     free_tier: bool = True
     platform: str = "10.0.0"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
-    def openai_chat_completion(self) -> Dict[str, Any]:
+    def openai_chat_completion(self) -> dict[str, Any]:
         """OpenAI-compatible chat.completion shape for local tools."""
         return {
             "id": f"chatcmpl-fusion-{int(time.time())}",
@@ -93,7 +92,7 @@ class PseudoInhouseResult:
         }
 
 
-def _load_yaml_catalog() -> Dict[str, Any]:
+def _load_yaml_catalog() -> dict[str, Any]:
     path = ROOT / "llm_free_services.yaml"
     if not path.exists():
         return {}
@@ -105,7 +104,7 @@ def _load_yaml_catalog() -> Dict[str, Any]:
         return {}
 
 
-def catalog() -> Dict[str, Any]:
+def catalog() -> dict[str, Any]:
     data = _load_yaml_catalog()
     return {
         "ok": True,
@@ -121,7 +120,7 @@ def catalog() -> Dict[str, Any]:
     }
 
 
-def _framework_status() -> Dict[str, Any]:
+def _framework_status() -> dict[str, Any]:
     try:
         from llm_frameworks.registry import all_status, FREE_CHAIN, connector_status
 
@@ -145,10 +144,10 @@ def _ollama_live(timeout: float = 1.5) -> bool:
         return False
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     fw = _framework_status()
     frameworks = fw.get("frameworks") or {}
-    ready: List[Dict[str, Any]] = []
+    ready: list[dict[str, Any]] = []
     for pid in DEFAULT_CHAIN:
         if pid == "internal":
             ready.append(
@@ -198,7 +197,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def list_models() -> Dict[str, Any]:
+def list_models() -> dict[str, Any]:
     st = status()
     models = []
     for p in st.get("providers") or []:
@@ -249,15 +248,15 @@ def _internal_complete(prompt: str, system: str) -> PseudoInhouseResult:
 def complete(
     prompt: str,
     *,
-    system: Optional[str] = None,
-    provider: Optional[str] = None,
+    system: str | None = None,
+    provider: str | None = None,
     role: str = "worker",
-    timeout: Optional[int] = None,
+    timeout: int | None = None,
 ) -> PseudoInhouseResult:
     """Complete via free chain (or forced provider). Always returns inhouse-shaped result."""
     sys_msg = (system or SYSTEM_PREFIX).strip()
-    tried: List[str] = []
-    chain: List[str]
+    tried: list[str] = []
+    chain: list[str]
     if provider and provider not in ("auto", "inhouse", "fusion-inhouse", "fusion"):
         # fusion-inhouse/groq → groq
         p = provider.replace("fusion-inhouse/", "").strip()

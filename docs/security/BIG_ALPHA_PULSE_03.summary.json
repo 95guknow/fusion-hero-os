@@ -1,0 +1,88 @@
+{
+  "generated_at": "2026-07-27T07:12:47.195104+00:00",
+  "platform_version": "13.0.0",
+  "direktiven": {
+    "laden": "bottom_up",
+    "verarbeiten": "top_down",
+    "ausgabe": "geister_manifestiert"
+  },
+  "sicht": "deklariert",
+  "meister": {
+    "report_inhalts_sha256": "f970af2fe46c10c7db9ecb1b4ae5495c5b387b152770ebfa280f16793ab5a612",
+    "config_sha256": "7cd510b5521d4dd8adb3ff9b98ca99fc4888cd42b64be758f7612ea1460fd091",
+    "modul_sha256": "283cdd9f08b413d6b3abaf58a67fe19272de62c81ce883b346ce15801e991043"
+  },
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "secrets_in_output": false,
+    "health_probe_ausgefuehrt": false,
+    "vault_in_git": false
+  },
+  "kind": "BIG_ALPHA_PULSE",
+  "pulse": 3,
+  "titel": "Konnektor-Inventarisierung",
+  "executed": [
+    "load_bottom_up",
+    "process_top_down",
+    "manifest_ghosts"
+  ],
+  "laden_reihenfolge": [
+    "L0_state",
+    "L1_registries",
+    "L2_connectors",
+    "L3_links",
+    "L4_remotes"
+  ],
+  "inventar": {
+    "per_familie": {
+      "mesh": 10,
+      "graph_api": 10,
+      "llm_frameworks": 12,
+      "control_instances": 34
+    },
+    "gefuehrt": 66,
+    "l6_gesamt": 67,
+    "links_gesamt": 23,
+    "links_offen": 1,
+    "mit_health_path": 22
+  },
+  "layer_groessen": {
+    "L6_masterseed": 67,
+    "L5_projektion": 66,
+    "L4_intent": 66,
+    "L3_internalisierung": 65,
+    "L2_bindung": 51,
+    "L1_verkoerperung": 0,
+    "L0_fundament": 0
+  },
+  "distanz_zum_masterseed": {
+    "L6_masterseed": 0.0,
+    "L5_projektion": 0.776158,
+    "L4_intent": 1.381562,
+    "L3_internalisierung": 1.846693,
+    "L2_bindung": 2.132151,
+    "L1_verkoerperung": 2.135038,
+    "L0_fundament": 2.13729
+  },
+  "geister": {
+    "gesamt": 79,
+    "latent": 0,
+    "echte_befunde": 65,
+    "klassen": {
+      "credential_fehlt": 51,
+      "keine_credential_bindung": 14,
+      "registry_waise": 12,
+      "keine_internalisierung": 1,
+      "link_ins_leere": 1
+    },
+    "by_design": {
+      "keine_credential_bindung": 14
+    }
+  },
+  "kernbefunde": [
+    "provider 'internal' aus control_instances.yaml existiert nicht in llm_frameworks.frameworks",
+    "mesh und graph_api benennen dieselben Dienste unterschiedlich - 12 von 20 Eintraegen sind Waisen"
+  ],
+  "geltung": "Inventar = Satz (Registry-Lesung) · fehlende optionale Quelle = Bedingt skip"
+}

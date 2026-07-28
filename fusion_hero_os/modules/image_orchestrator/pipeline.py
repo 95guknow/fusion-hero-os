@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.modules.image_orchestrator.job_queue import ImageJobQueue, JobStatus
 from fusion_hero_os.modules.image_orchestrator.prompt_builder import build_prompt, validate_identity
@@ -15,10 +15,10 @@ class ImagePipeline:
 
     def __init__(
         self,
-        config: Dict[str, Any],
+        config: dict[str, Any],
         rate_limiter: DualRateLimiter,
         queue: ImageJobQueue,
-        provider: Optional[ImageProvider] = None,
+        provider: ImageProvider | None = None,
     ) -> None:
         self.config = config
         self.rate_limiter = rate_limiter
@@ -27,7 +27,7 @@ class ImagePipeline:
         self.identity = config.get("identity", {})
         self.pipeline_mode = config.get("pipeline", {}).get("mode", "dry_run")
 
-    def run(self, user_prompt: str) -> Dict[str, Any]:
+    def run(self, user_prompt: str) -> dict[str, Any]:
         stages_completed = []
         validation = validate_identity(self.identity)
         stages_completed.append("validate_identity")

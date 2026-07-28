@@ -96,3 +96,9 @@ mesh_live_inventory.json
 # MkDocs build output
 /site/
 
+
+# Kernel-Build-Artefakte (kernel/Makefile)
+kernel/obj/
+kernel/bin/
+kernel/iso/
+kernel/os.iso

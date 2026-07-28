@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fusion Hero OS v8.7 — Unified Heroic LLM Core
 
@@ -25,7 +24,7 @@ import asyncio
 import contextlib
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .heroic_core_orchestrator import QuadCoreBridge, MasterSeed
@@ -66,7 +65,7 @@ class SisyphosCycle:
     load: float = 0.0
     satisfaction: float = 0.0
     cycles_completed: int = 0
-    history: List[Dict[str, float]] = field(default_factory=list)
+    history: list[dict[str, float]] = field(default_factory=list)
 
     def step(self, new_load: float) -> float:
         self.load = max(0.0, min(1.0, new_load))
@@ -77,7 +76,7 @@ class SisyphosCycle:
             self.history.pop(0)
         return self.satisfaction
 
-    def get_state(self) -> Dict[str, Any]:
+    def get_state(self) -> dict[str, Any]:
         return {
             "load": self.load,
             "satisfaction": self.satisfaction,
@@ -97,7 +96,7 @@ class FailClosed:
 
     @staticmethod
     @contextlib.contextmanager
-    def enforce(core: Optional[Any] = None, operation: str = "unknown"):
+    def enforce(core: Any | None = None, operation: str = "unknown"):
         try:
             yield
         except Exception as exc:
@@ -120,9 +119,9 @@ class UnifiedHeroicLLMCore:
     in die dynamische Zuweisung + Heroic Context Injection integriert.
     """
 
-    def __init__(self, heroic_core: Optional["QuadCoreBridge"] = None) -> None:
+    def __init__(self, heroic_core: QuadCoreBridge | None = None) -> None:
         self.heroic_core = heroic_core
-        self._providers: Dict[str, BaseLLMProvider] = {}
+        self._providers: dict[str, BaseLLMProvider] = {}
 
         for Prov in (ClaudeProvider, GrokProvider, EveryAPIProvider):
             if Prov:
@@ -139,7 +138,7 @@ class UnifiedHeroicLLMCore:
         self.fail_closed = FailClosed
 
         # MasterSeed wird vom heroic_core übernommen oder neu instanziiert
-        self.masterseed: Optional[MasterSeed] = getattr(heroic_core, "seed", None) if heroic_core else None
+        self.masterseed: MasterSeed | None = getattr(heroic_core, "seed", None) if heroic_core else None
 
         self._version = "v8.7-epistemic-grounded"
 
@@ -178,7 +177,7 @@ class UnifiedHeroicLLMCore:
         heroic_boost = 0.18 if (name == "fusion-hero" and category == "heroic_core") else 0.0
         return max(0.08, min(0.97, cap * 0.62 - lat_pen * 0.22 - fail_pen * 0.16 + heroic_boost))
 
-    def get_best_assignment(self, prompt: str) -> Dict[str, Any]:
+    def get_best_assignment(self, prompt: str) -> dict[str, Any]:
         category = self._classify(prompt)
         scored = [(name, self._score(name, category)) for name in self._providers]
         scored.sort(key=lambda x: x[1], reverse=True)
@@ -191,8 +190,8 @@ class UnifiedHeroicLLMCore:
             "alternatives": scored[1:3],
         }
 
-    def ask(self, prompt: str, system_prompt: Optional[str] = None,
-            force_provider: Optional[str] = None, context: str = "heroic") -> LLMResult:
+    def ask(self, prompt: str, system_prompt: str | None = None,
+            force_provider: str | None = None, context: str = "heroic") -> LLMResult:
         assignment = self.get_best_assignment(prompt)
         chosen = force_provider if force_provider in self._providers else assignment["provider"]
         provider = self._providers[chosen]
@@ -228,7 +227,7 @@ class UnifiedHeroicLLMCore:
                         pass
                 raise
 
-    async def aask(self, prompt: str, system_prompt: Optional[str] = None, context: str = "heroic") -> LLMResult:
+    async def aask(self, prompt: str, system_prompt: str | None = None, context: str = "heroic") -> LLMResult:
         return await asyncio.to_thread(self.ask, prompt, system_prompt, None, context)
 
     def initiate_recovery(self, reason: str = "", error: str = ""):
@@ -237,7 +236,7 @@ class UnifiedHeroicLLMCore:
         if self.heroic_core and hasattr(self.heroic_core, "invoke_phoenix_mode"):
             self.heroic_core.invoke_phoenix_mode()
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         return {
             "version": self._version,
             "providers": list(self._providers.keys()),
@@ -249,9 +248,9 @@ class UnifiedHeroicLLMCore:
         }
 
 
-_unified_instance: Optional[UnifiedHeroicLLMCore] = None
+_unified_instance: UnifiedHeroicLLMCore | None = None
 
-def get_unified_llm_core(heroic_core: Optional["QuadCoreBridge"] = None) -> UnifiedHeroicLLMCore:
+def get_unified_llm_core(heroic_core: QuadCoreBridge | None = None) -> UnifiedHeroicLLMCore:
     global _unified_instance
     if _unified_instance is None:
         _unified_instance = UnifiedHeroicLLMCore(heroic_core=heroic_core)

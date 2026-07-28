@@ -82,7 +82,7 @@ class BeliefState:
         P = _check_projector(P)
         return float(np.linalg.norm(P @ self.psi) ** 2)
 
-    def collapse(self, P: np.ndarray) -> "BeliefState":
+    def collapse(self, P: np.ndarray) -> BeliefState:
         """Lueders-Kollaps: psi -> P psi / ||P psi|| (Kontext-Update nach Urteil)."""
         P = _check_projector(P)
         v = P @ self.psi

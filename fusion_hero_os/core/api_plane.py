@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """API Plane Membrane — Hyperraum (half-private) vs Business (classical API).
 
 Prospective clean separation (BCG / additive):
@@ -15,7 +14,7 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "PLANE_HYPERRAUM",
@@ -34,7 +33,7 @@ DEFAULT_CATALOG = ROOT / "api_planes.yaml"
 
 
 @lru_cache(maxsize=4)
-def load_catalog(path: Optional[str] = None) -> Dict[str, Any]:
+def load_catalog(path: str | None = None) -> dict[str, Any]:
     p = Path(path) if path else Path(
         os.environ.get("FUSION_API_PLANES", str(DEFAULT_CATALOG))
     )
@@ -52,7 +51,7 @@ def load_catalog(path: Optional[str] = None) -> Dict[str, Any]:
         return _fallback_catalog()
 
 
-def _fallback_catalog() -> Dict[str, Any]:
+def _fallback_catalog() -> dict[str, Any]:
     return {
         "version": "1.0-fallback",
         "platform_version": "10.0.0",
@@ -80,7 +79,7 @@ def _fallback_catalog() -> Dict[str, Any]:
     }
 
 
-def classify_path(path: str) -> Dict[str, Any]:
+def classify_path(path: str) -> dict[str, Any]:
     """Return plane classification for an HTTP path."""
     raw = (path or "/").strip() or "/"
     if not raw.startswith("/"):
@@ -89,7 +88,7 @@ def classify_path(path: str) -> Dict[str, Any]:
     path_only = raw.split("?", 1)[0]
     cat = load_catalog()
     rules = cat.get("classification_rules") or []
-    matched: Optional[str] = None
+    matched: str | None = None
     matched_prefix = ""
     for rule in rules:
         if not isinstance(rule, dict):
@@ -118,7 +117,7 @@ def classify_path(path: str) -> Dict[str, Any]:
     }
 
 
-def plane_meta(plane_id: str) -> Dict[str, Any]:
+def plane_meta(plane_id: str) -> dict[str, Any]:
     cat = load_catalog()
     planes = cat.get("planes") or {}
     p = planes.get(plane_id) or {}
@@ -129,7 +128,7 @@ def plane_meta(plane_id: str) -> Dict[str, Any]:
     return out
 
 
-def planes_status() -> Dict[str, Any]:
+def planes_status() -> dict[str, Any]:
     cat = load_catalog()
     planes = cat.get("planes") or {}
     summary = {}
@@ -187,14 +186,14 @@ def assert_plane_safe_payload(
     payload: Any,
     *,
     path: str = "",
-) -> Tuple[bool, List[str]]:
+) -> tuple[bool, list[str]]:
     """Lightweight structural guard (not a full redactor).
 
     Returns (ok, issues). Business plane rejects known hyperraum-only key names.
     """
     if plane != PLANE_BUSINESS:
         return True, []
-    issues: List[str] = []
+    issues: list[str] = []
 
     def walk(obj: Any, prefix: str = "") -> None:
         if isinstance(obj, dict):

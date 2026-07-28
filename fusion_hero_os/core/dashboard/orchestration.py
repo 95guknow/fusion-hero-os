@@ -6,14 +6,13 @@ Verantwortlich für die Koordination von Agenten und Aufgaben innerhalb des Dash
 Teil der 04_execution Schicht.
 """
 
-from typing import List, Dict
 
 
 class DashboardOrchestrator:
     def __init__(self):
-        self.agents: Dict[str, dict] = {}
+        self.agents: dict[str, dict] = {}
 
-    def register_agent(self, name: str, capabilities: List[str]):
+    def register_agent(self, name: str, capabilities: list[str]):
         self.agents[name] = {"capabilities": capabilities, "active": True}
 
     def assign_best_agent(self, task: dict) -> str:
@@ -26,7 +25,7 @@ class DashboardOrchestrator:
         else:
             return "fusion-hero"
 
-    def get_active_agents(self) -> List[str]:
+    def get_active_agents(self) -> list[str]:
         return [name for name, data in self.agents.items() if data["active"]]
 
 

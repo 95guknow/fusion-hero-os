@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Unified Graph API hub for all connectors.
 
 Dry-run by default. Live HTTP only when:
@@ -17,13 +16,13 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "graph_api_connectors.yaml"
 
 
-def _load_yaml() -> Dict[str, Any]:
+def _load_yaml() -> dict[str, Any]:
     if not CONFIG_PATH.is_file():
         return {}
     try:
@@ -51,8 +50,8 @@ class GraphConnectorSpec:
     skill_module: str
     base_url: str
     env_token: str
-    actions: List[str] = field(default_factory=list)
-    extra: Dict[str, Any] = field(default_factory=dict)
+    actions: list[str] = field(default_factory=list)
+    extra: dict[str, Any] = field(default_factory=dict)
 
     def token(self) -> str:
         t = _env(self.env_token)
@@ -70,12 +69,12 @@ class GraphConnectorSpec:
 class GraphAPIHub:
     """Routes graph/REST operations across registered connectors."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         self.config = config if config is not None else _load_yaml()
         self.defaults = dict(self.config.get("defaults") or {})
         self.timeout = float(self.defaults.get("timeout_sec") or 30)
         self.api_version = str(self.defaults.get("api_version") or "v21.0")
-        self.connectors: Dict[str, GraphConnectorSpec] = {}
+        self.connectors: dict[str, GraphConnectorSpec] = {}
         for cid, raw in (self.config.get("connectors") or {}).items():
             if not isinstance(raw, dict):
                 continue
@@ -91,7 +90,7 @@ class GraphAPIHub:
                 }},
             )
 
-    def list_connectors(self) -> Dict[str, Any]:
+    def list_connectors(self) -> dict[str, Any]:
         out = {}
         for cid, c in self.connectors.items():
             out[cid] = {
@@ -115,7 +114,7 @@ class GraphAPIHub:
             "connectors": out,
         }
 
-    def status(self, connector_id: str) -> Dict[str, Any]:
+    def status(self, connector_id: str) -> dict[str, Any]:
         c = self.connectors.get(connector_id)
         if not c:
             return {"ok": False, "error": f"unknown connector: {connector_id}"}
@@ -142,9 +141,9 @@ class GraphAPIHub:
         *,
         method: str = "GET",
         path: str = "",
-        body: Optional[Dict[str, Any]] = None,
+        body: dict[str, Any] | None = None,
         reason: str = "",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         c = self.connectors.get(connector_id)
         return {
             "ok": True,
@@ -168,11 +167,11 @@ class GraphAPIHub:
         *,
         method: str = "GET",
         path: str = "",
-        query: Optional[Dict[str, Any]] = None,
-        body: Optional[Dict[str, Any]] = None,
+        query: dict[str, Any] | None = None,
+        body: dict[str, Any] | None = None,
         action: str = "request",
         force_live: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         c = self.connectors.get(connector_id)
         if not c:
             return {"ok": False, "error": f"unknown connector: {connector_id}"}
@@ -271,7 +270,7 @@ class GraphAPIHub:
         image_url: str,
         caption: str,
         force_live: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Two-step IG publish: media container → media_publish."""
         c = self.connectors.get("instagram")
         if not c:
@@ -340,7 +339,7 @@ class GraphAPIHub:
             "note": "Instagram Graph two-step publish",
         }
 
-    def dispatch(self, connector_id: str, action: str, **kwargs: Any) -> Dict[str, Any]:
+    def dispatch(self, connector_id: str, action: str, **kwargs: Any) -> dict[str, Any]:
         """High-level action router per connector."""
         action = (action or "status").lower()
         if action == "status":
@@ -381,5 +380,5 @@ def build_default_hub() -> GraphAPIHub:
     return GraphAPIHub()
 
 
-def status_all() -> Dict[str, Any]:
+def status_all() -> dict[str, Any]:
     return build_default_hub().list_connectors()

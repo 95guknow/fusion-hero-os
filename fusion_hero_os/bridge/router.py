@@ -6,7 +6,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger("fusion_hero_os.bridge.router")
 
@@ -38,7 +38,7 @@ def _json_safe(obj: Any) -> Any:
     return str(obj)
 
 
-def route_dispatch(module: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def route_dispatch(module: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
     from fusion_hero_os.core.dispatcher import build_default_dispatcher
 
     dispatcher = build_default_dispatcher()
@@ -57,7 +57,7 @@ def route_dispatch(module: str, payload: Optional[Dict[str, Any]] = None) -> Dic
         return {"ok": False, "module": module, "error": str(exc)}
 
 
-def _v8_import(fn_name: str) -> Dict[str, Any]:
+def _v8_import(fn_name: str) -> dict[str, Any]:
     if str(CODE_DIR) not in sys.path:
         sys.path.insert(0, str(CODE_DIR))
     from core import v8_core_bridge
@@ -65,14 +65,14 @@ def _v8_import(fn_name: str) -> Dict[str, Any]:
     return getattr(v8_core_bridge, fn_name)()
 
 
-def route_list_modules() -> Dict[str, Any]:
+def route_list_modules() -> dict[str, Any]:
     from fusion_hero_os.core.dispatcher import build_default_dispatcher
 
     return {"ok": True, "modules": build_default_dispatcher().list_modules()}
 
 
-def handle_ipc_message(msg_type: int, payload: bytes) -> Dict[str, Any]:
-    body: Dict[str, Any] = {}
+def handle_ipc_message(msg_type: int, payload: bytes) -> dict[str, Any]:
+    body: dict[str, Any] = {}
     if payload:
         try:
             body = json.loads(payload.decode("utf-8"))

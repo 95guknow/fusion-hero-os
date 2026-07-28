@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Poly-Mesh Algorithm Orchestrator — perfect placement + dispatch (v10).
 
 Sole placement authority remains ``poly_mesh_router``. This module:
@@ -17,9 +16,9 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 __all__ = [
     "orchestrate",
@@ -52,7 +51,7 @@ ALGO_CLASS = {
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _load_router():
@@ -73,7 +72,7 @@ def _load_router():
     }
 
 
-def _mesh_inventory() -> Dict[str, Any]:
+def _mesh_inventory() -> dict[str, Any]:
     try:
         from fusion_hero_os.core.poly_mesh_os_port import inventory_mesh
 
@@ -82,7 +81,7 @@ def _mesh_inventory() -> Dict[str, Any]:
         return {"ok": False, "error": str(exc)[:200], "tiers_online": ["L1_mainframe"]}
 
 
-def _algo_class(cap_id: str, route_dec: Dict[str, Any]) -> str:
+def _algo_class(cap_id: str, route_dec: dict[str, Any]) -> str:
     if cap_id in ALGO_CLASS:
         return ALGO_CLASS[cap_id]
     if route_dec.get("force_cluster"):
@@ -98,7 +97,7 @@ def _algo_class(cap_id: str, route_dec: Dict[str, Any]) -> str:
     return "general"
 
 
-def _dispatch_action(route_dec: Dict[str, Any], algo_class: str) -> Dict[str, Any]:
+def _dispatch_action(route_dec: dict[str, Any], algo_class: str) -> dict[str, Any]:
     """Decide what orchestration would DO (execute or dry)."""
     status = route_dec.get("status")
     chosen = route_dec.get("chosen")
@@ -163,7 +162,7 @@ def _dispatch_action(route_dec: Dict[str, Any], algo_class: str) -> Dict[str, An
     }
 
 
-def coherence_score(plan: Dict[str, Any]) -> Dict[str, Any]:
+def coherence_score(plan: dict[str, Any]) -> dict[str, Any]:
     """0–100: perfect orchestration when policy invariants hold."""
     routes = plan.get("algorithms") or []
     if not routes:
@@ -177,7 +176,7 @@ def coherence_score(plan: Dict[str, Any]) -> Dict[str, Any]:
         "has_online_tiers": bool(plan.get("online_tiers")),
         "mesh_inventory_ok": bool((plan.get("mesh") or {}).get("ok")),
     }
-    violations: List[str] = []
+    violations: list[str] = []
 
     for r in routes:
         st = r.get("status") or ""
@@ -232,7 +231,7 @@ def coherence_score(plan: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def plan_only() -> Dict[str, Any]:
+def plan_only() -> dict[str, Any]:
     """Build full orchestration plan without side effects."""
     R = _load_router()
     gke = R["probe_gke"]()
@@ -248,7 +247,7 @@ def plan_only() -> Dict[str, Any]:
     for t in mesh.get("tiers_online") or []:
         online.add(t)
 
-    algorithms: List[Dict[str, Any]] = []
+    algorithms: list[dict[str, Any]] = []
     for r in routed.get("routes") or []:
         algo = _algo_class(r.get("id") or "", r)
         disp = _dispatch_action(r, algo)
@@ -327,7 +326,7 @@ def plan_only() -> Dict[str, Any]:
     return plan
 
 
-def _build_waves(algorithms: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _build_waves(algorithms: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Ordered execution waves for perfect orchestration."""
     waves = [
         {
@@ -387,9 +386,9 @@ def _build_waves(algorithms: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return waves
 
 
-def _execute_hooks(plan: Dict[str, Any], *, execute: bool) -> Dict[str, Any]:
+def _execute_hooks(plan: dict[str, Any], *, execute: bool) -> dict[str, Any]:
     """Run safe orchestration hooks when execute=True."""
-    steps: Dict[str, Any] = {}
+    steps: dict[str, Any] = {}
     if not execute:
         steps["mode"] = "dry_run"
         steps["note"] = "Pass execute=True to run coordinator + dual-start asserts"
@@ -456,7 +455,7 @@ def _execute_hooks(plan: Dict[str, Any], *, execute: bool) -> Dict[str, Any]:
     return steps
 
 
-def orchestrate(*, execute: bool = False) -> Dict[str, Any]:
+def orchestrate(*, execute: bool = False) -> dict[str, Any]:
     """Perfect poly-mesh algorithm orchestration plan (+ optional execute)."""
     plan = plan_only()
     steps = _execute_hooks(plan, execute=execute)
@@ -503,8 +502,8 @@ def orchestrate(*, execute: bool = False) -> Dict[str, Any]:
     return report
 
 
-def status() -> Dict[str, Any]:
-    out: Dict[str, Any] = {
+def status() -> dict[str, Any]:
+    out: dict[str, Any] = {
         "ok": True,
         "state_dir": str(STATE_DIR),
         "has_plan": PLAN_PATH.is_file(),

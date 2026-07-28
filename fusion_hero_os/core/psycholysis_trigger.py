@@ -23,7 +23,7 @@ Teil der 02_architecture / 04_execution Schicht.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 # Somatische Integrations-Checklist (Quelle: Grok-Export Abschnitt 3 —
 # Gorman et al., Bourzat & Hunter, THRIVE-Modell).
@@ -46,7 +46,7 @@ class PsycholysisTrigger:
         """Entscheidet, ob eine Psycholyse ausgeloest werden sollte."""
         return coherence_score < self.threshold or load_level > 0.8
 
-    def trigger(self, context: dict) -> Dict[str, Any]:
+    def trigger(self, context: dict) -> dict[str, Any]:
         """Startet eine Session inkl. offener somatischer Integrationsphase."""
         session = {
             "triggered": True,
@@ -59,7 +59,7 @@ class PsycholysisTrigger:
         self.history.append(session)
         return session
 
-    def log_somatic_practice(self, session: Dict[str, Any], item: str,
+    def log_somatic_practice(self, session: dict[str, Any], item: str,
                              note: str = "") -> None:
         """Einen Checklist-Punkt als durchgefuehrt loggen (mit Zeit + Notiz)."""
         if item not in session["somatic_phase"]:
@@ -72,7 +72,7 @@ class PsycholysisTrigger:
             "ts": datetime.now().replace(microsecond=0).isoformat(),
         })
 
-    def complete_session(self, session: Dict[str, Any]) -> Dict[str, Any]:
+    def complete_session(self, session: dict[str, Any]) -> dict[str, Any]:
         """Session abschliessen — NUR moeglich, wenn die somatische Phase
         vollstaendig ist (verpflichtend laut v8-Integrationsdokument)."""
         missing = [k for k, done in session["somatic_phase"].items() if not done]

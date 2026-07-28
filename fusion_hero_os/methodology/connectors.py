@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """connectors.py — Typisierte Wrapper für die HEROIC_SKILL.md-Connectoren.
 
 Dieses Modul stellt typisierte Wrapper-Klassen für die in ``HEROIC_SKILL.md``
@@ -45,7 +44,7 @@ Hausstil: deutsche Docstrings; optionaler Modul-RNG nur falls benötigt.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +83,7 @@ class BaseConnector:
     #: Sprechender Modul-Name aus HEROIC_SKILL.md (Connectoren-Abschnitt).
     skill_module: str = "GenericCoreModule"
 
-    def __init__(self, client: Optional[Any] = None, name: Optional[str] = None) -> None:
+    def __init__(self, client: Any | None = None, name: str | None = None) -> None:
         self._client = client
         self.name = name or self.__class__.__name__
 
@@ -94,7 +93,7 @@ class BaseConnector:
         """True, wenn ein echter Client injiziert wurde, sonst False."""
         return self._client is not None
 
-    def _dry_run(self, action: str, **args: Any) -> Dict[str, Any]:
+    def _dry_run(self, action: str, **args: Any) -> dict[str, Any]:
         """Erzeugt einen strukturierten DRY-RUN-Plan (keine reale Aktion).
 
         Der Plan dokumentiert die *beabsichtigte* Operation und ihre Argumente,
@@ -113,7 +112,7 @@ class BaseConnector:
             ),
         }
 
-    def _delegate(self, action: str, method_name: str, **args: Any) -> Dict[str, Any]:
+    def _delegate(self, action: str, method_name: str, **args: Any) -> dict[str, Any]:
         """Delegiert eine Operation an den echten Client — oder DRY-RUN.
 
         Ohne Client wird ein DRY-RUN-Plan zurückgegeben. Mit Client wird
@@ -150,7 +149,7 @@ class BaseConnector:
             "note": "Operation an echten Client delegiert.",
         }
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         """Knappe Statusbeschreibung des Connectors."""
         return {
             "connector": self.name,
@@ -179,9 +178,9 @@ class GitHubConnector(BaseConnector):
         self,
         repo: str,
         message: str,
-        files: Optional[Dict[str, str]] = None,
+        files: dict[str, str] | None = None,
         branch: str = "main",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Plant/führt einen Commit aus (DRY-RUN ohne Client)."""
         return self._delegate(
             "commit",
@@ -192,11 +191,11 @@ class GitHubConnector(BaseConnector):
             branch=branch,
         )
 
-    def tag(self, repo: str, tag: str, ref: str = "HEAD") -> Dict[str, Any]:
+    def tag(self, repo: str, tag: str, ref: str = "HEAD") -> dict[str, Any]:
         """Plant/setzt einen Versions-Tag (DRY-RUN ohne Client)."""
         return self._delegate("tag", "tag", repo=repo, tag=tag, ref=ref)
 
-    def create_repo(self, name: str, private: bool = True) -> Dict[str, Any]:
+    def create_repo(self, name: str, private: bool = True) -> dict[str, Any]:
         """Plant/legt ein Repository an (DRY-RUN ohne Client)."""
         return self._delegate("create_repo", "create_repo", name=name, private=private)
 
@@ -211,15 +210,15 @@ class DriveConnector(BaseConnector):
 
     skill_module = "DriveCoreModule"
 
-    def upload(self, path: str, folder: Optional[str] = None) -> Dict[str, Any]:
+    def upload(self, path: str, folder: str | None = None) -> dict[str, Any]:
         """Plant/führt einen Upload aus (DRY-RUN ohne Client)."""
         return self._delegate("upload", "upload", path=path, folder=folder)
 
-    def download(self, file_id: str, dest: str) -> Dict[str, Any]:
+    def download(self, file_id: str, dest: str) -> dict[str, Any]:
         """Plant/führt einen Download aus (DRY-RUN ohne Client)."""
         return self._delegate("download", "download", file_id=file_id, dest=dest)
 
-    def list_files(self, folder: Optional[str] = None) -> Dict[str, Any]:
+    def list_files(self, folder: str | None = None) -> dict[str, Any]:
         """Plant/listet Dateien (DRY-RUN ohne Client)."""
         return self._delegate("list_files", "list_files", folder=folder)
 
@@ -240,8 +239,8 @@ class VercelConnector(BaseConnector):
         project: str,
         directory: str = ".",
         production: bool = False,
-        pre_build_checks: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        pre_build_checks: list[str] | None = None,
+    ) -> dict[str, Any]:
         """Plant/führt ein Deployment aus (DRY-RUN ohne Client)."""
         return self._delegate(
             "deploy",
@@ -252,7 +251,7 @@ class VercelConnector(BaseConnector):
             pre_build_checks=list(pre_build_checks or []),
         )
 
-    def list_deployments(self, project: str) -> Dict[str, Any]:
+    def list_deployments(self, project: str) -> dict[str, Any]:
         """Plant/listet Deployments (DRY-RUN ohne Client)."""
         return self._delegate("list_deployments", "list_deployments", project=project)
 
@@ -271,8 +270,8 @@ class GmailConnector(BaseConnector):
         to: str,
         subject: str,
         body: str,
-        attachments: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        attachments: list[str] | None = None,
+    ) -> dict[str, Any]:
         """Plant/versendet eine E-Mail (DRY-RUN ohne Client)."""
         return self._delegate(
             "send",
@@ -283,7 +282,7 @@ class GmailConnector(BaseConnector):
             attachments=list(attachments or []),
         )
 
-    def parse_replies(self, query: str = "is:unread") -> Dict[str, Any]:
+    def parse_replies(self, query: str = "is:unread") -> dict[str, Any]:
         """Plant/parst Antworten (DRY-RUN ohne Client)."""
         return self._delegate("parse_replies", "parse_replies", query=query)
 
@@ -308,22 +307,22 @@ class XAPIConnector(BaseConnector):
 
     def __init__(
         self,
-        client: Optional[Any] = None,
-        name: Optional[str] = None,
+        client: Any | None = None,
+        name: str | None = None,
         allow_write: bool = False,
     ) -> None:
         super().__init__(client=client, name=name)
         self.allow_write = bool(allow_write)
 
-    def search(self, query: str, limit: int = 20) -> Dict[str, Any]:
+    def search(self, query: str, limit: int = 20) -> dict[str, Any]:
         """Plant/führt eine Suche aus (Lese-Operation; DRY-RUN ohne Client)."""
         return self._delegate("search", "search", query=query, limit=limit)
 
-    def trends(self, region: str = "worldwide") -> Dict[str, Any]:
+    def trends(self, region: str = "worldwide") -> dict[str, Any]:
         """Plant/liest Trends (Lese-Operation; DRY-RUN ohne Client)."""
         return self._delegate("trends", "trends", region=region)
 
-    def post(self, text: str) -> Dict[str, Any]:
+    def post(self, text: str) -> dict[str, Any]:
         """Schreiboperation — per Default GESPERRT.
 
         Ohne ``allow_write=True`` wird niemals gepostet; es kommt ein
@@ -349,7 +348,7 @@ class InstagramConnector(BaseConnector):
 
     skill_module = "InstagramGraphCoreModule"
 
-    def publish(self, image_url: str, caption: str = "") -> Dict[str, Any]:
+    def publish(self, image_url: str, caption: str = "") -> dict[str, Any]:
         """Plant/führt IG media publish aus (DRY-RUN ohne Client)."""
         if not self.available:
             # Prefer unified hub dry-run plan for consistency
@@ -365,7 +364,7 @@ class InstagramConnector(BaseConnector):
             "publish", "publish", image_url=image_url, caption=caption
         )
 
-    def me(self) -> Dict[str, Any]:
+    def me(self) -> dict[str, Any]:
         return self._delegate("me", "me")
 
 
@@ -374,10 +373,10 @@ class MetaGraphConnector(BaseConnector):
 
     skill_module = "FacebookGraphCoreModule"
 
-    def me(self) -> Dict[str, Any]:
+    def me(self) -> dict[str, Any]:
         return self._delegate("me", "me")
 
-    def request(self, path: str, method: str = "GET", **params: Any) -> Dict[str, Any]:
+    def request(self, path: str, method: str = "GET", **params: Any) -> dict[str, Any]:
         return self._delegate(
             "request", "request", path=path, method=method, params=params
         )
@@ -397,10 +396,10 @@ class ConnectorRegistry:
     ``fusion_hero_os.connectors.graph_api.GraphAPIHub``.
     """
 
-    connectors: Dict[str, BaseConnector] = field(default_factory=dict)
+    connectors: dict[str, BaseConnector] = field(default_factory=dict)
 
     @classmethod
-    def default(cls) -> "ConnectorRegistry":
+    def default(cls) -> ConnectorRegistry:
         """Erzeugt eine Registry mit Standard-Connectoren inkl. Graph (DRY-RUN)."""
         reg = cls()
         reg.register(GitHubConnector())
@@ -417,7 +416,7 @@ class ConnectorRegistry:
         """Registriert einen Connector unter seinem ``name``."""
         self.connectors[connector.name] = connector
 
-    def get(self, name: str) -> Optional[BaseConnector]:
+    def get(self, name: str) -> BaseConnector | None:
         """Gibt den Connector zu ``name`` zurück (oder None)."""
         return self.connectors.get(name)
 
@@ -434,16 +433,16 @@ class ConnectorRegistry:
         return True
 
     # -- Berichte -----------------------------------------------------------
-    def available(self) -> Dict[str, bool]:
+    def available(self) -> dict[str, bool]:
         """Verfügbarkeits-Übersicht: ``{name: available}``."""
         return {name: c.available for name, c in self.connectors.items()}
 
-    def plan(self) -> Dict[str, Dict[str, Any]]:
+    def plan(self) -> dict[str, dict[str, Any]]:
         """Plan-Übersicht: pro Connector Status + Sicherheitshinweis.
 
         Reine Beschreibung; löst keinerlei Operation aus.
         """
-        summary: Dict[str, Dict[str, Any]] = {}
+        summary: dict[str, dict[str, Any]] = {}
         for name, c in self.connectors.items():
             summary[name] = {
                 "skill_module": c.skill_module,

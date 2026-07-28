@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fusion_hero_os.modules.heroic_llm_ea.fitness import score_with_peer_review
 from fusion_hero_os.modules.heroic_llm_ea.memory import MutationMemory, ProposalRecord
@@ -19,17 +19,17 @@ class EvolutionConfig:
 class EvolutionarySelector:
     """(μ+λ)-Selektion über Proposal-Texte mit Mutations-Gedächtnis."""
 
-    def __init__(self, config: Optional[EvolutionConfig] = None) -> None:
+    def __init__(self, config: EvolutionConfig | None = None) -> None:
         self.config = config or EvolutionConfig()
         self.memory = MutationMemory()
 
     def run_generation(
         self,
-        proposals: List[str],
+        proposals: list[str],
         generation: int,
-        context: Dict[str, Any],
-    ) -> Dict[str, Any]:
-        scored: List[ProposalRecord] = []
+        context: dict[str, Any],
+    ) -> dict[str, Any]:
+        scored: list[ProposalRecord] = []
         for text in proposals:
             scores = score_with_peer_review(text, context)
             scored.append(
@@ -45,8 +45,8 @@ class EvolutionarySelector:
         scored.sort(key=lambda r: r.fitness, reverse=True)
         elites = scored[: self.config.mu]
 
-        offspring: List[str] = []
-        parent_ids: List[Optional[str]] = []
+        offspring: list[str] = []
+        parent_ids: list[str | None] = []
         for i, elite in enumerate(elites):
             for j in range(max(1, self.config.lam // max(1, len(elites)))):
                 op = self.config.mutation_ops[(i + j) % len(self.config.mutation_ops)]
@@ -54,7 +54,7 @@ class EvolutionarySelector:
                 offspring.append(child)
                 parent_ids.append(elite.proposal_id)
 
-        child_records: List[ProposalRecord] = []
+        child_records: list[ProposalRecord] = []
         for text, pid in zip(offspring, parent_ids):
             scores = score_with_peer_review(text, context)
             rec = ProposalRecord(

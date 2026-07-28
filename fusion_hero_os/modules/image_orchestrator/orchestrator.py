@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import yaml
 
@@ -30,7 +30,7 @@ class HeroicImageOrchestrator(BaseModule):
     Actions: submit | status | list | configure
     """
 
-    def __init__(self, config_path: Optional[Path] = None, provider: Optional[ImageProvider] = None) -> None:
+    def __init__(self, config_path: Path | None = None, provider: ImageProvider | None = None) -> None:
         super().__init__()
         self.config_path = config_path or _CONFIG_PATH
         self._config = self._load_config()
@@ -38,7 +38,7 @@ class HeroicImageOrchestrator(BaseModule):
         self._queue = ImageJobQueue()
         self._pipeline = self._build_pipeline()
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> dict[str, Any]:
         if not self.config_path.exists():
             return {"identity": {}, "rate_limits": {}, "pipeline": {"mode": "dry_run"}}
         with open(self.config_path, encoding="utf-8") as f:
@@ -64,7 +64,7 @@ class HeroicImageOrchestrator(BaseModule):
         self._provider = provider
         self._pipeline = self._build_pipeline()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         action = payload.get("action", "submit")
 
@@ -86,7 +86,7 @@ class HeroicImageOrchestrator(BaseModule):
         result = self._pipeline.run(prompt)
         return {"action": "submit", **result}
 
-    def peer_review(self, target: Optional[Dict[str, Any]] = None) -> ReviewResult:
+    def peer_review(self, target: dict[str, Any] | None = None) -> ReviewResult:
         live = self._config.get("pipeline", {}).get("mode") == "live"
         has_callable = isinstance(self._provider, CallableImageProvider)
         criteria = [

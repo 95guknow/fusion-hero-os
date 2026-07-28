@@ -15,7 +15,7 @@ oder einem CI-Skript ausgefüllt wird.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule, ReviewCriterion, ReviewResult
 
@@ -37,7 +37,7 @@ class PeerReviewCoreModule(BaseModule):
     liefern ein :class:`ReviewResult`.
     """
 
-    def _evaluate(self, payload: Optional[Dict[str, Any]]) -> ReviewResult:
+    def _evaluate(self, payload: dict[str, Any] | None) -> ReviewResult:
         payload = payload or {}
         notes = payload.get("notes", {})
         criteria = [
@@ -50,8 +50,8 @@ class PeerReviewCoreModule(BaseModule):
         ]
         return ReviewResult(module=self.name, criteria=criteria)
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> ReviewResult:
+    def process(self, payload: dict[str, Any] | None = None) -> ReviewResult:
         return self._evaluate(payload)
 
-    def peer_review(self, target: Optional[Dict[str, Any]] = None) -> ReviewResult:
+    def peer_review(self, target: dict[str, Any] | None = None) -> ReviewResult:
         return self._evaluate(target)

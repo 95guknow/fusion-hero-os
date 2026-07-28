@@ -2,7 +2,17 @@
 
 **Stand:** 2026-07-26 · **Quantum:** Q10 (+ Q0 gates)  
 **Platform:** Fusion Hero OS v13+  
-**Geltung:** Host-Pfad **Satz** (Windows inject_host) · Freestanding ASM **Modell** bis QEMU-Boot grün
+**Geltung:** Host-Pfad **Satz** (Windows inject_host) · Freestanding ASM **Fragment**
+
+> **Korrektur 2026-07-27:** Der freestanding-Pfad stand hier als *Modell*. Das
+> war zu hoch gegriffen — er hat nie assembliert. `boot.s` ist unter keinem
+> Assembler übersetzbar (u. a. doppeltes Label, Prüfsumme über
+> Sektionsgrenzen), `drivers/isr.s` wurde mit dem falschen Assembler
+> aufgerufen, und `inject_table.o` wurde gebaut, aber nie gelinkt.
+> Jeder Defekt ist mit Werkzeugausgabe belegt in
+> [`KERNEL_BUILD_BEFUND.md`](KERNEL_BUILD_BEFUND.md); ein Teil ist dort auch
+> bereits repariert. Geltung steigt erst auf *Modell*, wenn der QEMU-Boot
+> grün ist.
 
 ---
 

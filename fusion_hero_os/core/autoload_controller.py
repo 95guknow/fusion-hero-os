@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Autoload Controller — status surface for post-reboot load orchestration.
 
@@ -12,9 +11,9 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 __all__ = ["STATE_PATH", "status", "public_status", "mark_ready"]
 
@@ -24,10 +23,10 @@ PLATFORM = "12.1.0"
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def _load() -> Dict[str, Any]:
+def _load() -> dict[str, Any]:
     if not STATE_PATH.is_file():
         return {
             "ok": False,
@@ -43,7 +42,7 @@ def _load() -> Dict[str, Any]:
         return {"ok": False, "error": "unreadable_state"}
 
 
-def mark_ready(**extra: Any) -> Dict[str, Any]:
+def mark_ready(**extra: Any) -> dict[str, Any]:
     OP.mkdir(parents=True, exist_ok=True)
     body = {
         "ok": True,
@@ -62,7 +61,7 @@ def mark_ready(**extra: Any) -> Dict[str, Any]:
     return body
 
 
-def public_status() -> Dict[str, Any]:
+def public_status() -> dict[str, Any]:
     d = _load()
     return {
         "ok": bool(d.get("ok", True)),
@@ -84,7 +83,7 @@ def public_status() -> Dict[str, Any]:
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return public_status()
 
 

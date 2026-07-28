@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Daemon self-heal field study — Fixpunkt-Inversion + QUBO (lab only).
 
@@ -23,11 +22,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 import numpy as np
 
@@ -62,7 +61,7 @@ class ClearwebLens:
 
 
 # What one finds on clearweb product/docs *categories* (no private data)
-CLEARWEB_LENSES: List[ClearwebLens] = [
+CLEARWEB_LENSES: list[ClearwebLens] = [
     ClearwebLens(
         source_class="enterprise_ontology_ops (public product narrative)",
         public_idea="Semantic object model (ontology) as single decision surface; closed-loop ops on customer-owned data.",
@@ -89,12 +88,12 @@ CLEARWEB_LENSES: List[ClearwebLens] = [
 @dataclass
 class HealStep:
     iteration: int
-    state: List[int]
+    state: list[int]
     energy: float
     distance: float
-    flipped: List[str] = field(default_factory=list)
+    flipped: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -141,14 +140,14 @@ def fixed_point_invert(
     alpha: float = 0.5,
     max_iter: int = 12,
     tol: float = 0.0,
-) -> Tuple[np.ndarray, List[HealStep], bool]:
+) -> tuple[np.ndarray, list[HealStep], bool]:
     """
     Invert drift toward target with discrete projection (Banach-style contraction on Hamming).
 
     Continuous step then threshold to {0,1}. Success if strict contraction until fixed.
     """
     x = state.astype(np.float64).copy()
-    steps: List[HealStep] = []
+    steps: list[HealStep] = []
     Q = _build_qubo(len(x), x)
     contracted = True
     prev_d = _hamming(x, target)
@@ -206,10 +205,10 @@ def qubo_local_search(state: np.ndarray, Q: np.ndarray, rounds: int = 20) -> np.
 
 def run_field_study(
     *,
-    initial: Optional[Sequence[int]] = None,
+    initial: Sequence[int] | None = None,
     write: bool = True,
     seed: int = 0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     rng = np.random.default_rng(seed)
     if initial is None:
         # Simulated drifted daemon (field observation of own stack risks)
@@ -231,7 +230,7 @@ def run_field_study(
 
     report = {
         "kind": "daemon_self_heal_field_study",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "policy": {
             "sandbox_only": True,
             "no_external_targets": True,
@@ -307,7 +306,7 @@ def run_field_study(
     return report
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
 
     p = argparse.ArgumentParser(description="Daemon self-heal field study (lab only)")

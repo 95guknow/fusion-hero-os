@@ -10,7 +10,7 @@ Usage:
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = [
     "RouteTarget",
@@ -29,15 +29,15 @@ class RouteTarget:
     api: str = ""         # primary API if any
     kind: str = "surface"  # surface | api | action | external
     node_id: str = ""     # interconnect node id
-    aliases: List[str] = field(default_factory=list)
+    aliases: list[str] = field(default_factory=list)
     description: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
 # Canonical routing after "alles umrouten"
-ROUTE_TABLE: Dict[str, RouteTarget] = {
+ROUTE_TABLE: dict[str, RouteTarget] = {
     "interconnect": RouteTarget(
         "interconnect",
         "/mainframe/grok",
@@ -306,7 +306,7 @@ ROUTE_TABLE: Dict[str, RouteTarget] = {
 
 
 # Legacy paths → new interconnect surfaces
-LEGACY_REDIRECTS: Dict[str, str] = {
+LEGACY_REDIRECTS: dict[str, str] = {
     "/grok": "/mainframe/grok",
     "/grok/status": "/api/grok/status",
     "/grok/chat": "/api/grok/chat",
@@ -320,7 +320,7 @@ LEGACY_REDIRECTS: Dict[str, str] = {
 }
 
 
-def resolve(intent_or_alias: str) -> Optional[RouteTarget]:
+def resolve(intent_or_alias: str) -> RouteTarget | None:
     key = (intent_or_alias or "").strip().lower().replace("-", "_").replace(" ", "_")
     if key in ROUTE_TABLE:
         return ROUTE_TABLE[key]
@@ -332,10 +332,10 @@ def resolve(intent_or_alias: str) -> Optional[RouteTarget]:
     return None
 
 
-def route_message(message: str, intents: Optional[List[str]] = None) -> Dict[str, Any]:
+def route_message(message: str, intents: list[str] | None = None) -> dict[str, Any]:
     """Map message intents to ordered route targets (re-route plan)."""
     intents = list(intents or [])
-    routes: List[Dict[str, Any]] = []
+    routes: list[dict[str, Any]] = []
     seen = set()
     for intent in intents:
         rt = resolve(intent)
@@ -358,7 +358,7 @@ def route_message(message: str, intents: Optional[List[str]] = None) -> Dict[str
     }
 
 
-def all_routes() -> Dict[str, Any]:
+def all_routes() -> dict[str, Any]:
     return {
         "table": {k: v.to_dict() for k, v in ROUTE_TABLE.items()},
         "legacy_redirects": LEGACY_REDIRECTS,

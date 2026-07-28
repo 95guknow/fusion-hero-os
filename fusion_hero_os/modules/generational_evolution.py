@@ -9,7 +9,7 @@ und die Elite-Fitness ist über die Generationen monoton nicht-fallend.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.engine.mainframe import (
@@ -26,20 +26,20 @@ class GenerationalEvolutionProtocolCoreModule(BaseModule):
 
     def __init__(self) -> None:
         super().__init__()
-        self._impl: Optional[_EvolutionImpl] = None
+        self._impl: _EvolutionImpl | None = None
 
-    def _ensure_impl(self, init: Optional[Dict[str, Any]]) -> _EvolutionImpl:
+    def _ensure_impl(self, init: dict[str, Any] | None) -> _EvolutionImpl:
         if self._impl is None:
             self._impl = _EvolutionImpl(**(init or {}))
         return self._impl
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         impl = self._ensure_impl(payload.get("init"))
         n_generations = int(payload.get("n_generations", 1))
         return impl.evolve(n_generations=n_generations)
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         """Aktueller Stand ohne eine neue Generation auszulösen."""
         if self._impl is None:
             return {"generation": 0, "best_fitness": None}

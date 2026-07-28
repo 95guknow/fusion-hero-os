@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Headset multi-layer membrane — several layers armed, ONE active (loud & clear).
 
 Layers (placement-aligned, additive):
@@ -22,9 +21,9 @@ import os
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 __all__ = [
     "LAYERS",
@@ -47,7 +46,7 @@ SVV = ROOT / "workstation" / "tools" / "SoundVolumeView.exe"
 
 LAYER_ORDER = ("L1_local", "L2_phone", "L3_comaedchen", "L4_hyperraum")
 
-LAYERS: Dict[str, Dict[str, Any]] = {
+LAYERS: dict[str, dict[str, Any]] = {
     "L1_local": {
         "id": "L1_local",
         "rank": 1,
@@ -98,10 +97,10 @@ LAYERS: Dict[str, Dict[str, Any]] = {
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def _default_state() -> Dict[str, Any]:
+def _default_state() -> dict[str, Any]:
     return {
         "version": "1.0",
         "platform_version": "10.0.0",
@@ -117,7 +116,7 @@ def _default_state() -> Dict[str, Any]:
     }
 
 
-def load_state() -> Dict[str, Any]:
+def load_state() -> dict[str, Any]:
     st = _default_state()
     if STATE_PATH.is_file():
         try:
@@ -152,7 +151,7 @@ def load_state() -> Dict[str, Any]:
     return st
 
 
-def save_state(st: Dict[str, Any]) -> Path:
+def save_state(st: dict[str, Any]) -> Path:
     STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     st = dict(st)
     st["updated_at"] = _now()
@@ -168,9 +167,9 @@ def save_state(st: Dict[str, Any]) -> Path:
     return STATE_PATH
 
 
-def _phone_link_snapshot() -> Dict[str, Any]:
+def _phone_link_snapshot() -> dict[str, Any]:
     """Live phone + AudioRelay link (for banner clarity)."""
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "phone_online": False,
         "phone_host": None,
         "phone_ips": [],
@@ -261,7 +260,7 @@ def _phone_link_snapshot() -> Dict[str, Any]:
     return out
 
 
-def set_mesh_only(enabled: bool = True) -> Dict[str, Any]:
+def set_mesh_only(enabled: bool = True) -> dict[str, Any]:
     """Persist mesh-only policy (phone path must use Tailscale 100.x)."""
     st = load_state()
     st["mesh_only"] = bool(enabled)
@@ -274,10 +273,10 @@ def is_mesh_only() -> bool:
 
 
 def banner(
-    active: Optional[str] = None,
-    enabled: Optional[List[str]] = None,
+    active: str | None = None,
+    enabled: list[str] | None = None,
     *,
-    link: Optional[Dict[str, Any]] = None,
+    link: dict[str, Any] | None = None,
 ) -> str:
     """Very loud, unambiguous active-level banner (ASCII)."""
     st = load_state()
@@ -354,7 +353,7 @@ def banner(
     return "\n".join(lines)
 
 
-def status(*, apply_probe: bool = False) -> Dict[str, Any]:
+def status(*, apply_probe: bool = False) -> dict[str, Any]:
     st = load_state()
     act = st["active"]
     meta = dict(LAYERS[act])
@@ -367,7 +366,7 @@ def status(*, apply_probe: bool = False) -> Dict[str, Any]:
         layers_view.append(m)
 
     link = _phone_link_snapshot()
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "ok": True,
         "membrane": "headset_layers_v1",
         "platform_version": "10.0.0",
@@ -419,7 +418,7 @@ def status(*, apply_probe: bool = False) -> Dict[str, Any]:
     return out
 
 
-def _probe_default_device() -> Dict[str, Any]:
+def _probe_default_device() -> dict[str, Any]:
     if not SVV.is_file():
         return {"ok": False, "error": "SoundVolumeView missing"}
     csv = Path.home() / ".fusion" / "headset_default_probe.csv"
@@ -456,7 +455,7 @@ def _probe_default_device() -> Dict[str, Any]:
         return {"ok": False, "error": str(exc)[:200]}
 
 
-def enable(layer_id: str) -> Dict[str, Any]:
+def enable(layer_id: str) -> dict[str, Any]:
     lid = _norm(layer_id)
     st = load_state()
     en = list(st["enabled"])
@@ -469,7 +468,7 @@ def enable(layer_id: str) -> Dict[str, Any]:
     return status()
 
 
-def disable(layer_id: str) -> Dict[str, Any]:
+def disable(layer_id: str) -> dict[str, Any]:
     lid = _norm(layer_id)
     st = load_state()
     en = [x for x in st["enabled"] if x != lid]
@@ -519,7 +518,7 @@ def _norm(layer_id: str) -> str:
     raise ValueError(f"unknown headset layer: {layer_id!r} — use {list(LAYER_ORDER)}")
 
 
-def set_active(layer_id: str, *, apply_route: bool = True) -> Dict[str, Any]:
+def set_active(layer_id: str, *, apply_route: bool = True) -> dict[str, Any]:
     """Set the single ACTIVE layer (must be enabled or will be auto-enabled)."""
     lid = _norm(layer_id)
     st = load_state()
@@ -546,13 +545,13 @@ def set_active(layer_id: str, *, apply_route: bool = True) -> Dict[str, Any]:
     return out
 
 
-def apply_active_route() -> Dict[str, Any]:
+def apply_active_route() -> dict[str, Any]:
     """Apply Windows default device + optional Comet for current active layer."""
     st = load_state()
     lid = st["active"]
     meta = LAYERS[lid]
     route = meta["route"]
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "ok": False,
         "active": lid,
         "label": meta["label"],
@@ -676,7 +675,7 @@ def apply_active_route() -> Dict[str, Any]:
     return report
 
 
-def _svv_set_default(device_name: str) -> Dict[str, Any]:
+def _svv_set_default(device_name: str) -> dict[str, Any]:
     if not SVV.is_file():
         return {"ok": False, "error": "SoundVolumeView missing", "device": device_name}
     try:
@@ -696,7 +695,7 @@ def activate_stack(
     *,
     active: str = "L2_phone",
     enable_all: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Arm multi-layer stack and set active level (default phone relay)."""
     st = load_state()
     if enable_all:

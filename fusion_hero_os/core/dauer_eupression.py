@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Dauer-Eupression — continuous good-pressure along defined dependencies.
 
@@ -19,10 +18,10 @@ from __future__ import annotations
 import importlib
 import json
 import time
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 DEPS_YAML = Path(__file__).resolve().parent / "catalogs" / "dauer_eupression_deps.yaml"
@@ -40,14 +39,14 @@ __all__ = [
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _now_ts() -> float:
     return time.time()
 
 
-def load_deps() -> Dict[str, Any]:
+def load_deps() -> dict[str, Any]:
     """Load explicit dependency catalog (YAML if available, else built-in)."""
     if DEPS_YAML.is_file():
         try:
@@ -62,7 +61,7 @@ def load_deps() -> Dict[str, Any]:
     return _builtin_deps()
 
 
-def _builtin_deps() -> Dict[str, Any]:
+def _builtin_deps() -> dict[str, Any]:
     """Minimal mirror of dauer_eupression_deps.yaml if YAML load fails."""
     return {
         "version": 1,
@@ -90,11 +89,11 @@ def _builtin_deps() -> Dict[str, Any]:
     }
 
 
-def topo_order(nodes: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def topo_order(nodes: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     """Topological order by depends_on; stable for independent siblings."""
     by_id = {n["id"]: n for n in nodes if n.get("id")}
     pending = set(by_id)
-    done: List[str] = []
+    done: list[str] = []
     while pending:
         ready = [
             i
@@ -115,11 +114,11 @@ def topo_order(nodes: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [by_id[i] for i in done if i in by_id]
 
 
-def _probe_node(node: Dict[str, Any], deps_cfg: Dict[str, Any]) -> Dict[str, Any]:
+def _probe_node(node: dict[str, Any], deps_cfg: dict[str, Any]) -> dict[str, Any]:
     nid = node.get("id")
     imp = node.get("import")
     probe = node.get("probe") or "import_only"
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "id": nid,
         "import": imp,
         "probe": probe,
@@ -249,7 +248,7 @@ def _probe_node(node: Dict[str, Any], deps_cfg: Dict[str, Any]) -> Dict[str, Any
     return out
 
 
-def pulse(*, force: bool = False) -> Dict[str, Any]:
+def pulse(*, force: bool = False) -> dict[str, Any]:
     """One Dauer-Eupression pulse along dependency order."""
     deps = load_deps()
     nodes = list(deps.get("nodes") or [])
@@ -269,9 +268,9 @@ def pulse(*, force: bool = False) -> Dict[str, Any]:
             "continuous": True,
         }
 
-    results: List[Dict[str, Any]] = []
-    passed: Set[str] = set()
-    blocked: List[str] = []
+    results: list[dict[str, Any]] = []
+    passed: set[str] = set()
+    blocked: list[str] = []
 
     for node in ordered:
         deps_ok = all(
@@ -340,7 +339,7 @@ def pulse(*, force: bool = False) -> Dict[str, Any]:
     return report
 
 
-def ensure_continuous() -> Dict[str, Any]:
+def ensure_continuous() -> dict[str, Any]:
     """Enable continuous mode and force one pulse."""
     deps = load_deps()
     cont = dict(deps.get("continuous") or {})
@@ -357,12 +356,12 @@ def ensure_continuous() -> Dict[str, Any]:
     return report
 
 
-def install() -> Dict[str, Any]:
+def install() -> dict[str, Any]:
     """Alias: install Dauer-Eupression continuous policy."""
     return ensure_continuous()
 
 
-def _load_state() -> Dict[str, Any]:
+def _load_state() -> dict[str, Any]:
     if not STATE_PATH.is_file():
         return {}
     try:
@@ -372,7 +371,7 @@ def _load_state() -> Dict[str, Any]:
         return {}
 
 
-def _save_state(data: Dict[str, Any]) -> None:
+def _save_state(data: dict[str, Any]) -> None:
     STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
     STATE_PATH.write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n",
@@ -380,7 +379,7 @@ def _save_state(data: Dict[str, Any]) -> None:
     )
 
 
-def public_status() -> Dict[str, Any]:
+def public_status() -> dict[str, Any]:
     st = _load_state()
     last = st.get("last_report") or {}
     deps = load_deps()
@@ -402,7 +401,7 @@ def public_status() -> Dict[str, Any]:
     }
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     # refresh if continuous enabled and interval elapsed
     st = _load_state()
     if st.get("enabled", True) and st.get("continuous", True):

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 merge = both (private + public) connected via dual + virtual timeline (t ∥ τ ∥ v)
 
@@ -10,9 +9,9 @@ from __future__ import annotations
 
 import json
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from fusion_hero_os.core.ops_vocabulary import OPS_MERGE, meaning_of
 
@@ -21,7 +20,7 @@ __all__ = ["merge_both", "status"]
 PLATFORM = "12.1.0"
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return {
         "ok": True,
         "operation": OPS_MERGE,
@@ -42,19 +41,19 @@ def merge_both(
     *,
     run_deploy: bool = True,
     include_timeline: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Connect private deploy state with public presentation via dual timeline."""
     t0 = time.time()
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "operation": OPS_MERGE,
         "meaning": "both_via_timeline",
-        "started_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": datetime.now(UTC).isoformat(),
         "links": [],
         "steps": [],
     }
 
     # --- public side ---
-    public: Dict[str, Any] = {}
+    public: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.masterseed_public import public_view
 
@@ -64,7 +63,7 @@ def merge_both(
         out["steps"].append({"step": "public_masterseed", "ok": False, "error": str(e)[:160]})
 
     # --- private side (refs only, no payloads) ---
-    private_refs: List[Dict[str, Any]] = []
+    private_refs: list[dict[str, Any]] = []
     if run_deploy:
         try:
             from fusion_hero_os.core.ops_deploy import deploy
@@ -110,7 +109,7 @@ def merge_both(
         out["steps"].append({"step": "private_refs", "ok": False, "error": str(e)[:160]})
 
     # --- timeline all axes: t ∥ τ ∥ v (virtual re-enabled, heroic SHU) ---
-    timeline_meta: Dict[str, Any] = {}
+    timeline_meta: dict[str, Any] = {}
     if include_timeline:
         try:
             from fusion_hero_os.core.dual_timeline_training import run_auto_train
@@ -179,7 +178,7 @@ def merge_both(
     out["timeline"] = timeline_meta
     out["ok"] = all(s.get("ok", True) for s in out["steps"])
     out["duration_sec"] = round(time.time() - t0, 2)
-    out["ended_at"] = datetime.now(timezone.utc).isoformat()
+    out["ended_at"] = datetime.now(UTC).isoformat()
     out["vocabulary"] = {
         "deploy": "private",
         "push": "public",

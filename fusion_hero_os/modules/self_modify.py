@@ -15,8 +15,8 @@ nichts an) implementiert ist.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime, UTC
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule, EvolutionProposal
 from fusion_hero_os.engine.mainframe import SelfModifyCoreModule as _SelfModifyImpl
@@ -32,15 +32,15 @@ class SelfModifyCoreModule(BaseModule):
         super().__init__()
         self._impl = _SelfModifyImpl()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> EvolutionProposal:
+    def process(self, payload: dict[str, Any] | None = None) -> EvolutionProposal:
         return self._record_proposal(payload or {})
 
-    def propose_evolution(self, context: Optional[Dict[str, Any]] = None) -> Optional[EvolutionProposal]:
+    def propose_evolution(self, context: dict[str, Any] | None = None) -> EvolutionProposal | None:
         if not context:
             return None
         return self._record_proposal(context)
 
-    def _record_proposal(self, payload: Dict[str, Any]) -> EvolutionProposal:
+    def _record_proposal(self, payload: dict[str, Any]) -> EvolutionProposal:
         proposal = EvolutionProposal(
             module=payload.get("target_module", "unspecified"),
             summary=payload.get("summary", ""),
@@ -50,7 +50,7 @@ class SelfModifyCoreModule(BaseModule):
         )
         self._impl.modification_history.append(
             {
-                "ts": datetime.now(timezone.utc).isoformat(),
+                "ts": datetime.now(UTC).isoformat(),
                 "module": proposal.module,
                 "summary": proposal.summary,
                 "rationale": proposal.rationale,
@@ -60,6 +60,6 @@ class SelfModifyCoreModule(BaseModule):
         )
         return proposal
 
-    def history(self) -> List[Dict[str, Any]]:
+    def history(self) -> list[dict[str, Any]]:
         """Alle bisher gesammelten Vorschläge (nur Lesezugriff)."""
         return list(self._impl.modification_history)

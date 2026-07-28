@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Push Layer Guard — weave update structure into layers.
 
@@ -16,9 +15,10 @@ import json
 import os
 import subprocess
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any
+from collections.abc import Sequence
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "push_layer_guard.yaml"
@@ -43,22 +43,22 @@ class PushDecision:
     remote_ok: bool
     branch: str
     remote: str
-    layers_touched: List[str] = field(default_factory=list)
-    deny_hits: List[str] = field(default_factory=list)
-    soft_deny_hits: List[str] = field(default_factory=list)
-    files: List[str] = field(default_factory=list)
-    commit_subjects: List[str] = field(default_factory=list)
+    layers_touched: list[str] = field(default_factory=list)
+    deny_hits: list[str] = field(default_factory=list)
+    soft_deny_hits: list[str] = field(default_factory=list)
+    files: list[str] = field(default_factory=list)
+    commit_subjects: list[str] = field(default_factory=list)
     platform_ok: bool = True
     advice: str = ""
     secret_intent: bool = False
-    secret_keys_present: List[str] = field(default_factory=list)  # names only
-    dotenv_loaded: List[str] = field(default_factory=list)
+    secret_keys_present: list[str] = field(default_factory=list)  # names only
+    dotenv_loaded: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     if not CONFIG_PATH.exists():
         return {}
     try:
@@ -69,7 +69,7 @@ def load_config() -> Dict[str, Any]:
         return {}
 
 
-def _git(args: Sequence[str], cwd: Optional[Path] = None) -> Tuple[int, str]:
+def _git(args: Sequence[str], cwd: Path | None = None) -> tuple[int, str]:
     try:
         r = subprocess.run(
             ["git", *args],
@@ -84,7 +84,7 @@ def _git(args: Sequence[str], cwd: Optional[Path] = None) -> Tuple[int, str]:
         return 1, str(e)
 
 
-def _match_any(path: str, patterns: List[str]) -> Optional[str]:
+def _match_any(path: str, patterns: list[str]) -> str | None:
     path_n = path.replace("\\", "/")
     while path_n.startswith("./"):
         path_n = path_n[2:]
@@ -111,9 +111,9 @@ def _match_any(path: str, patterns: List[str]) -> Optional[str]:
     return None
 
 
-def _layers_for_paths(paths: List[str], cfg: Dict[str, Any]) -> List[str]:
+def _layers_for_paths(paths: list[str], cfg: dict[str, Any]) -> list[str]:
     layers_cfg = cfg.get("layers") or {}
-    touched: List[str] = []
+    touched: list[str] = []
     for path in paths:
         p = path.replace("\\", "/")
         for lid, meta in layers_cfg.items():
@@ -129,12 +129,12 @@ def _layers_for_paths(paths: List[str], cfg: Dict[str, Any]) -> List[str]:
     return touched
 
 
-def _load_dotenv_files(cfg: Dict[str, Any]) -> List[str]:
+def _load_dotenv_files(cfg: dict[str, Any]) -> list[str]:
     """Load .env into process env without logging values. Returns loaded path names."""
     si = cfg.get("secret_intent") or {}
     if not si.get("enabled", True) or not si.get("load_dotenv", True):
         return []
-    loaded: List[str] = []
+    loaded: list[str] = []
     paths = list(si.get("dotenv_paths") or [".env", ".env.local"])
     # operator-local push secret file (never in git)
     paths.append(str(Path.home() / ".fusion" / "secrets" / "push.env"))
@@ -166,14 +166,14 @@ def _load_dotenv_files(cfg: Dict[str, Any]) -> List[str]:
     return loaded
 
 
-def _secret_intent(cfg: Dict[str, Any]) -> Tuple[bool, List[str]]:
+def _secret_intent(cfg: dict[str, Any]) -> tuple[bool, list[str]]:
     """Wanted unlock via known secrets (names only returned, never values)."""
     si = cfg.get("secret_intent") or {}
     if not si.get("enabled", True):
         return False, []
     keys = si.get("env_keys_any") or []
     min_present = int(si.get("min_present") or 1)
-    present: List[str] = []
+    present: list[str] = []
     for k in keys:
         val = (os.environ.get(k) or "").strip()
         if val:
@@ -217,7 +217,7 @@ def _secret_intent(cfg: Dict[str, Any]) -> Tuple[bool, List[str]]:
     return False, present
 
 
-def _intent_present(cfg: Dict[str, Any], subjects: List[str]) -> bool:
+def _intent_present(cfg: dict[str, Any], subjects: list[str]) -> bool:
     intent = cfg.get("intent") or {}
     true_vals = {v.lower() for v in (intent.get("env_true_values") or ["1", "true"])}
     for key in intent.get("env_keys") or []:
@@ -244,7 +244,7 @@ def _intent_present(cfg: Dict[str, Any], subjects: List[str]) -> bool:
     return False
 
 
-def _is_auto_save(subjects: List[str], cfg: Dict[str, Any]) -> bool:
+def _is_auto_save(subjects: list[str], cfg: dict[str, Any]) -> bool:
     prefixes = (cfg.get("auto_save") or {}).get("message_prefixes") or ["auto-save"]
     if not subjects:
         return False
@@ -257,7 +257,7 @@ def _is_auto_save(subjects: List[str], cfg: Dict[str, Any]) -> bool:
     return hits == len(subjects) and hits > 0
 
 
-def _remote_ok(remote_url: str, cfg: Dict[str, Any]) -> bool:
+def _remote_ok(remote_url: str, cfg: dict[str, Any]) -> bool:
     ids = cfg.get("identities") or {}
     allowed = ids.get("remote_urls") or []
     url = (remote_url or "").strip().rstrip("/")
@@ -272,7 +272,7 @@ def _remote_ok(remote_url: str, cfg: Dict[str, Any]) -> bool:
     return False
 
 
-def _platform_ok(cfg: Dict[str, Any]) -> bool:
+def _platform_ok(cfg: dict[str, Any]) -> bool:
     ids = cfg.get("identities") or {}
     expected = str(ids.get("platform_version") or "10.0.0")
     vf = ROOT / (ids.get("platform_version_file") or "VERSION")
@@ -281,7 +281,7 @@ def _platform_ok(cfg: Dict[str, Any]) -> bool:
     return vf.read_text(encoding="utf-8").strip() == expected
 
 
-def _collect_push_files(remote: str, branch: str) -> Tuple[List[str], List[str]]:
+def _collect_push_files(remote: str, branch: str) -> tuple[list[str], list[str]]:
     """Return (files, commit subjects) for commits not on remote/branch."""
     # commits to be pushed
     code, out = _git(["log", f"{remote}/{branch}..HEAD", "--pretty=%s"])
@@ -304,11 +304,11 @@ def _collect_push_files(remote: str, branch: str) -> Tuple[List[str], List[str]]
 def evaluate_push(
     *,
     remote: str = "origin",
-    branch: Optional[str] = None,
-    remote_url: Optional[str] = None,
+    branch: str | None = None,
+    remote_url: str | None = None,
     force: bool = False,
-    files: Optional[List[str]] = None,
-    subjects: Optional[List[str]] = None,
+    files: list[str] | None = None,
+    subjects: list[str] | None = None,
 ) -> PushDecision:
     cfg = load_config()
     code, cur_branch = _git(["branch", "--show-current"])
@@ -334,8 +334,8 @@ def evaluate_push(
     platform_ok = _platform_ok(cfg)
     layers = _layers_for_paths(files, cfg)
 
-    deny_hits: List[str] = []
-    soft_hits: List[str] = []
+    deny_hits: list[str] = []
+    soft_hits: list[str] = []
     for f in files:
         d = _match_any(f, cfg.get("deny_globs") or [])
         if d:
@@ -581,7 +581,7 @@ def evaluate_push(
     )
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = load_config()
     code, branch = _git(["branch", "--show-current"])
     code, url = _git(["remote", "get-url", "origin"])
@@ -641,7 +641,7 @@ def main() -> int:
     out = Path.home() / ".fusion" / "mesh" / "coordination" / "push_guard_last.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = d.to_dict()
-    payload["evaluated_at"] = datetime.now(timezone.utc).isoformat()
+    payload["evaluated_at"] = datetime.now(UTC).isoformat()
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
     return 0 if d.allow else 2
 

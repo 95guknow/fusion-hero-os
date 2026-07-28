@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.core.hero_autoupdate import get_hero_autoupdate
@@ -18,7 +18,7 @@ class HeroAutoupdateCoreModule(BaseModule):
     - ``config`` — aktive Defaults (1 Min / 5 Min)
     """
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any] | None:
         payload = payload or {}
         action = str(payload.get("action", "status")).lower()
         svc = get_hero_autoupdate()

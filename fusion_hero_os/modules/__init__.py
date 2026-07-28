@@ -32,7 +32,7 @@ from fusion_hero_os.modules.hero_autoupdate import HeroAutoupdateCoreModule
 
 #: Alle Core-Module, die :func:`fusion_hero_os.core.dispatcher.build_default_dispatcher`
 #: standardmäßig registriert.
-ALL_CORE_MODULES: List[Type[BaseModule]] = [
+ALL_CORE_MODULES: list[type[BaseModule]] = [
     SelfModifyCoreModule,
     PeerReviewCoreModule,
     FormalMathematicsCoreModule,

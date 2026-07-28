@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Public MasterSeed presentation — unique, unambiguous display IDs.
 
@@ -13,8 +12,8 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from datetime import datetime, UTC
+from typing import Any
 
 from fusion_hero_os.core.heroic_core_orchestrator import MasterSeed
 
@@ -61,7 +60,7 @@ class PublicMasterSeedView:
     presented_at: str
     policy: str = "public_unique_private_obfuscated"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     def __str__(self) -> str:
@@ -87,7 +86,7 @@ def _platform_version_default() -> str:
 
 
 def public_fingerprint(
-    seed: Optional[MasterSeed] = None, platform_version: Optional[str] = None
+    seed: MasterSeed | None = None, platform_version: str | None = None
 ) -> str:
     """Fingerprint over public-safe fields only (not private vault material)."""
     seed = seed or MasterSeed()
@@ -113,7 +112,7 @@ def display_id_from_fingerprint(fp_hex: str, major: str = "12") -> str:
     return f"MS-PUB-v{major}-{short}-{check}"
 
 
-def parse_display_id(display_id: str) -> Optional[Dict[str, str]]:
+def parse_display_id(display_id: str) -> dict[str, str] | None:
     m = re.fullmatch(
         r"MS-PUB-v(\d+)-([0-9A-Z]{8})-([0-9A-F]{4})",
         (display_id or "").strip(),
@@ -129,9 +128,9 @@ def parse_display_id(display_id: str) -> Optional[Dict[str, str]]:
 
 
 def public_view(
-    seed: Optional[MasterSeed] = None,
+    seed: MasterSeed | None = None,
     *,
-    platform_version: Optional[str] = None,
+    platform_version: str | None = None,
 ) -> PublicMasterSeedView:
     seed = seed or MasterSeed()
     platform_version = platform_version or _platform_version_default()
@@ -146,7 +145,7 @@ def public_view(
         criticality_target_display=f"{seed.criticality_target:.2f} (model)",
         integrity_ok=seed.verify_integrity(sh),
         state_hash_prefix=sh[:12],
-        presented_at=datetime.now(timezone.utc).isoformat(),
+        presented_at=datetime.now(UTC).isoformat(),
     )
 
 

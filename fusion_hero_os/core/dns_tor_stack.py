@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Fusion dual-stack DNS: Clearnet + Tailscale + Tor (.onion).
 
@@ -20,16 +19,16 @@ import struct
 import sys
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
 __all__ = ["load_config", "status", "serve", "resolve_once", "start_tor_if_possible"]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "dns_tor_stack.yaml"
     if not path.exists():
         return {}
@@ -41,7 +40,7 @@ def load_config() -> Dict[str, Any]:
         return {}
 
 
-def _cfg() -> Dict[str, Any]:
+def _cfg() -> dict[str, Any]:
     return load_config()
 
 
@@ -52,7 +51,7 @@ def _tor_data() -> Path:
     return p
 
 
-def find_tor_exe() -> Optional[str]:
+def find_tor_exe() -> str | None:
     env = os.getenv("FUSION_TOR_EXE", "").strip()
     if env and Path(env).is_file():
         return env
@@ -75,7 +74,7 @@ def find_tor_exe() -> Optional[str]:
     return None
 
 
-def start_tor_if_possible() -> Dict[str, Any]:
+def start_tor_if_possible() -> dict[str, Any]:
     """Start system Tor with Fusion torrc if not already listening on DNSPort."""
     cfg = _cfg()
     tor_c = cfg.get("tor") or {}
@@ -193,7 +192,7 @@ def _port_open(host: str, port: int, *, udp: bool = False) -> bool:
         sock.sendto(q, (host, port))
         sock.recvfrom(512)
         return True
-    except socket.timeout:
+    except TimeoutError:
         return False
     except OSError:
         return False
@@ -201,7 +200,7 @@ def _port_open(host: str, port: int, *, udp: bool = False) -> bool:
         sock.close()
 
 
-def _parse_qname(data: bytes, offset: int) -> Tuple[str, int]:
+def _parse_qname(data: bytes, offset: int) -> tuple[str, int]:
     labels = []
     jumped = False
     origin = offset
@@ -258,7 +257,7 @@ def _build_query(name: str, qtype: int = 1) -> bytes:
     return header + _encode_name(name) + struct.pack("!HH", qtype, 1)
 
 
-def _forward_udp(query: bytes, host: str, port: int, timeout: float = 3.0) -> Optional[bytes]:
+def _forward_udp(query: bytes, host: str, port: int, timeout: float = 3.0) -> bytes | None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(timeout)
     try:
@@ -271,7 +270,7 @@ def _forward_udp(query: bytes, host: str, port: int, timeout: float = 3.0) -> Op
         sock.close()
 
 
-def resolve_once(name: str, qtype: int = 1) -> Dict[str, Any]:
+def resolve_once(name: str, qtype: int = 1) -> dict[str, Any]:
     """Resolve one name; route .onion to Tor DNSPort."""
     cfg = _cfg()
     name = name.strip(".").lower()
@@ -343,7 +342,7 @@ def _handle_query(data: bytes, addr, sock: socket.socket) -> None:
         pass
 
 
-def serve(blocking: bool = True) -> Dict[str, Any]:
+def serve(blocking: bool = True) -> dict[str, Any]:
     cfg = _cfg()
     proxy = cfg.get("local_proxy") or {}
     host = proxy.get("listen_host") or "127.0.0.1"
@@ -361,7 +360,7 @@ def serve(blocking: bool = True) -> Dict[str, Any]:
         "ok": True,
         "listen": f"{host}:{port}",
         "tor": tor_state,
-        "started_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": datetime.now(UTC).isoformat(),
     }
     state_path = Path.home() / ".fusion" / "dns" / "dns_tor_stack.status.json"
     state_path.parent.mkdir(parents=True, exist_ok=True)
@@ -388,7 +387,7 @@ def serve(blocking: bool = True) -> Dict[str, Any]:
     return state
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = _cfg()
     tor_c = cfg.get("tor") or {}
     proxy = cfg.get("local_proxy") or {}
@@ -410,7 +409,7 @@ def status() -> Dict[str, Any]:
     }
 
 
-def configure_tailscale_dns() -> Dict[str, Any]:
+def configure_tailscale_dns() -> dict[str, Any]:
     """Enable accept-dns; print guidance for MagicDNS + health."""
     import subprocess
 
