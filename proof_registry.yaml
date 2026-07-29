@@ -16,9 +16,6 @@ version: 1
 
 claims:
   # ---- Mathematischer Kern (Knoten-Saetze) ---------------------------------
-  # 2026-07-06 auf tatsaechlichen Stand synchronisiert (Honesty-Rewrite der
-  # test_heroic_math_engine.py): frueher als "universell bewiesen" behauptete
-  # Knoten sind auf Fragment-/Modell-Status bzw. OFFEN zurueckgestuft.
   - id: K1-KOMMUTATOR
     statement: "Kommutator [Q,B] = -[B,Q] ist antisymmetrisch (reine lineare Algebra, keine Sonderbehauptung)."
     status: BEWIESEN
@@ -399,3 +396,22 @@ claims:
     proofs:
       - tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent
     notes: "Wirkung: verhindert, dass Prosa-Agenten als implementiert gelesen werden."
+
+  # ---- Claude Science Integration (2026-07-29, v13.0.1) --------------------
+  - id: CLAUDE-SCIENCE-AUDITABLE-ARTIFACT
+    statement: "ScientificAuditHorkruxCoreModule (ascension_os/core/scientific_audit_horkrux.py) erzwingt fuer jedes wissenschaftliche Artefakt code-hash + environment-snapshot + plain-language-description + reviewer-score; Propagation nur bei identity_score >= 95 und Stage-A Consent."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL/STUB introduced 2026-07-29 via evolve+push. Discharge requires collectable pytest nodes analogous to ASC-HARMONISIERUNG-CONTRACTION."
+
+  - id: MULTI-AGENT-REVIEWER-PATTERN
+    statement: "MultiAgentResearchLane (ascension_os/core/multi_agent_research_lane.py) stellt eine AscensionHypercluster-Lane 'Science-Coordinator' mit Specialist-Spawn und Actor-Critic-Reviewer bereit; QUBO-gewichtet fuer Token-Efficiency und Brittleness-Minimierung."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL/STUB 2026-07-29. Pending tests + Human-Confirm-Gate before any merge of executable nodes."
+
+  - id: SCIENTIFIC-CONNECTOR-PROTOCOL
+    statement: "ClaudeScienceAdapterSkill definiert ein wiederverwendbares Pattern fuer wissenschaftliche DB-Connectoren (MCP-aehnlich) und Multi-Method-Konvergenz fuer philosophische/mathematische Claims, immer mit HonestStatus-Tag."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-07-29. Mapping von Anthropic Claude Science Workflow auf Core MuAPI/GitHubCoreModule."
