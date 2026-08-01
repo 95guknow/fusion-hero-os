@@ -23,10 +23,16 @@ Fusion Hero OS ist Eigenentwicklung. Es wird nicht als Produkt verkauft, nicht
 lizenziert und nicht als Dienstleistung angeboten. Es gibt keine Kunden, keine
 Nutzerkonten, keine Datenverarbeitung für Dritte.
 
-> **Offen:** Ein vollständiges Impressum mit Handelsregister-Daten und
-> ladungsfähiger Anschrift gehört auf die öffentliche Fläche und ist hier noch
-> nicht hinterlegt. Bis dahin ist dieses Dokument eine inhaltliche Offenlegung,
-> kein Impressum im Sinne des DDG.
+Die Anbieterkennzeichnung nach § 5 DDG steht als eigene Seite unter
+[95guknow.github.io/impressum.html](https://95guknow.github.io/impressum.html)
+— mit ladungsfähiger Anschrift und vertretungsberechtigter Person. Dieses
+Dokument hier ist die *inhaltliche* Offenlegung und ersetzt sie nicht.
+
+> **Offen:** Das Impressum ist noch unvollständig. Es fehlen die E-Mail-Adresse
+> (§ 5 Abs. 1 Nr. 2 DDG, zwingend), Registergericht und HRB-Nummer
+> (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz „(haftungsbeschränkt)“
+> (§ 5a Abs. 1 GmbHG). Die Lücken sind auf der Seite selbst benannt, statt
+> durch geschätzte Angaben gefüllt zu werden.
 
 ---
 
