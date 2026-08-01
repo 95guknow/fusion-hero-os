@@ -398,3 +398,54 @@ claims:
     proofs:
       - tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent
     notes: "Wirkung: verhindert, dass Prosa-Agenten als implementiert gelesen werden."
+
+  - id: ASC-SISYPHOS-CLAMP-UND-FORMEL
+    statement: "PersistentSisyphosCycle (ascension_os/core/persistent_sisyphos.py): step() klemmt jede Eingabe nach [0,1]; satisfaction = 1 - 0.7*load exakt; die Historie ist durch max_history begrenzt und verwirft den aeltesten Eintrag zuerst, waehrend cycle_count ALLE Schritte zaehlt; Zustand und Historie ueberleben einen Save/Load-Roundtrip. Dass load und satisfaction reale psychische Groessen messen, ist MODELL und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_load_is_clamped_to_unit_interval
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_follows_the_declared_formula
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_history_is_bounded_and_drops_oldest
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_cycle_count_is_strictly_monotone
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_survives_a_save_load_roundtrip
+
+  - id: ASC-SISYPHOS-REDUNDANZ-BEFUNDE
+    statement: "Zwei Bedingungen im Sisyphos-Code sind nachweislich wirkungslos: (1) der max(0, ...)-Schutz der Zufriedenheit greift nie, da aus load <= 1 bereits satisfaction >= 0.3 folgt; (2) is_sustainable ist aequivalent zu load < 0.85, weil die Bedingung satisfaction > 0.4 erst ab load >= 6/7 (~0.857) bindet und damit von der strikteren Lastschranke impliziert wird. Beide Redundanzen sind per Test FIXIERT, nicht wegoptimiert — damit eine spaetere Parameteraenderung sie nicht unbemerkt zu echten Bedingungen macht. Die Schwelle 0.85 selbst ist gesetzt, nicht gemessen (MODELL)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_floor_is_unreachable
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_sustainability_reduces_to_the_load_bound
+
+  - id: ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ
+    statement: "sisyphos_simulator (ascension_os/evolution/sisyphos_simulator.py): generations > MAX_GENERATIONS und n_runs < 1 werden abgewiesen; gleicher base_seed liefert bitgleiche Ergebnisse (Reproduzierbarkeit), verschiedene Seeds verschiedene; die Zufriedenheitsformel der Simulation stimmt EXAKT mit der des realen PersistentSisyphosCycle ueberein — ohne diese Gleichheit waere jede Simulationsaussage ueber den realen Zyklus wertlos; reversal_count ignoriert Richtungswechsel unterhalb min_delta. Der Hyperthreading-Vorbehalt des Moduls (GIL-Bindung, Parallelitaet primaer organisatorisch) bleibt unberuehrt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_rejects_out_of_range_arguments
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_is_deterministic_for_a_fixed_seed
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_satisfaction_matches_the_persistent_cycle
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_reversal_count_ignores_micro_noise
+
+  - id: ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT
+    statement: "MasterSeedContractionEnforcer (ascension_os/core/coevolutionary_closure.py) DETEKTIERT Hash-Abweichungen und zaehlt sie (enforce liefert False, violation_count steigt, last_violation haelt Kontext/erwartet/tatsaechlich fest); der Vergleich ist unempfindlich gegen Rand-Whitespace und Gross-/Kleinschreibung. Der Enforcer ERZWINGT die Kontraktion NICHT mathematisch — der Klassenname legt das nahe, der Code leistet es nicht (Dissertation 1.3). Genau diese Unterscheidung ist Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_detects_hash_mismatch_and_counts_it
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_normalises_case_and_whitespace
+
+  - id: ASC-CONSENT-FAIL-CLOSED
+    statement: "AscensionConsentGate (ascension_os/consent_gate.py): ohne konfiguriertes Gate wird JEDE personenbezogene Operation auf AscensionCore mit ConsentError abgewiesen (fail closed, kein Bypass-Pfad); mit aktivem zweckgebundenem Grant wird sie zugelassen; jede Verweigerung erzeugt ein Audit-Ereignis."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_consent.py::test_personal_data_op_denied_without_gate
+      - tests/test_ascension_consent.py::test_personal_data_op_allowed_with_active_grant
+      - tests/test_ascension_consent.py::test_denial_is_audited
+
+  - id: ASC-HYPERCLUSTER-EHRLICHE-READINESS
+    statement: "AscensionHypercluster (ascension_os/hypercluster.py): der Abhaengigkeitsgraph der deklarierten Ascension-Einheiten ist zyklenfrei; alle vier Lanes (cpu/mem/gpu/qpu) werden von den Default-Einheiten belegt; jede Einheit wird im Report aufgefuehrt; consent-pflichtige Einheiten melden ohne Grant blocked_consent statt operational; ein fehlendes Modul wird als solches gemeldet und NICHT als betriebsbereit ausgegeben."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_hypercluster.py::test_dag_validates_without_cycles
+      - tests/test_ascension_hypercluster.py::test_all_four_lanes_used_by_default_units
+      - tests/test_ascension_hypercluster.py::test_operationalize_reports_every_ascension
+      - tests/test_ascension_hypercluster.py::test_consent_gate_fail_closed_by_default
+      - tests/test_ascension_hypercluster.py::test_probe_is_honest_about_missing_module

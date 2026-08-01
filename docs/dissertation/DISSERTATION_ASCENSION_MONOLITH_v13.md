@@ -800,12 +800,16 @@ Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 | `yin_yang_manifold` | `YIN-YANG-MANIFOLD-STRUKTUR` | **belegt** |
 | `geisterjagd_module` | `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT` | **belegt** (Satz 7) |
 | `harmonisierung_module` | `ASC-HARMONISIERUNG-CONTRACTION` | **belegt** (Satz 8) |
-| Agentenstruktur (Prosa ↔ Code) | `AGENT-STRUCTURE-HONESTY-MAP` | **belegt** — trennt Rollen-Labels von `class`-Definitionen |
-| `consent_gate`, `hypercluster` | — | getestet, ohne Claim |
-| `persistent_sisyphos`, `stage9_tracker`, `sisyphos_oscillation_visualizer`, `psycholyse_protocol_logger`, `qubo_ascension_optimizer`, `coevolutionary_closure`, `generational_engine`, `sisyphos_simulator`, `ascension_core` | — | **offen** |
+| Agentenstruktur (Prosa ↔ Code) | `AGENT-STRUCTURE-HONESTY-MAP` | **belegt** |
+| `consent_gate` | `ASC-CONSENT-FAIL-CLOSED` | **belegt** |
+| `hypercluster` | `ASC-HYPERCLUSTER-EHRLICHE-READINESS` | **belegt** |
+| `persistent_sisyphos` | `ASC-SISYPHOS-CLAMP-UND-FORMEL`, `ASC-SISYPHOS-REDUNDANZ-BEFUNDE` | **belegt** (Satz 9, 10) |
+| `sisyphos_simulator` | `ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ` | **belegt** (Satz 11) |
+| `coevolutionary_closure` | `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT` | **belegt** (Satz 12) |
+| `stage9_tracker`, `sisyphos_oscillation_visualizer`, `psycholyse_protocol_logger`, `qubo_ascension_optimizer`, `generational_engine`, `ascension_core` | — | **offen** |
 | `exposure_practice_module` | — | **konstitutiv unbelegbar** (3.6) |
 
-**Fünf von siebzehn tragen einen Claim.** Das Suffix bleibt deshalb stehen. Es zu streichen, während zwölf Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme.
+**Elf von siebzehn tragen einen Claim.** Das Suffix bleibt trotzdem stehen. Es zu streichen, während sechs Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme. Die Bilanz ist von fünf auf elf gestiegen, nicht auf siebzehn; das ist der Unterschied zwischen Fortschritt und Abschluss.
 
 **Eine Grenze, die kein Fleiß aufhebt.** Nicht alles Offene ist bloß noch nicht bearbeitet. Beim Expositionsmodul ist die Lücke **konstitutiv**: Was dort fehlt, ist keine Testabdeckung, sondern eine klinische Studie — und die schreibt man nicht in pytest. Auch beim Stage-9-Tracker gilt: Seine *Struktur* ist belegbar, seine *Deutung* als Entwicklungsstufe nicht (4.1). Die Formel „alles beweisen" beschreibt daher ein Programm mit einer Grenze, und die Grenze gehört zum Programm.
 
@@ -851,6 +855,10 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S14 | \(b(q(x)) \neq q(b(x))\) in der gewählten Formalisierung | `harmonisierung_module.py`; Gesetz 2 | 3.2, H |
 | S16 | Geisterjagd ist dichotom: Nothing ohne Kontraktion, sonst K20-Konvergenz mit geometrischer Fehlerschranke, startpunktunabhängigem Grenzwert | `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT` ✅ ausgeführt | I.3 Satz 7 |
 | S17 | Harmonisierung: erzwungene Kontraktionsvorbedingung, echter Gap-Schluss, eindeutiger K20-Fixpunkt, Self-Mod-Vorschlag nur bei Kontraktion | `ASC-HARMONISIERUNG-CONTRACTION` ✅ ausgeführt | 3.2, I.3 Satz 8 |
+| S20 | Sisyphos: Klemmung nach [0,1], exakte Formel \(S=1-0{,}7L\), begrenzte Historie, Roundtrip | `ASC-SISYPHOS-CLAMP-UND-FORMEL` ✅ | I.3 Satz 9 |
+| S21 | Zwei wirkungslose Bedingungen im Sisyphos-Code; `is_sustainable` ⟺ \(L<0{,}85\) | `ASC-SISYPHOS-REDUNDANZ-BEFUNDE` ✅ | I.3 Satz 10 |
+| S22 | Simulator deterministisch je Seed; Zufriedenheitsformel identisch mit dem realen Zyklus | `ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ` ✅ | I.3 Satz 11 |
+| S23 | Enforcer detektiert Hash-Abweichung und zählt sie — erzwingt aber keine Kontraktion | `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT` ✅ | 1.3, I.3 Satz 12 |
 | S19 | Prosa-Agentenrollen (Masterinstanz, ASR-Agent, …) tragen keine `class`-Definition im Code-Tree | `AGENT-STRUCTURE-HONESTY-MAP` ✅ ausgeführt | 5.7, Anhang J |
 | S18 | `Supervisor` erbt von `Agent` — Aufsicht unterliegt denselben Regeln | `fusion_hero_os/orchestration/agents.py` | 5.7 |
 | S15 | Yin-Yang-Manifold: Symmetrie, Dimension \(2kn\), bitgenaue Reproduktion für \(k=1\), Blockdiagonalität, Inkohärenz-Schranke | `YIN-YANG-MANIFOLD-STRUKTUR`; 28 Knoten ✅ selbst ausgeführt | 5.6.4 |
@@ -1245,6 +1253,39 @@ Für \( \alpha_q, \alpha_b \in (0,1) \) — außerhalb wird die Konstruktion abg
 *Beleg:* `ASC-HARMONISIERUNG-CONTRACTION`. **Ausgeführt: bestanden.** Ergänzend belegt: `propose_self_modification` schlägt ausschließlich bei `is_contraction=True` vor — dieselbe Proposal-only-Disziplin wie `SELFMOD-PROPOSAL-ONLY` (5.3), hier zusätzlich an die Kontraktionsbedingung gekoppelt.
 
 **Bemerkung.** Satz 8 entlädt eine Zitationsschuld. Der Kanon führte **Gesetz 2** (Nicht-Kommutativität von \( q \circ b \), Anhang H) unter Verweis auf dieses Modul — ohne Test. Die Verpflichtung ist eingelöst; die Ungleichheit gilt in dieser Formalisierung nachweislich. Was **nicht** mitbewiesen ist, bleibt unverändert: dass \( q \) und \( b \) reales fließendes und schneidendes Denken abbilden. Das ist Modell und bleibt es.
+
+**Satz 9 (Sisyphos-Klemmung und Formel).**
+`step()` bildet jede reelle Eingabe auf \( L \in [0,1] \) ab, und es gilt exakt \( S = 1 - 0{,}7\,L \). Die Historie ist durch `max_history` begrenzt und verwirft den ältesten Eintrag zuerst, während `cycle_count` alle Schritte zählt.
+
+*Beweis.* Klemmung durch `max(0, min(1, x))`; die Formel steht wörtlich im Code; die Ringpuffer-Eigenschaft folgt aus `pop(0)` bei Überlauf. ∎
+*Beleg:* `ASC-SISYPHOS-CLAMP-UND-FORMEL`. **Ausgeführt: bestanden.**
+
+**Satz 10 (Zwei Redundanzen).**
+Im Sisyphos-Code sind zwei Bedingungen wirkungslos:
+
+(i) Der Schutz \( S = \max(0, 1-0{,}7L) \) greift nie, denn aus \( L \le 1 \) folgt \( 1-0{,}7L \ge 0{,}3 > 0 \).
+
+(ii) `is_sustainable` \( \iff L < 0{,}85 \). Denn \( S > 0{,}4 \iff 1-0{,}7L > 0{,}4 \iff L < 6/7 \approx 0{,}8571 \); wegen \( 0{,}85 < 6/7 \) impliziert die Lastschranke die Zufriedenheitsschranke.
+
+*Beweis.* Beide Rechnungen wie angegeben; die Äquivalenz in (ii) ist über das gesamte Intervall geprüft, einschließlich des kritischen Fensters \( [0{,}85,\ 6/7) \), in dem die Zufriedenheit noch über der Schwelle liegt und allein die Last bindet. ∎
+*Beleg:* `ASC-SISYPHOS-REDUNDANZ-BEFUNDE`. **Ausgeführt: bestanden.**
+
+**Bemerkung — warum eine Redundanz festgehalten und nicht entfernt wird.**
+Der naheliegende Umgang mit totem Code ist, ihn zu löschen. Hier geschieht das Gegenteil: Beide Redundanzen werden durch einen Test **fixiert**. Der Grund ist, dass sie nur *unter den gegenwärtigen Parametern* redundant sind. Änderte jemand den Faktor \( 0{,}7 \) auf einen Wert über \( 1 \), so würde der erste Schutz plötzlich greifen; verschöbe jemand die Schwelle \( 0{,}85 \) über \( 6/7 \), so würde die Zufriedenheitsbedingung plötzlich binden. Beides wären stille Verhaltensänderungen an einer Stelle, die niemand mehr prüft, weil sie jahrelang wirkungslos war. Der Test macht aus einer schlafenden Bedingung eine wache.
+
+Dies ist zugleich ein Befund über die **Nachhaltigkeitsschwelle** selbst: Sie ist einparametrig, nicht zweiparametrig. Wer sie kalibrieren will, kalibriert \( 0{,}85 \) — die Zahl \( 0{,}4 \) tut nichts. Dass die Schwelle gesetzt und nicht gemessen ist, bleibt **[Modell]** (4.1 gilt sinngemäß).
+
+**Satz 11 (Determinismus und Formelkonsistenz der Simulation).**
+Gleicher `base_seed` liefert bitgleiche Ergebnisse, verschiedene Seeds verschiedene; `generations` über `MAX_GENERATIONS` und `n_runs < 1` werden abgewiesen; und die Zufriedenheitsformel der Simulation stimmt **exakt** mit der des realen Zyklus überein.
+
+*Bemerkung zur Tragweite.* Die letzte Eigenschaft ist die eigentlich wichtige. Der Modul-Docstring behauptet sie („identisch zu `SisyphosCycle.step`"), aber behauptet war sie bis hierher nur. Wären die Formeln verschieden, wäre **jede** Simulationsaussage über den realen Zyklus wertlos — die Simulation beschriebe dann ein anderes System. ∎
+*Beleg:* `ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ`. **Ausgeführt: bestanden.**
+
+**Satz 12 (Der Enforcer detektiert, er erzwingt nicht).**
+`enforce` liefert `False` bei Hash-Abweichung, erhöht `violation_count` und hält die letzte Verletzung fest; der Vergleich ist unempfindlich gegen Rand-Whitespace und Groß-/Kleinschreibung. Eine mathematische Erzwingung der Kontraktion findet **nicht** statt.
+
+*Bemerkung.* Bogen 1 (1.3) sagt dies bereits in Prosa: „Er *erzwingt* die Kontraktion nicht mathematisch, er *detektiert* ihre Verletzung." Diese Aussage war eine Lesart des Codes; jetzt ist sie ein Testgegenstand. Der Klassenname `MasterSeedContractionEnforcer` verspricht mehr, als das Modul leistet — und die Registry hält diese Differenz nun ausdrücklich fest, statt sie dem Namen zu überlassen. ∎
+*Beleg:* `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT`. **Ausgeführt: bestanden.**
 
 ### I.5 Was formal offen bleibt
 
