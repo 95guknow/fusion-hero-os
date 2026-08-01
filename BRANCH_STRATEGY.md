@@ -60,10 +60,15 @@ und deklarieren ihre Plattform-Kompatibilität in `fuhos_compat.yaml`
 ### `main` (Stable Release Line)
 - Geschützt. Direkte Pushes sind blockiert.
 - Nur Merges via Pull Request (Feature-Branches oder `ascension`).
-- **Merge-Freigabe komplett extern (seit v12.0.0):** 1 GitHub-Review-Approval
+- **Merge-Freigabe extern vorgesehen (seit v12.0.0):** 1 GitHub-Review-Approval
   (Mobile) + 1 Google-Auth-Bestätigung (`human-confirm/google`-Check) — beide
-  am Handy, zwei unabhängige Identitätsanbieter. Automation (inkl. Claude)
-  merged nie selbst. Details + Einrichtung: `docs/ops/HUMAN_CONFIRM_GATE.md`.
+  am Handy, zwei unabhängige Identitätsanbieter.
+  **Durchgesetzt wird das nur, wenn `human-confirm/google` in den Required
+  Checks der Branch Protection steht.** Am 2026-08-01 stand es dort nicht, und
+  PR #105 wurde ohne beide Bestätigungen gemergt. Hier stand bis dahin
+  „Automation (inkl. Claude) merged nie selbst" — als Tatsache formuliert,
+  obwohl es eine Absicht war. Status und Prüfbefehl:
+  `docs/ops/HUMAN_CONFIRM_GATE.md`.
 
 ### `develop` – Option A Track (Evolutionary) — eingestellt
 - Historischer Track; der Remote-Branch wurde nach dem Merge in `main`
