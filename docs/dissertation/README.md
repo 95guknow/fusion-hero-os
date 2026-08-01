@@ -4,8 +4,13 @@
 Eine systemtheoretische, existenzphilosophische und softwarearchitektonische Grundlegung heroischer Eudaimonia
 
 **Autor:** Stephan Hagen Urban  
-**Version:** 1.1  
-**Kanon-Bezug:** Fusion Hero OS v10.0.0 (operativ) · Heroic Stack v8.3 · AscensionOS v9.x aspirational
+**Version:** 2.0  
+**Kanon-Bezug:** Fusion Hero OS v15.0.0 (operativer Kanon, ungetaggt) · letzte veröffentlichte Release v13.0.0 · Heroic Stack v8.3 · AscensionOS v9.x aspirational
+
+> **Akademischer Status:** Diese Arbeit trägt die *Form* einer Dissertation.
+> Ein Grad, ein Promotionsverfahren, eine betreuende Institution oder eine
+> externe Begutachtung werden **nicht** behauptet. Siehe den Abschnitt
+> „Status dieser Arbeit" im Dokument selbst und [`../../OFFENLEGUNG.md`](../../OFFENLEGUNG.md).
 
 ## Ontologie (verbindlich)
 

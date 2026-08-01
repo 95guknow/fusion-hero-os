@@ -25,8 +25,15 @@ OUT_DIR = ROOT / "docs" / "dissertation"
 ARCHIVE_DIR = ROOT / "04_Buch_und_Archiv" / "Dissertation_Stephan_Hagen_Urban"
 OUT_NAME = (
     "Dissertation_Stephan_Hagen_Urban_"
-    "Autopoiesis_Autopolitik_Fusion_Hero_OS_v1.0.docx"
+    "Autopoiesis_Autopolitik_Fusion_Hero_OS_v2.0.docx"
 )
+
+# Versionslage, an der das Werk eingefroren ist. Getrennt geführt, weil
+# beides auseinanderfällt: die VERSION-Datei ist dem letzten Release
+# vorausgelaufen (proof_registry: V15-ZWEI-AEREN-OHNE-RELEASE, WIDERLEGT).
+CANON_VERSION = "15.0.0"          # VERSION / BEST_VERSION.md, ungetaggt
+PUBLISHED_RELEASE = "13.0.0"      # letzter Tag auf dem Remote
+WORK_VERSION = "2.0"
 
 
 def set_run_font(run, name="Times New Roman", size=12, bold=False, italic=False):
@@ -99,9 +106,10 @@ def body(doc, *paragraphs):
 # ---------------------------------------------------------------------------
 
 ABSTRACT_DE = (
-    "Diese Dissertation entwickelt eine vollständige Theorie der autopoietischen und "
+    "Diese Dissertation entwickelt eine Theorie der autopoietischen und "
     "autopolitischen Organisation am empirischen und spekulativen System Fusion Hero OS "
-    "(operativer Kanon v10.0.0, ererbter Heroic-Stack v8.3, aspirationaler AscensionOS-Track "
+    f"(operativer Kanon v{CANON_VERSION}, letzte veröffentlichte Release v{PUBLISHED_RELEASE}, "
+    "ererbter Heroic-Stack v8.3, aspirationaler AscensionOS-Track "
     "v9.x). Autopoiesis wird hier nicht bloß als biologische Metapher behandelt, sondern als "
     "operative Schließungsform: Ein System erzeugt fortlaufend die Komponenten, die es als "
     "System erhalten – im Fall von Fusion Hero OS durch MasterSeed-Anker, Co-Evolutionary "
@@ -122,8 +130,9 @@ ABSTRACT_DE = (
 )
 
 ABSTRACT_EN = (
-    "This dissertation develops a complete theory of autopoietic and autopolitical "
-    "organization grounded in the Fusion Hero OS system (operational canon v10.0.0, "
+    "This dissertation develops a theory of autopoietic and autopolitical "
+    f"organization grounded in the Fusion Hero OS system (operational canon v{CANON_VERSION}, "
+    f"latest published release v{PUBLISHED_RELEASE}, "
     "inherited heroic stack v8.3, aspirational AscensionOS v9.x). Autopoiesis is treated "
     "as an operative form of closure: the system continuously produces the components "
     "that maintain it as a system—via MasterSeed anchors, Co-Evolutionary Closure (CEC), "
@@ -178,8 +187,7 @@ def build_document() -> Document:
     )
     add_para(
         doc,
-        "zur Erlangung des Grades eines Doktors der Philosophie\n"
-        "(Dr. phil.) im interdisziplinären Feld\n"
+        "Eine unabhängige Arbeit im interdisziplinären Feld\n"
         "Systemtheorie · Praktische Philosophie · Informatik der Subjektivität",
         size=11, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, first_line=False, space_after=24,
     )
@@ -187,14 +195,15 @@ def build_document() -> Document:
         doc,
         "Unter ausschließlicher Verwendung und Re-Integration des\n"
         "unified ALTE_Frau_95g Heroic Core und des Fusion Hero OS\n"
-        "(operativer Kanon v10.0.0 · Heroic Stack v8.3 · AscensionOS v9.x aspirational)",
+        f"(operativer Kanon v{CANON_VERSION} · Heroic Stack v8.3 · AscensionOS v9.x aspirational)",
         size=11, align=WD_ALIGN_PARAGRAPH.CENTER, first_line=False, space_after=18,
     )
     add_para(
         doc,
         f"Ort: Independent Research / Senfkorn UG Kontext\n"
         f"Datum: {datetime.now(timezone.utc).strftime('%d. %B %Y')} (UTC)\n"
-        f"Version des Werkes: 1.0 · Corpus-Freeze an BEST_VERSION.md v10.0.0",
+        f"Version des Werkes: {WORK_VERSION} · Corpus-Freeze an "
+        f"BEST_VERSION.md v{CANON_VERSION}",
         size=11, align=WD_ALIGN_PARAGRAPH.CENTER, first_line=False, space_after=12,
     )
     add_para(
@@ -203,6 +212,52 @@ def build_document() -> Document:
         "v9.10 aspirational (AscensionOS) | Lösung unter ausschließlicher Verwendung "
         "des unified ALTE_Frau_95g Core und des Fusion-Hero-OS-Gesamtarchivs.",
         size=9, italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, first_line=False,
+    )
+
+    page_break(doc)
+
+    # ===================== STATUS =====================
+    # Deckungsgleich mit OFFENLEGUNG.md im Repository-Wurzelverzeichnis.
+    # Steht vor dem Abstract, damit niemand die Arbeit erst nach 200 Seiten
+    # richtig einordnen kann.
+    h1(doc, "Status dieser Arbeit")
+    body(
+        doc,
+        "Diese Arbeit trägt die Form einer Dissertation: Fragestellung, Forschungsstand, "
+        "theoretischer Rahmen, Empirie, Diskussion, Literaturverzeichnis. Die Form ist "
+        "gewählt, weil der Gegenstand sie verlangt — nicht, weil ein akademisches "
+        "Verfahren dahintersteht.",
+    )
+    body(
+        doc,
+        "Ausdrücklich wird nicht behauptet: ein verliehener oder angestrebter akademischer "
+        "Grad, ein laufendes oder abgeschlossenes Promotionsverfahren, eine betreuende "
+        "Hochschule, eine Fakultät, ein Gutachterkreis oder eine Begutachtung durch Dritte. "
+        "Es gibt keine Einreichung an einer Institution. Wo diese Arbeit auf "
+        "Selbstveröffentlichungsplattformen erscheint, ist das Veröffentlichung, nicht "
+        "Begutachtung.",
+    )
+    body(
+        doc,
+        "Der Autor ist zugleich Erbauer des untersuchten Systems. Diese Nähe wird in "
+        "Kapitel 8 methodisch als Second-Order-Kybernetik verteidigt; sie ersetzt aber "
+        "keine externe Prüfung, und sie wird hier nicht als solche ausgegeben.",
+    )
+    body(
+        doc,
+        f"Die empirischen Aussagen sind an den Stand v{CANON_VERSION} des operativen Kanons "
+        f"gebunden. Dieser Stand ist zum Zeitpunkt des Corpus-Freeze nicht als Release "
+        f"veröffentlicht: der letzte publizierte Tag ist v{PUBLISHED_RELEASE}. Diese "
+        "Differenz ist in der Proof Registry des Projekts selbst als widerlegte Behauptung "
+        "geführt (V15-ZWEI-AEREN-OHNE-RELEASE) und wird hier nicht geglättet.",
+    )
+    body(
+        doc,
+        "Die vollständige Trennung von laufendem Betrieb, Forschungsvorhaben und "
+        "ausdrücklichem Gedankenspiel — einschließlich der Feststellung, dass kein "
+        "Quantencomputer beteiligt ist und keine medizinische, psychologische, "
+        "sicherheitsoffensive oder beratende Leistung erbracht wird — steht in "
+        "OFFENLEGUNG.md im Wurzelverzeichnis des Projekt-Repositories.",
     )
 
     page_break(doc)
@@ -221,6 +276,7 @@ def build_document() -> Document:
     # ===================== TOC (manual outline) =====================
     h1(doc, "Inhaltsverzeichnis")
     toc_items = [
+        "Status dieser Arbeit",
         "1. Einleitung und Problemstellung",
         "    1.1 Gegenstand und These",
         "    1.2 Forschungsfragen",
@@ -245,7 +301,7 @@ def build_document() -> Document:
         "    4.4 Consent, PII und Stage-A/B-Gates",
         "    4.5 Mesh und Exit als Organsystem",
         "5. Empirie: Archive, Korpus und implementierte Organe",
-        "    5.1 Operativer Kanon v10.0.0",
+        "    5.1 Operativer Kanon v15.0.0",
         "    5.2 Master Archive und Buchschichten",
         "    5.3 Heroismus-Axiome I–IV",
         "    5.4 Mathematik, QUBO und Proof Registry",
@@ -541,14 +597,34 @@ def build_document() -> Document:
 
     # ===================== CH 5 =====================
     h1(doc, "5. Empirie: Archive, Korpus und implementierte Organe")
-    h2(doc, "5.1 Operativer Kanon v10.0.0")
+    h2(doc, f"5.1 Operativer Kanon v{CANON_VERSION}")
     body(
         doc,
-        "BEST_VERSION.md fixiert v10.0.0 als operativen Kanon: additive Evolution über den "
-        "v8.3-Stack (BCG – Backward Compatibility Guarantee), AscensionOS v9.x als loadable "
-        "Roadmap. Diese Versionsdisziplin ist selbst autopoietisch: das System erzeugt die "
-        "Komponente „kanonische Identität in der Zeit“ und schützt sie durch CI-Gates "
-        "(Version Consistency, Proof Registry, Erkenntnis-Index).",
+        f"BEST_VERSION.md fixiert v{CANON_VERSION} als operativen Kanon: additive Evolution "
+        "über den v8.3-Stack (BCG – Backward Compatibility Guarantee), AscensionOS v9.x als "
+        "loadable Roadmap. Diese Versionsdisziplin ist selbst autopoietisch: das System "
+        "erzeugt die Komponente „kanonische Identität in der Zeit“ und schützt sie durch "
+        "CI-Gates (Version Consistency, Proof Registry, Erkenntnis-Index).",
+    )
+    body(
+        doc,
+        "Die Ären 14 und 15 sind dabei additiv ohne benannten Inhalt: BEST_VERSION.md "
+        "trägt für v15.0.0 ausdrücklich ein, dass der Sprung bisher ein reiner "
+        "Versionssprung ist und ein Ära-Name erst eingetragen wird, wenn es etwas zu "
+        "benennen gibt. Das ist keine Schwäche der Darstellung, sondern derselbe "
+        "Mechanismus in Anwendung auf sich selbst: eine leere Ära wird als leer geführt.",
+    )
+    body(
+        doc,
+        f"Zugleich ist der Kanon dem Release vorausgelaufen. Die VERSION-Datei steht auf "
+        f"{CANON_VERSION}, der letzte auf dem Remote publizierte Tag ist "
+        f"v{PUBLISHED_RELEASE}; weder v14.0.0 noch v{CANON_VERSION} sind veröffentlicht. "
+        "Die Proof Registry führt genau das als widerlegte Behauptung "
+        "(V15-ZWEI-AEREN-OHNE-RELEASE). Der Fall ist für die These einschlägig: die "
+        "autopolitische Selbstgesetzgebung erzeugt hier eine Regel, die das System im "
+        "eigenen Vollzug verletzt — und die Verletzung wird registriert statt kaschiert. "
+        "Autopoiesis heißt nicht Fehlerfreiheit, sondern dass die Abweichung im System "
+        "selbst als Komponente auftaucht.",
     )
 
     h2(doc, "5.2 Master Archive und Buchschichten")
@@ -586,6 +662,16 @@ def build_document() -> Document:
         "Monotonie ist Modell, nicht Gesetz; Banach-Fixpunkt-Code ist OFFEN. Die Dissertation "
         "feiert diese Ehrlichkeit als wissenschaftliche Reife: Autopoiesis schließt auch die "
         "Produktion von Nicht-Wissen als Wissen um die Grenze ein.",
+    )
+    body(
+        doc,
+        "Stand des Corpus-Freeze: die Registry führt 67 Behauptungen — 52 BEWIESEN, "
+        "13 OFFEN, 2 WIDERLEGT, bei 703 Tests in der Suite. Entscheidend ist nicht die "
+        "Zahl, sondern die Erzwingbarkeit: scripts/check_proof_registry.py prüft in der "
+        "CI, dass jede als BEWIESEN geführte Behauptung auf einen real existierenden Test "
+        "zeigt. Eine Behauptung ohne Test kann den Status nicht erhalten. Damit ist der "
+        "Beweisanspruch nicht Absichtserklärung, sondern Gate — und die Grenze des Wissens "
+        "wird zur maschinell geprüften Eigenschaft des Systems.",
     )
 
     h2(doc, "5.5 Dashboard, Orchestrator, Hyperthreading")
@@ -685,6 +771,25 @@ def build_document() -> Document:
         "atmendes System (Health ok, Mesh teils online, Curriculum aktiv) und theoretisch "
         "ein geschlossenes Begriffspaar Autopoiesis/Autopolitik.",
     )
+    body(
+        doc,
+        "Zwei Behauptungen des Systems sind zum Corpus-Freeze ausdrücklich widerlegt, und "
+        "sie bleiben in der Registry stehen, statt gelöscht zu werden. Erstens "
+        "GATE-BLOCKIERT-MERGE-TATSAECHLICH: das Gate, das Merges blockieren sollte, war "
+        "nicht durchgesetzt — die Regel existierte als Dokument, nicht als Zwang. Zweitens "
+        "V15-ZWEI-AEREN-OHNE-RELEASE: zwei Ären sind ohne veröffentlichten Tag geblieben "
+        "(Abschnitt 5.1).",
+    )
+    body(
+        doc,
+        "Beide Fälle haben dieselbe Struktur, und sie ist für die Arbeit aufschlussreicher "
+        "als jeder gelungene Beweis: Die Norm war formuliert, die Prüfung fehlte. "
+        "Autopolitik, die sich nur schreibt und nicht vollzieht, ist keine Verfassung, "
+        "sondern eine Absichtserklärung. Der Unterschied zwischen beidem ist genau das "
+        "Gate — und wo das Gate fehlt, fällt die Selbstgesetzgebung auf die Ebene der "
+        "bloßen Behauptung zurück. Dass das System diesen Rückfall selbst protokolliert, "
+        "ist der schwächste und zugleich belastbarste Punkt der These.",
+    )
 
     page_break(doc)
 
@@ -739,8 +844,12 @@ def build_document() -> Document:
         "Sartre, J.-P. (1943/1993). Das Sein und das Nichts. Reinbek: Rowohlt.",
         "von Foerster, H. (1981). Observing Systems. Seaside: Intersystems.",
         "Wiener, N. (1948). Cybernetics. Cambridge, MA: MIT Press.",
-        "Urban, S. H., et al. (2026). Fusion Hero OS BEST_VERSION.md v10.0.0. Repository kanon.",
-        "Urban, S. H., et al. (2026). proof_registry.yaml – autoritative Claims. FHOS Repo.",
+        f"Urban, S. H. (2026). Fusion Hero OS BEST_VERSION.md v{CANON_VERSION}. "
+        "Repository-Kanon, unveröffentlichter Stand.",
+        "Urban, S. H. (2026). OFFENLEGUNG.md — Betrieb, Forschung und Gedankenspiel "
+        "getrennt. Repository-Wurzel.",
+        "Urban, S. H. (2026). proof_registry.yaml – autoritative Claims mit Status und "
+        "Testbezug (67 Behauptungen). FHOS Repo.",
         "Urban, S. H., et al. (2026). mesh_service_coordination.yaml – Placement & Anti-Patterns.",
         "Urban, S. H., et al. (2026). docs/Heroismus Axiome I–IV. FHOS Repo.",
         "Urban, S. H., et al. (2026). 06_Master_Archive – ALTE_Frau_95g Korpus (PDFs).",
@@ -1008,14 +1117,19 @@ def main() -> int:
     doc.save(str(out_path))
     doc.save(str(arch_path))
 
-    # also markdown abstract index
-    md = OUT_DIR / "README.md"
+    # Bau-Zusammenfassung. Bewusst NICHT README.md: die dortige Datei ist
+    # handgepflegt (Ontologie, Designvorlage V3.3, Verweistabellen) und wurde
+    # von diesem Schritt frueher bei jedem Lauf ueberschrieben.
+    md = OUT_DIR / "BUILD_SUMMARY.md"
     md.write_text(
-        f"""# Dissertation Stephan Hagen Urban
+        f"""# Dissertation Stephan Hagen Urban — Bau-Zusammenfassung
 
-**Titel:** Autopoiesis und Autopolitik des Fusion Hero OS  
-**Autor:** Stephan Hagen Urban  
-**Version:** 1.0  
+Erzeugt von `scripts/generate_dissertation_shu.py`. Diese Datei wird bei
+jedem Lauf neu geschrieben — nicht von Hand bearbeiten.
+
+**Titel:** Autopoiesis und Autopolitik des Fusion Hero OS
+**Autor:** Stephan Hagen Urban
+**Version:** {WORK_VERSION}
 **Datei:** `{OUT_NAME}`
 
 ## Kopien
@@ -1023,13 +1137,25 @@ def main() -> int:
 - `docs/dissertation/{OUT_NAME}`
 - `04_Buch_und_Archiv/Dissertation_Stephan_Hagen_Urban/{OUT_NAME}`
 
+## Versionslage
+
+- Operativer Kanon (Corpus-Freeze): v{CANON_VERSION} — **nicht** als Release veroeffentlicht
+- Letzter publizierter Tag: v{PUBLISHED_RELEASE}
+- In der Proof Registry als widerlegte Behauptung gefuehrt: `V15-ZWEI-AEREN-OHNE-RELEASE`
+
+## Akademischer Status
+
+Kein Grad, kein Promotionsverfahren, keine betreuende Institution, keine
+externe Begutachtung. Siehe `OFFENLEGUNG.md` und den Abschnitt
+„Status dieser Arbeit" im Dokument selbst.
+
 ## Hot-Run
 
 Siehe Anhang C im Dokument und `~/.fusion/mesh/coordination/`.
 
 ## Vermerk
 
-MAINFRAME GELADEN | ALTE_Frau_95g + Fusion Hero OS v10.0.0 | Gesamtarchiv einbezogen
+MAINFRAME GELADEN | ALTE_Frau_95g + Fusion Hero OS v{CANON_VERSION} | Gesamtarchiv einbezogen
 """,
         encoding="utf-8",
     )
@@ -1038,10 +1164,16 @@ MAINFRAME GELADEN | ALTE_Frau_95g + Fusion Hero OS v10.0.0 | Gesamtarchiv einbez
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "author": "Stephan Hagen Urban",
         "title": "Autopoiesis und Autopolitik des Fusion Hero OS",
-        "version": "1.0",
+        "version": WORK_VERSION,
         "outputs": [str(out_path), str(arch_path)],
         "bytes": out_path.stat().st_size,
-        "platform_canon": "10.0.0",
+        "platform_canon": CANON_VERSION,
+        "published_release": PUBLISHED_RELEASE,
+        "canon_is_published": False,
+        "academic_status": (
+            "kein Grad, kein Promotionsverfahren, keine betreuende Institution, "
+            "keine externe Begutachtung — siehe OFFENLEGUNG.md"
+        ),
     }
     man_path = Path.home() / ".fusion" / "mesh" / "coordination" / "dissertation_build_manifest.json"
     man_path.parent.mkdir(parents=True, exist_ok=True)
