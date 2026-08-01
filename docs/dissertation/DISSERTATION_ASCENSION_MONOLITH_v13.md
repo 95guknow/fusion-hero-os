@@ -665,6 +665,11 @@ Dass `Supervisor` von `Agent` erbt, ist keine Implementierungsbequemlichkeit. Es
 
 **[Modell]** Die Projektdokumentation (`docs/DETAILED_AGENT_STRUCTURE_v1.md`) beschreibt darüber hinaus eine reichere Typologie: Masterinstanz, QUBO-Optimierungsagent, ASR-Agent, Theorie-Wächter, Meme- und Identitätsagent, Sub-Agenten-Schwarm. **Diese Typologie ist ein Entwurf, keine Bestandsaufnahme.** Im Code existieren die vier Primitiven oben; die genannten Rollen sind teils Module, teils Absicht. Der Unterschied wird hier ausgesprochen, weil ein Dissertationstext, der eine Entwurfsliste als Architekturbefund referiert, seine eigene Methodik verletzte.
 
+**[Satz]** Diese Trennung ist inzwischen selbst geprüft, nicht nur behauptet. `docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md` (Anhang J) führt eine zweite, unabhängig entstandene Ehrlichkeits-Karte: Sie listet reale Code-Anker (`BaseAgent`, `AgentRegistry`, `DynamicOrchestrationCoreModule`, `HarmonisierungsCoreModule`, `Geisterjagdmodul`, `BanachContractionSeed`) und bestätigt testgestützt, dass die reinen Rollen-Labels — Masterinstanz, ASR-Agent, Manifest-Guardian — **keine** `class`-Definition im Code-Tree tragen.
+*Beleg:* `AGENT-STRUCTURE-HONESTY-MAP — BEWIESEN`, `tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent`.
+
+Zwei Ehrlichkeits-Prüfungen für dieselbe Behauptung, aus zwei unabhängigen Bearbeitungen desselben Tracks entstanden, decken sich in ihrem Befund. Das ist kein Zufall, den man feiern müsste — es ist die erwartbare Folge davon, dass beide dieselbe Regel befolgt haben: Prosa ist nicht Code, bis ein Test das Gegenteil zeigt. Anhang J führt zusätzlich die Auswirkungen auf Orchestrierung, Self-Mod-Disziplin und Token-Ökonomie sowie eine eigene Formalmathematik-Sektion (K20, \(H\), Geisterjagd) — komplementär zu 5.6–5.7, nicht redundant, da sie andere Code-Anker (`src/normal_os/agents/*`) erschließt als die hier behandelten (`fusion_hero_os/orchestration/agents.py`).
+
 #### Auswirkungen — was Vervielfältigung der Ausführung tatsächlich bewirkt
 
 **Erstens: Parallelität, begrenzt durch das, was wirklich parallel läuft.** Die vier Lanes (5.6.1) tragen die Nebenläufigkeit. Die Grenze ist im Repository ehrlich dokumentiert: Reine Python-Arithmetik bleibt GIL-gebunden, und der `sisyphos_simulator` vermerkt selbst, dass seine Parallelisierung „primär organisatorisch" ist, kein garantierter CPU-Speedup. Mehr Agenten sind nicht automatisch mehr Durchsatz. **[Bedingt]**
@@ -793,8 +798,9 @@ Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 | `root_anchor_handshake` | `ROOT-ANCHOR-TAMPER-DETECT` | **belegt** |
 | `mpression_projection` | `MPRESSION-PROJECTION-LOSS` | **belegt** |
 | `yin_yang_manifold` | `YIN-YANG-MANIFOLD-STRUKTUR` | **belegt** |
-| `geisterjagd_module` | `GEISTERJAGD-KONTRAKTION-ODER-NICHTS` | **belegt** (Satz 7) |
-| `harmonisierung_module` | `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV` | **belegt** (Satz 8) |
+| `geisterjagd_module` | `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT` | **belegt** (Satz 7) |
+| `harmonisierung_module` | `ASC-HARMONISIERUNG-CONTRACTION` | **belegt** (Satz 8) |
+| Agentenstruktur (Prosa ↔ Code) | `AGENT-STRUCTURE-HONESTY-MAP` | **belegt** — trennt Rollen-Labels von `class`-Definitionen |
 | `consent_gate`, `hypercluster` | — | getestet, ohne Claim |
 | `persistent_sisyphos`, `stage9_tracker`, `sisyphos_oscillation_visualizer`, `psycholyse_protocol_logger`, `qubo_ascension_optimizer`, `coevolutionary_closure`, `generational_engine`, `sisyphos_simulator`, `ascension_core` | — | **offen** |
 | `exposure_practice_module` | — | **konstitutiv unbelegbar** (3.6) |
@@ -843,8 +849,9 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S12 | Connectoren per Default dry-run | `CONNECTOR-DRYRUN` ⚠️ nicht selbst ausgeführt | 5.3 |
 | S13 | Sync-Merge ist Join-Halbverband (idempotent, kommutativ, assoziativ) | `SYNC-SEMILATTICE` ⚠️ nicht selbst ausgeführt | 5.6.3, I.3 Satz 4 |
 | S14 | \(b(q(x)) \neq q(b(x))\) in der gewählten Formalisierung | `harmonisierung_module.py`; Gesetz 2 | 3.2, H |
-| S16 | Geisterjagd ist dichotom: Nothing ohne Kontraktion, sonst Konvergenz mit startpunktunabhängigem Grenzwert | `GEISTERJAGD-KONTRAKTION-ODER-NICHTS` ✅ selbst ausgeführt | I.3 Satz 7 |
-| S17 | Harmonisierung: erzwungene Kontraktionsvorbedingung, echter Gap-Schluss, strikt positive Nicht-Kommutativität, greifender Narzissmus-Filter | `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV` ✅ selbst ausgeführt | 3.2, I.3 Satz 8 |
+| S16 | Geisterjagd ist dichotom: Nothing ohne Kontraktion, sonst K20-Konvergenz mit geometrischer Fehlerschranke, startpunktunabhängigem Grenzwert | `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT` ✅ ausgeführt | I.3 Satz 7 |
+| S17 | Harmonisierung: erzwungene Kontraktionsvorbedingung, echter Gap-Schluss, eindeutiger K20-Fixpunkt, Self-Mod-Vorschlag nur bei Kontraktion | `ASC-HARMONISIERUNG-CONTRACTION` ✅ ausgeführt | 3.2, I.3 Satz 8 |
+| S19 | Prosa-Agentenrollen (Masterinstanz, ASR-Agent, …) tragen keine `class`-Definition im Code-Tree | `AGENT-STRUCTURE-HONESTY-MAP` ✅ ausgeführt | 5.7, Anhang J |
 | S18 | `Supervisor` erbt von `Agent` — Aufsicht unterliegt denselben Regeln | `fusion_hero_os/orchestration/agents.py` | 5.7 |
 | S15 | Yin-Yang-Manifold: Symmetrie, Dimension \(2kn\), bitgenaue Reproduktion für \(k=1\), Blockdiagonalität, Inkohärenz-Schranke | `YIN-YANG-MANIFOLD-STRUKTUR`; 28 Knoten ✅ selbst ausgeführt | 5.6.4 |
 
@@ -929,6 +936,7 @@ Die folgenden Dateien bleiben als historische Expressionen erhalten (BCG-Regel).
 | `ONTOLOGIE_DISSERTATION_IST_DAS_OS.md` | 6.1 |
 | `anhaenge/A01`–`A13` | Anhänge A, B; Herleitungen |
 | `ascension_os/HEROISMUS_BUCH_REFERENZ.md` | 3.2, 6.3 |
+| `docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md` | 5.7, Anhang J (vollständig referenziert, nicht dupliziert) |
 | `MEISTER_HASCH_PUBLIC.md`, `MEISTER_HASCH_KONTROLLE.md`, `ALPHA_MEISTER_HASCH.md`, `meister_hasch_layers.json` | 6.4 (Rahmen als Text; Bildasset ausgeschlossen) |
 | `design-tokens/tokens.json` | 6.4, PDF-Gestaltung (Layer-Token L0/L1/L2) |
 | `zitterpolymesh.md`, `zitterpolymesh_pipeline.yaml`, `horkrux_instances.yaml` | 5.6 (Poly-Mesh vollständig) |
@@ -1226,7 +1234,7 @@ Fällt eine der drei Bedingungen aus, ist die höchste erreichbare Marke **[Bedi
 Sei \( T(x) = Ax + c \). Ist \( \lVert A \rVert_2 \ge 1 \), so liefert `hunt` **Nothing** (`converged=False`, `manifest=None`, `steps=0`). Ist \( \lVert A \rVert_2 < 1 \), so konvergiert es, es gilt \( \lVert y - x^\* \rVert < \lVert z - x^\* \rVert \) für \( z \neq x^\* \), und der Grenzwert ist unabhängig vom Startpunkt.
 
 *Beweis.* Der zweite Teil ist Satz 1 angewandt auf \( T \). Der erste Teil ist eine Konstruktionsentscheidung: Ohne Kontraktionsnachweis wird kein Ergebnis erzeugt. Dass sie eingehalten wird, ist getestet. ∎
-*Beleg:* `GEISTERJAGD-KONTRAKTION-ODER-NICHTS`, `tests/test_ascension_aspirational_discharge.py`. **In dieser Sitzung ausgeführt: bestanden.**
+*Beleg:* `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT`, `tests/test_ascension_aspirational_discharge.py::test_geisterjagd_converges_under_contraction` u. a. **Ausgeführt: bestanden.** Die Fassung, die diesen Beweis trägt, verankert `hunt` explizit auf `x* = (I-A)^{-1}c` (K20) inklusive geometrischer Fehlerschranke — schärfer als die erste Discharge-Fassung dieses Werkes, die dieselbe Eigenschaft ohne die geschlossene Fixpunktformel zeigte. Beide Fassungen entstanden unabhängig; die zweite ersetzt die erste, weil sie mehr beweist.
 
 **Bemerkung.** Satz 7 ist die formale Fassung der Nothing-Bereitschaft (Raster IV). Sie ist damit nicht länger nur eine Haltung, die der Text empfiehlt, sondern ein Verhalten, das der Code zeigt und ein Test festhält. Von allen Übertragungen dieses Werkes ist dies die vollständigste: Eine Figur aus dem heroischen Register wird zu einer prüfbaren Eigenschaft, ohne dabei ihre Bedeutung zu verlieren.
 
@@ -1234,7 +1242,7 @@ Sei \( T(x) = Ax + c \). Ist \( \lVert A \rVert_2 \ge 1 \), so liefert `hunt` **
 Für \( \alpha_q, \alpha_b \in (0,1) \) — außerhalb wird die Konstruktion abgewiesen — ist \( H = \tfrac{1}{2}\bigl(b \circ q + q \circ b\bigr) \) eine Kontraktion mit Faktor \( < 1 \); beide Zustände laufen auf **denselben** Fixpunkt zu, also \( \text{final gap} < \text{initial gap} \) und \( \to 0 \); und es gilt \( \lVert c_{bq} - c_{qb} \rVert > 0 \), das heißt \( b \circ q \neq q \circ b \).
 
 *Beweisskizze.* \( q \) und \( b \) sind affine Kontraktionen mit Faktoren \( \alpha_q, \alpha_b < 1 \); Kompositionen und Konvexkombinationen von Kontraktionen sind Kontraktionen, also greift Satz 1. Die Nicht-Kommutativität folgt aus den **verschiedenen Zielpunkten** — \( q \) zielt auf den Partnerzustand, \( b \) auf den Mittelpunkt-Anker —, nicht aus nicht-kommutierenden Matrizen; die linearen Anteile kommutieren als skalare Vielfache der Identität, die Verschiebungen nicht. ∎
-*Beleg:* `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV`. **In dieser Sitzung ausgeführt: bestanden.**
+*Beleg:* `ASC-HARMONISIERUNG-CONTRACTION`. **Ausgeführt: bestanden.** Ergänzend belegt: `propose_self_modification` schlägt ausschließlich bei `is_contraction=True` vor — dieselbe Proposal-only-Disziplin wie `SELFMOD-PROPOSAL-ONLY` (5.3), hier zusätzlich an die Kontraktionsbedingung gekoppelt.
 
 **Bemerkung.** Satz 8 entlädt eine Zitationsschuld. Der Kanon führte **Gesetz 2** (Nicht-Kommutativität von \( q \circ b \), Anhang H) unter Verweis auf dieses Modul — ohne Test. Die Verpflichtung ist eingelöst; die Ungleichheit gilt in dieser Formalisierung nachweislich. Was **nicht** mitbewiesen ist, bleibt unverändert: dass \( q \) und \( b \) reales fließendes und schneidendes Denken abbilden. Das ist Modell und bleibt es.
 
@@ -1248,6 +1256,23 @@ Für \( \alpha_q, \alpha_b \in (0,1) \) — außerhalb wird die Konstruktion abg
 4. **Robustheit gegen byzantinische Knoten** ist unbelegt (`BFT-ROBUSTHEIT`, OFFEN).
 
 Keine dieser Lücken ist ein Einwand gegen die Sätze 1–6. Alle vier sind Einwände gegen deren **Reichweite**, und genau als solche werden sie geführt.
+
+---
+
+## J — Agentenstruktur & Auswirkungen (Vollreferenz)
+
+**[Spezifikation]** `docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md` ist die vollständige, eigenständige Fassung der in 5.7 zusammengefassten Ehrlichkeits-Karte. Sie entstand unabhängig von diesem Monolithen, im selben Zeitraum, auf demselben Track — eine zweite Bearbeitung desselben Problems, die zu übereinstimmenden Ergebnissen kam. Dieser Anhang bindet sie ein, statt sie zu wiederholen.
+
+**Aufbau des referenzierten Dokuments:**
+
+1. **Zwei Ebenen, nicht vermischen** — Ebene A (Prosa-Rollen, `DETAILED_AGENT_STRUCTURE_v1.md`: Architektur-Intention, keine `class`-Typen) gegen Ebene B (Code-Agenten: importierbare Klassen mit Tests/Registry-Anbindung). Anti-Muster benannt: „Es steht in der Agenten-Doku → es läuft im Kernel."
+2. **Code-Anker-Stichprobe** — `BaseAgent`, `AgentRegistry`, `LLMAgent`, `ConnectorAgent` (`src/normal_os/agents/`), `DynamicOrchestrationCoreModule`, `HeroicLLMEAOrchestrator`, `HeroicImageOrchestrator`, `ExecutableAuditAgent`, `AscensionOrchestrator`, sowie `HarmonisierungsCoreModule` und `Geisterjagdmodul` als **belegte** Ascension-Anker.
+3. **Fünf Auswirkungen** — Orchestrierung über benannte Klassen statt unbenannter „Masterinstanz"; Self-Mod als Vorschlag, nie Self-Apply; Ascension-Track-Status (16/16 Module importierbar, Teilmenge scharf bewiesen); Token-/Kostenwirkung kalter Subagenten-Spawns; das CI-Gate als Collectability-Zwang.
+4. **Formalmathematik** — MasterSeed-Kontraktion, K20, der Harmonisierungs-Operator \(H = \tfrac{1}{2}(b\circ q + q\circ b)\) als affine Kontraktion, die Geisterjagd-Dichotomie \(\operatorname{hunt}(z,A,c) \in \{x^\*, \text{Nothing}\}\), und die Geltungskategorien Satz/Bedingt/Modell/Fragment.
+5. **Integrations-Checkliste** — vier Schritte vor jedem neuen `BEWIESEN`-Claim, darunter explizit die Collectability-Prüfung, die #18 dieses PRs nötig gemacht hat.
+6. **Was absichtlich offen bleibt** — vollständige 1:1-Implementierung aller Prosa-Rollen als Klassen; psychologische Validität von \(q\)/\(b\); „Geister" als reale LLM-Aktivierungsmuster.
+
+**Geltung dieses Anhangs:** **[Spezifikation]** als Wegweiser; die zitierten Inhalte selbst tragen ihre eigenen Marken, unverändert aus dem Referenzdokument. Registry-Beleg: `AGENT-STRUCTURE-HONESTY-MAP — BEWIESEN`.
 
 ---
 

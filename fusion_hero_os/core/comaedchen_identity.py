@@ -7,7 +7,8 @@ Voice/design: free AI voice models (Voidol-class), corpus, TTS — character mem
 from __future__ import annotations
 
 import json
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
 from typing import Any
 

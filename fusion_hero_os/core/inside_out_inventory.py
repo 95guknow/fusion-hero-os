@@ -18,7 +18,8 @@ import os
 import time
 from collections import defaultdict
 from dataclasses import asdict, dataclass
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
 from typing import Any
 from collections.abc import Iterable

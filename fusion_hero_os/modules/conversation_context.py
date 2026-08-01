@@ -8,7 +8,8 @@ kein externer Zugriff.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule

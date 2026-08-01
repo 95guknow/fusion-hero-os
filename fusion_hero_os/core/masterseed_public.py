@@ -12,7 +12,8 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
-from datetime import datetime, UTC
+from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from typing import Any
 
 from fusion_hero_os.core.heroic_core_orchestrator import MasterSeed
