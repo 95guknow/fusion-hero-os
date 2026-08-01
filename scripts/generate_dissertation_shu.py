@@ -844,12 +844,15 @@ def build_document() -> Document:
         "Sartre, J.-P. (1943/1993). Das Sein und das Nichts. Reinbek: Rowohlt.",
         "von Foerster, H. (1981). Observing Systems. Seaside: Intersystems.",
         "Wiener, N. (1948). Cybernetics. Cambridge, MA: MIT Press.",
+        # Explizit verkettet statt implizit: in einer Liste ist nebeneinander
+        # stehendes Stringliteral von einem vergessenen Komma nicht zu
+        # unterscheiden (CodeQL py/implicit-string-concatenation-in-list).
         f"Urban, S. H. (2026). Fusion Hero OS BEST_VERSION.md v{CANON_VERSION}. "
-        "Repository-Kanon, unveröffentlichter Stand.",
+        + "Repository-Kanon, unveröffentlichter Stand.",
         "Urban, S. H. (2026). OFFENLEGUNG.md — Betrieb, Forschung und Gedankenspiel "
-        "getrennt. Repository-Wurzel.",
+        + "getrennt. Repository-Wurzel.",
         "Urban, S. H. (2026). proof_registry.yaml – autoritative Claims mit Status und "
-        "Testbezug (67 Behauptungen). FHOS Repo.",
+        + "Testbezug (67 Behauptungen). FHOS Repo.",
         "Urban, S. H., et al. (2026). mesh_service_coordination.yaml – Placement & Anti-Patterns.",
         "Urban, S. H., et al. (2026). docs/Heroismus Axiome I–IV. FHOS Repo.",
         "Urban, S. H., et al. (2026). 06_Master_Archive – ALTE_Frau_95g Korpus (PDFs).",
