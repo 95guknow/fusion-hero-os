@@ -353,6 +353,23 @@ claims:
       - tests/test_yin_yang_manifold.py::test_pairs_are_block_diagonal_without_coupling
       - tests/test_yin_yang_manifold.py::test_incoherent_state_is_strictly_more_expensive
 
+  - id: GEISTERJAGD-KONTRAKTION-ODER-NICHTS
+    statement: "Geisterjagdmodul.hunt (ascension_os/core/geisterjagd_module.py) ist dichotom: ist (A,c) keine Kontraktion (||A||_2 >= 1), liefert es converged=False, manifest=None, steps=0 — Nothing statt vorgetaeuschter Konvergenz. Ist es eine Kontraktion, konvergiert es, der Endabstand zum Fixpunkt ist echt kleiner als der Anfangsabstand, und der Grenzwert ist unabhaengig vom Startpunkt (Banach). Die DEUTUNG von 'Geistern' als latente LLM-Aktivierungen ist MODELL und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_returns_nothing_when_map_is_not_a_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_converges_and_reduces_distance_under_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_reaches_same_fixpoint_from_any_start
+
+  - id: HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV
+    statement: "HarmonisierungsCoreModule (ascension_os/core/harmonisierung_module.py) erzwingt die Kontraktionsvorbedingung bei der Konstruktion (alpha ausserhalb (0,1) => ValueError); H ist stets Kontraktion mit Faktor < 1 und schliesst den Abstand zweier Zustaende echt (final_gap < initial_gap, beide Seiten laufen auf denselben Fixpunkt); die Nicht-Kommutativitaet b(q(x)) != q(b(x)) ist strikt positiv (Gesetz 2 in DIESER Formalisierung); der Narzissmus-Filter faellt durch, wenn sich kein Teilnehmer messbar bewegt, und dann gibt es kein Zufriedenheitsquant. Dass q und b reales fliessendes/schneidendes Denken abbilden, ist MODELL und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_rejects_non_contracting_alphas
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_is_always_a_contraction_and_closes_the_gap
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_noncommutativity_is_strictly_positive
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_narcissism_filter_blocks_the_unmoved
+
   # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
   - id: REGISTRY-NO-STUBS
     statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."

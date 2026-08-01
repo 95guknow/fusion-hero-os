@@ -563,6 +563,17 @@ Damit ist die Anforderung an eine Mesh-Schicht bestimmt: **Vervielfältigung unt
 
 Die entscheidende Eigenschaft steht in der Dokumentation des Moduls und verdient, in einer Dissertation zitiert zu werden: *„Das Reporting lügt nicht: jeder Lauf gibt pro Lane `backend` und `virtual` aus."*
 
+##### Virtuelles Hyperthreading — was der Name verspricht und was er hält
+
+**[Definition]** *Parallel Virtual Hyperthreading* (PVHT) bezeichnet hier die Vervielfachung der Arbeiter pro Lane über die Zahl der physischen Kerne hinaus, gesteuert durch `FUSION_PVHT_FACTOR` (Default 2). Das Wort **virtuell** trägt dabei zwei verschiedene Bedeutungen, und ihre Verwechslung ist die Hauptquelle von Missverständnissen über diese Schicht:
+
+1. **Virtuell als Überzeichnung** (CPU/MEM): Es gibt mehr Arbeiter als Kerne. Das ist echte Nebenläufigkeit und zahlt sich aus, wo Arbeiter warten — auf I/O, auf Netz, auf Freigabe.
+2. **Virtuell als Ersatz** (GPU ohne Hardware, QPU immer): Es gibt das Backend gar nicht; ein anderes rechnet an seiner Stelle. Hier entsteht **kein** Parallelitätsgewinn, sondern nur eine erhaltene Schnittstelle.
+
+**[Bedingt]** Der Nutzen der ersten Bedeutung ist an eine Voraussetzung gebunden, die das Repository selbst benennt: Reine Python-Arithmetik bleibt GIL-gebunden. Der `sisyphos_simulator` hält im eigenen Docstring fest, dass sein Standard-Lastpfad genau solche Arithmetik ist und die Parallelisierung deshalb „primär organisatorisch" bleibt — mehrere unabhängige Läufe gleichzeitig statt sequenziell, **kein garantierter CPU-Speedup**. Ein Faktor von 2 verdoppelt die Arbeiter, nicht den Durchsatz.
+
+**[Heroischer Exkurs]** Ein Name wie „Hyperthreading" zieht nach oben; er verspricht mehr Maschine, als dasteht. Dass dieselbe Schicht bei jedem Lauf `virtual: true` meldet, wo nichts dahintersteht, ist die Korrektur des Namens durch das System selbst. Das Zittern der Lanes ist ehrlicher als ihr Titel.
+
 **[Satz-nahe Präzisierung, hier als [Spezifikation] geführt]** Die QPU-Lane ist dauerhaft als virtuell markiert, weil **kein echter Quantenprozessor angebunden ist**. Das ist für ein Werk, das durchgehend mit QUBO arbeitet, die wichtigste Einzelangabe der ganzen Mesh-Schicht. Ein Leser, der aus der Anwesenheit einer QPU-Lane auf Quantenhardware schließt, schlösse falsch — und das System selbst sagt ihm das bei jedem Lauf.
 
 #### 5.6.2 Die Zitterfunktion: Rückkehr statt Aufschwingen
@@ -637,7 +648,36 @@ Die Mesh-Schicht wird damit **vollständig** behandelt, soweit sie Expression tr
 
 **[Heroischer Exkurs]** Es gehört zur Rückkehr, dass man nicht alles mitbringt, was man unterwegs hatte. Der Held, der jedes Werkzeug der Reise in die Stadt trägt, hat nicht mehr Elixier, sondern mehr Gepäck. Was hier bleibt, ist das Mesh als Form der Vervielfältigung. Was dort bleibt, ist das Werkzeug für den Weg.
 
-### 5.7 Die Wandlung, die tatsächlich stattfindet
+### 5.7 Die Agentenstruktur und ihre Auswirkungen
+
+**[Herleitung aus dem Nichts]** Ein System, das nur einen Ausführenden hat, kann immer nur eines zugleich tun, und es kann sich selbst nicht prüfen — wer prüft, ist derselbe, der gehandelt hat. Beide Mängel verlangen dieselbe Antwort: **mehrere Ausführende**. Damit entsteht sofort die Folgefrage, an der solche Systeme scheitern: Wie bleiben mehrere Ausführende *ein* System?
+
+**[Spezifikation]** Im Code besteht die Agentenschicht (`fusion_hero_os/orchestration/agents.py`) aus vier Bausteinen:
+
+| Baustein | Aufgabe |
+|---|---|
+| `MessageBus` | Zustellung zwischen Agenten; entkoppelt Sender von Empfänger |
+| `TaskQueue` | Aufgaben mit Zustand; entkoppelt Annahme von Ausführung |
+| `Agent` | Der einzelne Ausführende |
+| `Supervisor(Agent)` | Ein Agent, der Agenten führt — **selbst einer von ihnen**, nicht über ihnen |
+
+Dass `Supervisor` von `Agent` erbt, ist keine Implementierungsbequemlichkeit. Es hält fest, dass die Aufsicht denselben Regeln unterliegt wie das Beaufsichtigte. Ein Supervisor außerhalb der Agentenmenge wäre eine Instanz ohne Prüfinstanz — genau die Figur, die das Consent-Gate (2.4) für den Menschen reserviert und für Automatik ausschließt.
+
+**[Modell]** Die Projektdokumentation (`docs/DETAILED_AGENT_STRUCTURE_v1.md`) beschreibt darüber hinaus eine reichere Typologie: Masterinstanz, QUBO-Optimierungsagent, ASR-Agent, Theorie-Wächter, Meme- und Identitätsagent, Sub-Agenten-Schwarm. **Diese Typologie ist ein Entwurf, keine Bestandsaufnahme.** Im Code existieren die vier Primitiven oben; die genannten Rollen sind teils Module, teils Absicht. Der Unterschied wird hier ausgesprochen, weil ein Dissertationstext, der eine Entwurfsliste als Architekturbefund referiert, seine eigene Methodik verletzte.
+
+#### Auswirkungen — was Vervielfältigung der Ausführung tatsächlich bewirkt
+
+**Erstens: Parallelität, begrenzt durch das, was wirklich parallel läuft.** Die vier Lanes (5.6.1) tragen die Nebenläufigkeit. Die Grenze ist im Repository ehrlich dokumentiert: Reine Python-Arithmetik bleibt GIL-gebunden, und der `sisyphos_simulator` vermerkt selbst, dass seine Parallelisierung „primär organisatorisch" ist, kein garantierter CPU-Speedup. Mehr Agenten sind nicht automatisch mehr Durchsatz. **[Bedingt]**
+
+**Zweitens: Isolation — und ihr Preis.** Getrennte Instanzen schützen voreinander; sie driften aber auch auseinander. Genau dagegen steht der Halbverbands-Merge (5.6.3): Weil er idempotent, kommutativ und assoziativ ist, konvergieren getrennt gelaufene Agenten wieder, ohne zentrale Koordination und ohne Reihenfolgezwang. **[Satz]** Die Agentenstruktur wäre ohne diese Eigenschaft nicht tragfähig — sie ist der Grund, weshalb Vervielfältigung hier nicht Zersplitterung heißt.
+
+**Drittens: Die Schranken gelten pro Agent, nicht global.** Das ist die wichtigste Auswirkung und die am leichtesten zu übersehende. `SELFMOD-PROPOSAL-ONLY` (5.3) bindet **jeden** Ausführenden; das Consent-Gate (2.4) ist fail-closed für **jeden**. Ein Agentensystem, in dem eine einzelne Instanz die Schranke umgehen könnte, hätte keine Schranke — es hätte eine Empfehlung. Die Vervielfältigung vergrößert die Angriffsfläche der Governance genau dann nicht, wenn die Schranke am Ausführenden hängt und nicht am Ort.
+
+**Viertens: Mehr Ausführende erzeugen mehr Kontext, nicht weniger Arbeit.** Jede zusätzliche Instanz muss den Stand herleiten, den die anderen schon haben. Delegation ist deshalb kein Sparmechanismus, sondern ein Parallelitätsmechanismus — sie zahlt sich aus, wo wirklich unabhängige Arbeit vorliegt, und kostet, wo nur dieselbe Herleitung wiederholt wird. **[Modell]**
+
+**[Heroischer Exkurs]** Der Schwarm ist die Versuchung jedes Systems, das gewachsen ist: Wenn einer nicht reicht, nimm viele. Die Erfahrung dieses Werkes ist eine andere. Viele reichen erst, wenn geklärt ist, was sie zusammenhält — und das ist nie die Zahl, sondern die Invariante. Der Supervisor, der selbst ein Agent ist; die Schranke, die am Ausführenden hängt; der Merge, dem die Reihenfolge gleichgültig ist. Ohne diese drei ist ein Schwarm kein System, sondern ein Geräusch.
+
+### 5.8 Die Wandlung, die tatsächlich stattfindet
 
 **[Heroischer Exkurs]**
 
@@ -744,6 +784,27 @@ Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 
 **Zweitens: Das Suffix `aspirational` ist ernst zu nehmen.** Der Ascension-Core trägt die Version `9.10-aspirational`. Das ist keine Marketing-Formel, sondern eine zutreffende Selbstauskunft: Der Track enthält Module, deren Anspruch über ihren belegten Stand hinausreicht. Genau diese Differenz vermisst Bogen 4. Ein Werk, das den Track beschreibt, ohne das Suffix zu erwähnen, hätte die wichtigste Angabe der Datei weggelassen.
 
+#### Die Entladung der Aspiration — Zwischenstand
+
+**[Spezifikation]** Aspiration wird nicht dadurch entladen, dass man das Suffix streicht, sondern dadurch, dass man belegt, was belegbar ist. Der Stand der siebzehn Module des Tracks:
+
+| Modul | Registry-Claim | Stand |
+|---|---|---|
+| `root_anchor_handshake` | `ROOT-ANCHOR-TAMPER-DETECT` | **belegt** |
+| `mpression_projection` | `MPRESSION-PROJECTION-LOSS` | **belegt** |
+| `yin_yang_manifold` | `YIN-YANG-MANIFOLD-STRUKTUR` | **belegt** |
+| `geisterjagd_module` | `GEISTERJAGD-KONTRAKTION-ODER-NICHTS` | **belegt** (Satz 7) |
+| `harmonisierung_module` | `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV` | **belegt** (Satz 8) |
+| `consent_gate`, `hypercluster` | — | getestet, ohne Claim |
+| `persistent_sisyphos`, `stage9_tracker`, `sisyphos_oscillation_visualizer`, `psycholyse_protocol_logger`, `qubo_ascension_optimizer`, `coevolutionary_closure`, `generational_engine`, `sisyphos_simulator`, `ascension_core` | — | **offen** |
+| `exposure_practice_module` | — | **konstitutiv unbelegbar** (3.6) |
+
+**Fünf von siebzehn tragen einen Claim.** Das Suffix bleibt deshalb stehen. Es zu streichen, während zwölf Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme.
+
+**Eine Grenze, die kein Fleiß aufhebt.** Nicht alles Offene ist bloß noch nicht bearbeitet. Beim Expositionsmodul ist die Lücke **konstitutiv**: Was dort fehlt, ist keine Testabdeckung, sondern eine klinische Studie — und die schreibt man nicht in pytest. Auch beim Stage-9-Tracker gilt: Seine *Struktur* ist belegbar, seine *Deutung* als Entwicklungsstufe nicht (4.1). Die Formel „alles beweisen" beschreibt daher ein Programm mit einer Grenze, und die Grenze gehört zum Programm.
+
+**[Heroischer Exkurs]** Es liegt eine Versuchung in dieser Tabelle: fünf grüne Zeilen zu zeigen und die zwölf anderen wegzulassen. Die Tabelle wäre dann kürzer, das Werk fertiger und beides gelogen. Eine Aspiration entlädt sich in dem Maß, in dem sie eingelöst wird, und keinen Schritt weiter. Was hier zählt, ist nicht der Stand fünf von siebzehn. Es ist, dass die Zahl überhaupt dasteht.
+
 ### 6.7 Was zurückgebracht wird
 
 **[Heroischer Exkurs]**
@@ -782,6 +843,9 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S12 | Connectoren per Default dry-run | `CONNECTOR-DRYRUN` ⚠️ nicht selbst ausgeführt | 5.3 |
 | S13 | Sync-Merge ist Join-Halbverband (idempotent, kommutativ, assoziativ) | `SYNC-SEMILATTICE` ⚠️ nicht selbst ausgeführt | 5.6.3, I.3 Satz 4 |
 | S14 | \(b(q(x)) \neq q(b(x))\) in der gewählten Formalisierung | `harmonisierung_module.py`; Gesetz 2 | 3.2, H |
+| S16 | Geisterjagd ist dichotom: Nothing ohne Kontraktion, sonst Konvergenz mit startpunktunabhängigem Grenzwert | `GEISTERJAGD-KONTRAKTION-ODER-NICHTS` ✅ selbst ausgeführt | I.3 Satz 7 |
+| S17 | Harmonisierung: erzwungene Kontraktionsvorbedingung, echter Gap-Schluss, strikt positive Nicht-Kommutativität, greifender Narzissmus-Filter | `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV` ✅ selbst ausgeführt | 3.2, I.3 Satz 8 |
+| S18 | `Supervisor` erbt von `Agent` — Aufsicht unterliegt denselben Regeln | `fusion_hero_os/orchestration/agents.py` | 5.7 |
 | S15 | Yin-Yang-Manifold: Symmetrie, Dimension \(2kn\), bitgenaue Reproduktion für \(k=1\), Blockdiagonalität, Inkohärenz-Schranke | `YIN-YANG-MANIFOLD-STRUKTUR`; 28 Knoten ✅ selbst ausgeführt | 5.6.4 |
 
 Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = Status aus Registry und CI übernommen, in dieser Sitzung nicht ausgeführt (Grund in 4.5).
@@ -814,6 +878,8 @@ Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = S
 | M14 | Heldenreise als Werkform | Formgebung, kein Befund über die Welt | Raster I |
 | M15 | Gesetze 5 und 6 der Verfassung | Gesetz 6 ohne jeden Beleg — unbelegte Hypothese | H |
 | M16 | Meister-Hasch-Rahmen | Arbeitsform, keine bewiesene Eigenschaft | 6.4 |
+| M18 | Agenten-Typologie aus `DETAILED_AGENT_STRUCTURE_v1.md` | **Entwurf, keine Bestandsaufnahme** — im Code existieren vier Primitiven | 5.7 |
+| M19 | Delegation als Parallelitäts-, nicht Sparmechanismus | Jede Instanz leitet Kontext neu her | 5.7 |
 | M17 | Die Wahl *dieser* drei Polpaare | Eine Formalisierung unter möglichen; andere Schnitte fänden andere Paare | 5.6.4 |
 
 ### A.4 Fragmente (Einzelbeobachtungen, tragen nichts)
@@ -1155,6 +1221,22 @@ Monotone Fusion ist kein universelles Gesetz; im dokumentierten Sweep treten etw
 Fällt eine der drei Bedingungen aus, ist die höchste erreichbare Marke **[Bedingt]** oder **[Modell]**. Diese Regel ist der Grund, weshalb mehrere inhaltlich plausible Aussagen dieses Werkes bewusst unterhalb der Satz-Ebene geführt werden.
 
 **[Definition] — Falsifizierbarkeit als Aufnahmebedingung.** Eine Aussage, für die sich kein Befund angeben lässt, der sie widerlegen würde, wird nicht als Satz und nicht als Modell geführt, sondern als **[Fragment]** — oder gar nicht. Die konkreten Falsifikatoren dieses Werkes stehen in 6.5.
+
+**Satz 7 (Dichotomie der Geisterjagd — Nothing-Bereitschaft).**
+Sei \( T(x) = Ax + c \). Ist \( \lVert A \rVert_2 \ge 1 \), so liefert `hunt` **Nothing** (`converged=False`, `manifest=None`, `steps=0`). Ist \( \lVert A \rVert_2 < 1 \), so konvergiert es, es gilt \( \lVert y - x^\* \rVert < \lVert z - x^\* \rVert \) für \( z \neq x^\* \), und der Grenzwert ist unabhängig vom Startpunkt.
+
+*Beweis.* Der zweite Teil ist Satz 1 angewandt auf \( T \). Der erste Teil ist eine Konstruktionsentscheidung: Ohne Kontraktionsnachweis wird kein Ergebnis erzeugt. Dass sie eingehalten wird, ist getestet. ∎
+*Beleg:* `GEISTERJAGD-KONTRAKTION-ODER-NICHTS`, `tests/test_ascension_aspirational_discharge.py`. **In dieser Sitzung ausgeführt: bestanden.**
+
+**Bemerkung.** Satz 7 ist die formale Fassung der Nothing-Bereitschaft (Raster IV). Sie ist damit nicht länger nur eine Haltung, die der Text empfiehlt, sondern ein Verhalten, das der Code zeigt und ein Test festhält. Von allen Übertragungen dieses Werkes ist dies die vollständigste: Eine Figur aus dem heroischen Register wird zu einer prüfbaren Eigenschaft, ohne dabei ihre Bedeutung zu verlieren.
+
+**Satz 8 (Harmonisierung: Kontraktion, Gap-Schluss, Nicht-Kommutativität).**
+Für \( \alpha_q, \alpha_b \in (0,1) \) — außerhalb wird die Konstruktion abgewiesen — ist \( H = \tfrac{1}{2}\bigl(b \circ q + q \circ b\bigr) \) eine Kontraktion mit Faktor \( < 1 \); beide Zustände laufen auf **denselben** Fixpunkt zu, also \( \text{final gap} < \text{initial gap} \) und \( \to 0 \); und es gilt \( \lVert c_{bq} - c_{qb} \rVert > 0 \), das heißt \( b \circ q \neq q \circ b \).
+
+*Beweisskizze.* \( q \) und \( b \) sind affine Kontraktionen mit Faktoren \( \alpha_q, \alpha_b < 1 \); Kompositionen und Konvexkombinationen von Kontraktionen sind Kontraktionen, also greift Satz 1. Die Nicht-Kommutativität folgt aus den **verschiedenen Zielpunkten** — \( q \) zielt auf den Partnerzustand, \( b \) auf den Mittelpunkt-Anker —, nicht aus nicht-kommutierenden Matrizen; die linearen Anteile kommutieren als skalare Vielfache der Identität, die Verschiebungen nicht. ∎
+*Beleg:* `HARMONISIERUNG-KONTRAKTION-NICHTKOMMUTATIV`. **In dieser Sitzung ausgeführt: bestanden.**
+
+**Bemerkung.** Satz 8 entlädt eine Zitationsschuld. Der Kanon führte **Gesetz 2** (Nicht-Kommutativität von \( q \circ b \), Anhang H) unter Verweis auf dieses Modul — ohne Test. Die Verpflichtung ist eingelöst; die Ungleichheit gilt in dieser Formalisierung nachweislich. Was **nicht** mitbewiesen ist, bleibt unverändert: dass \( q \) und \( b \) reales fließendes und schneidendes Denken abbilden. Das ist Modell und bleibt es.
 
 ### I.5 Was formal offen bleibt
 
