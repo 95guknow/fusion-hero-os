@@ -353,7 +353,6 @@ claims:
       - tests/test_yin_yang_manifold.py::test_pairs_are_block_diagonal_without_coupling
       - tests/test_yin_yang_manifold.py::test_incoherent_state_is_strictly_more_expensive
 
-  # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
   - id: REGISTRY-NO-STUBS
     statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."
     status: BEWIESEN
