@@ -1,6 +1,7 @@
 # BEST VERSION — Fusion Hero OS
 
-**Stand:** v13.0.0 operational + **bifocal best-of-today 2026-07-26** — additive over v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**Stand:** v14.0.0 canonical (VERSION, noch ungetaggt) — additive over v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**v14.0.0:** Platform major (Ära 14) — **Poly-Mesh / n-dimensionale Mannigfaltigkeit**; Claude Science Integration (Multi-Agent Audit, Scientific Connector Protocol, ScientificAuditHorkrux). Der Ära-Kern ist **ASPIRATIONAL/OFFEN**, siehe `proof_registry.yaml` — die Nummer ist gesetzt, nicht belegt.  
 **v13.0.0:** Platform major (Ära 13) — daycycle + A13/psychogramm/coworking CI; dual-org merge; AscensionOS v9.10 aspirational  
 **Best-of-today (post-tag, same major):** Live GraphAPI landing dual viz · ASM kernel inject · public UI-stub · GDrive spill · quantenvektoren polyglot map · non-blocking dashboard boot  
 **v12.1.0:** Daycycle mem (minute→private dev hourly→4h PR→daily top+fanout) · agent protocol wake `testtest`
@@ -37,12 +38,37 @@ Original und Verfassung der Textqualität:
 
 Code Honesty bleibt organisch: Proof Registry **BEWIESEN / OFFEN / WIDERLEGT** — die Ontologie entbindet nicht von Nachweis.
 
-## Operativer Kanon: v13.0.0 / main
+## Operativer Kanon: v14.0.0 / main
 
-**`VERSION` = `13.0.0` ist die kanonische Plattform-Version** (additiv zu v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
-Wahrheit: annotierter Git-Tag `v13.0.0` auf `main` (nach Release) + Root-`VERSION`.
+**`VERSION` = `14.0.0` ist die kanonische Plattform-Version** (additiv zu v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
+Wahrheit: annotierter Git-Tag `v14.0.0` auf `main` (nach Release) + Root-`VERSION`.
 Alle Manifeste (`pyproject.toml`, `package.json`, Crate-`Cargo.toml`,
 `fusion_hero_os.__version__`) müssen übereinstimmen (`scripts/bump_version.py --check`).
+
+> **Stand des Tags:** `VERSION` steht auf 14.0.0, das letzte **veröffentlichte**
+> Release ist weiterhin `v13.0.0`. Bis Merge nach `main` + `git tag -a v14.0.0`
+> ist die Ära 14 kanonisch *im Repo*, aber nicht publiziert — öffentliche
+> Flächen (Landing Page, Release-Links) nennen deshalb weiter v13.0.0.
+
+### Was v14.0.0 operativ bedeutet (ehrlich)
+
+Ära 14 ist **additiv** über dem v13-Stand, der seinerseits additiv über dem
+v8.3-Funktionskern liegt (BCG ununterbrochen). Was die Ära benennt und was sie
+bereits leistet, ist ausdrücklich **nicht dasselbe**:
+
+| Schicht | Inhalt | Status |
+|---------|--------|--------|
+| **Plattform v14.0.0** | Einheitliche Manifest-Version, Gate deckt `__version__` mit ab | **operativ** |
+| **v13-Stack (ex-v13.0.0)** | Daycycle, A13, Discharge-Runden, Consent-Gate, Hypercluster | **operativ** (erhalten) |
+| **Poly-Mesh / n-d Mannigfaltigkeit** | Ära-Titel; Zitterpolymesh, fraktales Mainframe-Mesh, Mannigfaltigkeits-Lesart | **ASPIRATIONAL / OFFEN** |
+| **Claude Science Integration** | MultiAgentResearchLane, ScientificAuditHorkrux, Connector-Protokoll | **ASPIRATIONAL / STUB** |
+| **AscensionOS v9.x** | CEC, AscensionCore, Sisyphos, … in `ascension_os/` | **loadable / Roadmap** |
+
+Der Ära-Name ist eine **Richtungsangabe, kein Befund**. Die zugehörigen Claims
+stehen in `proof_registry.yaml` mit Status `OFFEN` und ohne `proofs:` — genau
+so lange, bis sammelbare pytest-Knoten sie tragen. Eine Major-Nummer entlastet
+nicht vom Nachweis; das ist dieselbe Regel, unter der v9 nie ein alleiniges
+Platform-Release bekommen hat.
 
 ### Was v10.0.0 operativ bedeutet (ehrlich)
 
