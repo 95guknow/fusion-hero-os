@@ -4,9 +4,9 @@
 > (the OS *is* the work). Text under `docs/dissertation/` is one expression.
 > See `docs/dissertation/ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`.
 
-> **Stand:** v14.0.0 · 2026-08-01
+> **Stand:** v15.0.0 · 2026-08-01
 
-## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v14.0.0)
+## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v15.0.0)
 
 **Quelle der Wahrheit ist der annotierte Git-Tag `vMAJOR.MINOR.PATCH` auf
 `main` dieses Repos** (`95guknow/fusion-hero-os`), gespiegelt in der Datei
@@ -23,22 +23,34 @@ abgeleitet — kein Dokument, Branch oder Manifest führt eine eigene Zählung.
   - **12 / 13** = Fortschreibung derselben Linie (Daycycle-Mem, A13,
     Discharge-Runden, dual-org Merge). Letzter **veröffentlichter**
     Release-Tag: `v13.0.0`.
-  - **14** = aktuelle operative Plattform-Ära — **Poly-Mesh /
-    n-dimensionale Mannigfaltigkeit**, additiv über v13 (BCG ununterbrochen).
-    Aktuell: **`14.0.0`** in `VERSION`, **noch nicht getaggt**. Der Ära-Name
-    beschreibt die Richtung; die tragenden Claims stehen in
-    `proof_registry.yaml` mit Status `OFFEN` (siehe `BEST_VERSION.md` →
-    „Was v14.0.0 operativ bedeutet").
+  - **14** = **Poly-Mesh / n-dimensionale Mannigfaltigkeit**, additiv über v13
+    (BCG ununterbrochen). Der Ära-Name beschreibt die Richtung; die tragenden
+    Claims stehen in `proof_registry.yaml` mit Status `OFFEN` (siehe
+    `BEST_VERSION.md` → „Was v14.0.0 operativ bedeutet"). **Nicht getaggt.**
+  - **15** = aktuelle operative Plattform-Ära, additiv über v14. **Ohne
+    benannten Inhalt** — bisher ein reiner Versionssprung (Manifeste, Doku,
+    Satelliten-Kompatibilität). Aktuell: **`15.0.0`** in `VERSION`,
+    **ebenfalls nicht getaggt**.
+
 - **MINOR** = Feature-/Konsolidierungsstand (neue Layer, Mesh-Ausbau, …).
 - **PATCH** = Fixes.
 - Vorab-Stände: `v10.1.0-rc.1` usw.
+
+> **Achtung — die Tag-Regel gilt derzeit nicht.** Oben steht, die Quelle der
+> Wahrheit sei der annotierte Tag auf `main`. Letzter Tag ist `v13.0.0`;
+> v14.0.0 und v15.0.0 existieren nur in `VERSION`. Für zwei aufeinander-
+> folgende Majors ist die Datei dem Tag vorausgelaufen. Nachziehen, dann
+> stimmt die Regel wieder.
 
 **Mechanik:**
 
 - `VERSION` (Root) trägt die Plattform-Version ohne `v`-Prefix.
 - `scripts/bump_version.py` setzt sie und gleicht alle Manifeste an
   (`package.json` Root + workstation, `pyproject.toml`, beide Crate-
-  `Cargo.toml`). CI-Gate: `bump_version.py --check` (fail bei Drift).
+  `Cargo.toml`, `fusion_hero_os/__init__.py`). CI-Gate:
+  `bump_version.py --check` (fail bei Drift). `__version__` stand bis
+  2026-08-01 zwar in `BEST_VERSION.md` als Pflicht-Manifest, wurde vom Gate
+  aber nicht geprüft — und driftete genau deshalb unbemerkt mit.
 - Release: `python scripts/bump_version.py X.Y.Z` → Commit → Merge nach
   `main` → `git tag -a vX.Y.Z` → `gh release create vX.Y.Z --generate-notes`.
 - Commits folgen Conventional Commits (`feat:`, `fix:`, `docs:`, …), damit

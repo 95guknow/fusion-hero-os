@@ -1,27 +1,28 @@
 {
-  "seal_id": "ALPHA-MH-v12-A032B31B-20260720",
+  "seal_id": "ALPHA-MH-v14-A032B31B-20260801",
   "kind": "alpha_meister_hasch_public_publish_pack",
   "cycle": {
     "BIG_OMEGA": "REACHED",
     "BIG_ALPHA": "OPEN"
   },
-  "platform_version": "12.0.0",
+  "platform_version": "14.0.0",
   "public_safe": true,
   "sealed": true,
-  "parent_seal": "MH-SEAL-v12-A032B31B-20260719",
+  "parent_seal": "ALPHA-MH-v12-A032B31B-20260720",
   "asset": {
     "filename": "meister_hasch.png",
     "sha256": "a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e",
     "size_bytes": 654464,
-    "canonical_repo_path": "docs/dissertation/assets/meister_hasch.png",
-    "raw_url_main": "https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/dissertation/assets/meister_hasch.png"
+    "status": "withdrawn",
+    "withdrawn_at": "2026-07-20",
+    "withdrawn_reason": "Drittanbieter-Urheberrecht — Motiv wird auf keiner oeffentlichen Flaeche ausgeliefert.",
+    "former_repo_path": "docs/dissertation/assets/meister_hasch.png",
+    "note": "Der sha256 bleibt als Integritaetsanker gueltig und wird oeffentlich angezeigt; die Datei selbst ist nicht abrufbar. Genau das ist die Absicht."
   },
   "publish_paths": [
     "docs/dissertation/ALPHA_MEISTER_HASCH.md",
     "docs/dissertation/alpha_meister_hasch.seal.json",
-    "prompt.txt",
-    "docs/dissertation/assets/meister_hasch.png",
-    "docs/dissertation/assets/meister_hasch.sha256"
+    "prompt.txt"
   ],
   "companion_prompt": {
     "disk": "C:\\prompt.txt",
@@ -47,13 +48,23 @@
   "agent_follow_up": {
     "trigger": "nachziehen alpha_meister_hasch",
     "actions": [
-      "verify_remote_raw_sha256",
+      "confirm_asset_absent_on_public_surfaces",
       "confirm_seal_on_main",
       "refresh_local_kontrolle",
       "optional_eudaemon_pulse"
     ]
   },
   "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
-  "sealed_at": "2026-07-20T08:00:00Z",
-  "geltung": "Spezifikation (public pack) · asset hash = Satz"
+  "sealed_at": "2026-08-01T00:00:00Z",
+  "geltung": "Spezifikation (public pack) · asset hash = Satz",
+  "withdrawal": {
+    "asset": "docs/dissertation/assets/meister_hasch.png",
+    "withdrawn_at": "2026-07-20",
+    "enforced_by": [
+      "scripts/build_dissertation_heroisch_pdf.py",
+      "scripts/deploy_95guknow_site.sh"
+    ],
+    "manifest_corrected_at": "2026-08-01",
+    "note": "Ruecknahme war im Code seit 2026-07-20 durchgesetzt, im Manifest aber nicht nachgezogen: publish_paths fuehrte Bild und sha256-Sidecar weiter, das asset-Objekt nannte eine oeffentliche raw-URL. Beide Dateien sind aus dem Repo entfernt (Commits 1110175, 322aca8)."
+  }
 }

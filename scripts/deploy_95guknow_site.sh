@@ -13,13 +13,20 @@
 #
 set -euo pipefail
 
-SRC_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/web/95guknow.github.io"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SRC_DIR="$REPO_ROOT/web/95guknow.github.io"
 REPO="git@github.com:95guknow/95guknow.github.io.git"
-BRANCH="site/refresh-v13.0.0-best-of-today"
+
+# Branch- und Commit-Text folgen der Plattform-Version, statt sie zu wiederholen.
+# Vorher standen hier feste Strings: der Branch nannte v13.0.0, die Commit-
+# Message v12.1.0, und beide blieben bei jedem Bump stehen.
+PLATFORM_VERSION="$(tr -d '[:space:]' < "$REPO_ROOT/VERSION")"
+BRANCH="site/refresh-v${PLATFORM_VERSION}"
 DIRECT=0
 [[ "${1:-}" == "--direct" ]] && DIRECT=1
 
 [[ -d "$SRC_DIR" ]] || { echo "FEHLER: $SRC_DIR fehlt." >&2; exit 1; }
+[[ -n "$PLATFORM_VERSION" ]] || { echo "FEHLER: $REPO_ROOT/VERSION ist leer." >&2; exit 1; }
 command -v rsync >/dev/null || { echo "FEHLER: rsync wird benötigt." >&2; exit 1; }
 
 WORK="$(mktemp -d)"
@@ -44,14 +51,11 @@ echo "→ geänderte Dateien:"
 git add -A
 git --no-pager diff --cached --stat | sed 's/^/     /'
 
-git commit --quiet -m "site: Design und Inhalt auf Fusion Hero OS v12.1.0
+git commit --quiet -m "site: Stand aus web/95guknow.github.io/ auf Fusion Hero OS v${PLATFORM_VERSION}
 
-- Plattformversion durchgaengig v12.1.0
-- geschuetztes Meister-Hasch-Motiv wird nicht mehr ausgeliefert;
-  an seiner Stelle eine Integritaetskarte mit Seal-Hash
-- toter Link auf docs/dissertation/assets/meister_hasch.png entfernt
-- Orbitron self-hosted statt Google-Fonts-CDN, strikte CSP
-- Hell-/Dunkel-Schema, 404-Seite, sitemap.xml, Manifest, OG-Bild"
+Uebertragen per rsync --delete aus dem Plattform-Repo; der Quellstand dort
+ist massgeblich. Geschuetztes Meister-Hasch-Motiv wird nicht ausgeliefert,
+an seiner Stelle steht eine Integritaetskarte mit Seal-Hash."
 
 if [[ "$DIRECT" == "1" ]]; then
   echo "→ pushe nach main (die Seite geht damit live)"

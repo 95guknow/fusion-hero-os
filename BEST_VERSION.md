@@ -1,6 +1,7 @@
 # BEST VERSION — Fusion Hero OS
 
-**Stand:** v14.0.0 canonical (VERSION, noch ungetaggt) — additive over v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**Stand:** v15.0.0 canonical (VERSION, ungetaggt) — additive over v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**v15.0.0:** Platform major (Ära 15) — **ohne benannten Ära-Inhalt.** Der Sprung ist bisher ein reiner Versionssprung: Manifeste, Doku, Satelliten-Kompatibilität. Ein Ära-Name wird erst eingetragen, wenn es etwas zu benennen gibt.  
 **v14.0.0:** Platform major (Ära 14) — **Poly-Mesh / n-dimensionale Mannigfaltigkeit**; Claude Science Integration (Multi-Agent Audit, Scientific Connector Protocol, ScientificAuditHorkrux). Der Ära-Kern ist **ASPIRATIONAL/OFFEN**, siehe `proof_registry.yaml` — die Nummer ist gesetzt, nicht belegt.  
 **v13.0.0:** Platform major (Ära 13) — daycycle + A13/psychogramm/coworking CI; dual-org merge; AscensionOS v9.10 aspirational  
 **Best-of-today (post-tag, same major):** Live GraphAPI landing dual viz · ASM kernel inject · public UI-stub · GDrive spill · quantenvektoren polyglot map · non-blocking dashboard boot  
@@ -38,17 +39,44 @@ Original und Verfassung der Textqualität:
 
 Code Honesty bleibt organisch: Proof Registry **BEWIESEN / OFFEN / WIDERLEGT** — die Ontologie entbindet nicht von Nachweis.
 
-## Operativer Kanon: v14.0.0 / main
+## Operativer Kanon: v15.0.0 / main
 
-**`VERSION` = `14.0.0` ist die kanonische Plattform-Version** (additiv zu v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
-Wahrheit: annotierter Git-Tag `v14.0.0` auf `main` (nach Release) + Root-`VERSION`.
+**`VERSION` = `15.0.0` ist die kanonische Plattform-Version** (additiv zu v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
+Wahrheit: annotierter Git-Tag `v15.0.0` auf `main` (nach Release) + Root-`VERSION`.
 Alle Manifeste (`pyproject.toml`, `package.json`, Crate-`Cargo.toml`,
 `fusion_hero_os.__version__`) müssen übereinstimmen (`scripts/bump_version.py --check`).
 
-> **Stand des Tags:** `VERSION` steht auf 14.0.0, das letzte **veröffentlichte**
-> Release ist weiterhin `v13.0.0`. Bis Merge nach `main` + `git tag -a v14.0.0`
-> ist die Ära 14 kanonisch *im Repo*, aber nicht publiziert — öffentliche
-> Flächen (Landing Page, Release-Links) nennen deshalb weiter v13.0.0.
+> **Stand des Tags — zwei Ären ohne Release.** `VERSION` steht auf 15.0.0, das
+> letzte **veröffentlichte** Release ist `v13.0.0`. Weder v14.0.0 noch v15.0.0
+> sind getaggt. Damit stimmt die Regel „Quelle der Wahrheit ist der annotierte
+> Tag" (`BRANCH_STRATEGY.md`) für zwei aufeinanderfolgende Majors nicht mehr —
+> die `VERSION`-Datei ist der Kanon vorgelaufen.
+>
+> Das ist keine Feinheit: die Landing Page nennt v14.0.0 und verlinkt auf
+> `/releases/latest`, was weiterhin v13.0.0 ausliefert. Nachziehen mit
+> `git tag -a v14.0.0 <commit-cfbb751>` und `git tag -a v15.0.0` auf `main`;
+> `.github/workflows/release.yml` feuert auf `v[0-9]+.[0-9]+.[0-9]+` und baut
+> das Release dann selbst.
+
+### Was v15.0.0 operativ bedeutet (ehrlich)
+
+Ära 15 ist **additiv** über v14 und trägt **keinen benannten Inhalt**. Der
+Sprung umfasst bislang genau das:
+
+| Schicht | Inhalt | Status |
+|---------|--------|--------|
+| **Plattform v15.0.0** | Manifeste synchron, Satelliten-Kompatibilität nachgezogen | **operativ** |
+| **v14-Stack** | Poly-Mesh-Ära, Claude Science Integration | **erhalten** (Status unverändert, siehe unten) |
+| **Ära-15-Inhalt** | — | **nicht benannt** |
+
+Es gibt hier bewusst keinen Ära-Titel. v14 heißt „Poly-Mesh / n-dimensionale
+Mannigfaltigkeit" und trägt drei `OFFEN`-Claims, die bis heute unbelegt sind;
+ein zweiter Name über einem zweiten unbelegten Kern würde die Lücke zwischen
+Nummer und Beweis nur verdoppeln. Sobald es einen Befund gibt, der eine Ära
+trägt, kommt der Name hierher — nicht vorher.
+
+Die Ära-14-Claims bleiben davon unberührt: sie sind weder erledigt noch
+verfallen, sie stehen unverändert `OFFEN` in `proof_registry.yaml`.
 
 ### Was v14.0.0 operativ bedeutet (ehrlich)
 
