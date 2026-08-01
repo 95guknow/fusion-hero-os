@@ -449,3 +449,30 @@ claims:
       - tests/test_ascension_hypercluster.py::test_operationalize_reports_every_ascension
       - tests/test_ascension_hypercluster.py::test_consent_gate_fail_closed_by_default
       - tests/test_ascension_hypercluster.py::test_probe_is_honest_about_missing_module
+
+  - id: ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE
+    statement: "Stage9AscensionTracker (ascension_os/core/stage9_tracker.py): der Schaetzwert liegt stets in [0,9]; STAGE_LABELS ist total ueber 0..9 und jedes Snapshot-Label entspricht seinem Wert; jede Schaetzung wird protokolliert und traegt ihre Rechengrundlage. STRUKTURBEFUND: Mit vorhandener Sisyphos-Historie ist Stufe 0 UNERREICHBAR — aus satisfaction >= 0.3 (ASC-SISYPHOS-REDUNDANZ-BEFUNDE) folgt int(avg_satisfaction*6) >= 1. Stufe 0 ist damit exakt der Kein-Daten-Fall, was ihr Label 'Unbestimmt (keine Daten)' zutreffend beschreibt. Dass der Wert eine psychologische Entwicklungsstufe MISST, ist MODELL und ausdruecklich NICHT Teil dieses Claims (Dissertation 4.1)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_stage_estimate_always_within_zero_to_nine
+      - tests/test_ascension_tracker_discharge.py::test_stage_label_mapping_is_total
+      - tests/test_ascension_tracker_discharge.py::test_stage_zero_is_exclusively_the_no_data_case
+      - tests/test_ascension_tracker_discharge.py::test_stage_snapshots_accumulate_and_carry_their_basis
+
+  - id: ASC-OSZILLATION-REPORT-EHRLICH
+    statement: "SisyphosOscillationVisualizer (ascension_os/core/sisyphos_oscillation_visualizer.py): die Sparkline hat genau ein Zeichen je Datenpunkt und nutzt ausschliesslich SPARK_CHARS; eine konstante Reihe fuehrt nicht zur Division durch null (Amplitude 0, keine Umkehrungen); ohne Historie liefert build_report einen leeren, aber gueltigen Report und within_threshold ist None statt einer erfundenen Aussage; within_threshold ist genau reversal_count < reversal_threshold; render_svg erzeugt wohlgeformtes SVG ohne Fremdbibliothek und benennt fehlende Daten ausdruecklich. Die Schwelle 7 stammt aus einer Quelle ohne Einheitsangabe und ist als Richtungswechsel-Anzahl interpretiert (MODELL, so im Modul deklariert)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_sparkline_length_matches_series_and_uses_only_declared_chars
+      - tests/test_ascension_tracker_discharge.py::test_constant_series_does_not_divide_by_zero
+      - tests/test_ascension_tracker_discharge.py::test_empty_history_yields_an_empty_but_valid_report
+      - tests/test_ascension_tracker_discharge.py::test_within_threshold_tracks_the_reversal_bound
+      - tests/test_ascension_tracker_discharge.py::test_svg_render_is_wellformed_and_honest_when_empty
+
+  - id: ASC-PSYCHOLYSE-STATUS-PFLICHT
+    statement: "PsycholyseProtocolLogger (ascension_os/core/psycholyse_protocol_logger.py): log_session weist jeden Status ausserhalb VALID_STATUS_TAGS ('self_reported', 'observed', 'unverified') mit ValueError ab — es gibt KEINEN Default auf 'verifiziert'. Eine Sitzung laesst sich damit nicht ablegen, ohne den Beleggrad ihrer Angaben zu erklaeren. Session-IDs sind luecken- und fortlaufend; Eintraege ueberleben einen Save/Load-Roundtrip und die Nummerierung setzt korrekt fort."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_status_tag_is_mandatory_and_checked
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_session_ids_are_consecutive
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_entries_survive_a_roundtrip

@@ -806,10 +806,13 @@ Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 | `persistent_sisyphos` | `ASC-SISYPHOS-CLAMP-UND-FORMEL`, `ASC-SISYPHOS-REDUNDANZ-BEFUNDE` | **belegt** (Satz 9, 10) |
 | `sisyphos_simulator` | `ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ` | **belegt** (Satz 11) |
 | `coevolutionary_closure` | `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT` | **belegt** (Satz 12) |
-| `stage9_tracker`, `sisyphos_oscillation_visualizer`, `psycholyse_protocol_logger`, `qubo_ascension_optimizer`, `generational_engine`, `ascension_core` | — | **offen** |
+| `stage9_tracker` | `ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE` | **belegt** (Satz 13) |
+| `sisyphos_oscillation_visualizer` | `ASC-OSZILLATION-REPORT-EHRLICH` | **belegt** (Satz 14) |
+| `psycholyse_protocol_logger` | `ASC-PSYCHOLYSE-STATUS-PFLICHT` | **belegt** (Satz 15) |
+| `qubo_ascension_optimizer`, `generational_engine`, `ascension_core` | — | **offen** |
 | `exposure_practice_module` | — | **konstitutiv unbelegbar** (3.6) |
 
-**Elf von siebzehn tragen einen Claim.** Das Suffix bleibt trotzdem stehen. Es zu streichen, während sechs Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme. Die Bilanz ist von fünf auf elf gestiegen, nicht auf siebzehn; das ist der Unterschied zwischen Fortschritt und Abschluss.
+**Vierzehn von siebzehn tragen einen Claim.** Das Suffix bleibt trotzdem stehen. Es zu streichen, während drei Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme. Die Bilanz ist über drei Runden von fünf auf elf auf vierzehn gestiegen, nicht auf siebzehn; das ist der Unterschied zwischen Fortschritt und Abschluss.
 
 **Eine Grenze, die kein Fleiß aufhebt.** Nicht alles Offene ist bloß noch nicht bearbeitet. Beim Expositionsmodul ist die Lücke **konstitutiv**: Was dort fehlt, ist keine Testabdeckung, sondern eine klinische Studie — und die schreibt man nicht in pytest. Auch beim Stage-9-Tracker gilt: Seine *Struktur* ist belegbar, seine *Deutung* als Entwicklungsstufe nicht (4.1). Die Formel „alles beweisen" beschreibt daher ein Programm mit einer Grenze, und die Grenze gehört zum Programm.
 
@@ -855,6 +858,9 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S14 | \(b(q(x)) \neq q(b(x))\) in der gewählten Formalisierung | `harmonisierung_module.py`; Gesetz 2 | 3.2, H |
 | S16 | Geisterjagd ist dichotom: Nothing ohne Kontraktion, sonst K20-Konvergenz mit geometrischer Fehlerschranke, startpunktunabhängigem Grenzwert | `ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT` ✅ ausgeführt | I.3 Satz 7 |
 | S17 | Harmonisierung: erzwungene Kontraktionsvorbedingung, echter Gap-Schluss, eindeutiger K20-Fixpunkt, Self-Mod-Vorschlag nur bei Kontraktion | `ASC-HARMONISIERUNG-CONTRACTION` ✅ ausgeführt | 3.2, I.3 Satz 8 |
+| S24 | Stage-Wert stets in [0,9]; Labelzuordnung total; **Stufe 0 mit Historie unerreichbar** (folgt aus S21) | `ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE` ✅ | I.3 Satz 13 |
+| S25 | Oszillationsbericht: Sparkline-Länge, keine Division durch null, `within_threshold = None` ohne Daten | `ASC-OSZILLATION-REPORT-EHRLICH` ✅ | I.3 Satz 14 |
+| S26 | Psycholyse-Log erzwingt Beleggrad-Tag; kein Default auf „verifiziert“ | `ASC-PSYCHOLYSE-STATUS-PFLICHT` ✅ | I.3 Satz 15 |
 | S20 | Sisyphos: Klemmung nach [0,1], exakte Formel \(S=1-0{,}7L\), begrenzte Historie, Roundtrip | `ASC-SISYPHOS-CLAMP-UND-FORMEL` ✅ | I.3 Satz 9 |
 | S21 | Zwei wirkungslose Bedingungen im Sisyphos-Code; `is_sustainable` ⟺ \(L<0{,}85\) | `ASC-SISYPHOS-REDUNDANZ-BEFUNDE` ✅ | I.3 Satz 10 |
 | S22 | Simulator deterministisch je Seed; Zufriedenheitsformel identisch mit dem realen Zyklus | `ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ` ✅ | I.3 Satz 11 |
@@ -1286,6 +1292,28 @@ Gleicher `base_seed` liefert bitgleiche Ergebnisse, verschiedene Seeds verschied
 
 *Bemerkung.* Bogen 1 (1.3) sagt dies bereits in Prosa: „Er *erzwingt* die Kontraktion nicht mathematisch, er *detektiert* ihre Verletzung." Diese Aussage war eine Lesart des Codes; jetzt ist sie ein Testgegenstand. Der Klassenname `MasterSeedContractionEnforcer` verspricht mehr, als das Modul leistet — und die Registry hält diese Differenz nun ausdrücklich fest, statt sie dem Namen zu überlassen. ∎
 *Beleg:* `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT`. **Ausgeführt: bestanden.**
+
+**Satz 13 (Stage-Wertebereich und die unerreichbare Nullstufe).**
+Der Schätzwert liegt stets in \( [0,9] \), die Labelzuordnung ist total, und — der eigentliche Befund — **mit vorhandener Historie ist Stufe 0 unerreichbar**.
+
+*Beweis.* Die Klemmung liefert den Wertebereich. Für die Nullstufe: Nach Satz 10 gilt \( S \ge 0{,}3 \) für jeden aufgezeichneten Zyklus, also auch \( \overline{S} \ge 0{,}3 \) und damit \( \lfloor 6\overline{S} \rfloor \ge \lfloor 1{,}8 \rfloor = 1 \). Schon die Basisstufe ist folglich mindestens 1; die drei Boni können sie nur erhöhen. Für den einpunktigen Fall greift zusätzlich der Amplitudenbonus. Stufe 0 tritt daher genau dann ein, wenn keine Historie vorliegt. ∎
+*Beleg:* `ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE`. **Ausgeführt: bestanden.**
+
+**Bemerkung — eine Entdeckung, die sich fortpflanzt.** Satz 13 folgt aus Satz 10. Die Zufriedenheitsuntergrenze 0,3, die dort als *Redundanzbefund* auftrat — ein wirkungsloser `max(0, …)`-Schutz —, entpuppt sich hier als tragende Eigenschaft: Sie bestimmt die Untergrenze des Stage-Schätzers. Was in einem Modul wie toter Code aussah, ist im nächsten die Ursache einer strukturellen Grenze. Das ist ein Argument für die Methode dieses Werkes: Wer Redundanzen wegoptimiert, statt sie festzuhalten, verliert die Voraussetzung des nächsten Satzes.
+
+Praktisch heißt das: Das Label „Unbestimmt (keine Daten)" beschreibt Stufe 0 **exakt**, nicht bloß ungefähr. Und die real benutzte Skala ist neunstufig von 1 bis 9, nicht zehnstufig von 0 bis 9.
+
+**Satz 14 (Ehrlichkeit des Oszillationsberichts).**
+Die Sparkline hat genau ein Zeichen je Datenpunkt aus dem deklarierten Alphabet; eine konstante Reihe führt nicht zur Division durch null; ohne Historie liefert `build_report` einen leeren, aber gültigen Bericht mit `within_threshold = None`; und `within_threshold` ist genau \( \text{reversal count} < \text{threshold} \).
+
+*Bemerkung.* Der interessante Teil ist `None`. Ein Bericht ohne Daten könnte bequem `True` melden — null Umkehrungen liegen schließlich unter jeder Schwelle. Das Modul tut es nicht: Ohne Daten wird keine Schwellenaussage getroffen. Das ist dieselbe Haltung wie Satz 7 (Nothing-Bereitschaft), nur an einer unscheinbaren Stelle. ∎
+*Beleg:* `ASC-OSZILLATION-REPORT-EHRLICH`. **Ausgeführt: bestanden.**
+
+**Satz 15 (Pflicht-Status der Psycholyse-Protokolle).**
+`log_session` weist jeden Status außerhalb `{self_reported, observed, unverified}` mit `ValueError` ab. Es existiert **kein** Default auf „verifiziert". Session-IDs sind lückenlos fortlaufend und überstehen einen Roundtrip.
+
+*Bemerkung.* Die drei zulässigen Tags sind genau die drei Beleggrade, die ein Selbstbericht haben kann — und keiner von ihnen heißt „verifiziert". Das Modul macht es damit unmöglich, eine Sitzung abzulegen, ohne den epistemischen Rang ihrer Angaben zu erklären. Für ein System, dessen einziger empirischer Anker ein \( n=1 \)-Selbstbericht ist (3.5, F1), ist das die passende Konstruktion: Der Beleggrad wird nicht nachträglich beurteilt, sondern bei der Aufnahme erzwungen. ∎
+*Beleg:* `ASC-PSYCHOLYSE-STATUS-PFLICHT`. **Ausgeführt: bestanden.**
 
 ### I.5 Was formal offen bleibt
 
