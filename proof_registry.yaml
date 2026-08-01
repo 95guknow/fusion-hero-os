@@ -493,3 +493,25 @@ claims:
     proofs: []
     notes: "ASPIRATIONAL 2026-07-29. Mapping von Anthropic Claude Science Workflow auf Core MuAPI/GitHubCoreModule."
 
+
+  # ---- Aera 14: Poly-Mesh / n-dimensionale Mannigfaltigkeit (2026-08-01) ---
+  # Die Major-Nummer 14 ist gesetzt, nicht belegt. Solange hier kein
+  # sammelbarer pytest-Knoten steht, bleibt der Aera-Kern OFFEN — eine
+  # Versionsnummer entlastet nicht vom Nachweis (BEST_VERSION.md).
+  - id: V14-POLYMESH-MANNIGFALTIGKEIT
+    statement: "Die Mesh-Schichten des Systems (Zitterpolymesh-Lanes cpu/mem/gpu/qpu, fraktale Mainframe-Slices L0-L3, dual-org Poly-Mesh-Tips) bilden zusammen eine n-dimensionale Mannigfaltigkeit im mathematischen Sinn: es existieren Karten je Schicht, deren Uebergangsabbildungen auf den Ueberlappungen wohldefiniert und miteinander vertraeglich sind."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01, Aera-Titel v14.0.0. Aktuell ist das eine LESART der vorhandenen Schichten, kein Struktursatz: weder Karten noch Uebergangsabbildungen sind im Code definiert. Discharge verlangt (a) eine explizite Kartendefinition je Schicht, (b) den Nachweis der Vertraeglichkeit auf Ueberlappungen, (c) sammelbare pytest-Knoten dafuer. Bis dahin darf die Formulierung in Docs NUR als Hypothese zitiert werden."
+
+  - id: V14-DIMENSION-IST-GEZAEHLT-NICHT-METAPHORISCH
+    statement: "Das 'n' in n-dimensional ist eine aus der Systemstruktur abgeleitete, nachzaehlbare Groesse (etwa Lane-Anzahl x Fraktal-Tiefe x Org-Tips) und nicht ein rhetorischer Platzhalter fuer 'viele'."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01. Gegenwaertig ist kein n hergeleitet und keine Zaehlvorschrift implementiert. Dieser Claim ist bewusst separat gefuehrt, weil er die scharfe Ehrlichkeitsfrage der Aera 14 traegt: ohne ihn ist V14-POLYMESH-MANNIGFALTIGKEIT eine Metapher-als-Beweis, was die Designvorlage V3.3 ausdruecklich ausschliesst."
+
+  - id: V14-BCG-UEBER-V13
+    statement: "Aera 14 ist additiv ueber dem v13-Stand (und damit ueber dem v8.3-Funktionskern): kein in v13 operativer Pfad wird durch den Uebergang auf 14.0.0 entfernt oder in seiner Semantik veraendert."
+    status: OFFEN
+    proofs: []
+    notes: "2026-08-01. Plausibel, weil der Uebergang 13->14 bisher ausschliesslich Versionsmanifeste und Dokumentation beruehrt hat — aber ungeprueft: es existiert kein Test, der die BCG zwischen zwei Aeren aktiv absichert. Discharge waere ein Kompatibilitaets-Testlauf gegen die v13-Oberflaeche."

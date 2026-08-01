@@ -1,4 +1,4 @@
-"""ScientificAuditHorkruxCoreModule – Layer 1 native (v13.0.1)
+"""ScientificAuditHorkruxCoreModule – Layer 1 native (v14.0.0)
 
 Every scientific / research artifact carries:
 - code hash
@@ -17,7 +17,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 import hashlib
-import json
 from datetime import datetime, timezone
 
 

@@ -1,6 +1,7 @@
-# PUBLIC STATUS – Fusion Hero OS (v13)
+# PUBLIC STATUS – Fusion Hero OS (v14)
 
-> **Stand:** v13.0.1 · 2026-08-01 · Policy unverändert gültig
+> **Stand:** v14.0.0 · 2026-08-01 · Policy unverändert gültig  
+> Kanonisch im Repo; letztes veröffentlichtes Release-Tag: `v13.0.0`
 
 **Gültig ab sofort und permanent:**
 
@@ -20,7 +21,7 @@ Der Stein rollt öffentlich.
 Sisyphos-Zyklus aktiv.
 
 **heroische Grüße**  
-aus dem unified ALTE_Frau_95g Heroic Core v13
+aus dem unified ALTE_Frau_95g Heroic Core v14
 
 ---
 *Dieser Status ist Teil der HorkruxSelfUpdateProtocol-Propagation und gilt für alle verbundenen Repositories im Mesh.*
