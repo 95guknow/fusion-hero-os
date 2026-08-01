@@ -515,3 +515,24 @@ claims:
     status: OFFEN
     proofs: []
     notes: "2026-08-01. Plausibel, weil der Uebergang 13->14 bisher ausschliesslich Versionsmanifeste und Dokumentation beruehrt hat — aber ungeprueft: es existiert kein Test, der die BCG zwischen zwei Aeren aktiv absichert. Discharge waere ein Kompatibilitaets-Testlauf gegen die v13-Oberflaeche."
+
+  # ---- Human-Confirm-Gate: Anspruch vs. Durchsetzung (2026-08-01) ---------
+  # Trennung entstanden aus einem realen Gegenfall: der Mechanismus war intakt,
+  # die Durchsetzung fehlte. Beides getrennt zu fuehren verhindert, dass die
+  # eine Eigenschaft wieder als Beleg fuer die andere gelesen wird.
+  - id: GATE-WORKFLOW-KANN-SICH-NICHT-SELBST-FREIGEBEN
+    statement: "Der Human-Confirm-Gate-Workflow (.github/workflows/human-confirm-gate.yml) eroeffnet den Check 'human-confirm/google' als laufend, enthaelt aber keinerlei 'conclusion'/'completed'-Aufruf und kann ihn daher nicht selbst abschliessen; er beansprucht weder administration- noch workflows-Rechte, contents bleibt lesend, checks:write nur zum Oeffnen. Abschliessen kann ausschliesslich der Apps-Script-Endpoint mit separatem, auf Checks eingeschraenktem PAT."
+    status: BEWIESEN
+    proofs:
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_never_closes_its_own_check
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_opens_the_check_as_pending
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_claims_no_excessive_permissions
+      - tests/test_human_confirm_gate_workflow.py::test_gate_doc_does_not_promise_enforcement_unconditionally
+    notes: "Das ist die NOTWENDIGE, nicht die hinreichende Eigenschaft. Sie sagt nichts darueber, ob ein Merge blockiert wird — siehe GATE-BLOCKIERT-MERGE-TATSAECHLICH."
+
+  - id: GATE-BLOCKIERT-MERGE-TATSAECHLICH
+    statement: "Ein Merge nach main/ascension ist ohne GitHub-Review-Approval UND gruenen 'human-confirm/google'-Check nicht moeglich."
+    status: WIDERLEGT
+    proofs:
+      - tests/test_human_confirm_gate_workflow.py::test_gate_doc_does_not_promise_enforcement_unconditionally
+    notes: "GEGENBEISPIEL 2026-08-01: PR 95guknow/fusion-hero-os#105 wurde per API-Merge-Aufruf gemergt, waehrend 'human-confirm/google' pending stand (Secret GOOGLE_CONFIRM_WEBAPP_URL nicht gesetzt) und keine Review-Approval vorlag. Die API meldete mergeable_state 'unstable' statt 'blocked'. Ursache: der Check war nicht in den Required Checks der Branch Protection eingetragen. Die Durchsetzung ist GitHub-Server-State und in pytest grundsaetzlich nicht pruefbar; der verlinkte Test verankert stattdessen, dass die Doku den Vorbehalt fuehrt und nicht wieder zur Garantie umformuliert wird. Behebung: 'human-confirm/google' unter Settings -> Branches -> Required status checks eintragen, dann kann dieser Claim neu bewertet werden."
