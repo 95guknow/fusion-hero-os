@@ -1,10 +1,17 @@
 name: Human Confirm Gate (2x externe Handy-Auth)
 
-# Required-Status-Check: main/ascension duerfen nur gemergt werden, wenn ein
-# Mensch in Echtzeit ZWEI unabhaengige externe Identitaeten bestaetigt hat —
-# GitHub (PR-Review-Approval, ueblicherweise per GitHub-Mobile-App mit
-# Passkey/Biometrie) und Google (dieser Check, gekippt durch ein
-# Apps-Script-Web-App, das selbst Google-Sign-In erzwingt).
+# Vorgesehen als Required-Status-Check: main/ascension sollen nur gemergt
+# werden, wenn ein Mensch in Echtzeit ZWEI unabhaengige externe Identitaeten
+# bestaetigt hat — GitHub (PR-Review-Approval, ueblicherweise per
+# GitHub-Mobile-App mit Passkey/Biometrie) und Google (dieser Check, gekippt
+# durch ein Apps-Script-Web-App, das selbst Google-Sign-In erzwingt).
+#
+# WICHTIG: Dieser Workflow erzwingt nichts. Er oeffnet einen Check. Ob ein
+# offener Check den Merge verhindert, entscheidet allein die Branch
+# Protection — nur wenn 'human-confirm/google' dort als Required Check
+# eingetragen ist. War es am 2026-08-01 nicht; PR #105 wurde mit offenem
+# Check gemergt. Siehe Registry-Claim GATE-BLOCKIERT-MERGE-TATSAECHLICH
+# (WIDERLEGT) und docs/ops/HUMAN_CONFIRM_GATE.md.
 #
 # Diese Workflow-Datei OEFFNET das Gate nur (pending Check-Run) und
 # benachrichtigt per Telefon-Push. Sie kann den Check NIE selbst gruen
@@ -83,17 +90,23 @@ jobs:
             let confirmUrl = '';
 
             if (!baseUrl) {
-              // Fail-closed: der Check bleibt offen und blockiert den Merge.
-              // Das ist Absicht — fehlende Einrichtung darf die Schranke nicht
-              // stillschweigend oeffnen.
+              // Fail-closed: der Check bleibt offen. OB das den Merge aufhaelt,
+              // haengt allein an der Branch Protection — der Workflow kann es
+              // weder bewirken noch pruefen. Der Text behauptet deshalb keine
+              // Blockade mehr, sondern benennt die Bedingung.
               body = [
                 MARKER,
                 '## 🔐 Merge-Freigabe — Einrichtung unvollstaendig',
                 '',
                 'Das Secret `GOOGLE_CONFIRM_WEBAPP_URL` ist in diesem Repository nicht',
-                'gesetzt. Der Check `human-confirm/google` bleibt deshalb offen und',
-                'blockiert den Merge — bewusst, damit fehlende Einrichtung die Schranke',
-                'nicht aufmacht.',
+                'gesetzt. Der Check `human-confirm/google` bleibt deshalb offen —',
+                'bewusst, damit fehlende Einrichtung die Schranke nicht aufmacht.',
+                '',
+                '**Ob das den Merge aufhaelt, haengt an der Branch Protection.** Nur',
+                'wenn `human-confirm/google` dort als Required Check eingetragen ist,',
+                'verhindert der offene Check den Merge — sonst ist dies ein Hinweis,',
+                'keine Schranke. Pruefen mit `gh api` auf',
+                '`.required_status_checks.contexts` des Branch-Protection-Endpoints.',
                 '',
                 'Einrichtung: `docs/ops/HUMAN_CONFIRM_GATE.md`',
                 '',
@@ -105,12 +118,14 @@ jobs:
                 MARKER,
                 '## 🔐 Zwei-Faktor-Merge-Freigabe',
                 '',
-                'Dieser PR braucht **zwei unabhaengige Bestaetigungen vom Handy**, bevor Branch Protection den Merge zulaesst:',
+                'Dieser PR ist fuer **zwei unabhaengige Bestaetigungen vom Handy** vorgesehen:',
                 '',
                 `1. **GitHub** — [Review + Approve](${reviewUrl}) (GitHub-Mobile-App, Passkey/Biometrie).`,
                 `2. **Google** — [Bestaetigen](${confirmUrl}) (Google-Sign-In, nur der hinterlegte Account darf bestaetigen).`,
                 '',
-                'Automation (inkl. Claude) merged diesen PR nicht selbst — komplett extern.',
+                'Erzwungen wird das nur, wenn `human-confirm/google` in den Required Checks',
+                'der Branch Protection steht. Fehlt der Eintrag, laesst GitHub den Merge',
+                'trotz offenem Check zu — dann sind die zwei Links eine Bitte, keine Schranke.',
                 '',
                 `<sub>Bestaetigung gilt fuer \`${shortSha}\`. Jeder neue Push setzt sie zurueck und aktualisiert diesen Kommentar.</sub>`,
               ].join('\n');

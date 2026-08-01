@@ -536,3 +536,15 @@ claims:
     proofs:
       - tests/test_human_confirm_gate_workflow.py::test_gate_doc_does_not_promise_enforcement_unconditionally
     notes: "GEGENBEISPIEL 2026-08-01: PR 95guknow/fusion-hero-os#105 wurde per API-Merge-Aufruf gemergt, waehrend 'human-confirm/google' pending stand (Secret GOOGLE_CONFIRM_WEBAPP_URL nicht gesetzt) und keine Review-Approval vorlag. Die API meldete mergeable_state 'unstable' statt 'blocked'. Ursache: der Check war nicht in den Required Checks der Branch Protection eingetragen. Die Durchsetzung ist GitHub-Server-State und in pytest grundsaetzlich nicht pruefbar; der verlinkte Test verankert stattdessen, dass die Doku den Vorbehalt fuehrt und nicht wieder zur Garantie umformuliert wird. Behebung: 'human-confirm/google' unter Settings -> Branches -> Required status checks eintragen, dann kann dieser Claim neu bewertet werden."
+
+  # ---- Aera 15 (2026-08-01) -----------------------------------------------
+  # Die Aera traegt bislang KEINEN benannten Inhalt. Es gibt deshalb auch
+  # keinen Aera-Claim — ein Claim ohne Aussage waere schlimmer als keiner.
+  # Was hier steht, ist der eine Befund, den der Sprung selbst erzeugt hat.
+  - id: V15-ZWEI-AEREN-OHNE-RELEASE
+    statement: "Der annotierte Git-Tag auf main ist laut BRANCH_STRATEGY.md die Quelle der Wahrheit fuer die Plattform-Version, und VERSION spiegelt ihn."
+    status: WIDERLEGT
+    proofs:
+      - tests/test_version_tag_honesty.py::test_docs_flag_the_gap_when_version_ran_ahead
+      - tests/test_version_tag_honesty.py::test_branch_strategy_does_not_claim_the_tag_rule_holds_unconditionally
+    notes: "GEGENBEISPIEL 2026-08-01: VERSION steht auf 15.0.0, letzter veroeffentlichter Tag ist v13.0.0 — weder v14.0.0 noch v15.0.0 sind getaggt. Fuer zwei aufeinanderfolgende Majors ist die Datei dem Tag vorausgelaufen, die behauptete Spiegelung gilt also nicht. Die Landing Page nennt v14.0.0 und verlinkt auf /releases/latest, das v13.0.0 ausliefert. Der Tag-Zustand selbst ist Server-State und in pytest nicht pruefbar; die verlinkten Tests verankern deshalb das, was IM Repo pruefbar ist: dass beide Dokumente die Luecke ausdruecklich benennen und die Tag-Regel nicht unbedingt behaupten. Behebung: git tag -a v14.0.0 auf cfbb751 und v15.0.0 auf main."
