@@ -350,7 +350,6 @@ claims:
       - tests/test_yin_yang_manifold.py::test_pairs_are_block_diagonal_without_coupling
       - tests/test_yin_yang_manifold.py::test_incoherent_state_is_strictly_more_expensive
 
-  # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
   - id: REGISTRY-NO-STUBS
     statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."
     status: BEWIESEN
@@ -397,6 +396,84 @@ claims:
       - tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent
     notes: "Wirkung: verhindert, dass Prosa-Agenten als implementiert gelesen werden."
 
+  - id: ASC-SISYPHOS-CLAMP-UND-FORMEL
+    statement: "PersistentSisyphosCycle (ascension_os/core/persistent_sisyphos.py): step() klemmt jede Eingabe nach [0,1]; satisfaction = 1 - 0.7*load exakt; die Historie ist durch max_history begrenzt und verwirft den aeltesten Eintrag zuerst, waehrend cycle_count ALLE Schritte zaehlt; Zustand und Historie ueberleben einen Save/Load-Roundtrip. Dass load und satisfaction reale psychische Groessen messen, ist MODELL und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_load_is_clamped_to_unit_interval
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_follows_the_declared_formula
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_history_is_bounded_and_drops_oldest
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_cycle_count_is_strictly_monotone
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_survives_a_save_load_roundtrip
+
+  - id: ASC-SISYPHOS-REDUNDANZ-BEFUNDE
+    statement: "Zwei Bedingungen im Sisyphos-Code sind nachweislich wirkungslos: (1) der max(0, ...)-Schutz der Zufriedenheit greift nie, da aus load <= 1 bereits satisfaction >= 0.3 folgt; (2) is_sustainable ist aequivalent zu load < 0.85, weil die Bedingung satisfaction > 0.4 erst ab load >= 6/7 (~0.857) bindet und damit von der strikteren Lastschranke impliziert wird. Beide Redundanzen sind per Test FIXIERT, nicht wegoptimiert — damit eine spaetere Parameteraenderung sie nicht unbemerkt zu echten Bedingungen macht. Die Schwelle 0.85 selbst ist gesetzt, nicht gemessen (MODELL)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_floor_is_unreachable
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_sustainability_reduces_to_the_load_bound
+
+  - id: ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ
+    statement: "sisyphos_simulator (ascension_os/evolution/sisyphos_simulator.py): generations > MAX_GENERATIONS und n_runs < 1 werden abgewiesen; gleicher base_seed liefert bitgleiche Ergebnisse (Reproduzierbarkeit), verschiedene Seeds verschiedene; die Zufriedenheitsformel der Simulation stimmt EXAKT mit der des realen PersistentSisyphosCycle ueberein — ohne diese Gleichheit waere jede Simulationsaussage ueber den realen Zyklus wertlos; reversal_count ignoriert Richtungswechsel unterhalb min_delta. Der Hyperthreading-Vorbehalt des Moduls (GIL-Bindung, Parallelitaet primaer organisatorisch) bleibt unberuehrt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_rejects_out_of_range_arguments
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_is_deterministic_for_a_fixed_seed
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_satisfaction_matches_the_persistent_cycle
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_reversal_count_ignores_micro_noise
+
+  - id: ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT
+    statement: "MasterSeedContractionEnforcer (ascension_os/core/coevolutionary_closure.py) DETEKTIERT Hash-Abweichungen und zaehlt sie (enforce liefert False, violation_count steigt, last_violation haelt Kontext/erwartet/tatsaechlich fest); der Vergleich ist unempfindlich gegen Rand-Whitespace und Gross-/Kleinschreibung. Der Enforcer ERZWINGT die Kontraktion NICHT mathematisch — der Klassenname legt das nahe, der Code leistet es nicht (Dissertation 1.3). Genau diese Unterscheidung ist Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_detects_hash_mismatch_and_counts_it
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_normalises_case_and_whitespace
+
+  - id: ASC-CONSENT-FAIL-CLOSED
+    statement: "AscensionConsentGate (ascension_os/consent_gate.py): ohne konfiguriertes Gate wird JEDE personenbezogene Operation auf AscensionCore mit ConsentError abgewiesen (fail closed, kein Bypass-Pfad); mit aktivem zweckgebundenem Grant wird sie zugelassen; jede Verweigerung erzeugt ein Audit-Ereignis."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_consent.py::test_personal_data_op_denied_without_gate
+      - tests/test_ascension_consent.py::test_personal_data_op_allowed_with_active_grant
+      - tests/test_ascension_consent.py::test_denial_is_audited
+
+  - id: ASC-HYPERCLUSTER-EHRLICHE-READINESS
+    statement: "AscensionHypercluster (ascension_os/hypercluster.py): der Abhaengigkeitsgraph der deklarierten Ascension-Einheiten ist zyklenfrei; alle vier Lanes (cpu/mem/gpu/qpu) werden von den Default-Einheiten belegt; jede Einheit wird im Report aufgefuehrt; consent-pflichtige Einheiten melden ohne Grant blocked_consent statt operational; ein fehlendes Modul wird als solches gemeldet und NICHT als betriebsbereit ausgegeben."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_hypercluster.py::test_dag_validates_without_cycles
+      - tests/test_ascension_hypercluster.py::test_all_four_lanes_used_by_default_units
+      - tests/test_ascension_hypercluster.py::test_operationalize_reports_every_ascension
+      - tests/test_ascension_hypercluster.py::test_consent_gate_fail_closed_by_default
+      - tests/test_ascension_hypercluster.py::test_probe_is_honest_about_missing_module
+
+  - id: ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE
+    statement: "Stage9AscensionTracker (ascension_os/core/stage9_tracker.py): der Schaetzwert liegt stets in [0,9]; STAGE_LABELS ist total ueber 0..9 und jedes Snapshot-Label entspricht seinem Wert; jede Schaetzung wird protokolliert und traegt ihre Rechengrundlage. STRUKTURBEFUND: Mit vorhandener Sisyphos-Historie ist Stufe 0 UNERREICHBAR — aus satisfaction >= 0.3 (ASC-SISYPHOS-REDUNDANZ-BEFUNDE) folgt int(avg_satisfaction*6) >= 1. Stufe 0 ist damit exakt der Kein-Daten-Fall, was ihr Label 'Unbestimmt (keine Daten)' zutreffend beschreibt. Dass der Wert eine psychologische Entwicklungsstufe MISST, ist MODELL und ausdruecklich NICHT Teil dieses Claims (Dissertation 4.1)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_stage_estimate_always_within_zero_to_nine
+      - tests/test_ascension_tracker_discharge.py::test_stage_label_mapping_is_total
+      - tests/test_ascension_tracker_discharge.py::test_stage_zero_is_exclusively_the_no_data_case
+      - tests/test_ascension_tracker_discharge.py::test_stage_snapshots_accumulate_and_carry_their_basis
+
+  - id: ASC-OSZILLATION-REPORT-EHRLICH
+    statement: "SisyphosOscillationVisualizer (ascension_os/core/sisyphos_oscillation_visualizer.py): die Sparkline hat genau ein Zeichen je Datenpunkt und nutzt ausschliesslich SPARK_CHARS; eine konstante Reihe fuehrt nicht zur Division durch null (Amplitude 0, keine Umkehrungen); ohne Historie liefert build_report einen leeren, aber gueltigen Report und within_threshold ist None statt einer erfundenen Aussage; within_threshold ist genau reversal_count < reversal_threshold; render_svg erzeugt wohlgeformtes SVG ohne Fremdbibliothek und benennt fehlende Daten ausdruecklich. Die Schwelle 7 stammt aus einer Quelle ohne Einheitsangabe und ist als Richtungswechsel-Anzahl interpretiert (MODELL, so im Modul deklariert)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_sparkline_length_matches_series_and_uses_only_declared_chars
+      - tests/test_ascension_tracker_discharge.py::test_constant_series_does_not_divide_by_zero
+      - tests/test_ascension_tracker_discharge.py::test_empty_history_yields_an_empty_but_valid_report
+      - tests/test_ascension_tracker_discharge.py::test_within_threshold_tracks_the_reversal_bound
+      - tests/test_ascension_tracker_discharge.py::test_svg_render_is_wellformed_and_honest_when_empty
+
+  - id: ASC-PSYCHOLYSE-STATUS-PFLICHT
+    statement: "PsycholyseProtocolLogger (ascension_os/core/psycholyse_protocol_logger.py): log_session weist jeden Status ausserhalb VALID_STATUS_TAGS ('self_reported', 'observed', 'unverified') mit ValueError ab — es gibt KEINEN Default auf 'verifiziert'. Eine Sitzung laesst sich damit nicht ablegen, ohne den Beleggrad ihrer Angaben zu erklaeren. Session-IDs sind luecken- und fortlaufend; Eintraege ueberleben einen Save/Load-Roundtrip und die Nummerierung setzt korrekt fort."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_status_tag_is_mandatory_and_checked
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_session_ids_are_consecutive
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_entries_survive_a_roundtrip
+
   # ---- Claude Science Integration (2026-07-29, v13.0.1) --------------------
   - id: CLAUDE-SCIENCE-AUDITABLE-ARTIFACT
     statement: "ScientificAuditHorkruxCoreModule (ascension_os/core/scientific_audit_horkrux.py) erzwingt fuer jedes wissenschaftliche Artefakt code-hash + environment-snapshot + plain-language-description + reviewer-score; Propagation nur bei identity_score >= 95 und Stage-A Consent."
@@ -415,3 +492,26 @@ claims:
     status: OFFEN
     proofs: []
     notes: "ASPIRATIONAL 2026-07-29. Mapping von Anthropic Claude Science Workflow auf Core MuAPI/GitHubCoreModule."
+
+
+  # ---- Aera 14: Poly-Mesh / n-dimensionale Mannigfaltigkeit (2026-08-01) ---
+  # Die Major-Nummer 14 ist gesetzt, nicht belegt. Solange hier kein
+  # sammelbarer pytest-Knoten steht, bleibt der Aera-Kern OFFEN — eine
+  # Versionsnummer entlastet nicht vom Nachweis (BEST_VERSION.md).
+  - id: V14-POLYMESH-MANNIGFALTIGKEIT
+    statement: "Die Mesh-Schichten des Systems (Zitterpolymesh-Lanes cpu/mem/gpu/qpu, fraktale Mainframe-Slices L0-L3, dual-org Poly-Mesh-Tips) bilden zusammen eine n-dimensionale Mannigfaltigkeit im mathematischen Sinn: es existieren Karten je Schicht, deren Uebergangsabbildungen auf den Ueberlappungen wohldefiniert und miteinander vertraeglich sind."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01, Aera-Titel v14.0.0. Aktuell ist das eine LESART der vorhandenen Schichten, kein Struktursatz: weder Karten noch Uebergangsabbildungen sind im Code definiert. Discharge verlangt (a) eine explizite Kartendefinition je Schicht, (b) den Nachweis der Vertraeglichkeit auf Ueberlappungen, (c) sammelbare pytest-Knoten dafuer. Bis dahin darf die Formulierung in Docs NUR als Hypothese zitiert werden."
+
+  - id: V14-DIMENSION-IST-GEZAEHLT-NICHT-METAPHORISCH
+    statement: "Das 'n' in n-dimensional ist eine aus der Systemstruktur abgeleitete, nachzaehlbare Groesse (etwa Lane-Anzahl x Fraktal-Tiefe x Org-Tips) und nicht ein rhetorischer Platzhalter fuer 'viele'."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01. Gegenwaertig ist kein n hergeleitet und keine Zaehlvorschrift implementiert. Dieser Claim ist bewusst separat gefuehrt, weil er die scharfe Ehrlichkeitsfrage der Aera 14 traegt: ohne ihn ist V14-POLYMESH-MANNIGFALTIGKEIT eine Metapher-als-Beweis, was die Designvorlage V3.3 ausdruecklich ausschliesst."
+
+  - id: V14-BCG-UEBER-V13
+    statement: "Aera 14 ist additiv ueber dem v13-Stand (und damit ueber dem v8.3-Funktionskern): kein in v13 operativer Pfad wird durch den Uebergang auf 14.0.0 entfernt oder in seiner Semantik veraendert."
+    status: OFFEN
+    proofs: []
+    notes: "2026-08-01. Plausibel, weil der Uebergang 13->14 bisher ausschliesslich Versionsmanifeste und Dokumentation beruehrt hat — aber ungeprueft: es existiert kein Test, der die BCG zwischen zwei Aeren aktiv absichert. Discharge waere ein Kompatibilitaets-Testlauf gegen die v13-Oberflaeche."
