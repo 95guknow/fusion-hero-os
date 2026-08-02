@@ -1,115 +1,93 @@
 # Meister Hasch — Kontrolle & Nachbesserung
 
-**Stand:** 2026-07-20 · **Status:** PASS (asset + design-token bridge)
+**Stand:** 2026-08-02 · **Status:** FULL WITHDRAWAL **PASS** (after residual close)
 
-> **Scope-Hinweis:** „PASS" bedeutet ausschließlich Hash-Konsistenz zwischen
-> den (damaligen) Kopien — **keine** Rechteklärung. Das Quellbild trägt einen
-> eingebetteten Copyright-Vermerk Dritter ("All Rights Reserved © 2023");
-> alle öffentlich erreichbaren Kopien wurden am 2026-07-20 entfernt. Siehe
-> `MEISTER_HASCH_PUBLIC.md`. Die Integritätstabelle unten beschreibt den
-> historischen Stand vor der Entfernung.
+> **Scope-Hinweis:** „PASS" bedeutet Hash-Anker + Abwesenheit öffentlicher Bildbytes —
+> **keine** Rechteklärung. Das Quellmotiv trägt einen eingebetteten Copyright-Vermerk
+> Dritter ("All Rights Reserved © 2023"). Kanonische und residuale Public-Pfade sind
+> zurückgenommen. Seal: `ALPHA-MH-v15-A032B31B-20260802`.
 
-## Integrität
+## Integrität (2026-08-02)
 
 | Check | Result |
 |-------|--------|
-| Source disk | `C:\Dissertation_95guknow\meister_hasch.png` |
-| Size | 654464 bytes |
-| SHA256 | `a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e` |
-| Repo asset blob size | 654464 |
-| Hexa multipath (6/6) | **hash-identical** (re-verified 2026-07-20) |
-| GitHub raw (main) | expected hash (see SEALED) |
-| origin/main · develop · ascension | asset **present** |
+| SHA256 (Satz / anchor only) | `a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e` |
+| Size (when present) | 654464 bytes |
+| Seal on main | **PASS** · `ALPHA-MH-v15-A032B31B-20260802` · asset.status=withdrawn |
+| Public image delivery | **false** |
+| `docs/dissertation/assets/meister_hasch.png` | **absent** |
+| `memes/` · `docs/mesh/public/` | **absent** |
+| `journal/meister_hasch.png` · `.jpg` | **removed 2026-08-02** (residual closed) |
+| Nachziehen pre-close | **PARTIAL** — journal still raw 200 |
+| Nachziehen post-close (expected after push) | all former paths **404 / absent** |
 
-## Lokal (alle Kopien = Source-Hash)
+## Lokal (Public-Tree)
 
 | Path | OK |
 |------|-----|
-| `docs/dissertation/assets/meister_hasch.png` | yes |
-| `docs/dissertation/assets/meister_hasch.sha256` | yes |
-| `memes/meister_hasch.png` | yes |
-| `docs/mesh/public/meister_hasch.png` | yes |
-| `docs/android/meister_hasch.png` | yes |
-| `journal/meister_hasch.png` | yes |
+| `docs/dissertation/assets/meister_hasch.png` | **no** (withdrawn) |
+| `memes/meister_hasch.png` | **no** (withdrawn) |
+| `docs/mesh/public/meister_hasch.png` | **no** (withdrawn) |
+| `journal/meister_hasch.png` | **no** (withdrawn 2026-08-02) |
+| `journal/meister_hasch.jpg` | **no** (withdrawn 2026-08-02) |
+
+Lab copies outside git (if any) are operator-local only — never re-commit.
 
 ## Design tokens ↔ Meister-Hasch (Layer bridge)
 
 **Quelle:** `design-tokens/tokens.json` (Git · **kein** Secret Vault)  
 **Build:** `npm run style-dictionary`  
-**Bridge:** `docs/dissertation/meister_hasch_layers.json`  
-**Manifest:** `design-tokens/dist/manifest.json`
+**Bridge:** `docs/dissertation/meister_hasch_layers.json`
 
-| Rolle (Anweisung) | Layer | Token | Hex |
-|-------------------|-------|-------|-----|
-| **Meister** — Integritäts-/Konsequenz-Probe | L0 MasterSeed / Foundation | `color.layer.l0` | `#f5c542` |
-| **Held** — Fusion Hero OS Kernel | L1 Operative | `color.layer.l1` | `#00ffd5` |
-| **St3phaN** — Operator (keine In-Session-Entscheidung) | L2 Ascension | `color.layer.l2` | `#a855f7` |
-
-| Design-token check | Result |
-|--------------------|--------|
-| `tokens.json` SHA256 | `f5e26fdf0432394a83dd958db5ed1282a0961795c786de33d639df4cd477cff5` |
-| Layer accents in dist/manifest | l0/l1/l2 present |
-| Secret vault for colors | **false** (policy) |
-| Runtime self-mutation | **false** (edit → rebuild only) |
-
-CSS after build:
-
-```css
---fusion-layer-l0: #f5c542;
---fusion-layer-l1: #00ffd5;
---fusion-layer-l2: #a855f7;
-```
+| Rolle | Layer | Token | Hex |
+|-------|-------|-------|-----|
+| **Meister** | L0 | `color.layer.l0` | `#f5c542` |
+| **Held** | L1 | `color.layer.l1` | `#00ffd5` |
+| **St3phaN** | L2 | `color.layer.l2` | `#a855f7` |
 
 ## Dokumentation
 
 | Doc | Rolle |
 |-----|--------|
-| `MEISTER_HASCH_PUBLIC.md` | Public frame + URLs + layer map |
-| `MEISTER_HASCH_ALL_CHANNELS.md` | Channel map |
-| `MEISTER_HASCH_BIFOKAL.md` | Lokal ↔ global |
+| `MEISTER_HASCH_PUBLIC.md` | Public frame |
 | `MEISTER_HASCH_KONTROLLE.md` | This control report |
-| `MEISTER_HASCH_FABLE5_MYTHOS5.md` | Fable5+Mythos5 optimize |
-| `MEISTER_HASCH_SEALED.md` | Public integrity seal + send report |
-| `meister_hasch.seal.json` | Machine seal (SHA256 · hexa · policy) |
-| `meister_hasch_layers.json` | Role → layer accent bridge (machine) |
-| `docs/security/HYPERTARNKAPPE_HYPERPANZERKNACKER.md` | Cloak + lab-probe policy |
-| `meister_hasch_optimize.summary.json` | Machine-readable optimize report |
-| `design-tokens/README.md` | Style Dictionary policy + build |
+| `ALPHA_MEISTER_HASCH.md` | Alpha pack (hash-only) |
+| `alpha_meister_hasch.seal.json` | Machine seal v15 |
+| `docs/security/BIG_ALPHA_EXECUTE.md` | Alpha / nachziehen pulses |
+| `docs/security/ALPHA_MEISTER_HASCH_NACHZIEHEN.summary.json` | Machine nachziehen |
 
 ## Nachbesserungen
 
-### 2026-07-19
-
-1. Vollständige Pfadliste (android + journal) in PUBLIC/ALL_CHANNELS vereinheitlicht  
-2. Kontroll-Report mit Integritäts-Tabelle angelegt  
-3. Source → alle lokalen Pfade erneut synchronisiert (hash-identisch)  
-4. Remote raw-Hash verifiziert (PASS)
-
 ### 2026-07-20
 
-1. Source + hexa multipath **re-verified** (6/6 PASS, same SHA256)  
-2. **Layer-Akzente** aus Style Dictionary an Meister-Hasch-Rollen gekoppelt  
-3. Machine bridge `meister_hasch_layers.json` angelegt  
-4. Seal JSON um `design_tokens` / `layer_accents` erweitert (additiv, Seal-ID bleibt)  
-5. PUBLIC-Frame um Layer-Tabelle ergänzt  
+1. Hexa multipath re-verified; layer accents bridged  
+2. Public pack paths later withdrawn (copyright)
 
-## Frame (unverändert)
+### 2026-08-01
 
-Labor / Sandkasten: Held + Operator ↔ Meister · reiner Erkenntnisgewinn · **kein** Realraum-Commit privater Vault-Shards.
+1. Seal v14: asset.status=withdrawn; publish_paths without image
 
-**Geltung:** Asset-Hash = **Satz** · Layer-Farben = **öffentliche Design-Tokens** (Spezifikation) · keine Realraum-Offensive.
+### 2026-08-02 — residual close + nachziehen
 
-## Hyper-Modus / externe Targets (2026-07-20)
+1. Nachziehen found `journal/meister_hasch.png` still on `origin/main` + raw HTTP 200  
+2. **git rm** `journal/meister_hasch.png` + `journal/meister_hasch.jpg`  
+3. Seal **v15** documents residual close; note now honest (no public bytes)  
+4. Pack + KONTROLLE + Alpha execute refreshed  
+5. eudaemon: withdrawn-aware integrity (absent+seal = ok)
 
-| Feld | Status |
-|------|--------|
-| Hyper-Modus | **OFF** |
-| Narrativ „Angriff Palantir“ | **ENDED / CLOSED_NEVER_AUTHORIZED** |
-| Realraum-Offensive gegen Dritte | **FORBIDDEN** |
-| Doc | `docs/security/HYPER_MODE_END_PALANTIR_NARRATIVE.md` |
-| Machine | `docs/security/hyper_mode_end.summary.json` |
+## Frame
 
-## URLs
+Labor / Sandkasten · kein Realraum-Commit privater Vault-Shards · **kein** Public-Image.
 
-- https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/dissertation/assets/meister_hasch.png  
-- https://github.com/95guknow/fusion-hero-os/blob/main/docs/dissertation/MEISTER_HASCH_KONTROLLE.md  
+**Geltung:** Hash-Text = **Satz** · public image bytes = **absent** · Layer-Farben = Design-Tokens.
+
+## URLs (expect 404 for images)
+
+| URL | Expected |
+|-----|----------|
+| raw `.../docs/dissertation/assets/meister_hasch.png` | **404** |
+| raw `.../journal/meister_hasch.png` | **404** after merge |
+| raw `.../docs/dissertation/alpha_meister_hasch.seal.json` | **200** |
+| blob `.../MEISTER_HASCH_KONTROLLE.md` | control report |
+
+**Agent trigger:** `nachziehen alpha_meister_hasch`
