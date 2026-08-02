@@ -82,10 +82,23 @@ def test_knowledge_layer_ties_registries_together():
 
 
 def test_ascension_layer_importable():
+    """Ascension layer import + version pin.
+
+    Historically the core carried the aspirational track id ``9.x-aspirational``.
+    Final discharge (PR #112) aligned ``AscensionCore.version`` with the platform
+    kanon (root ``VERSION``). Accept that pin; keep importability as the hard
+    contract. Aspirational track identity remains in docs/assets (v9.10 labels),
+    not in this status field.
+    """
     status = get_layer_status("ascension")
     assert status is not None
     assert status.detail.get("importable") is True, status.detail
-    assert str(status.detail.get("version", "")).startswith("9.")
+    platform = (REPO_ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    reported = str(status.detail.get("version", ""))
+    assert reported == platform, (
+        f"ascension layer version {reported!r} must match root VERSION {platform!r} "
+        f"(discharge pin; was startswith('9.') pre-v14/v15)"
+    )
 
 
 def test_unknown_layer_returns_none():
