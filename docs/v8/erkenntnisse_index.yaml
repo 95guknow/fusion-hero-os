@@ -129,7 +129,7 @@ docs:
     status: archiv
     superseded_by: bestversion-manifest
     layer_mapping: [knowledge]
-    summary: "v7.11 MasterSeed — durch v8/main ersetzt (MASTERSEED_UPDATE_INSTRUCTION_v8)"
+    summary: "v7.11 MasterSeed — Redirect-Stub zeigt auf v15.2.0/main (MASTERSEED_UPDATE_INSTRUCTION_v8)"
 
   - id: master-unified-v7-5
     path: docs/99_archive/FUSION_HERO_OS_v7.5_MASTER_UNIFIED.md
@@ -151,8 +151,8 @@ docs:
 resolved_conflicts:
   - id: bestversion-vs-ascension
     state: resolved
-    decision: "v8/main ist der operative Kanon (laeuft, CI-gesichert); v9.4 AscensionOS ist Roadmap-/Forschungs-Track in ascension_os/."
-    docs: [BEST_VERSION.md, docs/v8/BESTVERSION_CONSOLIDATION_MANIFEST.md]
+    decision: "Operativer Kanon ist VERSION/main (aktuell v15.2.0, BCG ueber v14/v13/v8.3); AscensionOS v9.x bleibt loadable Roadmap-/Forschungs-Track in ascension_os/."
+    docs: [BEST_VERSION.md, docs/v8/BESTVERSION_CONSOLIDATION_MANIFEST.md, VERSION]
 
   - id: android-root-vs-nonroot
     state: resolved
@@ -161,5 +161,5 @@ resolved_conflicts:
 
   - id: root-v7x-duplikate
     state: resolved
-    decision: "Root-Kopien von v7.4/v7.5/v7.11 sind Redirect-Stubs; kanonische Archiv-Kopien liegen in docs/99_archive/."
-    docs: [FUSION_HERO_OS_v7.4_COMPLETE_DELTA_SUMMARY.md, FUSION_HERO_OS_v7.5_MASTER_UNIFIED.md, Fusion_MasterSeed_v7.11.md]
+    decision: "Root-Kopien von v7.4/v7.5/v7.11 sind Redirect-Stubs (MasterSeed-Stub zeigt auf v15.2.0/main); kanonische Archiv-Kopien liegen in docs/99_archive/."
+    docs: [FUSION_HERO_OS_v7.4_COMPLETE_DELTA_SUMMARY.md, FUSION_HERO_OS_v7.5_MASTER_UNIFIED.md, Fusion_MasterSeed_v7.11.md, MASTERSEED_UPDATE_INSTRUCTION_v8.md]
