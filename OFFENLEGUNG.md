@@ -28,11 +28,12 @@ Die Anbieterkennzeichnung nach § 5 DDG steht als eigene Seite unter
 — mit ladungsfähiger Anschrift und vertretungsberechtigter Person. Dieses
 Dokument hier ist die *inhaltliche* Offenlegung und ersetzt sie nicht.
 
-> **Offen:** Das Impressum ist noch unvollständig. Es fehlen die E-Mail-Adresse
-> (§ 5 Abs. 1 Nr. 2 DDG, zwingend), Registergericht und HRB-Nummer
-> (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz „(haftungsbeschränkt)“
-> (§ 5a Abs. 1 GmbHG). Die Lücken sind auf der Seite selbst benannt, statt
-> durch geschätzte Angaben gefüllt zu werden.
+> **Offen:** Das Impressum ist noch unvollständig. Es fehlen Registergericht
+> und HRB-Nummer (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz
+> „(haftungsbeschränkt)“ (§ 5a Abs. 1 GmbHG). Die E-Mail-Adresse
+> (§ 5 Abs. 1 Nr. 2 DDG) ist seit 2026-08-02 hinterlegt. Die verbleibenden
+> Lücken sind auf der Seite selbst benannt, statt durch geschätzte Angaben
+> gefüllt zu werden.
 
 ---
 
