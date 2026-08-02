@@ -128,7 +128,8 @@ class AscensionCore:
         # und Beleg im Track. Abgeloest, nachdem 16 der 17 Track-Module einen
         # proof_registry.yaml-Claim tragen (das 17., exposure_practice_module,
         # ist konstitutiv unbelegbar — siehe DISSERTATION_ASCENSION_MONOLITH_v14.md, 6.6).
-        # Core traegt die Plattform-Version des kanonischen Pols (95guknow: 15.2.0).
+        # Dual-org fusion merge 2026-08-02: kanonischer Pol 95guknow = 15.2.0
+        # (Senfkorn-Zweig fuehrte 14.0.0; kein Downgrade auf origin).
         self.version = "15.2.0"
 
         # Consent gate (v10): personal-data operations fail closed unless an
