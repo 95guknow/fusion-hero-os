@@ -474,6 +474,35 @@ claims:
       - tests/test_ascension_tracker_discharge.py::test_psycholyse_session_ids_are_consecutive
       - tests/test_ascension_tracker_discharge.py::test_psycholyse_entries_survive_a_roundtrip
 
+  - id: ASC-DEVIL-CHRISTUS-MATRIX-STRUKTUR
+    statement: "build_devil_christus_qubo (ascension_os/core/qubo_ascension_optimizer.py): Q ist symmetrisch mit Kantenlaenge 2n; die Inkohaerenz-Strafe sitzt exakt und ausschliesslich auf den Polpaaren (d_i,c_i) je Checkpoint; der Diagonal-Bias ist ueber die Checkpoints monoton — Devil wird nie billiger, Christus nie teurer, beide starten bei 0; die Lock-in-Strafe wirkt ausschliesslich im deklarierten Oszillations-Schwanzbereich. QUBOAscensionOptimizer scheitert ohne qb_qubo kontrolliert mit ImportError statt einen Solver vorzutaeuschen. Dass die Trajektorie reale Devil/Christus-Dynamik abbildet, ist MODELL (so im Modul-Docstring deklariert) und NICHT Teil dieses Claims — geprueft ist ausschliesslich die Matrixkonstruktion, der Solver selbst ist nicht beteiligt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_devil_christus_matrix_is_symmetric_and_correctly_sized
+      - tests/test_ascension_final_discharge.py::test_devil_christus_incoherence_penalty_sits_on_the_pole_pairs
+      - tests/test_ascension_final_discharge.py::test_devil_christus_bias_moves_from_devil_to_christus_over_time
+      - tests/test_ascension_final_discharge.py::test_devil_christus_lock_in_penalty_only_in_the_oscillation_tail
+      - tests/test_ascension_final_discharge.py::test_optimizer_fails_fast_without_the_solver
+
+  - id: ASC-EVOLUTION-FITNESS-BESCHRAENKT
+    statement: "GenerationalEvolutionEngine (ascension_os/evolution/generational_engine.py): evaluate_fitness liegt fuer beliebige, auch absurde Eingaben stets in [0,100]; der Score ist deterministisch fuer denselben Zustand; run_generation nummeriert Generationen fortlaufend ohne Luecken; propose_improvements liefert immer mindestens einen Vorschlag, auch im Bestzustand. Dass die Gewichte (+20 sustainable, +15 ascension_mode, ...) begruendet sind, ist MODELL — sie sind gesetzt, nicht gemessen, und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_evolution_fitness_is_bounded_for_arbitrary_input
+      - tests/test_ascension_final_discharge.py::test_evolution_fitness_is_deterministic
+      - tests/test_ascension_final_discharge.py::test_evolution_generations_accumulate_and_are_numbered
+      - tests/test_ascension_final_discharge.py::test_evolution_always_proposes_at_least_one_improvement
+
+  - id: ASC-CORE-CONSENT-VOLLSTAENDIG
+    statement: "AscensionCore (ascension_os/core/ascension_core.py): PER AST-ANALYSE ruft JEDE der sechs personenbezogenen Methoden (step_sisyphos, log_psycholyse_session, start_exposure_session, exposure_respond, end_exposure_session, ask) tatsaechlich self._require_consent(...) auf — keine Ausnahme, keine vergessene Absicherung. Reine Statusmethoden (get_ascension_status, get_sisyphos_state, get_stage9_status) sind NICHT gegated, das Gate ist zweckgebunden statt pauschal. Ohne konfiguriertes Gate schlaegt _require_consent fehl (fail closed). Dies ist der sicherheitsrelevante Abschlussbeleg des Tracks: er bestaetigt keine Rechnung, sondern schliesst eine Luecke aus, die ein Verhaltenstest nicht zwingend bemerkt haette."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_every_personal_data_method_is_consent_gated
+      - tests/test_ascension_final_discharge.py::test_personal_data_methods_still_exist_under_these_names
+      - tests/test_ascension_final_discharge.py::test_core_without_gate_denies_personal_data_operations
+      - tests/test_ascension_final_discharge.py::test_non_personal_methods_are_not_gated
+    notes: "Discharge Runde 4 (2026-08-01): letzte drei Module des Tracks belegt, Bilanz 17/17. Port nach 95guknow (2026-08-02): Claims+Tests uebernommen; Plattform-VERSION bleibt 15.2.0 (kein Downgrade). Core-Suffix '9.10-aspirational' abgeloest."
+
   # ---- Claude Science Integration (2026-07-29, v13.0.1) --------------------
   - id: CLAUDE-SCIENCE-AUDITABLE-ARTIFACT
     statement: "ScientificAuditHorkruxCoreModule (ascension_os/core/scientific_audit_horkrux.py) erzwingt fuer jedes wissenschaftliche Artefakt code-hash + environment-snapshot + plain-language-description + reviewer-score; Propagation nur bei identity_score >= 95 und Stage-A Consent."
