@@ -4,9 +4,9 @@
 > (the OS *is* the work). Text under `docs/dissertation/` is one expression.
 > See `docs/dissertation/ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`.
 
-> **Stand:** v15.0.0 · 2026-08-01
+> **Stand:** v15.2.0 · 2026-08-02
 
-## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v15.0.0)
+## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v15.2.0)
 
 **Quelle der Wahrheit ist der annotierte Git-Tag `vMAJOR.MINOR.PATCH` auf
 `main` dieses Repos** (`95guknow/fusion-hero-os`), gespiegelt in der Datei
@@ -37,10 +37,13 @@ abgeleitet — kein Dokument, Branch oder Manifest führt eine eigene Zählung.
 - Vorab-Stände: `v10.1.0-rc.1` usw.
 
 > **Achtung — die Tag-Regel gilt derzeit nicht.** Oben steht, die Quelle der
-> Wahrheit sei der annotierte Tag auf `main`. Letzter Tag ist `v13.0.0`;
-> v14.0.0 und v15.0.0 existieren nur in `VERSION`. Für zwei aufeinander-
-> folgende Majors ist die Datei dem Tag vorausgelaufen. Nachziehen, dann
-> stimmt die Regel wieder.
+> Wahrheit sei der annotierte Tag auf `main`. Letzter veröffentlichter Tag ist
+> `v13.0.0`; v14.0.0, v15.0.0 und v15.2.0 existieren nur in `VERSION`. Für drei
+> aufeinanderfolgende Stände ist die Datei dem Tag vorausgelaufen, und der
+> Abstand wächst mit jedem Sprung. `v14.0.0` ist lokal getaggt, aber nie
+> gepusht — der Git-Proxy dieser Umgebung sperrt `refs/tags/*` mit 403.
+> Nachziehen von einer Arbeitskopie mit Push-Recht, dann stimmt die Regel
+> wieder; die Befehle stehen in `BEST_VERSION.md`.
 
 **Mechanik:**
 

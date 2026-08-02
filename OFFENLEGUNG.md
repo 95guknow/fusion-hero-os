@@ -1,6 +1,6 @@
 # Offenlegung — Betrieb, Forschung, Gedankenspiel
 
-> **Stand:** v15.0.0 · 2026-08-01
+> **Stand:** v15.2.0 · 2026-08-02
 > Öffentliches Dokument. Gilt für dieses Repository, die Landing Page und alle
 > Publikationen der Senfkorn UG zu Fusion Hero OS.
 
@@ -153,12 +153,21 @@ Review-Freigabe vorlag. Ursache: die Schranke war nie als Required Check
 eingetragen. Der Mechanismus war intakt, die Durchsetzung fehlte.
 
 **`V15-ZWEI-AEREN-OHNE-RELEASE`** — Das Versionsschema erklärt den annotierten
-Git-Tag zur Quelle der Wahrheit. Tatsächlich steht `VERSION` auf 15.0.0,
-während das letzte veröffentlichte Release `v13.0.0` ist. Für zwei
-aufeinanderfolgende Hauptversionen gilt die eigene Regel nicht.
+Git-Tag zur Quelle der Wahrheit. Tatsächlich steht `VERSION` auf 15.2.0,
+während das letzte veröffentlichte Release `v13.0.0` ist. Für drei
+aufeinanderfolgende Stände gilt die eigene Regel nicht — der Abstand ist seit
+der Eintragung nicht kleiner geworden, sondern größer.
 
-Beide sind offen dokumentiert und behoben, sobald die jeweilige Einstellung
-gesetzt beziehungsweise getaggt ist.
+Der Grund ist benannt und keine Ausrede: `v14.0.0` ist lokal getaggt, hat das
+Remote aber nie erreicht, weil der Git-Proxy der Arbeitsumgebung `refs/tags/*`
+mit 403 sperrt. Das Nachziehen braucht eine Arbeitskopie mit direktem
+Push-Recht; die Befehle stehen in `BEST_VERSION.md`.
+
+Beide Einträge sind offen dokumentiert und behoben, sobald die jeweilige
+Einstellung gesetzt beziehungsweise getaggt ist. Bis dahin bleiben sie
+`WIDERLEGT` stehen — ein widerlegter Claim, der still auf `OFFEN`
+zurückgestuft wird, wäre genau die Bewegung, die diese Registry verhindern
+soll.
 
 ---
 

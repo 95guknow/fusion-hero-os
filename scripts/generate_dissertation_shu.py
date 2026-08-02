@@ -31,7 +31,7 @@ OUT_NAME = (
 # Versionslage, an der das Werk eingefroren ist. Getrennt geführt, weil
 # beides auseinanderfällt: die VERSION-Datei ist dem letzten Release
 # vorausgelaufen (proof_registry: V15-ZWEI-AEREN-OHNE-RELEASE, WIDERLEGT).
-CANON_VERSION = "15.0.0"          # VERSION / BEST_VERSION.md, ungetaggt
+CANON_VERSION = "15.2.0"          # VERSION / BEST_VERSION.md, ungetaggt
 PUBLISHED_RELEASE = "13.0.0"      # letzter Tag auf dem Remote
 WORK_VERSION = "2.0"
 

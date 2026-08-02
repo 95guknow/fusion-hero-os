@@ -7,7 +7,7 @@ das, was ausgeliefert wird.
 
 ## Stand
 
-- Plattform-Bezug: Fusion Hero OS **v14.0.0** (Orientierung; diese Site führt keinen Mainframe aus)
+- Plattform-Bezug: Fusion Hero OS **v13.0.0** — letztes veröffentlichtes Release (Orientierung; diese Site führt keinen Mainframe aus)
 - Zyklus: BIG OMEGA sealed · BIG ALPHA open
 - **UI-Stub:** public-safe · **ohne echte Funktionalität** · Designhandbuch V3.3
 

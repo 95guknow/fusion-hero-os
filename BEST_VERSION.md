@@ -1,7 +1,8 @@
 # BEST VERSION — Fusion Hero OS
 
-**Stand:** v15.0.0 canonical (VERSION, ungetaggt) — additive over v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
-**v15.0.0:** Platform major (Ära 15) — **ohne benannten Ära-Inhalt.** Der Sprung ist bisher ein reiner Versionssprung: Manifeste, Doku, Satelliten-Kompatibilität. Ein Ära-Name wird erst eingetragen, wenn es etwas zu benennen gibt.  
+**Stand:** v15.2.0 canonical (VERSION, ungetaggt) — additive over v15.0.0 / v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3 BCG  
+**v15.2.0:** Platform minor (Ära 15.2) — **Öffentliche Kennzeichnung.** Das System wird ansprechbar: Anbieterkennzeichnung nach § 5 DDG als eigene Seite, Offenlegung der drei Schichten (Betrieb / Forschung / Gedankenspiel) mit Beleg aus dem eigenen Code, und die Dissertation trägt ihren Status auf Seite 1 statt einen Grad-Anspruch. Der Ära-Kern ist **operativ und geprüft** — anders als bei v14, wo die Nummer gesetzt, aber nicht belegt war.  
+**v15.0.0:** Platform major (Ära 15) — **ohne benannten Ära-Inhalt.** Der Sprung war ein reiner Versionssprung: Manifeste, Doku, Satelliten-Kompatibilität. Der Eintrag bleibt so stehen; eine Ära nachträglich mit Inhalt zu füllen, den sie nicht hatte, wäre genau die Sorte Rückdatierung, gegen die die Registry antritt.  
 **v14.0.0:** Platform major (Ära 14) — **Poly-Mesh / n-dimensionale Mannigfaltigkeit**; Claude Science Integration (Multi-Agent Audit, Scientific Connector Protocol, ScientificAuditHorkrux). Der Ära-Kern ist **ASPIRATIONAL/OFFEN**, siehe `proof_registry.yaml` — die Nummer ist gesetzt, nicht belegt.  
 **v13.0.0:** Platform major (Ära 13) — daycycle + A13/psychogramm/coworking CI; dual-org merge; AscensionOS v9.10 aspirational  
 **Best-of-today (post-tag, same major):** Live GraphAPI landing dual viz · ASM kernel inject · public UI-stub · GDrive spill · quantenvektoren polyglot map · non-blocking dashboard boot  
@@ -39,41 +40,59 @@ Original und Verfassung der Textqualität:
 
 Code Honesty bleibt organisch: Proof Registry **BEWIESEN / OFFEN / WIDERLEGT** — die Ontologie entbindet nicht von Nachweis.
 
-## Operativer Kanon: v15.0.0 / main
+## Operativer Kanon: v15.2.0 / main
 
-**`VERSION` = `15.0.0` ist die kanonische Plattform-Version** (additiv zu v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
-Wahrheit: annotierter Git-Tag `v15.0.0` auf `main` (nach Release) + Root-`VERSION`.
+**`VERSION` = `15.2.0` ist die kanonische Plattform-Version** (additiv zu v15.0.0 / v14.0.0 / v13.0.0 / v12.1.0 / v12.0.0 / v10 / v8.3). Quelle der
+Wahrheit: annotierter Git-Tag `v15.2.0` auf `main` (nach Release) + Root-`VERSION`.
 Alle Manifeste (`pyproject.toml`, `package.json`, Crate-`Cargo.toml`,
 `fusion_hero_os.__version__`) müssen übereinstimmen (`scripts/bump_version.py --check`).
 
-> **Stand des Tags — zwei Ären ohne Release.** `VERSION` steht auf 15.0.0, das
+> **Stand des Tags — drei Ären ohne Release.** `VERSION` steht auf 15.2.0, das
 > letzte **veröffentlichte** Release ist `v13.0.0`. Weder v14.0.0 noch v15.0.0
-> sind getaggt. Damit stimmt die Regel „Quelle der Wahrheit ist der annotierte
-> Tag" (`BRANCH_STRATEGY.md`) für zwei aufeinanderfolgende Majors nicht mehr —
-> die `VERSION`-Datei ist der Kanon vorgelaufen.
+> noch v15.2.0 sind getaggt. Damit stimmt die Regel „Quelle der Wahrheit ist der
+> annotierte Tag" (`BRANCH_STRATEGY.md`) für drei aufeinanderfolgende Stände
+> nicht mehr — die `VERSION`-Datei ist dem Kanon vorgelaufen, und der Abstand
+> wächst mit jedem Sprung.
 >
-> Das ist keine Feinheit: die Landing Page nennt v14.0.0 und verlinkt auf
-> `/releases/latest`, was weiterhin v13.0.0 ausliefert. Nachziehen mit
-> `git tag -a v14.0.0 <commit-cfbb751>` und `git tag -a v15.0.0` auf `main`;
+> Der Tag `v14.0.0` existiert **lokal**, hat das Remote aber nie erreicht: der
+> Git-Proxy dieser Arbeitsumgebung sperrt `refs/tags/*` mit 403. Das Nachziehen
+> geht deshalb nur von einer Arbeitskopie mit direktem Push-Recht:
+>
+> ```
+> git tag -a v14.0.0 cfbb751 -m "Fusion Hero OS v14.0.0 — Ära 14"
+> git tag -a v15.0.0 93e11e4 -m "Fusion Hero OS v15.0.0 — Ära 15"
+> git tag -a v15.2.0 -m "Fusion Hero OS v15.2.0 — Ära 15.2"
+> git push origin v14.0.0 v15.0.0 v15.2.0
+> ```
+>
 > `.github/workflows/release.yml` feuert auf `v[0-9]+.[0-9]+.[0-9]+` und baut
-> das Release dann selbst.
+> die Releases dann selbst. Solange das aussteht, bleibt
+> `V15-ZWEI-AEREN-OHNE-RELEASE` in `proof_registry.yaml` zu Recht **WIDERLEGT**.
 
-### Was v15.0.0 operativ bedeutet (ehrlich)
+### Was v15.2.0 operativ bedeutet (ehrlich)
 
-Ära 15 ist **additiv** über v14 und trägt **keinen benannten Inhalt**. Der
-Sprung umfasst bislang genau das:
+Ära 15.2 heißt **Öffentliche Kennzeichnung**. Der Name steht hier, weil es
+diesmal etwas zu benennen gibt — und zwar Geliefertes, nicht Vorgenommenes:
 
 | Schicht | Inhalt | Status |
 |---------|--------|--------|
-| **Plattform v15.0.0** | Manifeste synchron, Satelliten-Kompatibilität nachgezogen | **operativ** |
+| **Anbieterkennzeichnung** | `impressum.html` nach § 5 DDG als eigene Seite, aus Startseite, 404 und UI-Stub verlinkt, in `sitemap.xml` | **operativ** |
+| **Offenlegung** | `OFFENLEGUNG.md` trennt Betrieb / Forschung / Gedankenspiel, jede Nicht-Behauptung mit Beleg aus dem eigenen Code | **operativ** |
+| **Dissertations-Status** | Grad-Anspruch von der Titelseite entfernt, Abschnitt „Status dieser Arbeit" vor dem Abstract, Kanon getrennt vom Release | **operativ** |
+| **Generator-Schutz** | `generate_dissertation_shu.py` überschreibt `docs/dissertation/README.md` nicht mehr | **operativ** |
+| **Plattform v15.2.0** | Manifeste synchron, Satelliten-Kompatibilität nachgezogen | **operativ** |
 | **v14-Stack** | Poly-Mesh-Ära, Claude Science Integration | **erhalten** (Status unverändert, siehe unten) |
-| **Ära-15-Inhalt** | — | **nicht benannt** |
 
-Es gibt hier bewusst keinen Ära-Titel. v14 heißt „Poly-Mesh / n-dimensionale
-Mannigfaltigkeit" und trägt drei `OFFEN`-Claims, die bis heute unbelegt sind;
-ein zweiter Name über einem zweiten unbelegten Kern würde die Lücke zwischen
-Nummer und Beweis nur verdoppeln. Sobald es einen Befund gibt, der eine Ära
-trägt, kommt der Name hierher — nicht vorher.
+Der Unterschied zu v14 ist der Punkt: dort war die Nummer gesetzt und der Kern
+`OFFEN`. Hier ist jede Zeile der Tabelle eine Datei, die im Repository liegt und
+durch einen Lauf oder ein Gate gedeckt ist. Ein Ära-Name über belegter Arbeit
+ist etwas anderes als ein Ära-Name über einer Absicht.
+
+Was diese Ära **nicht** behauptet: dass die Kennzeichnung vollständig ist. Dem
+Impressum fehlen weiterhin E-Mail (§ 5 Abs. 1 Nr. 2 DDG), Registergericht und
+HRB (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz „(haftungsbeschränkt)"
+(§ 5a Abs. 1 GmbHG). Die Lücken stehen auf der Seite selbst, statt gefüllt zu
+werden mit Angaben, die niemand belegen kann.
 
 Die Ära-14-Claims bleiben davon unberührt: sie sind weder erledigt noch
 verfallen, sie stehen unverändert `OFFEN` in `proof_registry.yaml`.

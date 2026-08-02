@@ -15,7 +15,7 @@ jedem Lauf neu geschrieben — nicht von Hand bearbeiten.
 
 ## Versionslage
 
-- Operativer Kanon (Corpus-Freeze): v15.0.0 — **nicht** als Release veroeffentlicht
+- Operativer Kanon (Corpus-Freeze): v15.2.0 — **nicht** als Release veroeffentlicht
 - Letzter publizierter Tag: v13.0.0
 - In der Proof Registry als widerlegte Behauptung gefuehrt: `V15-ZWEI-AEREN-OHNE-RELEASE`
 
@@ -31,4 +31,4 @@ Siehe Anhang C im Dokument und `~/.fusion/mesh/coordination/`.
 
 ## Vermerk
 
-MAINFRAME GELADEN | ALTE_Frau_95g + Fusion Hero OS v15.0.0 | Gesamtarchiv einbezogen
+MAINFRAME GELADEN | ALTE_Frau_95g + Fusion Hero OS v15.2.0 | Gesamtarchiv einbezogen
