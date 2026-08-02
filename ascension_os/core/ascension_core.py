@@ -124,7 +124,12 @@ class AscensionCore:
     """
 
     def __init__(self, consent_gate: "AscensionConsentGate" = None):
-        self.version = "9.10-aspirational"
+        # Suffix "9.10-aspirational" bis v14.0.0: benannte die Diskrepanz
+        # zwischen Anspruch und Beleg im Track. Abgeloest, nachdem 16 der
+        # 17 Track-Module einen proof_registry.yaml-Claim tragen (das 17.,
+        # exposure_practice_module, ist konstitutiv unbelegbar — siehe
+        # docs/dissertation/DISSERTATION_ASCENSION_MONOLITH_v14.md, 6.6).
+        self.version = "14.0.0"
 
         # Consent gate (v10): personal-data operations fail closed unless an
         # AscensionConsentGate bound to a live meta ConsentStore is supplied.
