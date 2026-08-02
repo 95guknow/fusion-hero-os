@@ -1,6 +1,6 @@
 # Offenlegung — Betrieb, Forschung, Gedankenspiel
 
-> **Stand:** v15.0.0 · 2026-08-01
+> **Stand:** v15.2.0 · 2026-08-02
 > Öffentliches Dokument. Gilt für dieses Repository, die Landing Page und alle
 > Publikationen der Senfkorn UG zu Fusion Hero OS.
 
@@ -23,10 +23,16 @@ Fusion Hero OS ist Eigenentwicklung. Es wird nicht als Produkt verkauft, nicht
 lizenziert und nicht als Dienstleistung angeboten. Es gibt keine Kunden, keine
 Nutzerkonten, keine Datenverarbeitung für Dritte.
 
-> **Offen:** Ein vollständiges Impressum mit Handelsregister-Daten und
-> ladungsfähiger Anschrift gehört auf die öffentliche Fläche und ist hier noch
-> nicht hinterlegt. Bis dahin ist dieses Dokument eine inhaltliche Offenlegung,
-> kein Impressum im Sinne des DDG.
+Die Anbieterkennzeichnung nach § 5 DDG steht als eigene Seite unter
+[95guknow.github.io/impressum.html](https://95guknow.github.io/impressum.html)
+— mit ladungsfähiger Anschrift und vertretungsberechtigter Person. Dieses
+Dokument hier ist die *inhaltliche* Offenlegung und ersetzt sie nicht.
+
+> **Offen:** Das Impressum ist noch unvollständig. Es fehlen die E-Mail-Adresse
+> (§ 5 Abs. 1 Nr. 2 DDG, zwingend), Registergericht und HRB-Nummer
+> (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz „(haftungsbeschränkt)“
+> (§ 5a Abs. 1 GmbHG). Die Lücken sind auf der Seite selbst benannt, statt
+> durch geschätzte Angaben gefüllt zu werden.
 
 ---
 
@@ -147,12 +153,21 @@ Review-Freigabe vorlag. Ursache: die Schranke war nie als Required Check
 eingetragen. Der Mechanismus war intakt, die Durchsetzung fehlte.
 
 **`V15-ZWEI-AEREN-OHNE-RELEASE`** — Das Versionsschema erklärt den annotierten
-Git-Tag zur Quelle der Wahrheit. Tatsächlich steht `VERSION` auf 15.0.0,
-während das letzte veröffentlichte Release `v13.0.0` ist. Für zwei
-aufeinanderfolgende Hauptversionen gilt die eigene Regel nicht.
+Git-Tag zur Quelle der Wahrheit. Tatsächlich steht `VERSION` auf 15.2.0,
+während das letzte veröffentlichte Release `v13.0.0` ist. Für drei
+aufeinanderfolgende Stände gilt die eigene Regel nicht — der Abstand ist seit
+der Eintragung nicht kleiner geworden, sondern größer.
 
-Beide sind offen dokumentiert und behoben, sobald die jeweilige Einstellung
-gesetzt beziehungsweise getaggt ist.
+Der Grund ist benannt und keine Ausrede: `v14.0.0` ist lokal getaggt, hat das
+Remote aber nie erreicht, weil der Git-Proxy der Arbeitsumgebung `refs/tags/*`
+mit 403 sperrt. Das Nachziehen braucht eine Arbeitskopie mit direktem
+Push-Recht; die Befehle stehen in `BEST_VERSION.md`.
+
+Beide Einträge sind offen dokumentiert und behoben, sobald die jeweilige
+Einstellung gesetzt beziehungsweise getaggt ist. Bis dahin bleiben sie
+`WIDERLEGT` stehen — ein widerlegter Claim, der still auf `OFFEN`
+zurückgestuft wird, wäre genau die Bewegung, die diese Registry verhindern
+soll.
 
 ---
 

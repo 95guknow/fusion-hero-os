@@ -12,6 +12,6 @@ Alle Teilsysteme werden zentral über :mod:`fusion_hero_os.registry` initialisie
 und abgefragt, statt einzeln und lose per Direktimport verdrahtet zu werden.
 """
 
-__version__ = "15.0.0"
+__version__ = "15.2.0"
 
 __all__ = ["__version__"]
