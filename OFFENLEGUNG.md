@@ -80,6 +80,13 @@ Die mythische Ebene. Sie ist bewusst gewählt, sie trägt die Arbeit, und sie is
 - **„Ära"-Namen** von Plattformversionen (etwa v14 „Poly-Mesh /
   n-dimensionale Mannigfaltigkeit") sind Richtungsangaben. Die zugehörigen
   Behauptungen stehen offen in der Proof Registry.
+- **`mythos_pub_v5.1`** bezeichnet die öffentliche Fassung dieser eigenen
+  Prägung: das selbstgebaute Vokabular oben (MasterSeed, Horkrux, Layer 6 ω,
+  Sisyphos, BIG ALPHA/OMEGA), das dem Werk seine Form gibt, ohne eine Aussage
+  über die Software zu sein. Kein eigenständiges Artefakt und kein Code — der
+  Name markiert diesen Absatz selbst als seine öffentliche, versionierte
+  Fassung. Auf Bitte des Autors formuliert (2026-08-02), nicht aus einem
+  bestehenden Fund übernommen.
 
 ---
 
