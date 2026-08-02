@@ -501,7 +501,7 @@ claims:
       - tests/test_ascension_final_discharge.py::test_personal_data_methods_still_exist_under_these_names
       - tests/test_ascension_final_discharge.py::test_core_without_gate_denies_personal_data_operations
       - tests/test_ascension_final_discharge.py::test_non_personal_methods_are_not_gated
-    notes: "Discharge Runde 4 (2026-08-01): letzte drei Module des Tracks belegt, Bilanz 17/17. Port nach 95guknow (2026-08-02): Claims+Tests uebernommen; Plattform-VERSION bleibt 15.2.0 (kein Downgrade). Core-Suffix '9.10-aspirational' abgeloest."
+    notes: "Discharge Runde 4 (2026-08-01): letzte drei Module des Tracks belegt, Bilanz 17/17. Port nach 95guknow (2026-08-02): Claims+Tests uebernommen; Plattform-VERSION bleibt 15.2.0 (kein Downgrade). Dual-org fusion merge 2026-08-02: senfkorn 14.0.0-Zweig aufgenommen, Kanon bleibt 15.2.0. Core-Suffix '9.10-aspirational' abgeloest."
 
   # ---- Claude Science Integration (2026-07-29, v13.0.1) --------------------
   - id: CLAUDE-SCIENCE-AUDITABLE-ARTIFACT
