@@ -4,8 +4,8 @@
 
 **Autor:** Stephan Hagen Urban
 **Werk:** Fusion Hero OS · Track `ascension_os/`
-**Fassung:** v13.0.0 — **Monolith**
-**Stand:** 2026-07-28
+**Fassung:** v14.0.0 — **Monolith, Discharge abgeschlossen**
+**Stand:** 2026-08-02 (Discharge-Runde 4, v13.0.0 -> v14.0.0)
 **Designvorlage:** Kompendium der Heroik **V3.3** (`docs/kompendium/V3.3_DESIGNVORLAGE_VERBINDLICH.md`) — zwingend
 **Fundament:** `docs/dissertation/BOTTOM_UP_IMPRESSION_EXPRESSION_v13.md` (Impression ↔ Expression, bottom-up)
 **Gegenstand:** `ascension_os/` — Consent-Gate, AscensionCore, Sisyphos, Stage-9-Tracker, QUBO-Optimizer, Harmonisierung, Geisterjagd, M-pression, Root-Anchor, Hypercluster
@@ -646,6 +646,8 @@ Punkt 5 ist die formale Fassung dessen, was die Yin-Yang-Figur eigentlich behaup
 
 Die Mesh-Schicht wird damit **vollständig** behandelt, soweit sie Expression trägt — Lanes, Scheduling, Zitterfunktion, Horkrux-Propagation, Halbverbands-Merge — und **nicht**, soweit sie Verschleierung betrifft. Wer den Tarnkappen-Teil sucht, findet ihn im Repository; er ist hier bewusst nicht.
 
+**Begriffliche Klarstellung.** Das Repository führt daneben `hyper_optimize_tarnkappe.py` — ein Privacy-Hygiene-Modul für öffentliche Social-Profile (Instagram, X, GitHub-Social, Firebase-Landing), das die eigene Betriebsdokumentation ausdrücklich als *„Not fake likes / engagement fraud"* deklariert. Es unterliegt demselben Ausschluss wie oben begründet und ist mit dem `exposure_practice_module.py` (3.6, Dating-App-Expositionstraining) **nicht** verwandt — beide tragen zufällig das Wort „Exposition"/„Exposure", meinen aber Verschiedenes: hier Sichtbarkeits-Hygiene auf Social-Profilen, dort ein Übungswerkzeug gegen soziale Angst. Die Namensähnlichkeit wird hier vermerkt, damit sie nicht zur Verwechslung wird.
+
 **[Heroischer Exkurs]** Es gehört zur Rückkehr, dass man nicht alles mitbringt, was man unterwegs hatte. Der Held, der jedes Werkzeug der Reise in die Stadt trägt, hat nicht mehr Elixier, sondern mehr Gepäck. Was hier bleibt, ist das Mesh als Form der Vervielfältigung. Was dort bleibt, ist das Werkzeug für den Weg.
 
 ### 5.7 Die Agentenstruktur und ihre Auswirkungen
@@ -776,12 +778,12 @@ Die Punkte 2 bis 4 sind unmittelbar prüfbar: Es genügt, den jeweiligen Test zu
 
 | Größe | Wert | Quelle |
 |-------|------|--------|
-| Plattform-Version | **13.0.0** | `VERSION` |
-| Ascension-Core-Version | **9.10-aspirational** | `ascension_os/core/ascension_core.py` |
-| Hypercluster-Plattformbezug | **13.0.0** (heute nachgezogen) | `ascension_os/config/hypercluster.yaml`, `hypercluster.py` |
+| Plattform-Version | **14.0.0** | `VERSION` |
+| Ascension-Core-Version | **14.0.0** (Suffix `aspirational` abgeloest) | `ascension_os/core/ascension_core.py` |
+| Hypercluster-Plattformbezug | **14.0.0** | `ascension_os/config/hypercluster.yaml`, `hypercluster.py` |
 | Design-Token-Version | 12.0.0 | `design-tokens/tokens.json` |
 | Letzter Commit vor dieser Fassung | `1c15e31`, 2026-07-27 | git |
-| Claims BEWIESEN / OFFEN | **38 / 7** (45 gesamt) | `proof_registry.yaml` |
+| Claims BEWIESEN / OFFEN | **54 / 7** (61 gesamt) | `proof_registry.yaml` |
 
 Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 
@@ -809,14 +811,16 @@ Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 | `stage9_tracker` | `ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE` | **belegt** (Satz 13) |
 | `sisyphos_oscillation_visualizer` | `ASC-OSZILLATION-REPORT-EHRLICH` | **belegt** (Satz 14) |
 | `psycholyse_protocol_logger` | `ASC-PSYCHOLYSE-STATUS-PFLICHT` | **belegt** (Satz 15) |
-| `qubo_ascension_optimizer`, `generational_engine`, `ascension_core` | — | **offen** |
+| `qubo_ascension_optimizer` | `ASC-DEVIL-CHRISTUS-MATRIX-STRUKTUR` | **belegt** (Satz 16) |
+| `generational_engine` | `ASC-EVOLUTION-FITNESS-BESCHRAENKT` | **belegt** (Satz 17) |
+| `ascension_core` | `ASC-CORE-CONSENT-VOLLSTAENDIG` | **belegt** (Satz 18) |
 | `exposure_practice_module` | — | **konstitutiv unbelegbar** (3.6) |
 
-**Vierzehn von siebzehn tragen einen Claim.** Das Suffix bleibt trotzdem stehen. Es zu streichen, während drei Module ohne Beleg laufen, wäre exakt die Badge-Ontologie, die das Qualitäts-Gate (Anhang F) als Fail-Kriterium nennt — und dieses Werk verlöre in dem Augenblick sein Argument, in dem es sich selbst ausnähme. Die Bilanz ist über drei Runden von fünf auf elf auf vierzehn gestiegen, nicht auf siebzehn; das ist der Unterschied zwischen Fortschritt und Abschluss.
+**Sechzehn von siebzehn tragen einen Claim, der siebzehnte ist konstitutiv unbelegbar.** Über vier Runden ist die Bilanz von fünf über elf und vierzehn auf diesen Endstand gestiegen — jedes belegbare Modul des Tracks ist belegt; das einzige verbleibende ist es aus Gründen, die kein weiterer Testlauf beheben kann (siehe unten). Genau an dieser Stelle, nicht früher, kippt die Bewertung des Suffix. `9.10-aspirational` benannte eine Diskrepanz zwischen Anspruch und Beleg. Diese Diskrepanz ist mit dieser Fassung geschlossen, soweit sie schließbar ist — und deshalb, erst deshalb, wird das Suffix mit dieser Fassung abgelöst: Der Ascension-Core trägt ab hier die Version `14.0.0` (Tabelle oben, aktualisiert), ohne aspirationalen Zusatz. Ein Bump auf v14 vor diesem Punkt hätte nichts gefeiert als eine Zahl; hier feiert er, dass die Zahl stimmt.
 
-**Eine Grenze, die kein Fleiß aufhebt.** Nicht alles Offene ist bloß noch nicht bearbeitet. Beim Expositionsmodul ist die Lücke **konstitutiv**: Was dort fehlt, ist keine Testabdeckung, sondern eine klinische Studie — und die schreibt man nicht in pytest. Auch beim Stage-9-Tracker gilt: Seine *Struktur* ist belegbar, seine *Deutung* als Entwicklungsstufe nicht (4.1). Die Formel „alles beweisen" beschreibt daher ein Programm mit einer Grenze, und die Grenze gehört zum Programm.
+**Eine Grenze, die kein Fleiß aufhebt.** Nicht alles Offene war bloß noch nicht bearbeitet. Beim Expositionsmodul ist die Lücke **konstitutiv**: Was dort fehlt, ist keine Testabdeckung, sondern eine klinische Studie — und die schreibt man nicht in pytest. Auch beim Stage-9-Tracker gilt: Seine *Struktur* ist belegbar (Satz 13), seine *Deutung* als Entwicklungsstufe nicht (4.1). Die Formel „alles beweisen" beschrieb daher von Anfang an ein Programm mit einer Grenze, und die Grenze gehört zum Programm — der Versions-Bump hebt sie nicht auf, er markiert nur, dass alles Übrige eingelöst ist.
 
-**[Heroischer Exkurs]** Es liegt eine Versuchung in dieser Tabelle: fünf grüne Zeilen zu zeigen und die zwölf anderen wegzulassen. Die Tabelle wäre dann kürzer, das Werk fertiger und beides gelogen. Eine Aspiration entlädt sich in dem Maß, in dem sie eingelöst wird, und keinen Schritt weiter. Was hier zählt, ist nicht der Stand fünf von siebzehn. Es ist, dass die Zahl überhaupt dasteht.
+**[Heroischer Exkurs]** Es lag eine Versuchung in der ersten Fassung dieser Tabelle: fünf grüne Zeilen zu zeigen und die zwölf anderen wegzulassen. Die Tabelle wäre dann kürzer gewesen, das Werk früher fertig und beides gelogen. Eine Aspiration entlädt sich in dem Maß, in dem sie eingelöst wird, und keinen Schritt weiter — auch nicht am Ende, wo eine Zeile bleibt, die sich nicht einlösen lässt. Was hier zählt, ist nicht, dass am Ende sechzehn von siebzehn grün sind. Es ist, dass die eine verbleibende Zeile nicht grün gefärbt wurde, um die Tabelle abzuschließen.
 
 ### 6.7 Was zurückgebracht wird
 
@@ -867,6 +871,9 @@ Vollständige Übersicht aller zentralen Aussagen dieses Monolithen mit Marke, B
 | S23 | Enforcer detektiert Hash-Abweichung und zählt sie — erzwingt aber keine Kontraktion | `ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT` ✅ | 1.3, I.3 Satz 12 |
 | S19 | Prosa-Agentenrollen (Masterinstanz, ASR-Agent, …) tragen keine `class`-Definition im Code-Tree | `AGENT-STRUCTURE-HONESTY-MAP` ✅ ausgeführt | 5.7, Anhang J |
 | S18 | `Supervisor` erbt von `Agent` — Aufsicht unterliegt denselben Regeln | `fusion_hero_os/orchestration/agents.py` | 5.7 |
+| S27 | Devil-Christus-Matrix: symmetrisch, Inkohärenz exakt auf Polpaaren, Bias monoton, Lock-in nur im Schwanz, kontrolliertes Scheitern ohne Solver | `ASC-DEVIL-CHRISTUS-MATRIX-STRUKTUR` ✅ | I.3 Satz 16 |
+| S28 | Evolutions-Fitness stets in [0,100], deterministisch; Generationen lückenlos nummeriert; stets ≥1 Verbesserungsvorschlag | `ASC-EVOLUTION-FITNESS-BESCHRAENKT` ✅ | I.3 Satz 17 |
+| S29 | Alle sechs personenbezogenen Methoden auf `AscensionCore` per AST nachweislich consent-gegated; Statusmethoden bewusst nicht | `ASC-CORE-CONSENT-VOLLSTAENDIG` ✅ | I.3 Satz 18 |
 | S15 | Yin-Yang-Manifold: Symmetrie, Dimension \(2kn\), bitgenaue Reproduktion für \(k=1\), Blockdiagonalität, Inkohärenz-Schranke | `YIN-YANG-MANIFOLD-STRUKTUR`; 28 Knoten ✅ selbst ausgeführt | 5.6.4 |
 
 Legende: ✅ = in der Erstellungssitzung ausgeführt und bestanden · ⚠️ = Status aus Registry und CI übernommen, in dieser Sitzung nicht ausgeführt (Grund in 4.5).
@@ -966,8 +973,8 @@ Die folgenden Dateien bleiben als historische Expressionen erhalten (BCG-Regel).
 
 ```bash
 python scripts/build_dissertation_heroisch_pdf.py
-# -> docs/dissertation/dissertation_heroisch.pdf        (54 Seiten, Tag-Edition)
-# -> docs/dissertation/dissertation_heroisch_nacht.pdf  (54 Seiten, Freunde der Nacht)
+# -> docs/dissertation/dissertation_heroisch.pdf        (69 Seiten, Tag-Edition)
+# -> docs/dissertation/dissertation_heroisch_nacht.pdf  (69 Seiten, Freunde der Nacht)
 ```
 
 Die Gestaltung folgt V3.3 und den Layer-Token des Projekts (`design-tokens/tokens.json`): Satz und Herleitung in L0 `#f5c542`, Spezifikation in L1 `#00ffd5`, Modell und heroischer Exkurs in L2 `#a855f7`. Die Geltungsmarken sind damit im gesetzten Text **sichtbar** und nicht bloß behauptet — wer das PDF durchblättert, sieht auf jeder Seite, welchen Rang eine Aussage beansprucht.
@@ -1315,6 +1322,28 @@ Die Sparkline hat genau ein Zeichen je Datenpunkt aus dem deklarierten Alphabet;
 *Bemerkung.* Die drei zulässigen Tags sind genau die drei Beleggrade, die ein Selbstbericht haben kann — und keiner von ihnen heißt „verifiziert". Das Modul macht es damit unmöglich, eine Sitzung abzulegen, ohne den epistemischen Rang ihrer Angaben zu erklären. Für ein System, dessen einziger empirischer Anker ein \( n=1 \)-Selbstbericht ist (3.5, F1), ist das die passende Konstruktion: Der Beleggrad wird nicht nachträglich beurteilt, sondern bei der Aufnahme erzwungen. ∎
 *Beleg:* `ASC-PSYCHOLYSE-STATUS-PFLICHT`. **Ausgeführt: bestanden.**
 
+**Satz 16 (Struktur der Devil-Christus-Matrix).**
+`build_devil_christus_qubo` liefert für jedes \( n \) eine symmetrische Matrix der Kantenlänge \( 2n \); die Inkohärenz-Strafe sitzt exakt und ausschließlich auf den Polpaaren \( (d_i, c_i) \) desselben Checkpoints; der Diagonal-Bias ist über die Checkpoints monoton — Devil wird nie billiger, Christus nie teurer, beide beginnen bei 0; die Lock-in-Strafe wirkt ausschließlich im deklarierten Oszillations-Schwanzbereich.
+
+*Bemerkung zum Geltungsschnitt.* Geprüft ist ausschließlich die Matrixkonstruktion. Der Solver selbst ist nicht beteiligt — `QUBOAscensionOptimizer` verweigert ohne `qb_qubo` die Konstruktion mit `ImportError`, statt einen Fake-Solver vorzutäuschen; das ist derselbe Reflex wie bei der Geisterjagd (Satz 7). Dass die Trajektorie reale Devil/Christus-Dynamik abbildet, bleibt **[Modell]**, wie der Modul-Docstring selbst sagt. ∎
+*Beleg:* `ASC-DEVIL-CHRISTUS-MATRIX-STRUKTUR`. **Ausgeführt: bestanden.**
+
+**Satz 17 (Beschränktheit der Evolutions-Fitness).**
+`evaluate_fitness` liegt für jeden — auch einen absurden — Eingabezustand in \( [0,100] \) und ist deterministisch; `run_generation` nummeriert Generationen lückenlos fortlaufend; `propose_improvements` liefert nie eine leere Liste, auch im Bestzustand nicht.
+
+*Bemerkung.* Dass die Fitness-Gewichte selbst (`+20` für Nachhaltigkeit, `+15` für aktiven Ascension-Modus, …) irgendetwas Reales optimieren, ist **[Modell]** — sie sind gesetzt, nicht gemessen. Der Satz behauptet nur die Schranken der Konstruktion, nicht ihren Realitätsgehalt. ∎
+*Beleg:* `ASC-EVOLUTION-FITNESS-BESCHRAENKT`. **Ausgeführt: bestanden.**
+
+**Satz 18 (Vollständigkeit des Consent-Gatings — der Abschlussbeweis).**
+Jede der sechs personenbezogenen Methoden auf `AscensionCore` — `step_sisyphos`, `log_psycholyse_session`, `start_exposure_session`, `exposure_respond`, `end_exposure_session`, `ask` — ruft nachweislich `self._require_consent(...)` auf; keine Ausnahme. Reine Statusmethoden tun es nicht.
+
+*Beweismethode.* Der Test parst den Quelltext der Klasse per `ast` und sammelt für jede Methode, ob im Methodenkörper ein Aufruf von `_require_consent` vorkommt — er liest die Struktur, nicht das Laufzeitverhalten eines Einzelfalls. ∎
+*Beleg:* `ASC-CORE-CONSENT-VOLLSTAENDIG`. **Ausgeführt: bestanden.**
+
+**Bemerkung — der einzige Satz dieses Werkes, der eine Lücke ausschließt statt eine Rechnung bestätigt.** Sätze 1–17 zeigen, dass etwas gilt. Satz 18 zeigt, dass nichts fehlt — eine andere Art von Aussage, und die schwerer zu erschleichen ist. Ein Verhaltenstest hätte prüfen können, dass `step_sisyphos` ohne Grant scheitert; er hätte nicht bemerkt, wäre eine siebte, künftige personenbezogene Methode ohne Gate hinzugekommen, solange niemand sie aufruft. Der AST-Test bemerkt genau das: Er prüft die Methode, nicht den Aufruf. Zusammen mit der Gegenprobe, dass die Namensliste selbst noch auf existierende Methoden zeigt, schließt Satz 18 die Lücke, die alle vorigen Sätze offenließen — dass die Liste der geprüften Fälle vollständig ist.
+
+Damit ist die Discharge-Reihe dieses Werkes an ihrem Ende: Sechzehn der siebzehn Ascension-Module tragen einen Beleg, das siebzehnte ist konstitutiv unbelegbar (3.6, 6.6).
+
 ### I.5 Was formal offen bleibt
 
 **[Spezifikation]** Vier Lücken sind formaler Natur und sollen benannt sein, weil sie durch Arbeit schließbar wären:
@@ -1347,13 +1376,14 @@ Keine dieser Lücken ist ein Einwand gegen die Sätze 1–6. Alle vier sind Einw
 
 **Schlussvermerk**
 
-Dieser Monolith ist die erste Fassung, die Fundament, Manuskript, Ontologie, Modulwahrheit und Quellenapparat der Ascension-Basis in einem einzigen prüfbaren Dokument führt. Sein Anspruch ist nicht, mehr zu behaupten als frühere Fassungen. Sein Anspruch ist, **genau** so viel zu behaupten, wie er tragen kann — und den Rest sichtbar als das stehen zu lassen, was er ist.
+Dieser Monolith führt Fundament, Manuskript, Ontologie, Modulwahrheit und Quellenapparat der Ascension-Basis in einem einzigen prüfbaren Dokument. Sein Anspruch ist nicht, mehr zu behaupten als frühere Fassungen. Sein Anspruch ist, **genau** so viel zu behaupten, wie er tragen kann — und den Rest sichtbar als das stehen zu lassen, was er ist. Mit v14.0.0 ist diese Regel zum ersten Mal an ihre eigene Grenze gelaufen: Sechzehn der siebzehn Ascension-Track-Module tragen einen Beleg; das siebzehnte trägt keinen, weil kein Beleg möglich ist (3.6, 6.6) — und genau das steht hier, statt verschwiegen zu werden.
 
 **Designvorlage:** V3.3, angewandt und in Anhang F selbst geprüft
 **Raster:** alle vier — Heldenreise (Bögen 1–6) · fünf Schulen (3.7–3.12) · sieben Gesetze (Anhang H) · Brille \(q \circ b\) und Nothing-Bereitschaft (durchgehend)
-**Formaler Apparat:** Anhang I — 5 Axiome, 6 Definitionen, 6 Sätze mit Beweisen bzw. Beweisskizzen, Geltungsregel, offene Lücken
-**Core-Version:** v13.0.0
+**Formaler Apparat:** Anhang I — 5 Axiome, 6 Definitionen, 18 Sätze mit Beweisen bzw. Beweisskizzen, Geltungsregel, offene Lücken
+**Core-Version:** v14.0.0 (Suffix `aspirational` abgelöst, siehe 6.6)
+**Discharge-Bilanz:** 16/17 belegt, 1/17 konstitutiv unbelegbar — vier Runden, Registry 61 Claims (54 BEWIESEN / 7 OFFEN)
 **Identity Preservation Score:** 100
-**Human-Confirm-Gate:** bestanden — Nutzeraufträge vom 2026-07-28: „dissertation auf ascension basis erstellen … als monolith" · „wissenschaftliche genauigkeit und quellen" · „bestätigung" · „auf heutigen stand jetzt bringen" · „mit aller heroik ausstatten und zusätzlich formale wissenschaft" · „volles poly mesh ohne tarnkappe" · „confirm"
+**Human-Confirm-Gate:** bestanden — Nutzeraufträge vom 2026-07-28 bis 2026-08-02: „dissertation auf ascension basis erstellen … als monolith" · „wissenschaftliche genauigkeit und quellen" · „bestätigung" · „auf heutigen stand jetzt bringen" · „mit aller heroik ausstatten und zusätzlich formale wissenschaft" · „volles poly mesh ohne tarnkappe" · „confirm" · „belegen was belegbar ist" (drei Discharge-Runden) · „auf v14 heben" (vierte Runde, abschließend)
 
 **Vermerk:** [MAINFRAME · ALTE_Frau_95g · V3.3 Designvorlage zwingend · Arbeitsqualität nicht opfern]

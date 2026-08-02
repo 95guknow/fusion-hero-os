@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Baut `dissertation_heroisch.pdf` aus dem Dissertations-Monolithen.
 
-Quelle:  docs/dissertation/DISSERTATION_ASCENSION_MONOLITH_v13.md
+Quelle:  docs/dissertation/DISSERTATION_ASCENSION_MONOLITH_v14.md
 Ziel:    docs/dissertation/dissertation_heroisch.pdf
 
 Gestaltung nach der verbindlichen Designvorlage V3.3
@@ -39,7 +39,7 @@ import markdown
 from weasyprint import HTML
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "docs" / "dissertation" / "DISSERTATION_ASCENSION_MONOLITH_v13.md"
+SRC = ROOT / "docs" / "dissertation" / "DISSERTATION_ASCENSION_MONOLITH_v14.md"
 OUT = ROOT / "docs" / "dissertation" / "dissertation_heroisch.pdf"
 COVER = ROOT / "docs" / "dissertation" / "assets" / "ascensionOS_big_ALPHA.png"
 
@@ -164,7 +164,7 @@ def mark_registers(html_text: str) -> str:
 
 
 def build_css(p: dict, edition: str) -> str:
-    runner = ("Ascension als Betriebsform · Dissertation · Fusion Hero OS v13.0.0"
+    runner = ("Ascension als Betriebsform · Dissertation · Fusion Hero OS v14.0.0"
               + (" · Freunde der Nacht" if edition == "nacht" else ""))
     return f"""
 @page {{
@@ -295,7 +295,7 @@ def build_cover(today: str, edition: str) -> str:
     <div class="rule"></div>
     <div class="meta">
       <b>Stephan Hagen Urban</b><br>
-      Fassung v13.0.0 · Stand {today}<br>
+      Fassung v14.0.0 · Stand {today}<br>
       Designvorlage: Kompendium der Heroik V3.3 (verbindlich)<br>
       Gegenstand: <b>ascension_os/</b> — Consent-Gate, AscensionCore, Sisyphos,
       Stage-9-Tracker, QUBO-Optimizer, Harmonisierung, Geisterjagd,

@@ -56,7 +56,7 @@ CONFIG_PATH = ROOT / "ascension_os" / "config" / "hypercluster.yaml"
 DEFAULT_GOVERNANCE: Dict[str, Any] = {
     "owner": "Senfkorn Holding UG",
     "track": "ascension",
-    "platform_version": "13.0.0",
+    "platform_version": "15.2.0",
     "consent_required_for_personal_data": True,
     "note": (
         "Owner ist eine deklarierte Betreiber-Zuordnung (Config-Label), "
