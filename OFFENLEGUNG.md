@@ -28,11 +28,12 @@ Die Anbieterkennzeichnung nach § 5 DDG steht als eigene Seite unter
 — mit ladungsfähiger Anschrift und vertretungsberechtigter Person. Dieses
 Dokument hier ist die *inhaltliche* Offenlegung und ersetzt sie nicht.
 
-> **Offen:** Das Impressum ist noch unvollständig. Es fehlen die E-Mail-Adresse
-> (§ 5 Abs. 1 Nr. 2 DDG, zwingend), Registergericht und HRB-Nummer
-> (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz „(haftungsbeschränkt)“
-> (§ 5a Abs. 1 GmbHG). Die Lücken sind auf der Seite selbst benannt, statt
-> durch geschätzte Angaben gefüllt zu werden.
+> **Offen:** Das Impressum ist noch unvollständig. Es fehlen Registergericht
+> und HRB-Nummer (§ 5 Abs. 1 Nr. 4 DDG) sowie der Firmenzusatz
+> „(haftungsbeschränkt)“ (§ 5a Abs. 1 GmbHG). Die E-Mail-Adresse
+> (§ 5 Abs. 1 Nr. 2 DDG) ist seit 2026-08-02 hinterlegt. Die verbleibenden
+> Lücken sind auf der Seite selbst benannt, statt durch geschätzte Angaben
+> gefüllt zu werden.
 
 ---
 
@@ -80,6 +81,13 @@ Die mythische Ebene. Sie ist bewusst gewählt, sie trägt die Arbeit, und sie is
 - **„Ära"-Namen** von Plattformversionen (etwa v14 „Poly-Mesh /
   n-dimensionale Mannigfaltigkeit") sind Richtungsangaben. Die zugehörigen
   Behauptungen stehen offen in der Proof Registry.
+- **`mythos_pub_v5.1`** bezeichnet die öffentliche Fassung dieser eigenen
+  Prägung: das selbstgebaute Vokabular oben (MasterSeed, Horkrux, Layer 6 ω,
+  Sisyphos, BIG ALPHA/OMEGA), das dem Werk seine Form gibt, ohne eine Aussage
+  über die Software zu sein. Kein eigenständiges Artefakt und kein Code — der
+  Name markiert diesen Absatz selbst als seine öffentliche, versionierte
+  Fassung. Auf Bitte des Autors formuliert (2026-08-02), nicht aus einem
+  bestehenden Fund übernommen.
 
 ---
 
