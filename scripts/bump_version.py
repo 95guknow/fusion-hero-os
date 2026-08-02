@@ -33,9 +33,15 @@ TOML_MANIFESTS = [
     REPO_ROOT / "pms_rust_kernel_crate" / "Cargo.toml",
     REPO_ROOT / "rust_engine_crate" / "Cargo.toml",
 ]
+# BEST_VERSION.md zaehlt fusion_hero_os.__version__ zu den Manifesten, die
+# uebereinstimmen muessen — ohne Eintrag hier lief es am Gate vorbei und driftete.
+PY_MANIFESTS = [
+    REPO_ROOT / "fusion_hero_os" / "__init__.py",
+]
 
 JSON_RE = re.compile(r'("version"\s*:\s*")([^"]+)(")')
 TOML_RE = re.compile(r'^(version\s*=\s*")([^"]+)(")', re.MULTILINE)
+PY_RE = re.compile(r'^(__version__\s*=\s*")([^"]+)(")', re.MULTILINE)
 SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.\-]+)?$")
 
 
@@ -89,7 +95,11 @@ def check(version: str) -> None:
 
 
 def _all_manifests() -> list[tuple[Path, re.Pattern[str]]]:
-    return [(p, JSON_RE) for p in JSON_MANIFESTS] + [(p, TOML_RE) for p in TOML_MANIFESTS]
+    return (
+        [(p, JSON_RE) for p in JSON_MANIFESTS]
+        + [(p, TOML_RE) for p in TOML_MANIFESTS]
+        + [(p, PY_RE) for p in PY_MANIFESTS]
+    )
 
 
 def main() -> None:

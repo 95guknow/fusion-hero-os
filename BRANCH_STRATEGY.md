@@ -4,9 +4,9 @@
 > (the OS *is* the work). Text under `docs/dissertation/` is one expression.
 > See `docs/dissertation/ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`.
 
-> **Stand:** v12.0.0 · 2026-07-20
+> **Stand:** v14.0.0 · 2026-08-01
 
-## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v10.0.0)
+## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v14.0.0)
 
 **Quelle der Wahrheit ist der annotierte Git-Tag `vMAJOR.MINOR.PATCH` auf
 `main` dieses Repos** (`95guknow/fusion-hero-os`), gespiegelt in der Datei
@@ -17,9 +17,18 @@ abgeleitet — kein Dokument, Branch oder Manifest führt eine eigene Zählung.
   - **8** = FuHOS-Konsolidierungsära (letzter Release-Tag der Ära: `v8.3.0`).
   - **9** = nie als alleiniges Platform-Release vergeben; „v9.x“ bleibt
     **Roadmap-Label** für den Ascension-Track in `ascension_os/` (loadable).
-  - **10** = aktuelle operative Plattform-Ära (Privacy/PII Stage-A/B,
-    Consent-Gate, einheitliche Manifest-Version, Archive scrypt-KDF) —
-    **additiv** über den v8.3-Funktionskern (BCG). Aktuell: **`10.0.0`**.
+  - **10** = Plattform-Ära Privacy/PII Stage-A/B, Consent-Gate, einheitliche
+    Manifest-Version, Archive scrypt-KDF — **additiv** über den
+    v8.3-Funktionskern (BCG).
+  - **12 / 13** = Fortschreibung derselben Linie (Daycycle-Mem, A13,
+    Discharge-Runden, dual-org Merge). Letzter **veröffentlichter**
+    Release-Tag: `v13.0.0`.
+  - **14** = aktuelle operative Plattform-Ära — **Poly-Mesh /
+    n-dimensionale Mannigfaltigkeit**, additiv über v13 (BCG ununterbrochen).
+    Aktuell: **`14.0.0`** in `VERSION`, **noch nicht getaggt**. Der Ära-Name
+    beschreibt die Richtung; die tragenden Claims stehen in
+    `proof_registry.yaml` mit Status `OFFEN` (siehe `BEST_VERSION.md` →
+    „Was v14.0.0 operativ bedeutet").
 - **MINOR** = Feature-/Konsolidierungsstand (neue Layer, Mesh-Ausbau, …).
 - **PATCH** = Fixes.
 - Vorab-Stände: `v10.1.0-rc.1` usw.

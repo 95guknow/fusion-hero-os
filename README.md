@@ -187,6 +187,6 @@ Public surface policy: no personal identity, no private location, no live mesh i
 - **Energy pricing daemon** - `scripts/run_energy_pricing_daemon.py` / Docker service
 - **CI gates** - Stage-A/B pytest + `scripts/repo_health_check.py` (Enforced)
 
----
+---n
 
 **Release:** [v10.0.0](https://github.com/95guknow/fusion-hero-os/releases/tag/v10.0.0)
