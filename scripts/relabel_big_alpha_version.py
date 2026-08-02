@@ -149,7 +149,6 @@ def main() -> int:
         paint_badge(im, text=args.left, side="left")
     paint_badge(im, text=right, side="right")
 
-    out_primary = ROOT / "03_Code" / "Dashboard" / "static" / "big_ALPHA.png"
     tmp = ROOT / "docs" / "ops" / f"_big_ALPHA_v{version.replace('.', '_')}_work.png"
     tmp.parent.mkdir(parents=True, exist_ok=True)
     im.save(tmp, format="PNG", optimize=True)
