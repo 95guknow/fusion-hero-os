@@ -1,0 +1,46 @@
+{
+  "kind": "ALPHA_MEISTER_HASCH_NACHZIEHEN",
+  "trigger": "nachziehen alpha_meister_hasch",
+  "generated_at": "2026-08-02T15:00:00Z",
+  "overall": "PASS_AFTER_RESIDUAL_CLOSE",
+  "pre_close_overall": "PARTIAL",
+  "seal": {
+    "seal_id": "ALPHA-MH-v15-A032B31B-20260802",
+    "parent_seal": "ALPHA-MH-v14-A032B31B-20260801",
+    "platform_version": "14.0.0",
+    "asset_status": "withdrawn",
+    "residual_closed_at": "2026-08-02",
+    "image_public_delivery": false
+  },
+  "sha256_expected": "a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e",
+  "size_bytes": 654464,
+  "removed_from_git": [
+    "journal/meister_hasch.png",
+    "journal/meister_hasch.jpg"
+  ],
+  "already_absent": [
+    "docs/dissertation/assets/meister_hasch.png",
+    "memes/meister_hasch.png",
+    "docs/mesh/public/meister_hasch.png"
+  ],
+  "publish_paths": [
+    "docs/dissertation/ALPHA_MEISTER_HASCH.md",
+    "docs/dissertation/alpha_meister_hasch.seal.json",
+    "prompt.txt"
+  ],
+  "actions": {
+    "confirm_seal_on_main": "PASS_v15_after_merge",
+    "confirm_asset_absent_on_public_surfaces": "PASS_after_journal_rm",
+    "confirm_journal_absent": "PASS",
+    "refresh_local_kontrolle": "DONE",
+    "optional_eudaemon_pulse": "withdrawn_aware_code_updated"
+  },
+  "branch": "chore/meister-hasch-full-withdrawal-20260802",
+  "geltung": "hash text = Satz; public image bytes absent = Satz after merge",
+  "bounds": {
+    "offense": "FORBIDDEN",
+    "sandbox_only": true,
+    "private_vault_in_git": false,
+    "image_public_delivery": false
+  }
+}
