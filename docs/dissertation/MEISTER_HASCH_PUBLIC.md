@@ -1,5 +1,7 @@
 # Meister Hasch — Public Sandbox Frame (all channels)
 
+> **Update 2026-08-03:** Eigenes Original-Artwork v13 liegt unter `docs/dissertation/assets/meister_hasch_v13.png` (+ IG-Layout `IG_meister_hasch_ORIGINAL_v13.*`). Altes Fund-PNG bleibt zurückgezogen; nur `journal/meister_hasch.png` als historische Arbeitsnotiz.
+
 > **⚠️ Asset zurückgezogen (2026-07-20):** Das Quellbild trägt einen
 > eingebetteten Copyright-Vermerk Dritter ("All Rights Reserved © 2023",
 > Künstler-/Studio-Nennung sichtbar im PNG selbst) — es war ein Fund-Bild aus
