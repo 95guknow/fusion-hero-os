@@ -62,6 +62,8 @@ allow_literals:
   - "Hostname.example.ts.net"
   - "DEIN-WINDOWS-HOST.DEIN-TAILNET.ts.net"
   - "DEIN-ANDROID-HOST.DEIN-TAILNET.ts.net"
+  # Official Tailscale docs-style placeholder FQDN (not a real host).
+  - "node-name.tailnet-name.ts.net"
   - "https://project-ref.supabase.co"
   - "project-ref.supabase.co"
   - "YOUR_SUPABASE_PROJECT_REF"
