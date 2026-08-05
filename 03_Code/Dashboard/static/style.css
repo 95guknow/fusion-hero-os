@@ -779,3 +779,40 @@ body {
 
 .conn-ap-row.ok { border-color: rgba(0, 212, 170, 0.35); }
 .conn-ap-row.warn { border-color: rgba(245, 158, 11, 0.35); }
+/* === Live GraphAPI landing dual viz === */
+#live-graph-panel { grid-column: 1 / -1; }
+.lg-metrics-bar {
+  display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem;
+  font-size: 11px; color: #94a3b8; margin-bottom: 0.75rem;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+}
+.lg-metrics-bar b { color: #e2e8f0; }
+.lg-dual .lg-cell { min-width: 0; }
+.lg-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #05050a;
+  border: 1px solid rgba(0,212,170,.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lg-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  z-index: 2;
+  pointer-events: none;
+}
+.lg-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.42;
+  z-index: 1;
+  filter: saturate(1.1) contrast(1.05);
+}
+.lg-cell:nth-child(2) .lg-stage {
+  background: #f8fafc;
+  border-color: rgba(14,165,233,.35);
+}
+.lg-cell:nth-child(2) .lg-video { opacity: 0.35; mix-blend-mode: multiply; }

@@ -66,6 +66,20 @@ local:
   desktop_state: ~/.fusion/sicherung/google_one/DESKTOP_STATE.json
   phone_state: ~/.fusion/sicherung/google_one/PHONE_STATE.json
 
+# Chat-Archiv — inaktive Sessions aus ~/.grok/sessions abschliessen + auslagern
+# Modul: fusion_hero_os/core/conversation_session_closure.py
+# Dialoginhalte = deploy (privat) · nur Zaehlungen = push (public)
+chat_archive:
+  enabled: true
+  inactive_days: 14
+  drive_subfolder: chat_archives
+  # Ziel = Google Cloud Storage (gleicher Bucket wie mesh_os_port.yaml coordination)
+  # Leeren -> Fallback auf die Drive-for-Desktop-Route
+  # Override zur Laufzeit: FUSION_CHAT_ARCHIVE_GCS
+  gcs_prefix: "gs://fusion-ai-data-project-bbf0e6db-52e1-462b-8e3/chat_archives"
+  # Sessions nach verifiziertem Transfer loeschen — bewusst opt-in (--purge)
+  purge_after_transfer: false
+
 # public-safe include globs (repo-relative) — no .env, no secrets, no private keys
 include_globs:
   - VERSION

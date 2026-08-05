@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Poly-Mesh OS Port — register Fusion Hero OS organs on the mesh fabric.
 
 Ports the OS into L0–L4 poly-mesh placement (Tailscale + GKE + exit), without
@@ -14,8 +13,9 @@ import os
 import subprocess
 import sys
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 __all__ = [
     "load_manifest",
@@ -35,10 +35,10 @@ TS = Path(r"C:\Program Files\Tailscale\tailscale.exe")
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
-def load_manifest() -> Dict[str, Any]:
+def load_manifest() -> dict[str, Any]:
     path = Path(os.environ.get("FUSION_MESH_OS_PORT", str(MANIFEST)))
     if not path.is_file():
         return {"version": "missing", "organs": {}}
@@ -51,7 +51,7 @@ def load_manifest() -> Dict[str, Any]:
         return {"version": "error", "error": str(exc)[:200], "organs": {}}
 
 
-def _ts_json() -> Dict[str, Any]:
+def _ts_json() -> dict[str, Any]:
     exe = str(TS) if TS.is_file() else "tailscale"
     try:
         r = subprocess.run(
@@ -67,10 +67,10 @@ def _ts_json() -> Dict[str, Any]:
         return {"ok": False, "error": str(exc)[:200]}
 
 
-def inventory_mesh() -> Dict[str, Any]:
+def inventory_mesh() -> dict[str, Any]:
     """Live Tailscale inventory + tier hints."""
     raw = _ts_json()
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "ok": bool(raw.get("ok")),
         "ts": _now(),
         "self": {},
@@ -152,7 +152,7 @@ def _tier_for_host(hostname: str) -> str:
     return "L1_mainframe"
 
 
-def build_port_registry(inv: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def build_port_registry(inv: dict[str, Any] | None = None) -> dict[str, Any]:
     """Bind manifest organs to live mesh addresses."""
     inv = inv or inventory_mesh()
     man = load_manifest()
@@ -163,7 +163,7 @@ def build_port_registry(inv: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         if not isinstance(meta, dict):
             continue
         placement = meta.get("placement") or "L1_mainframe"
-        entry: Dict[str, Any] = {
+        entry: dict[str, Any] = {
             "id": oid,
             "placement": placement,
             "plane": meta.get("plane"),
@@ -211,7 +211,7 @@ def build_port_registry(inv: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     }
 
 
-def try_mesh_serve_dashboard(port: int = 8000) -> Dict[str, Any]:
+def try_mesh_serve_dashboard(port: int = 8000) -> dict[str, Any]:
     """Advertise local dashboard on Tailscale serve (mesh-visible, not Funnel)."""
     exe = str(TS) if TS.is_file() else "tailscale"
     # Prefer modern: tailscale serve --bg 8000
@@ -220,7 +220,7 @@ def try_mesh_serve_dashboard(port: int = 8000) -> Dict[str, Any]:
         [exe, "serve", "https", "/", f"http://127.0.0.1:{port}"],
         [exe, "serve", "http", "/", f"http://127.0.0.1:{port}"],
     ]
-    last: Dict[str, Any] = {"ok": False}
+    last: dict[str, Any] = {"ok": False}
     for cmd in attempts:
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
@@ -249,7 +249,7 @@ def try_mesh_serve_dashboard(port: int = 8000) -> Dict[str, Any]:
     return last
 
 
-def port_status() -> Dict[str, Any]:
+def port_status() -> dict[str, Any]:
     if LATEST.is_file():
         try:
             reg = json.loads(LATEST.read_text(encoding="utf-8"))
@@ -279,7 +279,7 @@ def port_status() -> Dict[str, Any]:
     }
 
 
-def port_os(*, serve: bool = True, run_coordinator: bool = True) -> Dict[str, Any]:
+def port_os(*, serve: bool = True, run_coordinator: bool = True) -> dict[str, Any]:
     """Full port: inventory → registry → optional serve → optional coordinator."""
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     inv = inventory_mesh()
@@ -287,7 +287,7 @@ def port_os(*, serve: bool = True, run_coordinator: bool = True) -> Dict[str, An
     REGISTRY.write_text(json.dumps(reg, indent=2, ensure_ascii=False), encoding="utf-8")
     LATEST.write_text(json.dumps(reg, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "ok": bool(inv.get("ok")),
         "action": "port_os_poly_mesh",
         "ts": _now(),

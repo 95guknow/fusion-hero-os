@@ -531,11 +531,19 @@ def get_lan_ip():
     return ip
 
 
+class ThreadingHTTPServer(socketserver.ThreadingMixIn, http.server.HTTPServer):
+    # One thread per connection so a single slow/held request (Slowloris-style)
+    # cannot block every other client; daemon_threads lets Ctrl+C exit cleanly.
+    daemon_threads = True
+    allow_reuse_address = True
+
+
 if __name__ == "__main__":
     os.chdir(DIRECTORY)
     handler = HeroicDocsHandler
+    handler.timeout = 15  # seconds a connection may sit idle before being dropped
 
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
+    with ThreadingHTTPServer(("", PORT), handler) as httpd:
         lan_ip = get_lan_ip()
         print("\n" + "=" * 70)
         print(" FUSION HERO OS — HEROIC DOCS SERVER v8.3 + UNIFIED")

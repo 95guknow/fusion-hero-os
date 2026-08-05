@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """FastAPI router exposing the meta-neural vertical slice (local-only).
 
 Mounts under ``/meta``. The endpoints mirror the pipeline steps. Every

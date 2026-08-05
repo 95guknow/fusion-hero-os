@@ -1,0 +1,193 @@
+/* UI-Stub layer — public-safe decorative HUD; no third-party deps */
+@layer components {
+  .stub-page .chip--stub {
+    --chip-accent: var(--l2, #a855f7);
+  }
+
+  .stub-banner {
+    margin: var(--pad-block) var(--pad-inline) 0;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid color-mix(in oklab, var(--l2, #a855f7) 45%, transparent);
+    background: color-mix(in oklab, var(--l2, #a855f7) 8%, transparent);
+  }
+
+  .stub-banner__title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .stub-banner p {
+    max-width: var(--measure);
+    color: color-mix(in oklab, CanvasText 88%, transparent);
+    line-height: 1.55;
+  }
+
+  .stub-banner__geltung {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+    font-family: var(--font-mono);
+  }
+
+  .geltung {
+    display: inline-block;
+    padding: 0.1em 0.45em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    border: 1px solid currentColor;
+    margin-right: 0.25rem;
+  }
+  .geltung--satz { color: var(--ink-l1, #0d9488); }
+  .geltung--modell { color: var(--ink-l0, #b45309); }
+  .geltung--fragment { color: color-mix(in oklab, CanvasText 55%, transparent); }
+
+  .stub-dual {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 860px) {
+    .stub-dual { grid-template-columns: 1fr 1fr; }
+  }
+
+  .stub-panel {
+    margin: 0;
+    border-radius: var(--radius);
+    border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+    overflow: hidden;
+    background: color-mix(in oklab, Canvas 96%, CanvasText 4%);
+  }
+  .stub-panel--heroic {
+    border-color: color-mix(in oklab, var(--l1, #00ffd5) 35%, transparent);
+  }
+  .stub-panel--formal {
+    border-color: color-mix(in oklab, #0ea5e9 40%, transparent);
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  [data-theme="dark"] .stub-panel--formal,
+  :root:not([data-theme="light"]) .stub-panel--formal {
+    /* formal panel stays light for math register contrast when possible */
+  }
+
+  .stub-panel figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    font-size: var(--step--1);
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid color-mix(in oklab, CanvasText 10%, transparent);
+  }
+
+  .stub-panel canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    background: #05050a;
+  }
+  .stub-panel--formal canvas {
+    background: #f1f5f9;
+  }
+
+  .stub-panel__note {
+    padding: 0.5rem 0.9rem 0.75rem;
+    font-size: var(--step--1);
+    color: color-mix(in oklab, CanvasText 60%, transparent);
+    font-family: var(--font-mono);
+  }
+
+  .pip {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .pip--l1 { background: var(--l1, #00ffd5); box-shadow: 0 0 8px var(--l1, #00ffd5); }
+  .pip--formal { background: #0ea5e9; }
+
+  .stub-hud {
+    border-radius: var(--radius);
+    border: 1px dashed color-mix(in oklab, CanvasText 22%, transparent);
+    padding: 1.25rem;
+    opacity: 0.92;
+  }
+  .stub-hud__row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .stub-hud__row { grid-template-columns: 1fr 1fr; }
+  }
+  .stub-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: var(--step--1);
+  }
+  .stub-field select {
+    padding: 0.55rem 0.7rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid color-mix(in oklab, CanvasText 18%, transparent);
+    background: color-mix(in oklab, Canvas 92%, CanvasText 8%);
+    color: inherit;
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  .stub-hud__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .stub-hud .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .stub-console {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    background: #0a0a0f;
+    color: #94a3b8;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .stub-bows {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 0.5rem;
+    counter-reset: bow;
+    max-width: 40rem;
+  }
+  .stub-bows li {
+    padding: 0.55rem 0.75rem;
+    border-left: 3px solid var(--l0, #f5c542);
+    background: color-mix(in oklab, CanvasText 4%, transparent);
+    font-size: var(--step--1);
+    line-height: 1.45;
+  }
+  .stub-bows li strong {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    margin-right: 0.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stub-panel canvas { /* animation paused in JS */ }
+}

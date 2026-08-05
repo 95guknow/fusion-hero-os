@@ -9,7 +9,7 @@ allererstes, vor jeder Action-Verzweigung — siehe
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.integrations.phone_link.reader import (
@@ -34,7 +34,7 @@ class PhoneLinkCoreModule(BaseModule):
         super().__init__()
         self._reader = PhoneLinkReader()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any] | None:
         payload = payload or {}
         action = payload.get("action", "status")
         limit = int(payload.get("limit", 10))

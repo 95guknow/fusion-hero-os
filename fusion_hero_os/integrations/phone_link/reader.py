@@ -23,8 +23,9 @@ import os
 import sqlite3
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, NoReturn, Optional
+from typing import Any, NoReturn
 
 # --- Realwelt-Kontakt-Guard --------------------------------------------
 # Policy-Flag ist absichtlich ein Modul-Konstant, nicht env-/config-
@@ -77,16 +78,16 @@ class PhoneLinkSnapshot:
     connected: bool
     host_running: bool
     database_found: bool
-    database_path: Optional[str]
+    database_path: str | None
     conversation_count: int
     message_count: int
     unread_total: int
     notification_count: int
-    recent_messages: List[Dict[str, Any]]
-    recent_conversations: List[Dict[str, Any]]
-    limitations: List[str]
+    recent_messages: list[dict[str, Any]]
+    recent_conversations: list[dict[str, Any]]
+    limitations: list[str]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -95,7 +96,7 @@ def _package_root() -> Path:
     return Path(local) / "Packages" / _PHONE_LINK_PKG
 
 
-def _discover_database(name: str = "phone.db") -> Optional[Path]:
+def _discover_database(name: str = "phone.db") -> Path | None:
     indexed = _package_root() / "LocalCache" / "Indexed"
     if not indexed.is_dir():
         return None
@@ -107,12 +108,12 @@ def _discover_database(name: str = "phone.db") -> Optional[Path]:
     return candidates[0] if candidates else None
 
 
-def _filetime_to_iso(ticks: Optional[int]) -> Optional[str]:
+def _filetime_to_iso(ticks: int | None) -> str | None:
     if not ticks:
         return None
     try:
         unix = (int(ticks) - _WIN_EPOCH_OFFSET) / 10_000_000
-        return datetime.fromtimestamp(unix, tz=timezone.utc).isoformat()
+        return datetime.fromtimestamp(unix, tz=UTC).isoformat()
     except (OSError, OverflowError, ValueError):
         return None
 
@@ -157,15 +158,15 @@ class PhoneLinkReader:
     #: Introspektierbare Invariante — siehe Modul-Docstring. Bleibt False.
     SEND_CAPABLE = False
 
-    def __init__(self, db_path: Optional[Path] = None) -> None:
+    def __init__(self, db_path: Path | None = None) -> None:
         self._db_path = db_path or _discover_database("phone.db")
         self._notifications_path = _discover_database("notifications.db")
 
     @property
-    def database_path(self) -> Optional[Path]:
+    def database_path(self) -> Path | None:
         return self._db_path
 
-    def _query(self, path: Path, sql: str, params: tuple = ()) -> List[tuple]:
+    def _query(self, path: Path, sql: str, params: tuple = ()) -> list[tuple]:
         conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
         try:
             cur = conn.cursor()
@@ -174,7 +175,7 @@ class PhoneLinkReader:
         finally:
             conn.close()
 
-    def recent_conversations(self, limit: int = 8) -> List[Dict[str, Any]]:
+    def recent_conversations(self, limit: int = 8) -> list[dict[str, Any]]:
         if not self._db_path:
             return []
         rows = self._query(
@@ -195,7 +196,7 @@ class PhoneLinkReader:
             for r in rows
         ]
 
-    def recent_messages(self, limit: int = 10) -> List[Dict[str, Any]]:
+    def recent_messages(self, limit: int = 10) -> list[dict[str, Any]]:
         if not self._db_path:
             return []
         rows = self._query(
@@ -215,7 +216,7 @@ class PhoneLinkReader:
             for r in rows
         ]
 
-    def counts(self) -> Dict[str, int]:
+    def counts(self) -> dict[str, int]:
         if not self._db_path:
             return {
                 "conversations": 0,
@@ -264,6 +265,6 @@ class PhoneLinkReader:
         )
 
 
-def phone_link_status() -> Dict[str, Any]:
+def phone_link_status() -> dict[str, Any]:
     """Kurzstatus für Dashboard / Bridge."""
     return PhoneLinkReader().snapshot().to_dict()

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule, ReviewCriterion, ReviewResult
 from fusion_hero_os.modules.heroic_llm_ea.evolution import EvolutionConfig, EvolutionarySelector
@@ -26,17 +26,17 @@ class HeroicLLMEAOrchestrator(BaseModule):
       - status: Memory-Snapshot
     """
 
-    def __init__(self, llm: Optional[LLMProvider] = None) -> None:
+    def __init__(self, llm: LLMProvider | None = None) -> None:
         super().__init__()
         self.llm: LLMProvider = llm or StubLLMProvider()
         self.selector = EvolutionarySelector()
         self.generation = 0
 
     @classmethod
-    def with_campfire_templates(cls) -> "HeroicLLMEAOrchestrator":
+    def with_campfire_templates(cls) -> HeroicLLMEAOrchestrator:
         return cls(llm=CampfireTemplateProvider())
 
-    def _score_proposal(self, text: str, context: Dict[str, Any]) -> ProposalRecord:
+    def _score_proposal(self, text: str, context: dict[str, Any]) -> ProposalRecord:
         scores = score_with_peer_review(text, context)
         return ProposalRecord(
             text=text,
@@ -47,7 +47,7 @@ class HeroicLLMEAOrchestrator(BaseModule):
             consistency_score=scores["consistency_score"],
         )
 
-    def _propose_once(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _propose_once(self, payload: dict[str, Any]) -> dict[str, Any]:
         prompt = str(payload.get("prompt", ""))
         n_proposals = int(payload.get("n_proposals", 3))
         context = {k: v for k, v in payload.items() if k not in ("action",)}
@@ -57,9 +57,9 @@ class HeroicLLMEAOrchestrator(BaseModule):
         result["status"] = self._provider_status()
         return result
 
-    def _evolve_many(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def _evolve_many(self, payload: dict[str, Any]) -> dict[str, Any]:
         n_generations = int(payload.get("n_generations", 3))
-        history: List[Dict[str, Any]] = []
+        history: list[dict[str, Any]] = []
         for _ in range(n_generations):
             history.append(self._propose_once(payload))
         return {
@@ -79,7 +79,7 @@ class HeroicLLMEAOrchestrator(BaseModule):
             return "callable_llm"
         return "external_llm"
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         action = payload.get("action", "propose")
         if action == "evolve":
@@ -101,7 +101,7 @@ class HeroicLLMEAOrchestrator(BaseModule):
             )
         return self._propose_once(payload)
 
-    def peer_review(self, target: Optional[Dict[str, Any]] = None) -> ReviewResult:
+    def peer_review(self, target: dict[str, Any] | None = None) -> ReviewResult:
         has_real_llm = self._provider_status() == "external_llm"
         criteria = [
             ReviewCriterion("LLM-Interface austauschbar", True),

@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import time
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -16,7 +16,7 @@ class ProposalRecord:
     peer_review_score: float
     performance_score: float
     consistency_score: float
-    parent_id: Optional[str] = None
+    parent_id: str | None = None
     mutation_op: str = "propose"
     created_at: float = field(default_factory=time.time)
 
@@ -29,9 +29,9 @@ class MutationMemory:
     """Generation → Elite-Proposals + Lineage (parent_id)."""
 
     def __init__(self, max_per_generation: int = 20) -> None:
-        self._store: Dict[int, List[ProposalRecord]] = {}
+        self._store: dict[int, list[ProposalRecord]] = {}
         self.max_per_generation = max_per_generation
-        self._lineage: Dict[str, str] = {}
+        self._lineage: dict[str, str] = {}
 
     def remember(self, record: ProposalRecord) -> None:
         bucket = self._store.setdefault(record.generation, [])
@@ -42,11 +42,11 @@ class MutationMemory:
         if len(bucket) > self.max_per_generation:
             del bucket[self.max_per_generation:]
 
-    def elites(self, generation: int, k: int = 1) -> List[ProposalRecord]:
+    def elites(self, generation: int, k: int = 1) -> list[ProposalRecord]:
         items = self._store.get(generation, [])
         return items[:k]
 
-    def best(self, generation: Optional[int] = None) -> Optional[ProposalRecord]:
+    def best(self, generation: int | None = None) -> ProposalRecord | None:
         if generation is not None:
             items = self._store.get(generation, [])
             return items[0] if items else None
@@ -60,7 +60,7 @@ class MutationMemory:
             return f"[mut:{op}] {elite.text}"
         return elite.text + " → alternative jedoch komprimiert"
 
-    def snapshot(self) -> Dict[str, Any]:
+    def snapshot(self) -> dict[str, Any]:
         return {
             "generations": len(self._store),
             "total": sum(len(v) for v in self._store.values()),

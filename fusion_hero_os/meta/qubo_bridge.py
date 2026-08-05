@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Bridge graph state to the existing classical QUBO/Ising solver.
 
 This maps a :class:`~fusion_hero_os.meta.graph.GraphSnapshot` (plus optional
@@ -24,7 +23,6 @@ source snapshot hash for provenance.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -39,9 +37,9 @@ class QUBOBridgeError(RuntimeError):
 class QUBOProblem:
     """A built QUBO instance with the node labelling and constraint metadata."""
 
-    node_ids: List[str]
+    node_ids: list[str]
     Q: np.ndarray
-    constraints: Dict[str, object]
+    constraints: dict[str, object]
     source_snapshot: str
 
     @property
@@ -52,16 +50,16 @@ class QUBOProblem:
 @dataclass(frozen=True)
 class QUBOResult:
     objective: float
-    assignment: Dict[str, int]
-    solution_vector: List[int]
+    assignment: dict[str, int]
+    solution_vector: list[int]
     backend: str
     seed: int
     steps: int
-    energy_trace: List[float]
-    constraints: Dict[str, object]
+    energy_trace: list[float]
+    constraints: dict[str, object]
     source_snapshot: str
 
-    def to_dict(self) -> Dict[str, object]:
+    def to_dict(self) -> dict[str, object]:
         return {
             "objective": round(self.objective, 12),
             "assignment": dict(self.assignment),
@@ -80,8 +78,8 @@ def build_qubo(
     snapshot: GraphSnapshot,
     *,
     selection_dimension: str,
-    association: Optional[Tuple[List[str], List[List[float]]]] = None,
-    cardinality: Optional[int] = None,
+    association: tuple[list[str], list[list[float]]] | None = None,
+    cardinality: int | None = None,
     cardinality_penalty: float = 5.0,
 ) -> QUBOProblem:
     """Construct a QUBO from a graph snapshot.
@@ -118,7 +116,7 @@ def build_qubo(
                         Q[i, j] += -0.5 * w
                         Q[j, i] += -0.5 * w
 
-    constraints: Dict[str, object] = {"selection_dimension": selection_dimension}
+    constraints: dict[str, object] = {"selection_dimension": selection_dimension}
     if cardinality is not None:
         # penalty * (sum x_i - k)^2 = penalty*(sum_i x_i(1-2k) + 2 sum_{i<j} x_i x_j + k^2)
         k = int(cardinality)
@@ -147,7 +145,7 @@ def energy(Q: np.ndarray, x: np.ndarray) -> float:
 
 def _anneal_numpy(
     Q: np.ndarray, *, steps: int, seed: int, T0: float = 2.0
-) -> Tuple[np.ndarray, float, List[float]]:
+) -> tuple[np.ndarray, float, list[float]]:
     """Deterministic pure-numpy simulated annealing (O(n) delta updates).
 
     Mirrors the semantics of ``qb_qubo.simulated_annealing`` but with no numba
@@ -163,7 +161,7 @@ def _anneal_numpy(
     best_e = e
     idxs = rng.integers(0, n, steps)
     us = rng.random(steps)
-    trace: List[float] = []
+    trace: list[float] = []
     sample_every = max(1, steps // 50)
     for t in range(steps):
         T = T0 * (1.0 - t / steps) + 1e-3
@@ -183,7 +181,7 @@ def _anneal_numpy(
     return best_x, best_e, trace
 
 
-def _brute_force(Q: np.ndarray) -> Tuple[np.ndarray, float]:
+def _brute_force(Q: np.ndarray) -> tuple[np.ndarray, float]:
     n = Q.shape[0]
     best_x = None
     best_e = np.inf
@@ -219,9 +217,9 @@ def solve_qubo(
     if not np.allclose(Q, Q.T, atol=1e-12):
         Q = 0.5 * (Q + Q.T)
     chosen = backend
-    trace: List[float] = []
+    trace: list[float] = []
 
-    def _via_numpy() -> Tuple[np.ndarray, float, str]:
+    def _via_numpy() -> tuple[np.ndarray, float, str]:
         x, e, tr = _anneal_numpy(Q, steps=steps, seed=seed)
         trace.extend(tr)
         return x, e, "numpy"

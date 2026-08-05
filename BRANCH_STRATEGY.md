@@ -4,9 +4,9 @@
 > (the OS *is* the work). Text under `docs/dissertation/` is one expression.
 > See `docs/dissertation/ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`.
 
-> **Stand:** v12.0.0 · 2026-07-20
+> **Stand:** v15.2.0 · 2026-08-02
 
-## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v10.0.0)
+## Versionierung (kanonisch ab v8.3.0, aktueller Kanon v15.2.0)
 
 **Quelle der Wahrheit ist der annotierte Git-Tag `vMAJOR.MINOR.PATCH` auf
 `main` dieses Repos** (`95guknow/fusion-hero-os`), gespiegelt in der Datei
@@ -17,19 +17,43 @@ abgeleitet — kein Dokument, Branch oder Manifest führt eine eigene Zählung.
   - **8** = FuHOS-Konsolidierungsära (letzter Release-Tag der Ära: `v8.3.0`).
   - **9** = nie als alleiniges Platform-Release vergeben; „v9.x“ bleibt
     **Roadmap-Label** für den Ascension-Track in `ascension_os/` (loadable).
-  - **10** = aktuelle operative Plattform-Ära (Privacy/PII Stage-A/B,
-    Consent-Gate, einheitliche Manifest-Version, Archive scrypt-KDF) —
-    **additiv** über den v8.3-Funktionskern (BCG). Aktuell: **`10.0.0`**.
+  - **10** = Plattform-Ära Privacy/PII Stage-A/B, Consent-Gate, einheitliche
+    Manifest-Version, Archive scrypt-KDF — **additiv** über den
+    v8.3-Funktionskern (BCG).
+  - **12 / 13** = Fortschreibung derselben Linie (Daycycle-Mem, A13,
+    Discharge-Runden, dual-org Merge). Letzter **veröffentlichter**
+    Release-Tag: `v13.0.0`.
+  - **14** = **Poly-Mesh / n-dimensionale Mannigfaltigkeit**, additiv über v13
+    (BCG ununterbrochen). Der Ära-Name beschreibt die Richtung; die tragenden
+    Claims stehen in `proof_registry.yaml` mit Status `OFFEN` (siehe
+    `BEST_VERSION.md` → „Was v14.0.0 operativ bedeutet"). **Nicht getaggt.**
+  - **15** = aktuelle operative Plattform-Ära, additiv über v14. **Ohne
+    benannten Inhalt** — bisher ein reiner Versionssprung (Manifeste, Doku,
+    Satelliten-Kompatibilität). Aktuell: **`15.0.0`** in `VERSION`,
+    **ebenfalls nicht getaggt**.
+
 - **MINOR** = Feature-/Konsolidierungsstand (neue Layer, Mesh-Ausbau, …).
 - **PATCH** = Fixes.
 - Vorab-Stände: `v10.1.0-rc.1` usw.
+
+> **Achtung — die Tag-Regel gilt derzeit nicht.** Oben steht, die Quelle der
+> Wahrheit sei der annotierte Tag auf `main`. Letzter veröffentlichter Tag ist
+> `v13.0.0`; v14.0.0, v15.0.0 und v15.2.0 existieren nur in `VERSION`. Für drei
+> aufeinanderfolgende Stände ist die Datei dem Tag vorausgelaufen, und der
+> Abstand wächst mit jedem Sprung. `v14.0.0` ist lokal getaggt, aber nie
+> gepusht — der Git-Proxy dieser Umgebung sperrt `refs/tags/*` mit 403.
+> Nachziehen von einer Arbeitskopie mit Push-Recht, dann stimmt die Regel
+> wieder; die Befehle stehen in `BEST_VERSION.md`.
 
 **Mechanik:**
 
 - `VERSION` (Root) trägt die Plattform-Version ohne `v`-Prefix.
 - `scripts/bump_version.py` setzt sie und gleicht alle Manifeste an
   (`package.json` Root + workstation, `pyproject.toml`, beide Crate-
-  `Cargo.toml`). CI-Gate: `bump_version.py --check` (fail bei Drift).
+  `Cargo.toml`, `fusion_hero_os/__init__.py`). CI-Gate:
+  `bump_version.py --check` (fail bei Drift). `__version__` stand bis
+  2026-08-01 zwar in `BEST_VERSION.md` als Pflicht-Manifest, wurde vom Gate
+  aber nicht geprüft — und driftete genau deshalb unbemerkt mit.
 - Release: `python scripts/bump_version.py X.Y.Z` → Commit → Merge nach
   `main` → `git tag -a vX.Y.Z` → `gh release create vX.Y.Z --generate-notes`.
 - Commits folgen Conventional Commits (`feat:`, `fix:`, `docs:`, …), damit
@@ -51,10 +75,15 @@ und deklarieren ihre Plattform-Kompatibilität in `fuhos_compat.yaml`
 ### `main` (Stable Release Line)
 - Geschützt. Direkte Pushes sind blockiert.
 - Nur Merges via Pull Request (Feature-Branches oder `ascension`).
-- **Merge-Freigabe komplett extern (seit v12.0.0):** 1 GitHub-Review-Approval
+- **Merge-Freigabe extern vorgesehen (seit v12.0.0):** 1 GitHub-Review-Approval
   (Mobile) + 1 Google-Auth-Bestätigung (`human-confirm/google`-Check) — beide
-  am Handy, zwei unabhängige Identitätsanbieter. Automation (inkl. Claude)
-  merged nie selbst. Details + Einrichtung: `docs/ops/HUMAN_CONFIRM_GATE.md`.
+  am Handy, zwei unabhängige Identitätsanbieter.
+  **Durchgesetzt wird das nur, wenn `human-confirm/google` in den Required
+  Checks der Branch Protection steht.** Am 2026-08-01 stand es dort nicht, und
+  PR #105 wurde ohne beide Bestätigungen gemergt. Hier stand bis dahin
+  „Automation (inkl. Claude) merged nie selbst" — als Tatsache formuliert,
+  obwohl es eine Absicht war. Status und Prüfbefehl:
+  `docs/ops/HUMAN_CONFIRM_GATE.md`.
 
 ### `develop` – Option A Track (Evolutionary) — eingestellt
 - Historischer Track; der Remote-Branch wurde nach dem Merge in `main`

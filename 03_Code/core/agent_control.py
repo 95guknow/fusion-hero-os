@@ -376,10 +376,36 @@ def _record(cr: ControlResult, task: Dict[str, Any]) -> None:
 def pre_dispatch(task: Dict[str, Any]) -> ControlResult:
     """Pre-Agent-Kontrolle vor Zuweisung/Ausführung."""
     text = _extract_text(task)
+    # Operand/i: invertierter Modalkollaps — Realraum → Labor-Dual
+    try:
+        from inverted_modal_collapse import gate_text, is_operandi
+
+        if is_operandi() and (text or "").strip():
+            gate = gate_text(text)
+            task["inverted_modal_collapse"] = gate
+            inv = (gate.get("invert") or {})
+            if inv.get("inverted"):
+                # labor dual becomes the working text for strategies
+                task["query_lab"] = inv["inverted"]
+                task["operandi"] = "inverted_modal_collapse"
+            if not gate.get("proceed_lab_only", True):
+                task["status"] = "control_blocked"
+                task["control_block_reason"] = "anti_inversion_trap"
+    except Exception:
+        pass
+    text = task.get("query_lab") or text
     cr = _run_strategies(task, "pre", text)
     task["control_pre"] = cr.to_dict()
-    if cr.blocked:
+    if cr.blocked or task.get("status") == "control_blocked":
         task["status"] = "control_blocked"
+        if task.get("control_block_reason") == "anti_inversion_trap":
+            cr = ControlResult(
+                passed=False,
+                phase="pre",
+                blocked=True,
+                reason="anti_inversion: agent-no is not start command",
+            )
+            task["control_pre"] = cr.to_dict()
     return cr
 
 

@@ -1,9 +1,9 @@
 # Heroik — Claude Science Audit
 ### Formale Mathematik + heroische Wissenschaftsansätze
 
-> **Stand:** 2026-07-01 20:55
+> **Stand:** 2026-07-21 17:44
 > **Claude Science konfiguriert:** False
-> **Backend:** claude-sonnet-4-20250514
+> **Backend:** claude-sonnet-5
 
 ## Zusammenfassung
 
@@ -14,7 +14,7 @@
 | PASS | 0 |
 | WARN | 24 |
 | FAIL | 3 |
-| Dauer | 0.0 s |
+| Dauer | 0.2 s |
 
 ## Formale Mathematik der Heroik
 
@@ -162,8 +162,8 @@ Du prüfst den gesamten heroischen Wissenschaftsansatz „Heroische Philosophie"
 
 ## Kon
 
-### Hospitalismus 2.0
-- **Formel:** `Quantenarmut b. Mengenüberfluss`
+### Gut = gerechte Nächstenliebe
+- **Formel:** `normative These`
 - **Kategorie:** model
 - **Combined Verdict:** **WARN**
 - **Lokal (FormalMath/PeerReview):** WARN — unvollständige Abdeckung
@@ -175,9 +175,8 @@ Du bist Claude Science im Modus „Formale Heroik-Überprüfung".
 
 Prüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:
 
-**Name:** Hospitalismus 2.0
-**Domäne:** Phil
-**F
+**Name:** Gut = gerechte Nächstenliebe
+**Domäne:
 
 ### q∘b als zwei Denkmodi
 - **Formel:** `q analog · b diskret`
@@ -195,8 +194,8 @@ Prüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:
 **Name:** q∘b als zwei Denkmodi
 **Domäne:** Phil
 
-### Gut = gerechte Nächstenliebe
-- **Formel:** `normative These`
+### Hospitalismus 2.0
+- **Formel:** `Quantenarmut b. Mengenüberfluss`
 - **Kategorie:** model
 - **Combined Verdict:** **WARN**
 - **Lokal (FormalMath/PeerReview):** WARN — unvollständige Abdeckung
@@ -208,8 +207,9 @@ Du bist Claude Science im Modus „Formale Heroik-Überprüfung".
 
 Prüfe diesen Eintrag aus dem Hero-GUIDE / heroischen Wissenschaftskorpus:
 
-**Name:** Gut = gerechte Nächstenliebe
-**Domäne:
+**Name:** Hospitalismus 2.0
+**Domäne:** Phil
+**F
 
 ### Concept Space (8 Achsen)
 - **Formel:** `Verortungsmatrix`

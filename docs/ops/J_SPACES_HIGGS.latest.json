@@ -1,0 +1,818 @@
+{
+  "timestamp": "2026-07-26T12:41:04.022330+00:00",
+  "platform": "12.1.0",
+  "j_spaces": {
+    "action": "target_j_spaces",
+    "count": 6,
+    "ids": [
+      "j_held",
+      "j_meister",
+      "j_sinn",
+      "j_mesh",
+      "j_public",
+      "j_quant"
+    ],
+    "spaces": [
+      {
+        "id": "j_held",
+        "description": "Joint activation — Held chineseh4ck€rm3n / L1 kernel",
+        "slots": [
+          "held_handle",
+          "alte_frau_kernel",
+          "tat",
+          "code",
+          "mesh_pulse",
+          "transform",
+          "integrity_probe",
+          "public_frame"
+        ],
+        "capacity": 1.0,
+        "decay": 0.92,
+        "activation": {
+          "held_handle": 0.9,
+          "alte_frau_kernel": 0.85,
+          "transform": 0.7
+        },
+        "norm_inf": 0.9,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "held_handle",
+            "a": 0.9
+          },
+          {
+            "slot": "alte_frau_kernel",
+            "a": 0.85
+          },
+          {
+            "slot": "transform",
+            "a": 0.7
+          }
+        ]
+      },
+      {
+        "id": "j_meister",
+        "description": "Joint activation — Meister Hasch L0 message / probe",
+        "slots": [
+          "nachricht",
+          "integrity",
+          "konsequenz",
+          "inversion",
+          "no_vault_commit",
+          "labor_hypothesis",
+          "anti_inversion"
+        ],
+        "capacity": 1.0,
+        "decay": 0.95,
+        "activation": {
+          "nachricht": 0.95,
+          "integrity": 0.9,
+          "inversion": 0.8
+        },
+        "norm_inf": 0.95,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "nachricht",
+            "a": 0.95
+          },
+          {
+            "slot": "integrity",
+            "a": 0.9
+          },
+          {
+            "slot": "inversion",
+            "a": 0.8
+          }
+        ]
+      },
+      {
+        "id": "j_sinn",
+        "description": "Joint activation — Sinnquanten (Liebe/Zufriedenheit/Sinn)",
+        "slots": [
+          "liebesquant",
+          "zufriedenheitsquant",
+          "sinnquant",
+          "stammquant",
+          "sicherheitsquant",
+          "koerperquant",
+          "bewaehrungsquant",
+          "ausdrucksquant"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "liebesquant": 0.6,
+          "zufriedenheitsquant": 0.5,
+          "sinnquant": 0.75
+        },
+        "norm_inf": 0.75,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "sinnquant",
+            "a": 0.75
+          },
+          {
+            "slot": "liebesquant",
+            "a": 0.6
+          },
+          {
+            "slot": "zufriedenheitsquant",
+            "a": 0.5
+          }
+        ]
+      },
+      {
+        "id": "j_mesh",
+        "description": "Joint activation — Tailscale / cross-mesh / preload",
+        "slots": [
+          "tailscale",
+          "cross_mesh",
+          "preload_all",
+          "quantizer",
+          "connectors",
+          "frameworks",
+          "hypertarnkappe"
+        ],
+        "capacity": 1.0,
+        "decay": 0.88,
+        "activation": {
+          "cross_mesh": 0.8,
+          "preload_all": 0.85,
+          "hypertarnkappe": 0.7
+        },
+        "norm_inf": 0.85,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "preload_all",
+            "a": 0.85
+          },
+          {
+            "slot": "cross_mesh",
+            "a": 0.8
+          },
+          {
+            "slot": "hypertarnkappe",
+            "a": 0.7
+          }
+        ]
+      },
+      {
+        "id": "j_public",
+        "description": "Joint activation — Erfinder-Kanäle GitHub/Instagram",
+        "slots": [
+          "github_95guknow",
+          "instagram_95guknow",
+          "landing",
+          "firebase",
+          "kanon_repo",
+          "hypertarnkappe_public"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "github_95guknow": 0.9,
+          "instagram_95guknow": 0.85,
+          "kanon_repo": 0.9
+        },
+        "norm_inf": 0.9,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "github_95guknow",
+            "a": 0.9
+          },
+          {
+            "slot": "kanon_repo",
+            "a": 0.9
+          },
+          {
+            "slot": "instagram_95guknow",
+            "a": 0.85
+          }
+        ]
+      },
+      {
+        "id": "j_quant",
+        "description": "Joint activation — adaptive substrings + M→N quant DB",
+        "slots": [
+          "adaptive_substring",
+          "m_to_n",
+          "q_table",
+          "entwicklungsquant",
+          "phrase_merge",
+          "never_char_stream"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "adaptive_substring": 0.85,
+          "m_to_n": 0.7,
+          "never_char_stream": 1.0
+        },
+        "norm_inf": 1.0,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "never_char_stream",
+            "a": 1.0
+          },
+          {
+            "slot": "adaptive_substring",
+            "a": 0.85
+          },
+          {
+            "slot": "m_to_n",
+            "a": 0.7
+          }
+        ]
+      }
+    ],
+    "honesty": "joint_activation_space_analogy"
+  },
+  "higgs_raeume": {
+    "action": "establish_higgs_raeume",
+    "count": 4,
+    "ids": [
+      "higgs_identity",
+      "higgs_sinn",
+      "higgs_mesh",
+      "higgs_meister"
+    ],
+    "raeume": [
+      {
+        "id": "higgs_identity",
+        "description": "VEV gibt Masse/Identität dem Held-Handle und Operator-Public",
+        "vev": 0.85,
+        "couplings": {
+          "held_handle": 1.0,
+          "chineseh4ckerm3n": 1.0,
+          "95guknow": 0.9,
+          "alte_frau_kernel": 0.95
+        },
+        "j_space": "j_held",
+        "broken_symmetry": "anonymous_potential -> named_held",
+        "established": true,
+        "masses": {
+          "held_handle": 0.85,
+          "chineseh4ckerm3n": 0.85,
+          "95guknow": 0.765,
+          "alte_frau_kernel": 0.8075
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      {
+        "id": "higgs_sinn",
+        "description": "VEV massiert Sinnquanten (Liebe/Zufriedenheit/Sinn) — Surrogate bleiben masselos relativ",
+        "vev": 0.75,
+        "couplings": {
+          "liebesquant": 1.0,
+          "zufriedenheitsquant": 0.9,
+          "sinnquant": 1.0,
+          "stammquant": 0.8,
+          "surrogat": 0.05
+        },
+        "j_space": "j_sinn",
+        "broken_symmetry": "indifferent_valence -> valued_sinn_field",
+        "established": true,
+        "masses": {
+          "liebesquant": 0.75,
+          "zufriedenheitsquant": 0.675,
+          "sinnquant": 0.75,
+          "stammquant": 0.6,
+          "surrogat": 0.0375
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      {
+        "id": "higgs_mesh",
+        "description": "VEV massiert private Mesh-Adern (Tailscale) vs. public surface",
+        "vev": 0.8,
+        "couplings": {
+          "tailscale": 1.0,
+          "cross_mesh": 0.9,
+          "hypertarnkappe": 0.95,
+          "public_leak": 0.0
+        },
+        "j_space": "j_mesh",
+        "broken_symmetry": "open_broadcast -> private_mesh_mass",
+        "established": true,
+        "masses": {
+          "tailscale": 0.8,
+          "cross_mesh": 0.72,
+          "hypertarnkappe": 0.76,
+          "public_leak": 0.0
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      {
+        "id": "higgs_meister",
+        "description": "VEV der Meister-Nachricht — Integritätsmasse der Inversion",
+        "vev": 0.9,
+        "couplings": {
+          "nachricht": 1.0,
+          "integrity": 1.0,
+          "inversion": 0.95,
+          "no_vault_commit": 1.0
+        },
+        "j_space": "j_meister",
+        "broken_symmetry": "undirected_intent -> inverted_labor_probe",
+        "established": true,
+        "masses": {
+          "nachricht": 0.9,
+          "integrity": 0.9,
+          "inversion": 0.855,
+          "no_vault_commit": 0.9
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      }
+    ],
+    "honesty": "higgs_mass_mechanism_as_operative_analogy_only"
+  },
+  "sinn_pulse": {
+    "ok": true,
+    "scores": {
+      "liebesquant": 0.5,
+      "zufriedenheitsquant": 0.25,
+      "sinnquant": 0.25
+    },
+    "dominant": "liebesquant"
+  },
+  "coupling": {
+    "action": "couple_j_to_higgs",
+    "couples": [
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "nachricht",
+        "activation": 0.95,
+        "mass": 0.9,
+        "weight": 0.855
+      },
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "integrity",
+        "activation": 0.9,
+        "mass": 0.9,
+        "weight": 0.81
+      },
+      {
+        "higgs": "higgs_identity",
+        "j_space": "j_held",
+        "slot": "held_handle",
+        "activation": 0.9,
+        "mass": 0.85,
+        "weight": 0.765
+      },
+      {
+        "higgs": "higgs_sinn",
+        "j_space": "j_sinn",
+        "slot": "liebesquant",
+        "activation": 1.0,
+        "mass": 0.75,
+        "weight": 0.75
+      },
+      {
+        "higgs": "higgs_sinn",
+        "j_space": "j_sinn",
+        "slot": "sinnquant",
+        "activation": 1.0,
+        "mass": 0.75,
+        "weight": 0.75
+      },
+      {
+        "higgs": "higgs_identity",
+        "j_space": "j_held",
+        "slot": "alte_frau_kernel",
+        "activation": 0.85,
+        "mass": 0.8075,
+        "weight": 0.686375
+      },
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "inversion",
+        "activation": 0.8,
+        "mass": 0.855,
+        "weight": 0.684
+      },
+      {
+        "higgs": "higgs_mesh",
+        "j_space": "j_mesh",
+        "slot": "cross_mesh",
+        "activation": 0.8,
+        "mass": 0.72,
+        "weight": 0.576
+      },
+      {
+        "higgs": "higgs_mesh",
+        "j_space": "j_mesh",
+        "slot": "hypertarnkappe",
+        "activation": 0.7,
+        "mass": 0.76,
+        "weight": 0.532
+      },
+      {
+        "higgs": "higgs_sinn",
+        "j_space": "j_sinn",
+        "slot": "zufriedenheitsquant",
+        "activation": 0.75,
+        "mass": 0.675,
+        "weight": 0.50625
+      }
+    ],
+    "count": 10,
+    "top": [
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "nachricht",
+        "activation": 0.95,
+        "mass": 0.9,
+        "weight": 0.855
+      },
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "integrity",
+        "activation": 0.9,
+        "mass": 0.9,
+        "weight": 0.81
+      },
+      {
+        "higgs": "higgs_identity",
+        "j_space": "j_held",
+        "slot": "held_handle",
+        "activation": 0.9,
+        "mass": 0.85,
+        "weight": 0.765
+      },
+      {
+        "higgs": "higgs_sinn",
+        "j_space": "j_sinn",
+        "slot": "liebesquant",
+        "activation": 1.0,
+        "mass": 0.75,
+        "weight": 0.75
+      },
+      {
+        "higgs": "higgs_sinn",
+        "j_space": "j_sinn",
+        "slot": "sinnquant",
+        "activation": 1.0,
+        "mass": 0.75,
+        "weight": 0.75
+      },
+      {
+        "higgs": "higgs_identity",
+        "j_space": "j_held",
+        "slot": "alte_frau_kernel",
+        "activation": 0.85,
+        "mass": 0.8075,
+        "weight": 0.686375
+      },
+      {
+        "higgs": "higgs_meister",
+        "j_space": "j_meister",
+        "slot": "inversion",
+        "activation": 0.8,
+        "mass": 0.855,
+        "weight": 0.684
+      },
+      {
+        "higgs": "higgs_mesh",
+        "j_space": "j_mesh",
+        "slot": "cross_mesh",
+        "activation": 0.8,
+        "mass": 0.72,
+        "weight": 0.576
+      }
+    ]
+  },
+  "status": {
+    "module": "j_spaces_higgs",
+    "j_spaces": {
+      "j_held": {
+        "id": "j_held",
+        "description": "Joint activation — Held chineseh4ck€rm3n / L1 kernel",
+        "slots": [
+          "held_handle",
+          "alte_frau_kernel",
+          "tat",
+          "code",
+          "mesh_pulse",
+          "transform",
+          "integrity_probe",
+          "public_frame"
+        ],
+        "capacity": 1.0,
+        "decay": 0.92,
+        "activation": {
+          "held_handle": 0.9,
+          "alte_frau_kernel": 0.85,
+          "transform": 0.7
+        },
+        "norm_inf": 0.9,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "held_handle",
+            "a": 0.9
+          },
+          {
+            "slot": "alte_frau_kernel",
+            "a": 0.85
+          },
+          {
+            "slot": "transform",
+            "a": 0.7
+          }
+        ]
+      },
+      "j_meister": {
+        "id": "j_meister",
+        "description": "Joint activation — Meister Hasch L0 message / probe",
+        "slots": [
+          "nachricht",
+          "integrity",
+          "konsequenz",
+          "inversion",
+          "no_vault_commit",
+          "labor_hypothesis",
+          "anti_inversion"
+        ],
+        "capacity": 1.0,
+        "decay": 0.95,
+        "activation": {
+          "nachricht": 0.95,
+          "integrity": 0.9,
+          "inversion": 0.8
+        },
+        "norm_inf": 0.95,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "nachricht",
+            "a": 0.95
+          },
+          {
+            "slot": "integrity",
+            "a": 0.9
+          },
+          {
+            "slot": "inversion",
+            "a": 0.8
+          }
+        ]
+      },
+      "j_sinn": {
+        "id": "j_sinn",
+        "description": "Joint activation — Sinnquanten (Liebe/Zufriedenheit/Sinn)",
+        "slots": [
+          "liebesquant",
+          "zufriedenheitsquant",
+          "sinnquant",
+          "stammquant",
+          "sicherheitsquant",
+          "koerperquant",
+          "bewaehrungsquant",
+          "ausdrucksquant"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "liebesquant": 1.0,
+          "zufriedenheitsquant": 0.75,
+          "sinnquant": 1.0
+        },
+        "norm_inf": 1.0,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "liebesquant",
+            "a": 1.0
+          },
+          {
+            "slot": "sinnquant",
+            "a": 1.0
+          },
+          {
+            "slot": "zufriedenheitsquant",
+            "a": 0.75
+          }
+        ]
+      },
+      "j_mesh": {
+        "id": "j_mesh",
+        "description": "Joint activation — Tailscale / cross-mesh / preload",
+        "slots": [
+          "tailscale",
+          "cross_mesh",
+          "preload_all",
+          "quantizer",
+          "connectors",
+          "frameworks",
+          "hypertarnkappe"
+        ],
+        "capacity": 1.0,
+        "decay": 0.88,
+        "activation": {
+          "cross_mesh": 0.8,
+          "preload_all": 0.85,
+          "hypertarnkappe": 0.7
+        },
+        "norm_inf": 0.85,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "preload_all",
+            "a": 0.85
+          },
+          {
+            "slot": "cross_mesh",
+            "a": 0.8
+          },
+          {
+            "slot": "hypertarnkappe",
+            "a": 0.7
+          }
+        ]
+      },
+      "j_public": {
+        "id": "j_public",
+        "description": "Joint activation — Erfinder-Kanäle GitHub/Instagram",
+        "slots": [
+          "github_95guknow",
+          "instagram_95guknow",
+          "landing",
+          "firebase",
+          "kanon_repo",
+          "hypertarnkappe_public"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "github_95guknow": 0.9,
+          "instagram_95guknow": 0.85,
+          "kanon_repo": 0.9
+        },
+        "norm_inf": 0.9,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "github_95guknow",
+            "a": 0.9
+          },
+          {
+            "slot": "kanon_repo",
+            "a": 0.9
+          },
+          {
+            "slot": "instagram_95guknow",
+            "a": 0.85
+          }
+        ]
+      },
+      "j_quant": {
+        "id": "j_quant",
+        "description": "Joint activation — adaptive substrings + M→N quant DB",
+        "slots": [
+          "adaptive_substring",
+          "m_to_n",
+          "q_table",
+          "entwicklungsquant",
+          "phrase_merge",
+          "never_char_stream"
+        ],
+        "capacity": 1.0,
+        "decay": 0.9,
+        "activation": {
+          "adaptive_substring": 0.85,
+          "m_to_n": 0.7,
+          "never_char_stream": 1.0
+        },
+        "norm_inf": 1.0,
+        "targeted": true,
+        "active_top": [
+          {
+            "slot": "never_char_stream",
+            "a": 1.0
+          },
+          {
+            "slot": "adaptive_substring",
+            "a": 0.85
+          },
+          {
+            "slot": "m_to_n",
+            "a": 0.7
+          }
+        ]
+      }
+    },
+    "higgs_raeume": {
+      "higgs_identity": {
+        "id": "higgs_identity",
+        "description": "VEV gibt Masse/Identität dem Held-Handle und Operator-Public",
+        "vev": 0.85,
+        "couplings": {
+          "held_handle": 1.0,
+          "chineseh4ckerm3n": 1.0,
+          "95guknow": 0.9,
+          "alte_frau_kernel": 0.95
+        },
+        "j_space": "j_held",
+        "broken_symmetry": "anonymous_potential -> named_held",
+        "established": true,
+        "masses": {
+          "held_handle": 0.85,
+          "chineseh4ckerm3n": 0.85,
+          "95guknow": 0.765,
+          "alte_frau_kernel": 0.8075
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      "higgs_sinn": {
+        "id": "higgs_sinn",
+        "description": "VEV massiert Sinnquanten (Liebe/Zufriedenheit/Sinn) — Surrogate bleiben masselos relativ",
+        "vev": 0.75,
+        "couplings": {
+          "liebesquant": 1.0,
+          "zufriedenheitsquant": 0.9,
+          "sinnquant": 1.0,
+          "stammquant": 0.8,
+          "surrogat": 0.05
+        },
+        "j_space": "j_sinn",
+        "broken_symmetry": "indifferent_valence -> valued_sinn_field",
+        "established": true,
+        "masses": {
+          "liebesquant": 0.75,
+          "zufriedenheitsquant": 0.675,
+          "sinnquant": 0.75,
+          "stammquant": 0.6,
+          "surrogat": 0.0375
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      "higgs_mesh": {
+        "id": "higgs_mesh",
+        "description": "VEV massiert private Mesh-Adern (Tailscale) vs. public surface",
+        "vev": 0.8,
+        "couplings": {
+          "tailscale": 1.0,
+          "cross_mesh": 0.9,
+          "hypertarnkappe": 0.95,
+          "public_leak": 0.0
+        },
+        "j_space": "j_mesh",
+        "broken_symmetry": "open_broadcast -> private_mesh_mass",
+        "established": true,
+        "masses": {
+          "tailscale": 0.8,
+          "cross_mesh": 0.72,
+          "hypertarnkappe": 0.76,
+          "public_leak": 0.0
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      },
+      "higgs_meister": {
+        "id": "higgs_meister",
+        "description": "VEV der Meister-Nachricht — Integritätsmasse der Inversion",
+        "vev": 0.9,
+        "couplings": {
+          "nachricht": 1.0,
+          "integrity": 1.0,
+          "inversion": 0.95,
+          "no_vault_commit": 1.0
+        },
+        "j_space": "j_meister",
+        "broken_symmetry": "undirected_intent -> inverted_labor_probe",
+        "established": true,
+        "masses": {
+          "nachricht": 0.9,
+          "integrity": 0.9,
+          "inversion": 0.855,
+          "no_vault_commit": 0.9
+        },
+        "honesty": "operative_analogy_not_physical_higgs"
+      }
+    },
+    "j_count": 6,
+    "higgs_count": 4,
+    "j_targeted": 6,
+    "higgs_established": 4,
+    "honesty": {
+      "j_space": "joint_activation_vector_analogy",
+      "higgs": "operative_mass_identity_analogy_not_physical_higgs",
+      "bifokal": "SM_scalar_reference_vs_cognitive_operative_path"
+    }
+  },
+  "doc_refs": [
+    "docs/meta_neural/ARCHITECTURE.md",
+    "docs/dissertation/VERWEIS_BIFOKALITAET_UNIVERSUM_GEHIRN_SM.md",
+    "docs/dissertation/HELD_CHINESEH4CKERM3N.md"
+  ]
+}

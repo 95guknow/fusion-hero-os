@@ -10,7 +10,7 @@ Vertrag zu ändern.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.engine.mainframe import QUBOIntegrationCoreModule as _QUBOIntegrationImpl
@@ -26,7 +26,7 @@ class QUBOIntegrationCoreModule(BaseModule):
         super().__init__()
         self._impl = _QUBOIntegrationImpl()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Any:
+    def process(self, payload: dict[str, Any] | None = None) -> Any:
         payload = payload or {}
         problem_matrix = payload["problem_matrix"]
         mode = payload.get("mode", "secure")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Synthetic, neutral test fixtures — no real personal data.
 
 Subject ids are opaque and derived; node/edge content is abstract ("concept_*").
@@ -12,9 +11,9 @@ from typing import Dict, List
 from ..vault import SubjectRef
 
 
-def load_neutral_fixture() -> Dict[str, object]:
+def load_neutral_fixture() -> dict[str, object]:
     subject_id = SubjectRef.derive("fixture-subject-001").subject_id
-    nodes: List[dict] = [
+    nodes: list[dict] = [
         {"node_id": "concept_a", "type": "concept",
          "dimensions": {"salience": 0.9, "valence": 0.2, "recency": 0.5}},
         {"node_id": "concept_b", "type": "concept",
@@ -24,7 +23,7 @@ def load_neutral_fixture() -> Dict[str, object]:
         {"node_id": "concept_d", "type": "artifact",
          "dimensions": {"salience": 0.7, "valence": 0.0, "recency": 0.9}},
     ]
-    edges: List[dict] = [
+    edges: list[dict] = [
         {"edge_id": "e1", "type": "relates_to", "source": "concept_a",
          "target": "concept_b", "weight": 0.8},
         {"edge_id": "e2", "type": "relates_to", "source": "concept_b",

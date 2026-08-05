@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule, ReviewCriterion, ReviewResult
 from fusion_hero_os.modules.timespace_token.geometry import Timescale, TimespaceCoordinate
@@ -18,7 +18,7 @@ if str(_CODE) not in sys.path:
 from TokenManagementSystem import ResourceState, TransformationType  # noqa: E402
 
 
-def _track_from_dict(raw: Dict[str, Any]) -> TimespaceTrack:
+def _track_from_dict(raw: dict[str, Any]) -> TimespaceTrack:
     coord = raw.get("coordinate", {})
     state = raw.get("state", {})
     t_type = raw.get("transformation", "habituation")
@@ -51,7 +51,7 @@ class TimespaceTokenCoreModule(BaseModule):
         super().__init__()
         self._manager = TimespaceTokenManager()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         action = payload.get("action", "allocate")
 
@@ -59,7 +59,7 @@ class TimespaceTokenCoreModule(BaseModule):
             changes = self._manager.evolve_from_feedback(payload.get("feedback", {}))
             return {"action": "evolve", "changes": changes}
 
-        tracks_raw: List[Dict[str, Any]] = payload.get("tracks", [])
+        tracks_raw: list[dict[str, Any]] = payload.get("tracks", [])
         if not tracks_raw:
             return {"error": "tracks required", "action": action}
 
@@ -77,7 +77,7 @@ class TimespaceTokenCoreModule(BaseModule):
         )
         return {"action": "allocate", **report.to_dict()}
 
-    def peer_review(self, target: Optional[Dict[str, Any]] = None) -> ReviewResult:
+    def peer_review(self, target: dict[str, Any] | None = None) -> ReviewResult:
         return ReviewResult(
             module=self.name,
             criteria=[

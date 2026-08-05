@@ -117,7 +117,31 @@ class MainframeEnergyPricingDaemon:
     ) -> Dict[str, Any]:
         model = bp.get("energy_model", {})
         sub = bp.get("subcontractor_api_pricing", {})
-        comp = sub.get("competitive_pricing") or {}
+        comp = dict(sub.get("competitive_pricing") or {})
+        # Overlay real top-provider market ceilings (Bedingt list prices)
+        try:
+            from fusion_hero_os.core.provider_token_costs import (
+                analyse_providers,
+                market_ceilings_eur_per_1m,
+            )
+
+            market = market_ceilings_eur_per_1m()
+            ceilings = dict(comp.get("market_ceiling_eur_per_1m_tokens") or {})
+            for k, v in market.items():
+                ceilings.setdefault(k, v)
+            comp["market_ceiling_eur_per_1m_tokens"] = ceilings
+            comp["provider_analysis_summary"] = {
+                "flagship_median_eur_per_1m": analyse_providers().get(
+                    "flagship_median_eur_per_1m"
+                ),
+                "fast_median_eur_per_1m": analyse_providers().get("fast_median_eur_per_1m"),
+                "geltung": "Bedingt — public list prices",
+            }
+            # re-bind so _resolve_tier_margin sees ceilings via sub
+            sub = dict(sub)
+            sub["competitive_pricing"] = comp
+        except Exception:
+            pass
         target_margin = float(comp.get("margin_pct", sub.get("margin_pct", 1.50)))
         min_p1k = float(sub.get("minimum_price_eur_per_1k_tokens", 0.002))
         feu_per_eur = float(model.get("feu_per_eur_real", 100))

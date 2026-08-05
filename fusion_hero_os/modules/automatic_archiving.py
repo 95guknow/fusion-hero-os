@@ -9,7 +9,7 @@ aufrufenden Codes, nicht dieses Moduls.
 from __future__ import annotations
 
 from dataclasses import asdict
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.base_module import BaseModule
 from fusion_hero_os.methodology.core_modules import (
@@ -27,7 +27,7 @@ class AutomaticArchivingCoreModule(BaseModule):
         super().__init__()
         self._impl = _AutomaticArchivingImpl()
 
-    def process(self, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def process(self, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         payload = payload or {}
         plan = self._impl.build_plan(
             titel=payload.get("titel", "(unbenannt)"),

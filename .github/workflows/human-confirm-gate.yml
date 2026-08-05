@@ -1,21 +1,35 @@
 name: Human Confirm Gate (2x externe Handy-Auth)
 
-# Required-Status-Check: main/ascension duerfen nur gemergt werden, wenn ein
-# Mensch in Echtzeit ZWEI unabhaengige externe Identitaeten bestaetigt hat —
-# GitHub (PR-Review-Approval, ueblicherweise per GitHub-Mobile-App mit
-# Passkey/Biometrie) und Google (dieser Check, gekippt durch ein
-# Apps-Script-Web-App, das selbst Google-Sign-In erzwingt).
+# Vorgesehen als Required-Status-Check: main/ascension sollen nur gemergt
+# werden, wenn ein Mensch in Echtzeit ZWEI unabhaengige externe Identitaeten
+# bestaetigt hat — GitHub (PR-Review-Approval, ueblicherweise per
+# GitHub-Mobile-App mit Passkey/Biometrie) und Google (dieser Check, gekippt
+# durch ein Apps-Script-Web-App, das selbst Google-Sign-In erzwingt).
+#
+# WICHTIG: Dieser Workflow erzwingt nichts. Er oeffnet einen Check. Ob ein
+# offener Check den Merge verhindert, entscheidet allein die Branch
+# Protection — nur wenn 'human-confirm/google' dort als Required Check
+# eingetragen ist. War es am 2026-08-01 nicht; PR #105 wurde mit offenem
+# Check gemergt. Siehe Registry-Claim GATE-BLOCKIERT-MERGE-TATSAECHLICH
+# (WIDERLEGT) und docs/ops/HUMAN_CONFIRM_GATE.md.
 #
 # Diese Workflow-Datei OEFFNET das Gate nur (pending Check-Run) und
 # benachrichtigt per Telefon-Push. Sie kann den Check NIE selbst gruen
 # schalten — das darf ausschliesslich der vom Operator selbst betriebene
 # Apps-Script-Endpoint (siehe scripts/google_confirm_webapp/).
 #
+# Laermvermeidung (aendert die Schranke NICHT, nur ihre Lautstaerke):
+#   - genau EIN Kommentar pro PR, der bei jedem Push aktualisiert wird
+#     statt einen neuen anzulegen
+#   - Entwuerfe werden uebersprungen; das Gate oeffnet bei "ready for review"
+#   - Handy-Push nur beim Oeffnen/Wiederoeffnen/Ready, nicht bei jedem Push
+#   - ueberholte Laeufe werden abgebrochen, wenn schnell nachgepusht wird
+#
 # Setup: docs/ops/HUMAN_CONFIRM_GATE.md
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, ready_for_review]
     branches: [main, ascension]
 
 permissions:
@@ -23,9 +37,17 @@ permissions:
   checks: write
   pull-requests: write
 
+# Bei mehreren Pushes kurz hintereinander zaehlt nur der letzte Stand.
+concurrency:
+  group: human-confirm-gate-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   open-gate:
     runs-on: ubuntu-latest
+    # Entwuerfe koennen ohnehin nicht gemergt werden — kein Gate, kein Laerm.
+    # Sobald der PR auf "ready for review" geht, greift der Trigger oben.
+    if: github.event.pull_request.draft == false
     steps:
       - name: Open pending human-confirm/google check
         id: open_check
@@ -45,7 +67,7 @@ jobs:
             });
             core.setOutput('check_run_id', String(check.id));
 
-      - name: Post confirm links as PR comment
+      - name: Upsert confirm links as a single PR comment
         id: links
         uses: actions/github-script@v7
         env:
@@ -53,45 +75,97 @@ jobs:
           CHECK_RUN_ID: ${{ steps.open_check.outputs.check_run_id }}
         with:
           script: |
+            // Unsichtbarer Marker: macht den eigenen Kommentar wiederauffindbar,
+            // damit pro PR genau einer existiert statt einer pro Push.
+            const MARKER = '<!-- human-confirm-gate -->';
+
             const sha = context.payload.pull_request.head.sha;
             const prNumber = context.payload.pull_request.number;
             const baseUrl = process.env.GOOGLE_CONFIRM_BASE_URL;
             const checkRunId = process.env.CHECK_RUN_ID;
             const reviewUrl = `${context.payload.pull_request.html_url}/files`;
+            const shortSha = sha.substring(0, 7);
+
+            let body;
+            let confirmUrl = '';
 
             if (!baseUrl) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: '⚠️ `GOOGLE_CONFIRM_WEBAPP_URL` Secret ist nicht gesetzt — der `human-confirm/google`-Check bleibt dauerhaft offen. Setup: `docs/ops/HUMAN_CONFIRM_GATE.md`.',
-              });
-              core.setOutput('confirm_url', '');
-              core.setOutput('review_url', reviewUrl);
-              return;
-            }
-
-            const confirmUrl = `${baseUrl}?owner=${context.repo.owner}&repo=${context.repo.repo}&sha=${sha}&check_run_id=${checkRunId}`;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: [
+              // Fail-closed: der Check bleibt offen. OB das den Merge aufhaelt,
+              // haengt allein an der Branch Protection — der Workflow kann es
+              // weder bewirken noch pruefen. Der Text behauptet deshalb keine
+              // Blockade mehr, sondern benennt die Bedingung.
+              body = [
+                MARKER,
+                '## 🔐 Merge-Freigabe — Einrichtung unvollstaendig',
+                '',
+                'Das Secret `GOOGLE_CONFIRM_WEBAPP_URL` ist in diesem Repository nicht',
+                'gesetzt. Der Check `human-confirm/google` bleibt deshalb offen —',
+                'bewusst, damit fehlende Einrichtung die Schranke nicht aufmacht.',
+                '',
+                '**Ob das den Merge aufhaelt, haengt an der Branch Protection.** Nur',
+                'wenn `human-confirm/google` dort als Required Check eingetragen ist,',
+                'verhindert der offene Check den Merge — sonst ist dies ein Hinweis,',
+                'keine Schranke. Pruefen mit `gh api` auf',
+                '`.required_status_checks.contexts` des Branch-Protection-Endpoints.',
+                '',
+                'Einrichtung: `docs/ops/HUMAN_CONFIRM_GATE.md`',
+                '',
+                `<sub>Stand: \`${shortSha}\` · dieser Kommentar wird bei jedem Push aktualisiert.</sub>`,
+              ].join('\n');
+            } else {
+              confirmUrl = `${baseUrl}?owner=${context.repo.owner}&repo=${context.repo.repo}&sha=${sha}&check_run_id=${checkRunId}`;
+              body = [
+                MARKER,
                 '## 🔐 Zwei-Faktor-Merge-Freigabe',
                 '',
-                'Dieser PR braucht **zwei unabhaengige Bestaetigungen vom Handy**, bevor Branch Protection den Merge zulaesst:',
+                'Dieser PR ist fuer **zwei unabhaengige Bestaetigungen vom Handy** vorgesehen:',
                 '',
                 `1. **GitHub** — [Review + Approve](${reviewUrl}) (GitHub-Mobile-App, Passkey/Biometrie).`,
                 `2. **Google** — [Bestaetigen](${confirmUrl}) (Google-Sign-In, nur der hinterlegte Account darf bestaetigen).`,
                 '',
-                'Automation (inkl. Claude) merged diesen PR nicht selbst — komplett extern.',
-              ].join('\n'),
-            });
+                'Erzwungen wird das nur, wenn `human-confirm/google` in den Required Checks',
+                'der Branch Protection steht. Fehlt der Eintrag, laesst GitHub den Merge',
+                'trotz offenem Check zu — dann sind die zwei Links eine Bitte, keine Schranke.',
+                '',
+                `<sub>Bestaetigung gilt fuer \`${shortSha}\`. Jeder neue Push setzt sie zurueck und aktualisiert diesen Kommentar.</sub>`,
+              ].join('\n');
+            }
+
+            // Bestehenden Gate-Kommentar suchen und aktualisieren; nur wenn es
+            // keinen gibt, einen neuen anlegen.
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner: context.repo.owner, repo: context.repo.repo, issue_number: prNumber, per_page: 100 },
+            );
+            const existing = comments.find(
+              (c) => c.user.type === 'Bot' && c.body && c.body.includes(MARKER),
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
+
             core.setOutput('confirm_url', confirmUrl);
             core.setOutput('review_url', reviewUrl);
 
       - name: Phone push (best-effort, ehrlich ohne Fake-Erfolg)
-        if: always()
+        # Nur wenn der PR neu zur Freigabe ansteht — nicht bei jedem Folge-Push.
+        # Wer waehrend der Arbeit zehnmal pusht, will nicht zehn Handy-Pushes.
+        if: >-
+          always() &&
+          contains(fromJSON('["opened","reopened","ready_for_review"]'), github.event.action)
         env:
           PHONE_NOTIFY_WEBHOOK_URL: ${{ secrets.PHONE_NOTIFY_WEBHOOK_URL }}
           PHONE_NOTIFY_TOKEN: ${{ secrets.PHONE_NOTIFY_TOKEN }}

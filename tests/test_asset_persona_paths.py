@@ -146,6 +146,12 @@ _PERSONA_CONTENT_ALLOWLIST = {
     # geschäftlicher Kommunikation herauszuhalten.
     "business/STEPHAN_HAGEN_URBAN_BUSINESS_PERSONA_PUBLICATION.md",
     "business/auto_recognition_stephan_hagen_urban.py",
+    # Held-Persona-Kanon + Dissertation/Roadmap: historische Schreibweisen
+    # dokumentiert (NEGATIV-Kontrast / Held-Identität), nicht als neue Surface.
+    "03_Code/core/held_persona.py",
+    "docs/dissertation/HELD_CHINESEH4CKERM3N.md",
+    "docs/dissertation/HEROISMUS_MANUSCRIPT_Bogen1-6_v13.md",
+    "docs/roadmap/BOOK_OUTLINE_HEROISMUS_v13.md",
 }
 
 

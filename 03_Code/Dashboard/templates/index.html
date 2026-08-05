@@ -133,17 +133,74 @@
         <div id="event-stream" class="output-surface font-mono text-xs leading-snug bg-[#111113] p-3 rounded overflow-auto"></div>
       </div>
 
-      <!-- Geisterjagd + Banach Live Viz -->
+      <!-- LIVE GraphAPI — heroic + formal (landing primary viz) -->
+      <div class="hud-panel viz-panel-wide" data-panel-id="viz-live-graph" data-panel-zone="viz" id="live-graph-panel">
+        <h2 class="text-[#00d4aa] text-sm mb-2 tracking-widest flex items-center gap-2 flex-wrap">
+          LIVE GRAPH API — ALLE KÜNSTE
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#f59e0b]/20 rounded text-[#fcd34d]">HEROISCH</span>
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#0ea5e9]/20 rounded text-[#bae6fd]">FORMAL · G=(V,E)</span>
+          <span id="lg-status" class="text-[10px] px-1.5 py-0.5 bg-white/5 rounded text-[#94a3b8]">lädt…</span>
+        </h2>
+        <div class="lg-metrics-bar" id="lg-metrics-bar">
+          <span>Connectors <b id="lg-conn">--</b></span>
+          <span>LIVE_READY <b id="lg-live">--</b></span>
+          <span>Token <b id="lg-token">--</b></span>
+          <span>Frameworks <b id="lg-fw">--</b></span>
+          <span>Inject <b id="lg-inj">--</b></span>
+          <span>Quanta <b id="lg-q">--</b></span>
+          <span>|V| <b id="lg-v">--</b></span>
+          <span>|E| <b id="lg-e">--</b></span>
+        </div>
+        <div class="viz-dual-grid lg-dual">
+          <div class="viz-cell lg-cell">
+            <div class="viz-label text-[#f59e0b]">① Heroisch — was passiert (Live + WebM-Loop)</div>
+            <p id="lg-heroic-caption" class="viz-caption">GraphAPI Hub · Connectors · Frameworks · Quanta</p>
+            <div class="lg-stage">
+              <canvas id="canvas-live-heroic" class="viz-canvas lg-canvas" width="640" height="360" aria-label="Heroic live graph"></canvas>
+              <video id="video-live-heroic" class="lg-video" autoplay muted loop playsinline poster="/static/big_ALPHA.png">
+                <source src="/static/visuals/live_graph_heroic.webm" type="video/webm">
+                <source src="/static/visuals/live_graph_heroic.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="viz-metrics">
+              <span>Mode: <b>heroic</b></span>
+              <span>Pulse: <b id="lg-heroic-pulse">--</b></span>
+            </div>
+          </div>
+          <div class="viz-cell lg-cell">
+            <div class="viz-label text-[#38bdf8]">② Formalmathematisch — was passiert (Live + WebM-Loop)</div>
+            <p id="lg-formal-caption" class="viz-caption">A adjacency · |V|,|E| · λ-Kontraktion · Geltung</p>
+            <div class="lg-stage">
+              <canvas id="canvas-live-formal" class="viz-canvas lg-canvas" width="640" height="360" aria-label="Formal math live graph"></canvas>
+              <video id="video-live-formal" class="lg-video" autoplay muted loop playsinline>
+                <source src="/static/visuals/live_graph_formal.webm" type="video/webm">
+                <source src="/static/visuals/live_graph_formal.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="viz-metrics">
+              <span>λ: <b id="lg-lambda">0.74</b></span>
+              <span>d<sub>n</sub>: <b id="lg-dn">--</b></span>
+              <span>Geltung: <b id="lg-geltung">--</b></span>
+            </div>
+          </div>
+        </div>
+        <p class="text-[10px] text-[#94a3b8] mt-2 viz-principle-text">
+          <strong class="text-[#f59e0b]">Heroisch:</strong> Live-Graph der Künste (GraphAPI-Connectors, LLM-Frameworks, Inject-Slots, Quantenvektoren) — Campfire-Mesh, Energieflüsse.
+          <strong class="text-[#38bdf8] ml-2">Formal:</strong> G=(V,E), Adjazenz A, LIVE_READY vs DRY, Banach-Kontraktion dₙ=d₀·λⁿ als Prozessmetrik.
+          Daten: <code class="text-[#00d4aa]">GET /api/visuals/live-graph</code> · WebM aus demselben Snapshot.
+        </p>
+      </div>
+
+      <!-- Geisterjagd + Banach (secondary, compact) -->
       <div class="hud-panel viz-panel-wide" data-panel-id="viz-banach" data-panel-zone="viz">
         <h2 class="text-[#c084fc] text-sm mb-2 tracking-widest flex items-center gap-2 flex-wrap">
-          GEISTERJAGD &amp; BANACH-KONTRAKTION
-          <span class="text-[10px] px-1.5 py-0.5 bg-[#7c3aed]/25 rounded text-[#e9d5ff]">HEURISTIK → EMERGENZ</span>
-          <span class="text-[10px] px-1.5 py-0.5 bg-[#00d4aa]/15 rounded text-[#00d4aa]">λ &lt; 1 FIXPUNKT</span>
+          GEISTERJAGD &amp; BANACH (SEKUNDÄR)
+          <span class="text-[10px] px-1.5 py-0.5 bg-[#7c3aed]/25 rounded text-[#e9d5ff]">HEURISTIK</span>
         </h2>
         <div class="viz-dual-grid">
           <div class="viz-cell">
-            <div class="viz-label">Phoenix_Mode / Geisterjagd — latente → manifest</div>
-            <p id="gj-caption" class="viz-caption">Demo-Loop lädt…</p>
+            <div class="viz-label">Phoenix_Mode / Geisterjagd</div>
+            <p id="gj-caption" class="viz-caption">Demo-Loop</p>
             <div class="viz-canvas-wrap">
               <canvas id="canvas-geisterjagd" class="viz-canvas" aria-label="Geisterjagd Demo"></canvas>
             </div>
@@ -155,7 +212,7 @@
           </div>
           <div class="viz-cell">
             <div class="viz-label">Banach-Kontraktion — d(s<sub>n</sub>, s*) → 0</div>
-            <p id="bn-caption" class="viz-caption">Demo-Loop lädt…</p>
+            <p id="bn-caption" class="viz-caption">Demo-Loop</p>
             <div class="viz-canvas-wrap">
               <canvas id="canvas-banach" class="viz-canvas" aria-label="Banach Demo"></canvas>
             </div>
@@ -166,10 +223,6 @@
             </div>
           </div>
         </div>
-        <p class="text-[10px] text-[#94a3b8] mt-2 viz-principle-text">
-          <strong class="text-[#c084fc]">Geisterjagd:</strong> Latente Spuren sammeln sich im Heuristik-Feld, akkumulieren Aktivierung und emergieren manifest (Phoenix_Mode).
-          <strong class="text-[#00d4aa] ml-2">Banach:</strong> Jeder Schritt zieht s<sub>n</sub> mit λ&nbsp;&lt;&nbsp;1 zum Fixpunkt s* — der Abstand schrumpft garantiert.
-        </p>
       </div>
     </div>
 
@@ -198,6 +251,7 @@
   </div>
 
   <script src="/static/responsive_layout.js"></script>
+  <script src="/static/live_graph_landing.js"></script>
   <script src="/static/viz_demo_loop.js"></script>
   <script src="/static/dashboard.js"></script>
 </body>

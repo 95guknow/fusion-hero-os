@@ -1,0 +1,489 @@
+{
+  "timestamp": "2026-07-21T15:32:12.642561+00:00",
+  "platform": "12.1.0",
+  "passes": {
+    "top_down": 10,
+    "bottom_up": 10,
+    "total": 20
+  },
+  "scores": {
+    "top_down_avg": 0.9756,
+    "bottom_up_avg": 0.9678,
+    "overall_avg": 0.9717,
+    "top_down_ok": 10,
+    "bottom_up_ok": 10
+  },
+  "results": [
+    {
+      "direction": "top_down",
+      "index": 1,
+      "domain": "quality",
+      "ok": true,
+      "score": 1.0,
+      "findings": [
+        "quantizer_unit:adaptive_substring",
+        "quantizer_policy:adaptive_substring_logical_never_char_stream",
+        "sinn_ids:['liebesquant', 'zufriedenheitsquant', 'sinnquant', 'sicherheitsquant', 'koerperquant', 'bewaehrungsquant', 'ausdrucksquant', 'stammquant']"
+      ],
+      "actions": [
+        "adaptive_substring_mode",
+        "public_surface_clean"
+      ],
+      "ms": 160.1
+    },
+    {
+      "direction": "top_down",
+      "index": 2,
+      "domain": "stability",
+      "ok": true,
+      "score": 1.0,
+      "findings": [
+        "suite_tests:12",
+        "cross_mesh_edges:841",
+        "m2n_edges:84"
+      ],
+      "actions": [
+        "test_surface_present",
+        "frameworks_fully_meshed"
+      ],
+      "ms": 313.3
+    },
+    {
+      "direction": "top_down",
+      "index": 3,
+      "domain": "workflows",
+      "ok": true,
+      "score": 0.96,
+      "findings": [
+        "triad:agent + anti_agent + quantizer",
+        "quantizer_enabled:True",
+        "preload_enabled:True",
+        "start_all_preload_all"
+      ],
+      "actions": [
+        "negotiation_triad_active"
+      ],
+      "ms": 47.1
+    },
+    {
+      "direction": "top_down",
+      "index": 4,
+      "domain": "dependencies",
+      "ok": true,
+      "score": 0.99,
+      "findings": [
+        "manifest_ok:pyproject.toml",
+        "manifest_ok:requirements.txt",
+        "manifest_ok:Cargo.toml",
+        "manifest_ok:package.json",
+        "llm_frameworks:12",
+        "llm_available:1",
+        "sinn_quanta:8"
+      ],
+      "actions": [
+        "cross_mesh_peers_registered",
+        "liebesquant_loaded",
+        "zufriedenheitsquant_loaded"
+      ],
+      "ms": 0.5
+    },
+    {
+      "direction": "top_down",
+      "index": 5,
+      "domain": "tarnkappe",
+      "ok": true,
+      "score": 0.925,
+      "findings": [
+        "policy:no_fake_likes_no_engagement_fraud",
+        "policy:like_graphs_private_operator_only",
+        "surface:instagram",
+        "sota:instagram:minimize third-party trackers on linked pages",
+        "sota:instagram:no live tokens in captions / bio links",
+        "sota:instagram:hash-only integrity for public assets",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225",
+        "hash:docs/dissertation/assets/meister_hasch.png:a032b31b3f70",
+        "surface:x_twitter",
+        "sota:x_twitter:no operator PII / legal name on public posts",
+        "sota:x_twitter:link to public frame only (github.io / web.app)",
+        "sota:x_twitter:rotate compromised tokens offline (never in tweet)",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225",
+        "hash:docs/security/VECTOR_SWEEP_COMPETITIVE_NOTICE.md:ea2d88d3bacd",
+        "surface:github_social",
+        "sota:github_social:secrets scanning before push",
+        "sota:github_social:public release notes without vault paths",
+        "sota:github_social:branch protection / no force-push secrets",
+        "hash:README.md:234597ba1b0b",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225"
+      ],
+      "actions": [
+        "cloak_like_networks_via_tailscale_vault",
+        "integrity_hash:instagram",
+        "integrity_hash:instagram",
+        "integrity_hash:x_twitter",
+        "integrity_hash:x_twitter",
+        "integrity_hash:github_social",
+        "integrity_hash:github_social"
+      ],
+      "ms": 1.0
+    },
+    {
+      "direction": "top_down",
+      "index": 6,
+      "domain": "mesh",
+      "ok": true,
+      "score": 0.9475,
+      "findings": [
+        "self_online:True",
+        "peers:2_online:1"
+      ],
+      "actions": [
+        "tailscale_self_online",
+        "mesh_peer_online"
+      ],
+      "ms": 54.7
+    },
+    {
+      "direction": "top_down",
+      "index": 7,
+      "domain": "quality",
+      "ok": true,
+      "score": 0.9838,
+      "findings": [
+        "quantizer_unit:adaptive_substring",
+        "quantizer_policy:adaptive_substring_logical_never_char_stream",
+        "sinn_ids:['liebesquant', 'zufriedenheitsquant', 'sinnquant', 'sicherheitsquant', 'koerperquant', 'bewaehrungsquant', 'ausdrucksquant', 'stammquant']"
+      ],
+      "actions": [
+        "adaptive_substring_mode",
+        "public_surface_clean"
+      ],
+      "ms": 98.4
+    },
+    {
+      "direction": "top_down",
+      "index": 8,
+      "domain": "stability",
+      "ok": true,
+      "score": 1.0,
+      "findings": [
+        "suite_tests:12",
+        "cross_mesh_edges:841",
+        "m2n_edges:84"
+      ],
+      "actions": [
+        "test_surface_present",
+        "frameworks_fully_meshed"
+      ],
+      "ms": 25.0
+    },
+    {
+      "direction": "top_down",
+      "index": 9,
+      "domain": "workflows",
+      "ok": true,
+      "score": 0.96,
+      "findings": [
+        "triad:agent + anti_agent + quantizer",
+        "quantizer_enabled:True",
+        "preload_enabled:True",
+        "start_all_preload_all"
+      ],
+      "actions": [
+        "negotiation_triad_active"
+      ],
+      "ms": 0.0
+    },
+    {
+      "direction": "top_down",
+      "index": 10,
+      "domain": "dependencies",
+      "ok": true,
+      "score": 0.99,
+      "findings": [
+        "manifest_ok:pyproject.toml",
+        "manifest_ok:requirements.txt",
+        "manifest_ok:Cargo.toml",
+        "manifest_ok:package.json",
+        "llm_frameworks:12",
+        "llm_available:1",
+        "sinn_quanta:8"
+      ],
+      "actions": [
+        "cross_mesh_peers_registered",
+        "liebesquant_loaded",
+        "zufriedenheitsquant_loaded"
+      ],
+      "ms": 0.5
+    },
+    {
+      "direction": "bottom_up",
+      "index": 1,
+      "domain": "mesh",
+      "ok": true,
+      "score": 0.95,
+      "findings": [
+        "self_online:True",
+        "peers:2_online:1"
+      ],
+      "actions": [
+        "tailscale_self_online",
+        "mesh_peer_online"
+      ],
+      "ms": 53.9
+    },
+    {
+      "direction": "bottom_up",
+      "index": 2,
+      "domain": "dependencies",
+      "ok": true,
+      "score": 0.985,
+      "findings": [
+        "manifest_ok:pyproject.toml",
+        "manifest_ok:requirements.txt",
+        "manifest_ok:Cargo.toml",
+        "manifest_ok:package.json",
+        "llm_frameworks:12",
+        "llm_available:1",
+        "sinn_quanta:8"
+      ],
+      "actions": [
+        "cross_mesh_peers_registered",
+        "liebesquant_loaded",
+        "zufriedenheitsquant_loaded"
+      ],
+      "ms": 1.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 3,
+      "domain": "workflows",
+      "ok": true,
+      "score": 0.9525,
+      "findings": [
+        "triad:agent + anti_agent + quantizer",
+        "quantizer_enabled:True",
+        "preload_enabled:True",
+        "start_all_preload_all"
+      ],
+      "actions": [
+        "negotiation_triad_active"
+      ],
+      "ms": 0.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 4,
+      "domain": "stability",
+      "ok": true,
+      "score": 0.9863,
+      "findings": [
+        "suite_tests:12",
+        "cross_mesh_edges:841",
+        "m2n_edges:84"
+      ],
+      "actions": [
+        "test_surface_present",
+        "frameworks_fully_meshed"
+      ],
+      "ms": 27.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 5,
+      "domain": "quality",
+      "ok": true,
+      "score": 1.0,
+      "findings": [
+        "quantizer_unit:adaptive_substring",
+        "quantizer_policy:adaptive_substring_logical_never_char_stream",
+        "sinn_ids:['liebesquant', 'zufriedenheitsquant', 'sinnquant', 'sicherheitsquant', 'koerperquant', 'bewaehrungsquant', 'ausdrucksquant', 'stammquant']"
+      ],
+      "actions": [
+        "adaptive_substring_mode",
+        "public_surface_clean"
+      ],
+      "ms": 99.6
+    },
+    {
+      "direction": "bottom_up",
+      "index": 6,
+      "domain": "tarnkappe",
+      "ok": true,
+      "score": 0.93,
+      "findings": [
+        "policy:no_fake_likes_no_engagement_fraud",
+        "policy:like_graphs_private_operator_only",
+        "surface:instagram",
+        "sota:instagram:minimize third-party trackers on linked pages",
+        "sota:instagram:no live tokens in captions / bio links",
+        "sota:instagram:hash-only integrity for public assets",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225",
+        "hash:docs/dissertation/assets/meister_hasch.png:a032b31b3f70",
+        "surface:x_twitter",
+        "sota:x_twitter:no operator PII / legal name on public posts",
+        "sota:x_twitter:link to public frame only (github.io / web.app)",
+        "sota:x_twitter:rotate compromised tokens offline (never in tweet)",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225",
+        "hash:docs/security/VECTOR_SWEEP_COMPETITIVE_NOTICE.md:ea2d88d3bacd",
+        "surface:github_social",
+        "sota:github_social:secrets scanning before push",
+        "sota:github_social:public release notes without vault paths",
+        "sota:github_social:branch protection / no force-push secrets",
+        "hash:README.md:234597ba1b0b",
+        "hash:docs/dissertation/MEISTER_HASCH_PUBLIC.md:2f9e9c7e7225"
+      ],
+      "actions": [
+        "cloak_like_networks_via_tailscale_vault",
+        "integrity_hash:instagram",
+        "integrity_hash:instagram",
+        "integrity_hash:x_twitter",
+        "integrity_hash:x_twitter",
+        "integrity_hash:github_social",
+        "integrity_hash:github_social"
+      ],
+      "ms": 2.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 7,
+      "domain": "mesh",
+      "ok": true,
+      "score": 0.95,
+      "findings": [
+        "self_online:True",
+        "peers:2_online:1"
+      ],
+      "actions": [
+        "tailscale_self_online",
+        "mesh_peer_online"
+      ],
+      "ms": 55.5
+    },
+    {
+      "direction": "bottom_up",
+      "index": 8,
+      "domain": "dependencies",
+      "ok": true,
+      "score": 0.985,
+      "findings": [
+        "manifest_ok:pyproject.toml",
+        "manifest_ok:requirements.txt",
+        "manifest_ok:Cargo.toml",
+        "manifest_ok:package.json",
+        "llm_frameworks:12",
+        "llm_available:1",
+        "sinn_quanta:8"
+      ],
+      "actions": [
+        "cross_mesh_peers_registered",
+        "liebesquant_loaded",
+        "zufriedenheitsquant_loaded"
+      ],
+      "ms": 0.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 9,
+      "domain": "workflows",
+      "ok": true,
+      "score": 0.9525,
+      "findings": [
+        "triad:agent + anti_agent + quantizer",
+        "quantizer_enabled:True",
+        "preload_enabled:True",
+        "start_all_preload_all"
+      ],
+      "actions": [
+        "negotiation_triad_active"
+      ],
+      "ms": 0.0
+    },
+    {
+      "direction": "bottom_up",
+      "index": 10,
+      "domain": "stability",
+      "ok": true,
+      "score": 0.9863,
+      "findings": [
+        "suite_tests:12",
+        "cross_mesh_edges:841",
+        "m2n_edges:84"
+      ],
+      "actions": [
+        "test_surface_present",
+        "frameworks_fully_meshed"
+      ],
+      "ms": 31.5
+    }
+  ],
+  "mesh": {
+    "online": true,
+    "hostname": "desktop-kpki9e4",
+    "tailscale_ip": "100.75.140.40",
+    "peers": 2,
+    "peers_online": 1,
+    "tailnet": "operator@example.com"
+  },
+  "hypertarnkappe": {
+    "surfaces": [
+      "instagram",
+      "x_twitter",
+      "github_social",
+      "firebase_landing",
+      "like_network_membrane"
+    ],
+    "policy": [
+      "privacy_cloak_public_social",
+      "like_networks_private_no_export",
+      "no_fake_likes",
+      "no_engagement_fraud",
+      "tailscale_for_private_sync",
+      "sota_tracking_minimization"
+    ]
+  },
+  "domains_cycle": {
+    "top_down": [
+      "quality",
+      "stability",
+      "workflows",
+      "dependencies",
+      "tarnkappe",
+      "mesh",
+      "quality",
+      "stability",
+      "workflows",
+      "dependencies"
+    ],
+    "bottom_up": [
+      "mesh",
+      "dependencies",
+      "workflows",
+      "stability",
+      "quality",
+      "tarnkappe",
+      "mesh",
+      "dependencies",
+      "workflows",
+      "stability"
+    ]
+  },
+  "tailscale_hyper_up": {
+    "status_before": {
+      "code": 0,
+      "out": "100.75.140.40  desktop-kpki9e4       stephan95v@  windows  -                           \n100.115.63.27  ascensionos           stephan95v@  linux    -                           \n100.81.66.20   redmi-note-13-pro-5g  stephan95v@  android  offline, last seen 49m ago",
+      "err": ""
+    },
+    "up": {
+      "code": 0,
+      "out": "",
+      "err": ""
+    },
+    "status_after": {
+      "code": 0,
+      "out": "100.75.140.40  desktop-kpki9e4       stephan95v@  windows  -                           \n100.115.63.27  ascensionos           stephan95v@  linux    -                           \n100.81.66.20   redmi-note-13-pro-5g  stephan95v@  android  offline, last seen 49m ago",
+      "err": ""
+    },
+    "ok": true,
+    "policy": "hyper_up_accept_routes_privacy_mesh"
+  }
+}

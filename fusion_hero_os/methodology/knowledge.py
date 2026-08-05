@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 PROJEKT-WISSENSBASIS (knowledge.py)
 ===================================
@@ -22,7 +21,6 @@ Eigenschaften (HARTE CONSTRAINTS):
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional
 
 __version__ = "1.0"
 
@@ -73,7 +71,7 @@ _MAINFRAME = "engine/mainframe.py"
 _APP = "app.py"
 _SKILL = "HEROIC_SKILL.md"
 
-MAINFRAME_MODULES: List[Module] = [
+MAINFRAME_MODULES: list[Module] = [
     Module(
         "SelfModifyCoreModule",
         "PLATZHALTER-STUB: Audit-Hook-Registry (registrieren/auslösen) + eine "
@@ -135,7 +133,7 @@ MAINFRAME_MODULES: List[Module] = [
 # ARCHITEKTUR — Module in app.py (v2.2, NiceGUI 3.x)
 # =====================================================================
 
-APP_MODULES: List[Module] = [
+APP_MODULES: list[Module] = [
     Module("Editor/IDE-Shell", "NiceGUI-Editor mit Splitter und Datei-Tabs.", _APP),
     Module("Run-Console", "Konsole zum Ausführen von Code und Anzeige der Ausgabe.", _APP),
     Module("5-Dimensionen-Review", "Eingebauter Peer-Review nach 5 Dimensionen.", _APP),
@@ -158,7 +156,7 @@ APP_MODULES: List[Module] = [
 # ARCHITEKTUR — Konzeptionelle Module in HEROIC_SKILL.md (Methodik)
 # =====================================================================
 
-SKILL_MODULES: List[Module] = [
+SKILL_MODULES: list[Module] = [
     Module("PeerReviewCoreModule", "5-Dimensionen-Review.", _SKILL),
     Module("ErkenntnisprozessCoreModule", "5-stufiger Erkenntnisprozess.", _SKILL),
     Module("CriticalMetaAnalysisCoreModule", "Kritische Meta-Analyse.", _SKILL),
@@ -182,7 +180,7 @@ SKILL_MODULES: List[Module] = [
 
 # Konnektoren aus HEROIC_SKILL.md — jeweils nur aktiv, wenn die entsprechenden
 # Tools verbunden sind. (Reine Beschreibung; keine echten Aktionen hier.)
-CONNECTORS: Dict[str, str] = {
+CONNECTORS: dict[str, str] = {
     "GitHub": "Nur aktiv, wenn die GitHub-Tools verbunden sind.",
     "Drive": "Nur aktiv, wenn die Drive-Tools verbunden sind.",
     "Vercel": "Nur aktiv, wenn die Vercel-Tools verbunden sind.",
@@ -195,7 +193,7 @@ CONNECTORS: Dict[str, str] = {
 # ENTSCHEIDUNGEN (DECISIONS)
 # =====================================================================
 
-_DECISIONS_LIST: List[Decision] = [
+_DECISIONS_LIST: list[Decision] = [
     Decision(
         "visualization",
         "NiceGUI ui.echart (ECharts)",
@@ -237,14 +235,14 @@ _DECISIONS_LIST: List[Decision] = [
     ),
 ]
 
-DECISIONS: Dict[str, Decision] = {d.key: d for d in _DECISIONS_LIST}
+DECISIONS: dict[str, Decision] = {d.key: d for d in _DECISIONS_LIST}
 
 
 # =====================================================================
 # GITHUB
 # =====================================================================
 
-GITHUB: Dict[str, object] = {
+GITHUB: dict[str, object] = {
     "account": "95guknow",
     "repos": [
         Repo("fusion-hero-os", "Monorepo; enthält ein FastAPI-Dashboard unter 03_Code/Dashboard."),
@@ -259,7 +257,7 @@ GITHUB: Dict[str, object] = {
 # VERSIONEN
 # =====================================================================
 
-VERSIONS: Dict[str, FileVersion] = {
+VERSIONS: dict[str, FileVersion] = {
     _APP: FileVersion(_APP, "2.2", "NiceGUI 3.x Editor/IDE + Live-Agent-Monitor."),
     _MAINFRAME: FileVersion(_MAINFRAME, "5.25", "QUBO-Solver / Parallel-SA-Engine + Audit-Layer (Stub-Hooks)."),
 }
@@ -269,7 +267,7 @@ VERSIONS: Dict[str, FileVersion] = {
 # UMGEBUNG (ENVIRONMENT)
 # =====================================================================
 
-ENVIRONMENT: Dict[str, object] = {
+ENVIRONMENT: dict[str, object] = {
     "os": "Windows (Windows 10 Pro)",
     "python": "3.10",
     "installed": ["numpy", "numba", "psutil", "nicegui (3.13)"],
@@ -283,7 +281,7 @@ ENVIRONMENT: Dict[str, object] = {
 # AGGREGAT: KNOWLEDGE
 # =====================================================================
 
-KNOWLEDGE: Dict[str, object] = {
+KNOWLEDGE: dict[str, object] = {
     "project": {
         "name": "Fusion Hero OS / BuilderProfile Core",
         "knowledge_version": __version__,
@@ -305,7 +303,7 @@ KNOWLEDGE: Dict[str, object] = {
 # HELFER-FUNKTIONEN (reine Funktionen)
 # =====================================================================
 
-def get_decision(key: str) -> Optional[Decision]:
+def get_decision(key: str) -> Decision | None:
     """Liefert die Entscheidung zum gegebenen Schlüssel oder None.
 
     Verfügbare Schlüssel: siehe DECISIONS.keys().
@@ -313,19 +311,19 @@ def get_decision(key: str) -> Optional[Decision]:
     return DECISIONS.get(key)
 
 
-def list_modules(file: Optional[str] = None) -> List[Module]:
+def list_modules(file: str | None = None) -> list[Module]:
     """Liste aller bekannten Module.
 
     Wird ``file`` angegeben (z. B. "engine/mainframe.py", "app.py" oder
     "HEROIC_SKILL.md"), werden nur die Module dieser Datei zurückgegeben.
     """
-    all_modules: List[Module] = [*MAINFRAME_MODULES, *APP_MODULES, *SKILL_MODULES]
+    all_modules: list[Module] = [*MAINFRAME_MODULES, *APP_MODULES, *SKILL_MODULES]
     if file is None:
         return all_modules
     return [m for m in all_modules if m.file == file]
 
 
-def _md_modules(title: str, modules: List[Module]) -> List[str]:
+def _md_modules(title: str, modules: list[Module]) -> list[str]:
     """Hilfsfunktion: rendert eine Modul-Liste als Markdown-Zeilen."""
     lines = [f"### {title}", ""]
     for m in modules:
@@ -337,7 +335,7 @@ def _md_modules(title: str, modules: List[Module]) -> List[str]:
 def as_markdown() -> str:
     """Rendert die gesamte Wissensbasis als lesbaren Markdown-Report (str)."""
     proj = KNOWLEDGE["project"]
-    lines: List[str] = [
+    lines: list[str] = [
         f"# Projekt-Wissensbasis: {proj['name']}",
         "",
         f"_knowledge.py v{proj['knowledge_version']}_",

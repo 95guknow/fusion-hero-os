@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Poly-Mesh Cost Function v2.0 (2026-07-16).
 
 Formal, measured-first cost model for Fusion Hero OS on L0–L4:
@@ -27,7 +26,7 @@ import os
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 __all__ = [
     "COST_FUNCTION_VERSION",
@@ -41,10 +40,11 @@ __all__ = [
     "evaluate_full",
 ]
 
-COST_FUNCTION_VERSION = "2.0.0"
+COST_FUNCTION_VERSION = "2.1.0"
 
 # EUR rates — europe-west3 / Senfkorn 2026-07 (angemessene Defaults)
-RATES_EUR: Dict[str, float] = {
+# v2.1: L4 LLM token burn from public provider list prices (provider_token_costs)
+RATES_EUR: dict[str, float] = {
     "gce_e2_micro_month": 7.50,
     "gce_e2_micro_hour": 7.50 / 730.0,
     "gcs_storage_gb_month": 0.023,  # STANDARD europe
@@ -56,10 +56,13 @@ RATES_EUR: Dict[str, float] = {
     "h100_gpu_hour": 12.00,  # order-of-magnitude; confirm Billing
     "l1_desk_power_hour": 0.08,  # local mainframe electricity EWMA floor
     "l4_saas_api_est_hour": 0.02,  # soft estimate when MCP active
+    # LLM: fallback EUR/1M blend if provider module unavailable
+    "llm_flagship_blend_eur_per_1m": 8.0,
+    "llm_fast_blend_eur_per_1m": 0.7,
 }
 
 # Soft placement bases (relative, not EUR) — lower = preferred when free
-PLACEMENT_BASE: Dict[str, float] = {
+PLACEMENT_BASE: dict[str, float] = {
     "L0_edge": 0.05,
     "L1_mainframe": 0.15,
     "L2_mesh_anchor": 0.35,
@@ -77,7 +80,7 @@ class BurnBreakdown:
     l3_eur_h: float = 0.0
     l4_eur_h: float = 0.0
     fixed_month_eur: float = 0.0
-    detail: Dict[str, Any] = field(default_factory=dict)
+    detail: dict[str, Any] = field(default_factory=dict)
 
     @property
     def total_eur_h(self) -> float:
@@ -87,7 +90,7 @@ class BurnBreakdown:
     def total_eur_month(self) -> float:
         return self.fixed_month_eur + self.total_eur_h * _HOURS_PER_MONTH
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d["total_eur_h"] = round(self.total_eur_h, 6)
         d["total_eur_month"] = round(self.total_eur_month, 2)
@@ -103,14 +106,58 @@ def compute_burn(
     coordination_jobs_running: int = 0,
     mesh_exit_nodes: int = 1,
     gcs_gb: float = 10.0,
-    l1_power_eur_h: Optional[float] = None,
+    l1_power_eur_h: float | None = None,
     l4_saas_active: bool = False,
-    rates: Optional[Dict[str, float]] = None,
+    llm_tokens_in_per_h: float = 0.0,
+    llm_tokens_out_per_h: float = 0.0,
+    llm_provider_id: str = "anthropic_claude_sonnet",
+    rates: dict[str, float] | None = None,
 ) -> BurnBreakdown:
-    """Aggregate real EUR/h burn across poly-mesh tiers."""
+    """Aggregate real EUR/h burn across poly-mesh tiers.
+
+    v2.1: C_L4 includes measured/estimated LLM token burn from public
+    provider rates (provider_token_costs) when token throughput is known.
+    """
     r = dict(RATES_EUR)
     if rates:
         r.update(rates)
+
+    # refresh LLM blend defaults from live analysis when possible
+    #
+    # Der except-Zweig faengt bewusst NUR Umweltfehler ab: provider_token_costs
+    # fehlt im Deployment (ImportError) oder die Ratentabelle ist unvollstaendig
+    # bzw. unbrauchbar (LookupError, ValueError, ArithmeticError). TypeError,
+    # AttributeError und NameError sind Programmierfehler und muessen
+    # durchschlagen.
+    #
+    # Grund: ein "except Exception" hat hier ueber unbekannte Zeit einen
+    # TypeError verschluckt (positionaler Aufruf einer keyword-only-Funktion).
+    # Der Live-Zweig brach dadurch bei seiner ersten Zeile ab, die Rechnung fiel
+    # still auf statische Defaults zurueck — und das Ergebnis sah trotzdem
+    # plausibel aus. Siehe docs/security/MYTHOS_STILLER_FALLBACK.md.
+    llm_blend_quelle = "live"
+    llm_blend_grund = ""
+    try:
+        from fusion_hero_os.core.provider_token_costs import (
+            blended_top_tier_eur_per_1m,
+            estimate_llm_burn_eur_h,
+        )
+
+        r["llm_flagship_blend_eur_per_1m"] = blended_top_tier_eur_per_1m(prefer="flagship")
+        r["llm_fast_blend_eur_per_1m"] = blended_top_tier_eur_per_1m(prefer="fast")
+        llm_burn = estimate_llm_burn_eur_h(
+            llm_tokens_in_per_h,
+            llm_tokens_out_per_h,
+            provider_id=llm_provider_id,
+        )
+        l4_llm = float(llm_burn.get("eur_h") or 0.0)
+    except (ImportError, LookupError, ValueError, ArithmeticError) as exc:
+        llm_burn = {}
+        llm_blend_quelle = "fallback"
+        llm_blend_grund = f"{type(exc).__name__}: {str(exc)[:120]}"
+        # fallback blend: treat tokens as 70/30 in/out at flagship median
+        tok = float(llm_tokens_in_per_h) + float(llm_tokens_out_per_h)
+        l4_llm = (tok / 1e6) * float(r.get("llm_flagship_blend_eur_per_1m", 8.0))
 
     l1 = float(l1_power_eur_h if l1_power_eur_h is not None else r["l1_desk_power_hour"])
     l2 = mesh_exit_nodes * r["gce_e2_micro_hour"]
@@ -121,7 +168,8 @@ def compute_burn(
         + gpu_l4 * r["l4_gpu_hour"]
         + gpu_a100 * r["a100_gpu_hour"]
     )
-    l4 = r["l4_saas_api_est_hour"] if l4_saas_active else 0.0
+    l4_saas = r["l4_saas_api_est_hour"] if l4_saas_active else 0.0
+    l4 = l4_saas + l4_llm
     fixed = (
         mesh_exit_nodes * r["gce_e2_micro_month"]
         + gcs_gb * r["gcs_storage_gb_month"]
@@ -141,10 +189,20 @@ def compute_burn(
             "coordination_jobs_running": coordination_jobs_running,
             "mesh_exit_nodes": mesh_exit_nodes,
             "gcs_gb": gcs_gb,
+            "l4_saas_eur_h": round(l4_saas, 6),
+            "l4_llm_eur_h": round(l4_llm, 6),
+            "llm_burn": llm_burn,
+            # Ein Fallback darf nicht wie ein gelungener Live-Lauf aussehen:
+            # ohne dieses Feld ist ein plausibler Zahlenwert aus statischen
+            # Defaults nicht von einem aus der Live-Analyse zu unterscheiden.
+            "llm_blend_quelle": llm_blend_quelle,
+            "llm_blend_fallback_grund": llm_blend_grund,
+            "cost_function_version": COST_FUNCTION_VERSION,
             "rates": r,
             "formula": (
                 "C_h = C_L1 + C_L2 + C_L3 + C_L4; "
-                "C_L3 = pods*cpu_h + coord*light_h + L4*l4_h + A100*a100_h; "
+                "C_L4 = saas_est + LLM(tokens, provider_rates); "
+                "C_L3 = pods*cpu_h + coord*light_h + GPU; "
                 "C_L2 = n_exit * e2_micro_h; C_month = fixed + C_h*730"
             ),
         },
@@ -157,7 +215,7 @@ def compute_feu(
     grid_eur_per_kwh: float = 0.35,
     pue: float = 1.25,
     feu_per_eur: float = 100.0,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Energy + FEU from EUR burn."""
     grid = max(grid_eur_per_kwh, 0.01)
     energy_kwh_h = (eur_h / grid) * pue if eur_h > 0 else 0.0
@@ -178,9 +236,9 @@ def resolve_margin(
     *,
     target_margin: float = 1.50,
     floor_margin: float = 0.35,
-    ceiling_1k: Optional[float] = None,
+    ceiling_1k: float | None = None,
     competitive: bool = True,
-) -> Tuple[float, bool]:
+) -> tuple[float, bool]:
     """Return (margin_pct, is_competitive)."""
     if not competitive or ceiling_1k is None:
         return target_margin, True
@@ -202,10 +260,10 @@ def tier_price(
     *,
     target_margin: float = 1.50,
     floor_margin: float = 0.35,
-    ceiling_eur_per_1m: Optional[float] = None,
+    ceiling_eur_per_1m: float | None = None,
     min_price_1k: float = 0.002,
     competitive: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """P_1k from real hour burn and tier capacity."""
     cap = max(1, int(tokens_per_hour_capacity))
     cost_1k = (eur_h / cap) * 1000.0
@@ -239,7 +297,7 @@ def placement_cost(
     online: bool = True,
     force_cluster: bool = False,
     gke_live: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Soft placement cost Π for orchestration (hard constraints separate)."""
     base = PLACEMENT_BASE.get(tier, 1.0)
     if not online and tier != "L4_external_saas":
@@ -280,12 +338,12 @@ def placement_cost(
 
 def evaluate_full(
     *,
-    burn: Optional[BurnBreakdown] = None,
-    gke: Optional[Dict[str, Any]] = None,
-    energy_model: Optional[Dict[str, Any]] = None,
-    pricing_cfg: Optional[Dict[str, Any]] = None,
-    online_tiers: Optional[List[str]] = None,
-) -> Dict[str, Any]:
+    burn: BurnBreakdown | None = None,
+    gke: dict[str, Any] | None = None,
+    energy_model: dict[str, Any] | None = None,
+    pricing_cfg: dict[str, Any] | None = None,
+    online_tiers: list[str] | None = None,
+) -> dict[str, Any]:
     """Full cost-function evaluation for API / orchestrator."""
     gke = gke or {}
     if burn is None:
@@ -306,11 +364,19 @@ def evaluate_full(
         feu_per_eur=float(em.get("feu_per_eur_real", 100)),
     )
     sub = pricing_cfg or {}
-    comp = sub.get("competitive_pricing") or {}
+    comp = dict(sub.get("competitive_pricing") or {})
     target = float(comp.get("margin_pct", sub.get("margin_pct", 1.50)))
     floor = float(sub.get("margin_pct_floor", 0.35))
     min_p = float(sub.get("minimum_price_eur_per_1k_tokens", 0.002))
-    ceilings = comp.get("market_ceiling_eur_per_1m_tokens") or {}
+    ceilings = dict(comp.get("market_ceiling_eur_per_1m_tokens") or {})
+    # v2.1: overlay real top-provider market ceilings when not explicitly set
+    try:
+        from fusion_hero_os.core.provider_token_costs import market_ceilings_eur_per_1m
+
+        for k, v in market_ceilings_eur_per_1m().items():
+            ceilings.setdefault(k, v)
+    except Exception:
+        pass
     tiers_out = {}
     for tid, tier in (sub.get("tiers") or {
         "inference_standard": {"tokens_per_hour_capacity": 500000, "label": "Standard"},
@@ -353,6 +419,14 @@ def evaluate_full(
         )
         for t in PLACEMENT_BASE
     }
+    provider_analysis = None
+    try:
+        from fusion_hero_os.core.provider_token_costs import analyse_providers
+
+        provider_analysis = analyse_providers()
+    except Exception as exc:
+        provider_analysis = {"ok": False, "error": str(exc)[:160]}
+
     return {
         "ok": True,
         "cost_function_version": COST_FUNCTION_VERSION,
@@ -361,26 +435,32 @@ def evaluate_full(
         "feu": feu,
         "subcontractor_tiers": tiers_out,
         "placement_soft_costs": placement,
+        "provider_token_costs": provider_analysis,
+        "market_ceilings_eur_per_1m": ceilings,
         "formulas": {
             "C_h": "C_L1 + C_L2 + C_L3 + C_L4",
+            "C_L4": "saas_est + LLM(tokens, provider_list_prices)",
             "E_h": "(C_h / p_grid) * PUE",
             "FEU_h": "C_h * λ_FEU",
             "P_1k": "max(P_min, min(c_1k*(1+m*), ceiling_1k))",
             "Pi_tier": "π_base*(1+load) s.t. force_cluster→L3, control→L1",
+            "MCP_fill": "keep token_fill ∈ [0.40, 0.70]; compress by Sinnkongruenz",
         },
         "policy": {
             "real_cost_basis": "measured_or_rate_model",
             "mesh_aware": True,
             "force_cluster_hard": True,
             "competitive_margin_target": target,
+            "provider_ceilings_overlay": True,
+            "mcp_fill_band": [0.40, 0.70],
         },
     }
 
 
-def cost_function_status() -> Dict[str, Any]:
+def cost_function_status() -> dict[str, Any]:
     """Live status using cost daemon snapshot when available."""
-    gke_info: Dict[str, Any] = {"mesh_exit_nodes": 1, "gcs_gb": 10.0}
-    online: List[str] = ["L1_mainframe"]
+    gke_info: dict[str, Any] = {"mesh_exit_nodes": 1, "gcs_gb": 10.0}
+    online: list[str] = ["L1_mainframe"]
     try:
         from fusion_hero_os.core.poly_mesh_os_port import inventory_mesh
 
@@ -444,7 +524,7 @@ def cost_function_status() -> Dict[str, Any]:
     except Exception:
         pass
 
-    bp: Dict[str, Any] = {}
+    bp: dict[str, Any] = {}
     try:
         import yaml
 

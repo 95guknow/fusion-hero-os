@@ -1,9 +1,12 @@
-# Kostenfunktion v2.0 — Poly-Mesh L0–L4
+# Kostenfunktion v2.1 — Poly-Mesh L0–L4 + Provider-Token-Ceilings
 
-**Stand:** 2026-07-16 · Fusion Hero OS **v10.0.0**  
-**Businessplan:** `docs/business/senfkorn_businessplan.yaml` (v1.2)  
-**Modul:** `fusion_hero_os.core.poly_mesh_cost_function`  
-**Daemons:** `mainframe_cost_analysis_daemon` · `mainframe_energy_pricing_daemon`
+**Stand:** 2026-07-26 · Fusion Hero OS **v13.0.0**  
+**Businessplan:** `docs/business/senfkorn_businessplan.yaml` (v1.3)  
+**Modul:** `fusion_hero_os.core.poly_mesh_cost_function` (**2.1.0**)  
+**Provider-Raten:** `fusion_hero_os.core.provider_token_costs` (Bedingt)  
+**MCP Fill:** `fusion_hero_os.core.mcp_fill_governor` · Sinnkongruenz-Kompressor  
+**Daemons:** `mainframe_cost_analysis_daemon` · `mainframe_energy_pricing_daemon`  
+**Ops-Doc:** `docs/ops/MCP_FILL_SINNKONGRUENZ_COST_v2_1.md`
 
 ## Formale Definition
 

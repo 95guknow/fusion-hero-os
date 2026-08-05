@@ -4,8 +4,13 @@
 Eine systemtheoretische, existenzphilosophische und softwarearchitektonische Grundlegung heroischer Eudaimonia
 
 **Autor:** Stephan Hagen Urban  
-**Version:** 1.1  
-**Kanon-Bezug:** Fusion Hero OS v10.0.0 (operativ) · Heroic Stack v8.3 · AscensionOS v9.x aspirational
+**Version:** 2.0  
+**Kanon-Bezug:** Fusion Hero OS v15.2.0 (operativer Kanon, ungetaggt) · letzte veröffentlichte Release v13.0.0 · Heroic Stack v8.3 · AscensionOS v9.x aspirational
+
+> **Akademischer Status:** Diese Arbeit trägt die *Form* einer Dissertation.
+> Ein Grad, ein Promotionsverfahren, eine betreuende Institution oder eine
+> externe Begutachtung werden **nicht** behauptet. Siehe den Abschnitt
+> „Status dieser Arbeit" im Dokument selbst und [`../../OFFENLEGUNG.md`](../../OFFENLEGUNG.md).
 
 ## Ontologie (verbindlich)
 
@@ -33,6 +38,52 @@ Siehe: [`ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`](ONTOLOGIE_DISSERTATION_IST_DAS_O
 ## Textuelle Ausdrucksform (Datei)
 
 `Dissertation_Stephan_Hagen_Urban_Autopoiesis_Autopolitik_Fusion_Hero_OS_v1.1.docx`
+
+### Monolith Ascension-Basis (v14.0.0, Stand 2026-08-02)
+
+Eine **einzige** Datei führt Fundament, Manuskript, Ontologie, Modulwahrheit und
+Quellenapparat der Ascension-Basis zusammen — mit Geltungsregister und
+verifizierten Quellen:
+
+- Quelle: [`DISSERTATION_ASCENSION_MONOLITH_v14.md`](DISSERTATION_ASCENSION_MONOLITH_v14.md)
+- Satz (Tag): [`dissertation_heroisch.pdf`](dissertation_heroisch.pdf) — 69 Seiten,
+  heller Satz für Druck und Einreichung
+- Satz (Nacht): [`dissertation_heroisch_nacht.pdf`](dissertation_heroisch_nacht.pdf) —
+  **Freunde-der-Nacht-Edition** aus den Dark-Token des Projekts
+  (`color.bg.base`, `color.fg.primary`)
+
+Beide tragen die V3.3-Gestaltung mit den Layer-Token L0/L1/L2 aus
+`design-tokens/tokens.json` und die kanonische Signatur aus
+`identity-fixpoint.md`.
+
+```bash
+python scripts/build_dissertation_heroisch_pdf.py                  # beide Editionen
+python scripts/build_dissertation_heroisch_pdf.py --edition nacht  # nur Nacht
+```
+
+**Inhalt:** Synthese · 6 Bögen · Anhänge A–I. Alle vier Raster der Vorlage sind
+ausgeführt — Heldenreise (Bögen 1–6), fünf Schulen (3.7–3.12), sieben Gesetze
+mit Geltungsmarke und Codebeleg (Anhang H), Brille q∘b und Nothing-Bereitschaft
+(durchgehend). Anhang I führt den formalen Apparat: 5 Axiome, 6 Definitionen,
+**18 Sätze** mit Beweisen. Das Poly-Mesh ist vollständig behandelt (5.6); die
+Tarnkappe ist mit Begründung ausgeschlossen (5.6.5). Der Triple-Yin-Yang-
+Modus in n Dimensionen steht in 5.6.4 (Code: `ascension_os/core/yin_yang_manifold.py`).
+
+**Discharge abgeschlossen (6.6):** 16 von 17 Ascension-Track-Modulen tragen
+einen `proof_registry.yaml`-Claim; das 17. (`exposure_practice_module`) ist
+konstitutiv unbelegbar — dort fehlt keine Testabdeckung, sondern eine
+klinische Studie. Über diesen Stand hinweg lief das Suffix
+`9.10-aspirational` am Ascension-Core; es ist mit v14.0.0 abgelöst.
+
+Die Geltungsmarken sind im PDF farbig gesetzt: **Satz** und **Herleitung** in L0
+(`#f5c542`), **Spezifikation** in L1 (`#00ffd5`), **Modell** und **heroischer
+Exkurs** in L2 (`#a855f7`). Anhang A des Monolithen führt jede zentrale Aussage
+mit Marke, Beleg und Ort; Anhang C nennt die Kommandos zum Nachrechnen.
+
+> **Bildrechte:** Schlüsselbild ist `assets/ascensionOS_big_ALPHA.png` (eigenes
+> Werk). `meister_hasch.png` bleibt wegen des eingebetteten Copyright-Vermerks
+> Dritter ausgeschlossen (Rückzug 2026-07-20, siehe `MEISTER_HASCH_PUBLIC.md`);
+> der Meister-Hasch-Rahmen erscheint nur als Text (Monolith, Abschnitt 6.4).
 
 ## Anhänge — Module & Funktionen aus dem Nichts
 

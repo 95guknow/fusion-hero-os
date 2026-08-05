@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 deploy = private
 
@@ -10,15 +9,16 @@ from __future__ import annotations
 import json
 import time
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from fusion_hero_os.core.ops_vocabulary import OPS_DEPLOY, meaning_of
 
 __all__ = ["deploy", "status"]
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return {
         "ok": True,
         "operation": OPS_DEPLOY,
@@ -33,13 +33,13 @@ def deploy(
     seal_masterseed: bool = True,
     train_timeline: bool = True,
     inside_out_inventory: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Private deploy: local vault + local training. No public push."""
     t0 = time.time()
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "operation": OPS_DEPLOY,
         "meaning": "private",
-        "started_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": datetime.now(UTC).isoformat(),
         "steps": [],
     }
     if inside_out_inventory:
@@ -98,7 +98,7 @@ def deploy(
 
     out["ok"] = all(s.get("ok") for s in out["steps"]) if out["steps"] else True
     out["duration_sec"] = round(time.time() - t0, 2)
-    out["ended_at"] = datetime.now(timezone.utc).isoformat()
+    out["ended_at"] = datetime.now(UTC).isoformat()
 
     man = Path.home() / ".fusion" / "ops" / "deploy_latest.json"
     man.parent.mkdir(parents=True, exist_ok=True)

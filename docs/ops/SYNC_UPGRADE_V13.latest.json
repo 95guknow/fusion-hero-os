@@ -1,0 +1,48 @@
+{
+  "kind": "SYNC_UPGRADE_V13",
+  "utc": "2026-07-26T11:46:44Z",
+  "platform": "13.0.0",
+  "target": "13.0.0",
+  "from": "12.1.0",
+  "tip": "2b37e18",
+  "tip_full": "2b37e18e111584526343f8e38985912eb26f54d0",
+  "branch": "main",
+  "tag": "v13.0.0",
+  "pr": "https://github.com/95guknow/fusion-hero-os/pull/98",
+  "remotes": {
+    "origin_main": "2b37e18",
+    "release": "https://github.com/95guknow/fusion-hero-os/releases/tag/v13.0.0"
+  },
+  "gates": {
+    "bump_version_check": true,
+    "manifests": "13.0.0",
+    "tag_pushed": true,
+    "gh_release": true,
+    "intern_sync": true
+  },
+  "intern": {
+    "operative_kanon": "v13.0.0",
+    "skills": [
+      "fusion-hero-os",
+      "alte-frau-95g",
+      "heroic-core-foundation",
+      "mainframe-laden"
+    ],
+    "script": "sync_grok_intern.ps1"
+  },
+  "extern": {
+    "repo": "95guknow/fusion-hero-os",
+    "release_url": "https://github.com/95guknow/fusion-hero-os/releases/tag/v13.0.0",
+    "status": "published"
+  },
+  "geltung": "tag+release+manifests = Satz",
+  "coevolution": {
+    "branch": "coevolution/v13-triple-A-B-C",
+    "legs": [
+      "A_stack_health",
+      "B_senfkorn_web_cherry",
+      "C_stash_wip"
+    ],
+    "status": "in_progress"
+  }
+}

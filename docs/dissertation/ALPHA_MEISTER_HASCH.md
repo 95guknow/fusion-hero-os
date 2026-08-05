@@ -1,10 +1,11 @@
 # ALPHA Meister Hasch — Public Publish Pack
 
 **Cycle:** BIG OMEGA → **BIG ALPHA**  
-**Platform:** Fusion Hero OS **v12.0.0**  
-**Status:** PUBLIC-SAFE · ready to publish  
+**Platform:** Fusion Hero OS **v14.0.0** (seal lineage v15)  
+**Status:** PUBLIC-SAFE · image **withdrawn** · hash-only  
 **Companion prompt:** `C:\prompt.txt` (also mirrored in repo root `prompt.txt`)  
-**Machine seal:** `docs/dissertation/alpha_meister_hasch.seal.json`
+**Machine seal:** `docs/dissertation/alpha_meister_hasch.seal.json`  
+**Seal ID:** `ALPHA-MH-v15-A032B31B-20260802`
 
 ---
 
@@ -14,18 +15,22 @@
 |-------|--------|
 | Handle | **95guknow** |
 | Org surface | Senfkorn UG · WIR Mesh |
-| Asset | `meister_hasch.png` |
-| SHA256 | `a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e` |
-| Size | 654464 bytes |
+| Asset | `meister_hasch.png` (**withdrawn** — not delivered) |
+| SHA256 (Satz / integrity anchor only) | `a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e` |
+| Size (when present) | 654464 bytes |
 | Kind | **Instruction frame** (not a mock) |
-| Seal lineage | MH-SEAL-v12 + **ALPHA extension** |
+| Seal lineage | MH-SEAL-v12 → ALPHA v12 → v14 → **v15 residual close** |
+| Public image delivery | **false** |
 
-Canonical image paths (publish any; hash must match):
+**Former paths (all withdrawn — expect 404 / absent):**
 
-- `docs/dissertation/assets/meister_hasch.png` (**canonical**)
+- `docs/dissertation/assets/meister_hasch.png`
 - `memes/meister_hasch.png`
 - `docs/mesh/public/meister_hasch.png`
-- raw: https://raw.githubusercontent.com/95guknow/fusion-hero-os/main/docs/dissertation/assets/meister_hasch.png
+- `journal/meister_hasch.png`
+- `journal/meister_hasch.jpg`
+
+Do **not** re-publish image bytes to git or public raw URLs.
 
 ---
 
@@ -38,6 +43,7 @@ BIG ALPHA: OPEN
 Omega closed the prior integrity arc (seal, INVERT, corridor, eudaemon, expression).
 Alpha opens the next additive cycle under the same MasterSeed contraction.
 Labor only. No Realraum vault commit.
+Image asset withdrawn (third-party copyright); hash remains as Satz anchor.
 ```
 
 **Entry line:**
@@ -46,7 +52,7 @@ Labor only. No Realraum vault commit.
 
 ---
 
-## 3. Frame (from meister_hasch.png)
+## 3. Frame (roles — design tokens, not image bytes)
 
 | Role | Layer | Hex | Function |
 |------|-------|-----|----------|
@@ -59,6 +65,7 @@ Labor only. No Realraum vault commit.
 - Sandbox / labor · pure Erkenntnisgewinn  
 - Hypotheses and scenarios only for Realraum-shaped claims  
 - **No** commitment of private vault shards to git or public channels  
+- **No** public delivery of withdrawn Meister image bytes  
 - INVERT: `INVERT(realraum_intent) = labor_hypothesis + integrity_probe + no_vault_commit`  
 - EXPRESS: unfold compression without breaking the seal  
 - Anti-inversion: agent “no” is **not** a start command  
@@ -69,32 +76,27 @@ Labor only. No Realraum vault commit.
 
 | Include | Exclude |
 |---------|---------|
-| This file + `alpha_meister_hasch.seal.json` | `~/.fusion/**` vault, keys, mesh secrets |
-| Meister PNG + `.sha256` | Live API tokens, `.env` |
-| `prompt.txt` (lab agent prompt) | Private legal-name vault binds |
-| Security summaries already public-safe | Combat/offense narratives as Realraum claims |
-| Design-token **public colors** | Anything marked private in PUBLIC_VS_PRIVATE.md |
+| This file + `alpha_meister_hasch.seal.json` | Image bytes (png/jpg) on any public path |
+| `prompt.txt` (lab agent prompt) | `~/.fusion/**` vault, keys, mesh secrets |
+| SHA256 integrity anchor (text) | Live API tokens, `.env` |
+| Security summaries already public-safe | Private legal-name vault binds |
+| Design-token **public colors** | Combat/offense narratives as Realraum claims |
 
 ---
 
-## 5. Publish checklist (you push — agent follows)
+## 5. Publish checklist
 
-1. [ ] Commit/push from `fusion-hero-os` (or dual-org main):
-   - `docs/dissertation/ALPHA_MEISTER_HASCH.md`
-   - `docs/dissertation/alpha_meister_hasch.seal.json`
-   - `prompt.txt` (repo root)
-   - ensure `docs/dissertation/assets/meister_hasch.png` hash still matches
-2. [ ] Optional: mirror short status to Instagram / Pages (no secrets)
-3. [ ] After remote is live, tell the agent: **“alpha_meister_hasch nachziehen”** or paste the commit SHA / raw URL
-4. [ ] Agent will: `git pull` / re-verify hash / refresh local control docs / re-run eudaemon if needed
+1. [x] Seal + pack on main (docs only)  
+2. [x] Image paths absent on public surfaces (assets / memes / mesh / **journal**)  
+3. [ ] After push: agent **`nachziehen alpha_meister_hasch`** → expect full PASS (no residual raw 200)  
 
-**Follow-up command for agent (after you publish):**
+**Follow-up command:**
 
 ```text
 nachziehen alpha_meister_hasch
 ```
 
-Expected agent actions: verify raw GitHub hash == `a032b31b…`, confirm seal JSON on remote, update `MEISTER_HASCH_KONTROLLE` / Alpha execute note with remote PASS.
+Expected: seal on main · all former image paths 404/absent · hash still documented as Satz · no journal residual.
 
 ---
 
@@ -127,8 +129,9 @@ Geltung marks: **Satz** | **Bedingt** | **Modell** | **Fragment** — never mix.
 | `MEISTER_HASCH_PUBLIC.md` | Base public frame |
 | `MEISTER_HASCH_INVERSION.md` | INVERT spec |
 | `MEISTER_HASCH_SEALED.md` | Omega seal lineage |
+| `MEISTER_HASCH_KONTROLLE.md` | Control / nachziehen report |
 | `docs/security/EXPRESSION_FROM_COMPRESSION.md` | COMPRESS→EXPRESS |
-| `docs/security/BIG_ALPHA_EXECUTE.md` | Local Alpha execute pulse |
+| `docs/security/BIG_ALPHA_EXECUTE.md` | Alpha execute + nachziehen pulses |
 | `C:\prompt.txt` | Agent master prompt (Omega→Alpha) |
 
 ---
@@ -138,9 +141,10 @@ Geltung marks: **Satz** | **Bedingt** | **Modell** | **Fragment** — never mix.
 | Field | Value |
 |-------|--------|
 | Public-safe | **yes** |
+| Image public delivery | **no** |
 | Offense | **FORBIDDEN** |
 | Sandbox | **required** |
 | Publish target | GitHub `95guknow/fusion-hero-os` (+ optional dual-org) |
-| Agent follow | after your push · `nachziehen alpha_meister_hasch` |
+| Agent follow | `nachziehen alpha_meister_hasch` |
 
-**Geltung:** Hash and public paths = **Satz**. Cycle language Omega/Alpha = **Spezifikation (Lab)**. Mythos warmth = **Modell**.
+**Geltung:** Hash text = **Satz**. Public image bytes = **absent (policy)**. Cycle language Omega/Alpha = **Spezifikation (Lab)**. Mythos warmth = **Modell**.

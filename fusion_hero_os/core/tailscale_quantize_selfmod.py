@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Tailscale Quantize Self-Mod — Fusion Hero OS v12.0.0 · BIG ALPHA
 
@@ -29,10 +28,11 @@ import os
 import shutil
 import subprocess
 import time
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 
@@ -51,7 +51,7 @@ __all__ = [
 ]
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     if not CONFIG_PATH.exists():
         return {}
     try:
@@ -62,7 +62,7 @@ def load_config() -> Dict[str, Any]:
         return {}
 
 
-def _cfg() -> Dict[str, Any]:
+def _cfg() -> dict[str, Any]:
     return load_config()
 
 
@@ -73,14 +73,14 @@ def state_dir() -> Path:
     return p
 
 
-def _ts_exe() -> Optional[str]:
+def _ts_exe() -> str | None:
     for c in (r"C:\Program Files\Tailscale\tailscale.exe", "tailscale"):
         if Path(c).is_file() or shutil.which(c):
             return c if Path(c).is_file() else shutil.which(c)
     return None
 
 
-def tailscale_snapshot() -> Dict[str, Any]:
+def tailscale_snapshot() -> dict[str, Any]:
     """Read-only Tailscale status (Satz when CLI present)."""
     exe = _ts_exe()
     if not exe:
@@ -136,7 +136,7 @@ class AssistNode:
     status: str = "ready"
     last_mod: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -153,7 +153,7 @@ class QuantizeParams:
     heroic_boost: float = 0.0
     reason: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -161,7 +161,7 @@ def _clamp(x: float, lo: float, hi: float) -> float:
     return max(lo, min(hi, x))
 
 
-def _mesh_scale(ts: Dict[str, Any], cfg: Dict[str, Any]) -> float:
+def _mesh_scale(ts: dict[str, Any], cfg: dict[str, Any]) -> float:
     sm = cfg.get("self_mod") or {}
     target = float(sm.get("peer_target") or 4)
     peers = float(ts.get("peers_online") or 0)
@@ -172,15 +172,15 @@ def _mesh_scale(ts: Dict[str, Any], cfg: Dict[str, Any]) -> float:
     return _clamp(scale, 0.15, 1.0)
 
 
-def ensure_assist_nodes(*, force_virtual: Optional[bool] = None) -> Dict[str, Any]:
+def ensure_assist_nodes(*, force_virtual: bool | None = None) -> dict[str, Any]:
     """Create/update self-modulating Tailscale quantize assist nodes (lab registry)."""
     cfg = _cfg()
     ts = tailscale_snapshot()
     scale = _mesh_scale(ts, cfg)
     virtual = force_virtual if force_virtual is not None else bool(ts.get("virtual_floor", True))
     roles = cfg.get("assist_roles") or []
-    nodes: List[AssistNode] = []
-    now = datetime.now(timezone.utc).isoformat()
+    nodes: list[AssistNode] = []
+    now = datetime.now(UTC).isoformat()
     for r in roles:
         # capacity per role slightly skewed by layer (L0 integrity stable)
         raw_layer = r.get("layer") if r.get("layer") is not None else 1
@@ -232,8 +232,8 @@ def ensure_assist_nodes(*, force_virtual: Optional[bool] = None) -> Dict[str, An
 def self_modulate(
     *,
     heroic_boost: float = 0.0,
-    n_override: Optional[int] = None,
-) -> Dict[str, Any]:
+    n_override: int | None = None,
+) -> dict[str, Any]:
     """
     Self-modulate quantization params from mesh capacity + optional heroic boost.
 
@@ -295,7 +295,7 @@ def self_modulate(
     payload = {
         "ok": True,
         "platform": PLATFORM,
-        "modulated_at": datetime.now(timezone.utc).isoformat(),
+        "modulated_at": datetime.now(UTC).isoformat(),
         "params": params.to_dict(),
         "tailscale": {
             "ok": ts.get("ok"),
@@ -339,7 +339,7 @@ def _quantize_matrix(Q: np.ndarray, bit_depth: int) -> np.ndarray:
     return qi / scale
 
 
-def _anneal_once(Q: np.ndarray, steps: int, T0: float, seed: int) -> Tuple[np.ndarray, float]:
+def _anneal_once(Q: np.ndarray, steps: int, T0: float, seed: int) -> tuple[np.ndarray, float]:
     """Simple SA for binary spin {-1,+1} / map to {0,1} energy  x^T Q x."""
     rng = np.random.default_rng(seed)
     n = Q.shape[0]
@@ -367,9 +367,9 @@ def _anneal_once(Q: np.ndarray, steps: int, T0: float, seed: int) -> Tuple[np.nd
 
 def run_quantize(
     *,
-    params: Optional[Dict[str, Any]] = None,
-    seed: Optional[int] = None,
-) -> Dict[str, Any]:
+    params: dict[str, Any] | None = None,
+    seed: int | None = None,
+) -> dict[str, Any]:
     """
     Run mesh-assisted quantized QUBO solve with self-mod params.
 
@@ -397,9 +397,9 @@ def run_quantize(
 
     # partition = chunk variables (block-diagonal style assist); here: multi-start SA
     starts = max(1, workers * max(1, partitions // 2))
-    results: List[Dict[str, Any]] = []
+    results: list[dict[str, Any]] = []
     best_e = float("inf")
-    best_x: Optional[np.ndarray] = None
+    best_x: np.ndarray | None = None
     for w in range(starts):
         x, e = _anneal_once(Qq, steps=max(50, steps // max(1, starts // 2 + 1)), T0=T0, seed=seed + w * 17)
         results.append({"worker": w, "energy": e, "ones": int(x.sum())})
@@ -414,7 +414,7 @@ def run_quantize(
     out = {
         "ok": True,
         "platform": PLATFORM,
-        "ran_at": datetime.now(timezone.utc).isoformat(),
+        "ran_at": datetime.now(UTC).isoformat(),
         "params": {
             "n": n,
             "density": density,
@@ -449,7 +449,7 @@ def run_quantize(
     return out
 
 
-def run_full_cycle(*, heroic_boost: float = 0.0) -> Dict[str, Any]:
+def run_full_cycle(*, heroic_boost: float = 0.0) -> dict[str, Any]:
     """Ensure nodes → self-mod → quantize → docs summary."""
     t0 = time.time()
     nodes = ensure_assist_nodes()
@@ -457,7 +457,7 @@ def run_full_cycle(*, heroic_boost: float = 0.0) -> Dict[str, Any]:
     run = run_quantize(params=mod.get("params"))
     summary = {
         "kind": "tailscale_quantize_selfmod",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "platform": PLATFORM,
         "cycle": "BIG_ALPHA",
         "ok": bool(run.get("ok") and mod.get("ok") and nodes.get("ok")),
@@ -492,14 +492,14 @@ def run_full_cycle(*, heroic_boost: float = 0.0) -> Dict[str, Any]:
     return summary
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     cfg = _cfg()
     ts = tailscale_snapshot()
     nodes_path = state_dir() / ((cfg.get("paths") or {}).get("nodes_file") or "nodes.json")
     mod_path = state_dir() / ((cfg.get("paths") or {}).get("last_mod_file") or "last_selfmod.json")
     run_path = state_dir() / ((cfg.get("paths") or {}).get("last_run_file") or "last_quantize_run.json")
 
-    def _load(p: Path) -> Dict[str, Any]:
+    def _load(p: Path) -> dict[str, Any]:
         if p.exists():
             try:
                 return json.loads(p.read_text(encoding="utf-8"))

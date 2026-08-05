@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger("fusion_hero_os.bridge.gateway")
 
@@ -14,7 +14,7 @@ _BRIDGE_DIR = REPO_ROOT / "kernel" / "bridge"
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-_gateway: Optional["IPCGateway"] = None
+_gateway: IPCGateway | None = None
 
 
 class IPCGateway:
@@ -40,7 +40,7 @@ class IPCGateway:
             self._client = FusionHeroIPCClient(transport=Transport.IN_PROCESS)
             self._transport = "in_process"
 
-    def status(self) -> Dict[str, Any]:
+    def status(self) -> dict[str, Any]:
         try:
             ping = self._client.ping()
             data = ping.get("data", ping)
@@ -61,18 +61,18 @@ class IPCGateway:
         except Exception as exc:
             return {"ok": False, "transport": self._transport, "error": str(exc)}
 
-    def dispatch(self, module: str, payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def dispatch(self, module: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         try:
             result = self._client.dispatch(module, payload)
             return result.get("data", result) if isinstance(result, dict) else result
         except Exception as exc:
             return {"ok": False, "error": str(exc)}
 
-    def math_status(self) -> Dict[str, Any]:
+    def math_status(self) -> dict[str, Any]:
         r = self._client.math_status()
         return r.get("data", r)
 
-    def orchestrator_status(self) -> Dict[str, Any]:
+    def orchestrator_status(self) -> dict[str, Any]:
         r = self._client.orchestrator_status()
         return r.get("data", r)
 

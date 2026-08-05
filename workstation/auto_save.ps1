@@ -77,6 +77,13 @@ function PushBranch($Path, $BranchName) {
             Write-Host ("[" + (Split-Path $Path -Leaf) + "] kein Remote - Push uebersprungen") -ForegroundColor Yellow
             return $false
         }
+        # Layer push guard — block unwanted auto-save pushes; allow with intent
+        $env:PYTHONPATH = "$Root;$env:PYTHONPATH"
+        python -m fusion_hero_os.core.push_layer_guard --remote $remoteName --branch $BranchName 2>&1 | ForEach-Object { Write-Host $_ }
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host ("[" + (Split-Path $Path -Leaf) + "] PUSH BLOCKED by layer guard (unwanted). Wanted: `$env:FUSION_PUSH_INTENT='1'` then push.") -ForegroundColor Yellow
+            return $false
+        }
         git push $remoteName ("HEAD:" + $BranchName) 2>$null
         if ($LASTEXITCODE -eq 0) {
             Write-Host ("[" + (Split-Path $Path -Leaf) + "] PUSHED -> " + $remoteName + "/" + $BranchName) -ForegroundColor Green

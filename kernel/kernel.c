@@ -1,8 +1,13 @@
-#include "../include/stdint.h"
-#include "../smp/smp.h"
+#include "include/stdint.h"
+#include "smp/smp.h"
+#include "inject/include/inject.h"
 
-// Kernel entry point - called from boot.s
+// Kernel entry point - called from boot.s (Assembly-first)
+// Max injectability: fhos_inject_* slot table is live before scheduler.
 void kernel_main(uint64_t multiboot_info) {
+    // Assembly inject plane first — quanta can hook immediately
+    fhos_inject_init();
+
     // Initialize SMP with hyperthreading support
     smp_init();
     
@@ -10,7 +15,7 @@ void kernel_main(uint64_t multiboot_info) {
     console_init();
     
     // Print CPU information
-    console_print("Fusion Hero OS - SMP Kernel\n");
+    console_print("Fusion Hero OS - ASM Kernel + Inject Table\n");
     console_print("Detected cores with hyperthreading: ");
     
     uint32_t esp;

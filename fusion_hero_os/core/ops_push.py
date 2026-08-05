@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 push = public
 
@@ -11,8 +10,9 @@ import json
 import os
 import subprocess
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fusion_hero_os.core.ops_vocabulary import OPS_PUSH, meaning_of
 
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 __all__ = ["push_public", "status"]
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     return {
         "ok": True,
         "operation": OPS_PUSH,
@@ -34,16 +34,16 @@ def status() -> Dict[str, Any]:
 def push_public(
     *,
     remote: str = "origin",
-    branch: Optional[str] = None,
+    branch: str | None = None,
     dry: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Public push — evaluate guard then git push. deploy/private material excluded by denylist."""
     from fusion_hero_os.core.push_layer_guard import evaluate_push, _load_dotenv_files, load_config
 
     cfg = load_config()
     dotenv = _load_dotenv_files(cfg)
     d = evaluate_push(remote=remote, branch=branch)
-    report: Dict[str, Any] = {
+    report: dict[str, Any] = {
         "operation": OPS_PUSH,
         "meaning": "public",
         "allow": d.allow,
@@ -53,7 +53,7 @@ def push_public(
         "secret_keys_present": d.secret_keys_present,
         "dotenv_loaded": d.dotenv_loaded or dotenv,
         "layers": d.layers_touched,
-        "evaluated_at": datetime.now(timezone.utc).isoformat(),
+        "evaluated_at": datetime.now(UTC).isoformat(),
         "dry": dry,
     }
     if not d.allow:

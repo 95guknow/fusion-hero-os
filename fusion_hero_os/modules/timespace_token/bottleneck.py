@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
 
 
 def build_competition_qubo(
-    track_names: List[str],
-    bottleneck_risks: Dict[str, float],
+    track_names: list[str],
+    bottleneck_risks: dict[str, float],
     coupling_strength: float = 0.5,
-) -> Dict[Tuple[int, int], float]:
+) -> dict[tuple[int, int], float]:
     """
     Minimiere Σ Q_ii x_i + Σ Q_ij x_i x_j  (x_i ∈ {0,1} = Track aktiv).
 
@@ -17,7 +16,7 @@ def build_competition_qubo(
     Off-Diagonal: Kopplung zwischen konkurrierenden Tracks.
     """
     n = len(track_names)
-    q: Dict[Tuple[int, int], float] = {}
+    q: dict[tuple[int, int], float] = {}
     for i, name in enumerate(track_names):
         q[(i, i)] = bottleneck_risks.get(name, 0.0)
     for i in range(n):
@@ -30,10 +29,10 @@ def build_competition_qubo(
 
 
 def greedy_bottleneck_assignment(
-    track_names: List[str],
-    bottleneck_risks: Dict[str, float],
+    track_names: list[str],
+    bottleneck_risks: dict[str, float],
     budget_slots: int,
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Greedy-Zuweisung: wähle ``budget_slots`` Tracks mit niedrigstem effektivem Risiko.
     Liefert Prioritäts-Multiplikatoren (0.3–2.5) — kein echter QUBO-Solver.
@@ -42,7 +41,7 @@ def greedy_bottleneck_assignment(
         return {}
     ranked = sorted(track_names, key=lambda n: bottleneck_risks.get(n, 0.0))
     winners = set(ranked[: max(1, budget_slots)])
-    multipliers: Dict[str, float] = {}
+    multipliers: dict[str, float] = {}
     for name in track_names:
         if name in winners:
             multipliers[name] = 2.5 if bottleneck_risks.get(name, 0) > 0.5 else 1.5
@@ -51,7 +50,7 @@ def greedy_bottleneck_assignment(
     return multipliers
 
 
-def qubo_energy(q: Dict[Tuple[int, int], float], assignment: List[int]) -> float:
+def qubo_energy(q: dict[tuple[int, int], float], assignment: list[int]) -> float:
     """Energie für binäre Zuweisung x (Länge n)."""
     n = len(assignment)
     energy = 0.0

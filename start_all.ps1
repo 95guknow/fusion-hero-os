@@ -20,16 +20,48 @@ function Stop-FusionProcesses {
         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 }
 
-function Wait-HttpReady([string]$Url, [int]$MaxSec = 120) {
+function Wait-HttpReady([string]$Url, [int]$MaxSec = 180) {
     $deadline = (Get-Date).AddSeconds($MaxSec)
     while ((Get-Date) -lt $deadline) {
         try {
-            $r = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 2
+            $r = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 3
             if ($r.StatusCode -eq 200) { return $true }
         } catch {}
         Start-Sleep -Milliseconds 500
     }
     return $false
+}
+
+function Clear-DashboardLocks {
+    $ld = Join-Path $env:USERPROFILE ".fusion-hero-os\process_locks"
+    if (Test-Path $ld) {
+        Get-ChildItem $ld -Filter "dashboard_*.lock" -ErrorAction SilentlyContinue |
+            Remove-Item -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Sync-BigAlphaAsset {
+    $src = $env:FUSION_BIG_ALPHA_ASSET
+    if (-not $src -or -not (Test-Path $src)) {
+        $candidates = @(
+            "C:\Dissertation_95guknow\assets\big_ALPHA.png",
+            (Join-Path $Root "ascension_os\assets\big_ALPHA.png")
+        )
+        foreach ($c in $candidates) {
+            if (Test-Path $c) { $src = $c; break }
+        }
+    }
+    if (-not $src -or -not (Test-Path $src)) {
+        Write-Host "BIG ALPHA asset missing" -ForegroundColor Yellow
+        return $null
+    }
+    $staticDir = Join-Path $Dash "static"
+    New-Item -ItemType Directory -Force -Path $staticDir | Out-Null
+    $dst = Join-Path $staticDir "big_ALPHA.png"
+    Copy-Item -LiteralPath $src -Destination $dst -Force
+    $env:FUSION_BIG_ALPHA_ASSET = $src
+    Write-Host "BIG ALPHA -> $dst" -ForegroundColor Green
+    return $dst
 }
 
 function Wait-MainframeLoaded([int]$MaxSec = 120) {
@@ -45,50 +77,85 @@ function Wait-MainframeLoaded([int]$MaxSec = 120) {
     return $null
 }
 
-Write-Host "=== Fusion Hero OS v12 - Auto-Load ALL (Connectoren+Module+Mesh) ===" -ForegroundColor Cyan
-# Default: alles beim Start laden (User-Direktive)
-$env:FUSION_AUTO_LOAD = if ($env:FUSION_AUTO_LOAD) { $env:FUSION_AUTO_LOAD } else { "1" }
-$env:FUSION_PRELOAD_ALL = if ($env:FUSION_PRELOAD_ALL) { $env:FUSION_PRELOAD_ALL } else { "1" }
-$env:FUSION_ALL_MODULES = if ($env:FUSION_ALL_MODULES) { $env:FUSION_ALL_MODULES } else { "1" }
-$env:FUSION_BOOT_PHASE = if ($env:FUSION_BOOT_PHASE) { $env:FUSION_BOOT_PHASE } else { "full" }
+Write-Host "=== Fusion Hero OS v13 - Auto-Load ALL (Frameworks+Module+Mesh+Dashboard) ===" -ForegroundColor Cyan
+# Default: alles beim Start laden (User-Direktive) — Frameworks immer, Dashboard :8000
+$env:FUSION_AUTO_LOAD = "1"
+$env:FUSION_PRELOAD_ALL = "1"
+$env:FUSION_ALL_MODULES = "1"
+$env:FUSION_BOOT_PHASE = "full"
 $env:FUSION_DUAL_AGENT = if ($env:FUSION_DUAL_AGENT) { $env:FUSION_DUAL_AGENT } else { "1" }
 $env:FUSION_QUANTIZER_AGENT = if ($env:FUSION_QUANTIZER_AGENT) { $env:FUSION_QUANTIZER_AGENT } else { "1" }
+$env:FUSION_BACKEND_PORT = "8000"
+$env:FUSION_DASHBOARD_PORT = "8000"
+$env:FUSION_PORT_BASE = "8000"
+$env:PORT = "8000"
+$env:FUSION_MEMORY_SPILL = if ($env:FUSION_MEMORY_SPILL) { $env:FUSION_MEMORY_SPILL } else { "1" }
+# GDrive spill env (optional)
+$spillEnv = Join-Path $env:USERPROFILE ".fusion\gdrive_spill.env"
+if (Test-Path $spillEnv) {
+    Get-Content $spillEnv | ForEach-Object {
+        if ($_ -match '^\s*#' -or $_ -notmatch '=') { return }
+        $k, $v = $_.Split('=', 2)
+        if ($k) { Set-Item -Path "Env:$($k.Trim())" -Value $v.Trim() }
+    }
+}
+if (-not $env:FUSION_SSD_LONGTERM_CACHE) {
+    $env:FUSION_SSD_LONGTERM_CACHE = "G:\Meine Ablage\FusionHero_Offload\LongTermCache"
+}
+# BIG ALPHA asset
+$env:FUSION_BIG_ALPHA_ASSET = if ($env:FUSION_BIG_ALPHA_ASSET) {
+    $env:FUSION_BIG_ALPHA_ASSET
+} else {
+    "C:\Dissertation_95guknow\assets\big_ALPHA.png"
+}
 if ($Force) {
     $env:FUSION_FORCE_SYNC = "1"
     $env:FUSION_AUTO_LOAD = "1"
     $env:FUSION_BOOT_PHASE = "full"
     Write-Host "Modus: FORCE (Full-Boot · Preload ALL · Medienserver-Sync)" -ForegroundColor Magenta
 }
-Write-Host "Substrat: Windows | Meta-Layer: Fusion Hero OS v8" -ForegroundColor DarkCyan
-Write-Host "Standard-GUI: $GuiUrl  (FastAPI Dashboard, kein NiceGUI)" -ForegroundColor DarkGray
-Write-Host "GitHub:       https://github.com/95guknow/fusion-hero-os (main @ v8)" -ForegroundColor DarkGray
+Write-Host "Substrat: Windows | Meta-Layer: Fusion Hero OS v13" -ForegroundColor DarkCyan
+Write-Host "Standard-GUI: $GuiUrl  (FastAPI Dashboard · frameworks always on)" -ForegroundColor DarkGray
+Write-Host "BIG ALPHA:    $($env:FUSION_BIG_ALPHA_ASSET)" -ForegroundColor DarkGray
+Write-Host "GitHub:       https://github.com/95guknow/fusion-hero-os (main @ v13)" -ForegroundColor DarkGray
 
 Write-Host "[0] Automatische Faktor-Erkennung..." -NoNewline
 try {
-    $factors = & $Python -c "
-import sys, os, json
-sys.path.insert(0, '$Dash')
+    $factorPy = @'
+import sys, json
+from pathlib import Path
+sys.path.insert(0, r"""__DASH__""")
 from app import detect_input_factors, detect_output_factors
-i = detect_input_factors()
-o = detect_output_factors()
-print(json.dumps({'input': i, 'output': o}))
-" 2>$null
+print(json.dumps({"input": detect_input_factors(), "output": detect_output_factors()}))
+'@
+    $factorPy = $factorPy.Replace("__DASH__", $Dash.Replace("\", "/"))
+    $factors = & $Python -c $factorPy 2>$null
     if ($factors) {
         Write-Host " OK (Input/Output Faktoren erkannt)" -ForegroundColor Green
     } else {
         Write-Host " (Fallback)" -ForegroundColor Yellow
     }
 } catch {
-    Write-Host " (nicht verfügbar)" -ForegroundColor Yellow
+    Write-Host " (nicht verfuegbar)" -ForegroundColor Yellow
 }
 
 & (Join-Path $Root "sync_grok_intern.ps1")
 
+# Medienserver: non-fatal (Drive ENOSPC must not block dashboard)
 if ((Test-Path "G:\Meine Ablage") -and ($env:FUSION_SKIP_SYNC -ne "1")) {
-    & (Join-Path $Root "sync_medienserver.ps1")
+    try {
+        & (Join-Path $Root "sync_medienserver.ps1")
+    } catch {
+        Write-Host "Medienserver-Sync note (non-fatal): $_" -ForegroundColor Yellow
+    }
 } else {
     Write-Host "SYNC SKIP (FUSION_SKIP_SYNC=1 oder kein Drive)"
 }
+
+Write-Host "[0b] BIG ALPHA + locks..." -NoNewline
+Sync-BigAlphaAsset | Out-Null
+Clear-DashboardLocks
+Write-Host " OK" -ForegroundColor Green
 
 Stop-FusionProcesses
 Start-Sleep -Seconds 1
@@ -96,9 +163,17 @@ Start-Sleep -Seconds 1
 Start-Process -FilePath (Join-Path $Root "run_backend.bat") -WorkingDirectory $Root -WindowStyle Minimized
 
 Write-Host "[1/3] Dashboard + API starten (:8000)..." -NoNewline
-if (-not (Wait-HttpReady "$GuiUrl/api/health?light=true")) {
-    Write-Host " FEHLER" -ForegroundColor Red
-    exit 1
+# Full boot with frameworks can take >2 min; light health is enough to open GUI
+if (-not (Wait-HttpReady -Url "$GuiUrl/api/health?light=true" -MaxSec 180)) {
+    Write-Host " FEHLER - retry once after lock clear" -ForegroundColor Red
+    Clear-DashboardLocks
+    Stop-FusionProcesses
+    Start-Sleep -Seconds 2
+    Start-Process -FilePath (Join-Path $Root "run_backend.bat") -WorkingDirectory $Root -WindowStyle Minimized
+    if (-not (Wait-HttpReady -Url "$GuiUrl/api/health?light=true" -MaxSec 120)) {
+        Write-Host " FEHLER (Dashboard nicht erreichbar)" -ForegroundColor Red
+        exit 1
+    }
 }
 if (-not $NoGui) {
     if (-not (Wait-HttpReady $GuiUrl)) {
@@ -108,10 +183,21 @@ if (-not $NoGui) {
 }
 Write-Host " OK" -ForegroundColor Green
 
-Write-Host "[2/3] Universal Preload + AutoLoader (ALL)..." -NoNewline
+Write-Host "[2/3] Universal Preload + AutoLoader (ALL frameworks)..." -NoNewline
 try {
     # Explizit: alle Connectoren/Module/Frameworks vor API-Call
-    & $Python -c "import sys; sys.path[:0]=[r'$Root', r'$Root\03_Code', r'$Root\03_Code\core']; from universal_startup_preload import preload_all; r=preload_all(force=True); print(r.get('steps_ok'), r.get('steps_total'), r.get('ok'))" 2>$null
+    # (single-quoted here-string: avoid PowerShell \U unicode in C:\Users)
+    $preloadPy = @'
+import sys
+from pathlib import Path
+root = Path(r"""__ROOT__""")
+sys.path[:0] = [str(root), str(root / "03_Code"), str(root / "03_Code" / "core")]
+from universal_startup_preload import preload_all
+r = preload_all(force=True)
+print(r.get("steps_ok"), r.get("steps_total"), r.get("ok"))
+'@
+    $preloadPy = $preloadPy.Replace("__ROOT__", $Root.Replace("\", "/"))
+    & $Python -c $preloadPy 2>$null
     $alBody = '{"phase":"full","force":true,"sync":true,"attach_meta":true}'
     $alTimeout = 300
     $al = Invoke-RestMethod -Uri "$GuiUrl/api/autoload/run" -Method POST `
@@ -122,7 +208,16 @@ try {
 } catch {
     Write-Host " FALLBACK (preload local only)" -ForegroundColor Yellow
     try {
-        & $Python -c "import sys; sys.path[:0]=[r'$Root\03_Code\core', r'$Root\03_Code']; from universal_startup_preload import preload_all; print(preload_all(force=True).get('ok'))"
+        $preloadPy2 = @'
+import sys
+from pathlib import Path
+root = Path(r"""__ROOT__""")
+sys.path[:0] = [str(root / "03_Code" / "core"), str(root / "03_Code")]
+from universal_startup_preload import preload_all
+print(preload_all(force=True).get("ok"))
+'@
+        $preloadPy2 = $preloadPy2.Replace("__ROOT__", $Root.Replace("\", "/"))
+        & $Python -c $preloadPy2
     } catch {}
 }
 

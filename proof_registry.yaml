@@ -16,9 +16,6 @@ version: 1
 
 claims:
   # ---- Mathematischer Kern (Knoten-Saetze) ---------------------------------
-  # 2026-07-06 auf tatsaechlichen Stand synchronisiert (Honesty-Rewrite der
-  # test_heroic_math_engine.py): frueher als "universell bewiesen" behauptete
-  # Knoten sind auf Fragment-/Modell-Status bzw. OFFEN zurueckgestuft.
   - id: K1-KOMMUTATOR
     statement: "Kommutator [Q,B] = -[B,Q] ist antisymmetrisch (reine lineare Algebra, keine Sonderbehauptung)."
     status: BEWIESEN
@@ -343,7 +340,16 @@ claims:
       - tests/test_mpression_projection.py::test_pythagoras_identity_holds
       - tests/test_mpression_projection.py::test_relative_loss_is_between_zero_and_one
 
-  # ---- Stub-Liquidation + Coworking-KI (Phase 2, 2026-07-24) --------------
+  - id: YIN-YANG-MANIFOLD-STRUKTUR
+    statement: "build_yin_yang_qubo (ascension_os/core/yin_yang_manifold.py) verallgemeinert die zweipolige Devil-vs-Christus-QUBO auf k Polpaare ueber n Checkpoints: Q ist symmetrisch (mit und ohne Kreuzkopplung), die Dimension ist exakt 2*k*n, die Index-Abbildung ist eine Bijektion, und k=1 reproduziert build_devil_christus_qubo BITGENAU (kein Fork der Semantik). Ohne Kreuzkopplung ist Q die blockdiagonale Summe der Einzelpaare. Ist incoherence_penalty > base_bias, so ist jeder Zustand mit beiden Polen eines Paares am selben Checkpoint STRIKT energiereicher als seine kohaerente Reduktion. Die WAHL der drei Paare (q/b, Impression/Expression, Devil/Christus) ist MODELL und die Deutung der Kreuzkopplung ist FRAGMENT — beides ist NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_yin_yang_manifold.py::test_dimension_is_two_k_n
+      - tests/test_yin_yang_manifold.py::test_q_is_symmetric
+      - tests/test_yin_yang_manifold.py::test_single_pair_reproduces_devil_christus_bitwise
+      - tests/test_yin_yang_manifold.py::test_pairs_are_block_diagonal_without_coupling
+      - tests/test_yin_yang_manifold.py::test_incoherent_state_is_strictly_more_expensive
+
   - id: REGISTRY-NO-STUBS
     statement: "Kein ModuleSpec in fusion_hero_os/registry.py DEFAULT_MODULES traegt stub=True; die vormals gestubbten Specs builder_profile/mainframe_laden/skill_creator (Legacy Ghost Hunt 2026-07-16, Recovery-Punkt 6) laden real als Pakete. Aussage ueber die REGISTRY-VERDRAHTUNG, NICHT ueber den Funktionsumfang der dahinterliegenden Module."
     status: BEWIESEN
@@ -360,3 +366,214 @@ claims:
       - tests/test_coworking_workflow.py::test_workflow_contains_no_merge_or_approve_call
       - tests/test_coworking_workflow.py::test_workflow_permissions_are_bounded
       - tests/test_coworking_workflow.py::test_third_party_actions_are_pinned_to_commit_sha
+
+  # ---- Ascension aspirational discharge (Heroik-Base K20, 2026-07-28) -----
+  - id: ASC-HARMONISIERUNG-CONTRACTION
+    statement: "HarmonisierungsCoreModule (ascension_os/core/harmonisierung_module.py): fuer alpha_q, alpha_b in (0,1) ist H = 1/2*(b o q + q o b) eine Banach-Kontraktion auf der K20-Base (BanachContractionSeed); is_contraction=True, final_gap < initial_gap bei ungleichen Partnern, gemeinsamer eindeutiger Fixpunkt; propose_self_modification schlaegt NUR bei is_contraction vor (Proposal-only, kein Self-Apply). Psychologische Deutung von q/b bleibt MODELL, nicht Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_is_contraction_by_construction
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_strictly_reduces_gap_when_states_differ
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_fixpoint_is_unique_k20_instance
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_self_mod_only_when_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_harmonisierung_alpha_out_of_range_rejected
+    notes: "Discharge 2026-07-28: aspirational v9.6-Modul → BEWIESEN ueber K20-Instanz."
+
+  - id: ASC-GEISTERJAGD-NOTHING-OR-FIXPOINT
+    statement: "Geisterjagdmodul (ascension_os/core/geisterjagd_module.py): hunt liefert bei ||A||_2 < 1 konvergenten Manifest-Fixpunkt x*=(I-A)^{-1}c (K20) inkl. geometrischer Fehlerbound; bei ||A||_2 >= 1 ehrlich Nothing (converged=False, manifest=None, steps=0) — keine Fake-Konvergenz. Deutung 'Geister = LLM-Latenz' ist MODELL, nicht Claim."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_converges_under_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_nothing_when_not_contraction
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_geometric_error_bound_via_k20
+      - tests/test_ascension_aspirational_discharge.py::test_geisterjagd_hunt_multiple_all_or_nothing_consistent
+    notes: "Discharge 2026-07-28: Nothing-Bereitschaft ist der scharfe Integritaets-Satz."
+
+  - id: AGENT-STRUCTURE-HONESTY-MAP
+    statement: "docs/DETAILED_AGENT_STRUCTURE_v1.md und docs/dissertation/AGENT_STRUCTURE_AND_IMPACT_v13.md trennen dokumentierte Rollen (Aspirational/Modell) von im Repo existierenden Agent-/Orchestrator-Klassen; der Ehrlichkeitstest listet mindestens BaseAgent, AgentRegistry, DynamicOrchestrationCoreModule und bestaetigt, dass die reinen Rollen-Labels Masterinstanz/ASR-Agent/Manifest-Guardian KEINE class-Definitionen im Code-Tree tragen (Code-Honesty)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_aspirational_discharge.py::test_agent_structure_honesty_map_is_consistent
+    notes: "Wirkung: verhindert, dass Prosa-Agenten als implementiert gelesen werden."
+
+  - id: ASC-SISYPHOS-CLAMP-UND-FORMEL
+    statement: "PersistentSisyphosCycle (ascension_os/core/persistent_sisyphos.py): step() klemmt jede Eingabe nach [0,1]; satisfaction = 1 - 0.7*load exakt; die Historie ist durch max_history begrenzt und verwirft den aeltesten Eintrag zuerst, waehrend cycle_count ALLE Schritte zaehlt; Zustand und Historie ueberleben einen Save/Load-Roundtrip. Dass load und satisfaction reale psychische Groessen messen, ist MODELL und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_load_is_clamped_to_unit_interval
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_follows_the_declared_formula
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_history_is_bounded_and_drops_oldest
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_cycle_count_is_strictly_monotone
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_survives_a_save_load_roundtrip
+
+  - id: ASC-SISYPHOS-REDUNDANZ-BEFUNDE
+    statement: "Zwei Bedingungen im Sisyphos-Code sind nachweislich wirkungslos: (1) der max(0, ...)-Schutz der Zufriedenheit greift nie, da aus load <= 1 bereits satisfaction >= 0.3 folgt; (2) is_sustainable ist aequivalent zu load < 0.85, weil die Bedingung satisfaction > 0.4 erst ab load >= 6/7 (~0.857) bindet und damit von der strikteren Lastschranke impliziert wird. Beide Redundanzen sind per Test FIXIERT, nicht wegoptimiert — damit eine spaetere Parameteraenderung sie nicht unbemerkt zu echten Bedingungen macht. Die Schwelle 0.85 selbst ist gesetzt, nicht gemessen (MODELL)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_satisfaction_floor_is_unreachable
+      - tests/test_ascension_sisyphos_discharge.py::test_sisyphos_sustainability_reduces_to_the_load_bound
+
+  - id: ASC-SIMULATOR-DETERMINISMUS-UND-KONSISTENZ
+    statement: "sisyphos_simulator (ascension_os/evolution/sisyphos_simulator.py): generations > MAX_GENERATIONS und n_runs < 1 werden abgewiesen; gleicher base_seed liefert bitgleiche Ergebnisse (Reproduzierbarkeit), verschiedene Seeds verschiedene; die Zufriedenheitsformel der Simulation stimmt EXAKT mit der des realen PersistentSisyphosCycle ueberein — ohne diese Gleichheit waere jede Simulationsaussage ueber den realen Zyklus wertlos; reversal_count ignoriert Richtungswechsel unterhalb min_delta. Der Hyperthreading-Vorbehalt des Moduls (GIL-Bindung, Parallelitaet primaer organisatorisch) bleibt unberuehrt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_rejects_out_of_range_arguments
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_is_deterministic_for_a_fixed_seed
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_satisfaction_matches_the_persistent_cycle
+      - tests/test_ascension_sisyphos_discharge.py::test_simulator_reversal_count_ignores_micro_noise
+
+  - id: ASC-ENFORCER-DETEKTIERT-NICHT-ERZWINGT
+    statement: "MasterSeedContractionEnforcer (ascension_os/core/coevolutionary_closure.py) DETEKTIERT Hash-Abweichungen und zaehlt sie (enforce liefert False, violation_count steigt, last_violation haelt Kontext/erwartet/tatsaechlich fest); der Vergleich ist unempfindlich gegen Rand-Whitespace und Gross-/Kleinschreibung. Der Enforcer ERZWINGT die Kontraktion NICHT mathematisch — der Klassenname legt das nahe, der Code leistet es nicht (Dissertation 1.3). Genau diese Unterscheidung ist Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_detects_hash_mismatch_and_counts_it
+      - tests/test_ascension_sisyphos_discharge.py::test_enforcer_normalises_case_and_whitespace
+
+  - id: ASC-CONSENT-FAIL-CLOSED
+    statement: "AscensionConsentGate (ascension_os/consent_gate.py): ohne konfiguriertes Gate wird JEDE personenbezogene Operation auf AscensionCore mit ConsentError abgewiesen (fail closed, kein Bypass-Pfad); mit aktivem zweckgebundenem Grant wird sie zugelassen; jede Verweigerung erzeugt ein Audit-Ereignis."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_consent.py::test_personal_data_op_denied_without_gate
+      - tests/test_ascension_consent.py::test_personal_data_op_allowed_with_active_grant
+      - tests/test_ascension_consent.py::test_denial_is_audited
+
+  - id: ASC-HYPERCLUSTER-EHRLICHE-READINESS
+    statement: "AscensionHypercluster (ascension_os/hypercluster.py): der Abhaengigkeitsgraph der deklarierten Ascension-Einheiten ist zyklenfrei; alle vier Lanes (cpu/mem/gpu/qpu) werden von den Default-Einheiten belegt; jede Einheit wird im Report aufgefuehrt; consent-pflichtige Einheiten melden ohne Grant blocked_consent statt operational; ein fehlendes Modul wird als solches gemeldet und NICHT als betriebsbereit ausgegeben."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_hypercluster.py::test_dag_validates_without_cycles
+      - tests/test_ascension_hypercluster.py::test_all_four_lanes_used_by_default_units
+      - tests/test_ascension_hypercluster.py::test_operationalize_reports_every_ascension
+      - tests/test_ascension_hypercluster.py::test_consent_gate_fail_closed_by_default
+      - tests/test_ascension_hypercluster.py::test_probe_is_honest_about_missing_module
+
+  - id: ASC-STAGE9-WERTEBEREICH-UND-NULLSTUFE
+    statement: "Stage9AscensionTracker (ascension_os/core/stage9_tracker.py): der Schaetzwert liegt stets in [0,9]; STAGE_LABELS ist total ueber 0..9 und jedes Snapshot-Label entspricht seinem Wert; jede Schaetzung wird protokolliert und traegt ihre Rechengrundlage. STRUKTURBEFUND: Mit vorhandener Sisyphos-Historie ist Stufe 0 UNERREICHBAR — aus satisfaction >= 0.3 (ASC-SISYPHOS-REDUNDANZ-BEFUNDE) folgt int(avg_satisfaction*6) >= 1. Stufe 0 ist damit exakt der Kein-Daten-Fall, was ihr Label 'Unbestimmt (keine Daten)' zutreffend beschreibt. Dass der Wert eine psychologische Entwicklungsstufe MISST, ist MODELL und ausdruecklich NICHT Teil dieses Claims (Dissertation 4.1)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_stage_estimate_always_within_zero_to_nine
+      - tests/test_ascension_tracker_discharge.py::test_stage_label_mapping_is_total
+      - tests/test_ascension_tracker_discharge.py::test_stage_zero_is_exclusively_the_no_data_case
+      - tests/test_ascension_tracker_discharge.py::test_stage_snapshots_accumulate_and_carry_their_basis
+
+  - id: ASC-OSZILLATION-REPORT-EHRLICH
+    statement: "SisyphosOscillationVisualizer (ascension_os/core/sisyphos_oscillation_visualizer.py): die Sparkline hat genau ein Zeichen je Datenpunkt und nutzt ausschliesslich SPARK_CHARS; eine konstante Reihe fuehrt nicht zur Division durch null (Amplitude 0, keine Umkehrungen); ohne Historie liefert build_report einen leeren, aber gueltigen Report und within_threshold ist None statt einer erfundenen Aussage; within_threshold ist genau reversal_count < reversal_threshold; render_svg erzeugt wohlgeformtes SVG ohne Fremdbibliothek und benennt fehlende Daten ausdruecklich. Die Schwelle 7 stammt aus einer Quelle ohne Einheitsangabe und ist als Richtungswechsel-Anzahl interpretiert (MODELL, so im Modul deklariert)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_sparkline_length_matches_series_and_uses_only_declared_chars
+      - tests/test_ascension_tracker_discharge.py::test_constant_series_does_not_divide_by_zero
+      - tests/test_ascension_tracker_discharge.py::test_empty_history_yields_an_empty_but_valid_report
+      - tests/test_ascension_tracker_discharge.py::test_within_threshold_tracks_the_reversal_bound
+      - tests/test_ascension_tracker_discharge.py::test_svg_render_is_wellformed_and_honest_when_empty
+
+  - id: ASC-PSYCHOLYSE-STATUS-PFLICHT
+    statement: "PsycholyseProtocolLogger (ascension_os/core/psycholyse_protocol_logger.py): log_session weist jeden Status ausserhalb VALID_STATUS_TAGS ('self_reported', 'observed', 'unverified') mit ValueError ab — es gibt KEINEN Default auf 'verifiziert'. Eine Sitzung laesst sich damit nicht ablegen, ohne den Beleggrad ihrer Angaben zu erklaeren. Session-IDs sind luecken- und fortlaufend; Eintraege ueberleben einen Save/Load-Roundtrip und die Nummerierung setzt korrekt fort."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_status_tag_is_mandatory_and_checked
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_session_ids_are_consecutive
+      - tests/test_ascension_tracker_discharge.py::test_psycholyse_entries_survive_a_roundtrip
+
+  - id: ASC-DEVIL-CHRISTUS-MATRIX-STRUKTUR
+    statement: "build_devil_christus_qubo (ascension_os/core/qubo_ascension_optimizer.py): Q ist symmetrisch mit Kantenlaenge 2n; die Inkohaerenz-Strafe sitzt exakt und ausschliesslich auf den Polpaaren (d_i,c_i) je Checkpoint; der Diagonal-Bias ist ueber die Checkpoints monoton — Devil wird nie billiger, Christus nie teurer, beide starten bei 0; die Lock-in-Strafe wirkt ausschliesslich im deklarierten Oszillations-Schwanzbereich. QUBOAscensionOptimizer scheitert ohne qb_qubo kontrolliert mit ImportError statt einen Solver vorzutaeuschen. Dass die Trajektorie reale Devil/Christus-Dynamik abbildet, ist MODELL (so im Modul-Docstring deklariert) und NICHT Teil dieses Claims — geprueft ist ausschliesslich die Matrixkonstruktion, der Solver selbst ist nicht beteiligt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_devil_christus_matrix_is_symmetric_and_correctly_sized
+      - tests/test_ascension_final_discharge.py::test_devil_christus_incoherence_penalty_sits_on_the_pole_pairs
+      - tests/test_ascension_final_discharge.py::test_devil_christus_bias_moves_from_devil_to_christus_over_time
+      - tests/test_ascension_final_discharge.py::test_devil_christus_lock_in_penalty_only_in_the_oscillation_tail
+      - tests/test_ascension_final_discharge.py::test_optimizer_fails_fast_without_the_solver
+
+  - id: ASC-EVOLUTION-FITNESS-BESCHRAENKT
+    statement: "GenerationalEvolutionEngine (ascension_os/evolution/generational_engine.py): evaluate_fitness liegt fuer beliebige, auch absurde Eingaben stets in [0,100]; der Score ist deterministisch fuer denselben Zustand; run_generation nummeriert Generationen fortlaufend ohne Luecken; propose_improvements liefert immer mindestens einen Vorschlag, auch im Bestzustand. Dass die Gewichte (+20 sustainable, +15 ascension_mode, ...) begruendet sind, ist MODELL — sie sind gesetzt, nicht gemessen, und NICHT Teil dieses Claims."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_evolution_fitness_is_bounded_for_arbitrary_input
+      - tests/test_ascension_final_discharge.py::test_evolution_fitness_is_deterministic
+      - tests/test_ascension_final_discharge.py::test_evolution_generations_accumulate_and_are_numbered
+      - tests/test_ascension_final_discharge.py::test_evolution_always_proposes_at_least_one_improvement
+
+  - id: ASC-CORE-CONSENT-VOLLSTAENDIG
+    statement: "AscensionCore (ascension_os/core/ascension_core.py): PER AST-ANALYSE ruft JEDE der sechs personenbezogenen Methoden (step_sisyphos, log_psycholyse_session, start_exposure_session, exposure_respond, end_exposure_session, ask) tatsaechlich self._require_consent(...) auf — keine Ausnahme, keine vergessene Absicherung. Reine Statusmethoden (get_ascension_status, get_sisyphos_state, get_stage9_status) sind NICHT gegated, das Gate ist zweckgebunden statt pauschal. Ohne konfiguriertes Gate schlaegt _require_consent fehl (fail closed). Dies ist der sicherheitsrelevante Abschlussbeleg des Tracks: er bestaetigt keine Rechnung, sondern schliesst eine Luecke aus, die ein Verhaltenstest nicht zwingend bemerkt haette."
+    status: BEWIESEN
+    proofs:
+      - tests/test_ascension_final_discharge.py::test_every_personal_data_method_is_consent_gated
+      - tests/test_ascension_final_discharge.py::test_personal_data_methods_still_exist_under_these_names
+      - tests/test_ascension_final_discharge.py::test_core_without_gate_denies_personal_data_operations
+      - tests/test_ascension_final_discharge.py::test_non_personal_methods_are_not_gated
+    notes: "Discharge Runde 4 (2026-08-01): letzte drei Module des Tracks belegt, Bilanz 17/17. Port nach 95guknow (2026-08-02): Claims+Tests uebernommen; Plattform-VERSION bleibt 15.2.0 (kein Downgrade). Dual-org fusion merge 2026-08-02: senfkorn 14.0.0-Zweig aufgenommen, Kanon bleibt 15.2.0. Core-Suffix '9.10-aspirational' abgeloest."
+
+  # ---- Claude Science Integration (2026-07-29, v13.0.1) --------------------
+  - id: CLAUDE-SCIENCE-AUDITABLE-ARTIFACT
+    statement: "ScientificAuditHorkruxCoreModule (ascension_os/core/scientific_audit_horkrux.py) erzwingt fuer jedes wissenschaftliche Artefakt code-hash + environment-snapshot + plain-language-description + reviewer-score; Propagation nur bei identity_score >= 95 und Stage-A Consent."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL/STUB introduced 2026-07-29 via evolve+push. Discharge requires collectable pytest nodes analogous to ASC-HARMONISIERUNG-CONTRACTION."
+
+  - id: MULTI-AGENT-REVIEWER-PATTERN
+    statement: "MultiAgentResearchLane (ascension_os/core/multi_agent_research_lane.py) stellt eine AscensionHypercluster-Lane 'Science-Coordinator' mit Specialist-Spawn und Actor-Critic-Reviewer bereit; QUBO-gewichtet fuer Token-Efficiency und Brittleness-Minimierung."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL/STUB 2026-07-29. Pending tests + Human-Confirm-Gate before any merge of executable nodes."
+
+  - id: SCIENTIFIC-CONNECTOR-PROTOCOL
+    statement: "ClaudeScienceAdapterSkill definiert ein wiederverwendbares Pattern fuer wissenschaftliche DB-Connectoren (MCP-aehnlich) und Multi-Method-Konvergenz fuer philosophische/mathematische Claims, immer mit HonestStatus-Tag."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-07-29. Mapping von Anthropic Claude Science Workflow auf Core MuAPI/GitHubCoreModule."
+
+
+  # ---- Aera 14: Poly-Mesh / n-dimensionale Mannigfaltigkeit (2026-08-01) ---
+  # Die Major-Nummer 14 ist gesetzt, nicht belegt. Solange hier kein
+  # sammelbarer pytest-Knoten steht, bleibt der Aera-Kern OFFEN — eine
+  # Versionsnummer entlastet nicht vom Nachweis (BEST_VERSION.md).
+  - id: V14-POLYMESH-MANNIGFALTIGKEIT
+    statement: "Die Mesh-Schichten des Systems (Zitterpolymesh-Lanes cpu/mem/gpu/qpu, fraktale Mainframe-Slices L0-L3, dual-org Poly-Mesh-Tips) bilden zusammen eine n-dimensionale Mannigfaltigkeit im mathematischen Sinn: es existieren Karten je Schicht, deren Uebergangsabbildungen auf den Ueberlappungen wohldefiniert und miteinander vertraeglich sind."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01, Aera-Titel v14.0.0. Aktuell ist das eine LESART der vorhandenen Schichten, kein Struktursatz: weder Karten noch Uebergangsabbildungen sind im Code definiert. Discharge verlangt (a) eine explizite Kartendefinition je Schicht, (b) den Nachweis der Vertraeglichkeit auf Ueberlappungen, (c) sammelbare pytest-Knoten dafuer. Bis dahin darf die Formulierung in Docs NUR als Hypothese zitiert werden."
+
+  - id: V14-DIMENSION-IST-GEZAEHLT-NICHT-METAPHORISCH
+    statement: "Das 'n' in n-dimensional ist eine aus der Systemstruktur abgeleitete, nachzaehlbare Groesse (etwa Lane-Anzahl x Fraktal-Tiefe x Org-Tips) und nicht ein rhetorischer Platzhalter fuer 'viele'."
+    status: OFFEN
+    proofs: []
+    notes: "ASPIRATIONAL 2026-08-01. Gegenwaertig ist kein n hergeleitet und keine Zaehlvorschrift implementiert. Dieser Claim ist bewusst separat gefuehrt, weil er die scharfe Ehrlichkeitsfrage der Aera 14 traegt: ohne ihn ist V14-POLYMESH-MANNIGFALTIGKEIT eine Metapher-als-Beweis, was die Designvorlage V3.3 ausdruecklich ausschliesst."
+
+  - id: V14-BCG-UEBER-V13
+    statement: "Aera 14 ist additiv ueber dem v13-Stand (und damit ueber dem v8.3-Funktionskern): kein in v13 operativer Pfad wird durch den Uebergang auf 14.0.0 entfernt oder in seiner Semantik veraendert."
+    status: OFFEN
+    proofs: []
+    notes: "2026-08-01. Plausibel, weil der Uebergang 13->14 bisher ausschliesslich Versionsmanifeste und Dokumentation beruehrt hat — aber ungeprueft: es existiert kein Test, der die BCG zwischen zwei Aeren aktiv absichert. Discharge waere ein Kompatibilitaets-Testlauf gegen die v13-Oberflaeche."
+
+  # ---- Human-Confirm-Gate: Anspruch vs. Durchsetzung (2026-08-01) ---------
+  # Trennung entstanden aus einem realen Gegenfall: der Mechanismus war intakt,
+  # die Durchsetzung fehlte. Beides getrennt zu fuehren verhindert, dass die
+  # eine Eigenschaft wieder als Beleg fuer die andere gelesen wird.
+  - id: GATE-WORKFLOW-KANN-SICH-NICHT-SELBST-FREIGEBEN
+    statement: "Der Human-Confirm-Gate-Workflow (.github/workflows/human-confirm-gate.yml) eroeffnet den Check 'human-confirm/google' als laufend, enthaelt aber keinerlei 'conclusion'/'completed'-Aufruf und kann ihn daher nicht selbst abschliessen; er beansprucht weder administration- noch workflows-Rechte, contents bleibt lesend, checks:write nur zum Oeffnen. Abschliessen kann ausschliesslich der Apps-Script-Endpoint mit separatem, auf Checks eingeschraenktem PAT."
+    status: BEWIESEN
+    proofs:
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_never_closes_its_own_check
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_opens_the_check_as_pending
+      - tests/test_human_confirm_gate_workflow.py::test_gate_workflow_claims_no_excessive_permissions
+      - tests/test_human_confirm_gate_workflow.py::test_gate_doc_does_not_promise_enforcement_unconditionally
+    notes: "Das ist die NOTWENDIGE, nicht die hinreichende Eigenschaft. Sie sagt nichts darueber, ob ein Merge blockiert wird — siehe GATE-BLOCKIERT-MERGE-TATSAECHLICH."
+
+  - id: GATE-BLOCKIERT-MERGE-TATSAECHLICH
+    statement: "Ein Merge nach main/ascension ist ohne GitHub-Review-Approval UND gruenen 'human-confirm/google'-Check nicht moeglich."
+    status: WIDERLEGT
+    proofs:
+      - tests/test_human_confirm_gate_workflow.py::test_gate_doc_does_not_promise_enforcement_unconditionally
+    notes: "GEGENBEISPIEL 2026-08-01: PR 95guknow/fusion-hero-os#105 wurde per API-Merge-Aufruf gemergt, waehrend 'human-confirm/google' pending stand (Secret GOOGLE_CONFIRM_WEBAPP_URL nicht gesetzt) und keine Review-Approval vorlag. Die API meldete mergeable_state 'unstable' statt 'blocked'. Ursache: der Check war nicht in den Required Checks der Branch Protection eingetragen. Die Durchsetzung ist GitHub-Server-State und in pytest grundsaetzlich nicht pruefbar; der verlinkte Test verankert stattdessen, dass die Doku den Vorbehalt fuehrt und nicht wieder zur Garantie umformuliert wird. Behebung: 'human-confirm/google' unter Settings -> Branches -> Required status checks eintragen, dann kann dieser Claim neu bewertet werden."
+
+  # ---- Aera 15 (2026-08-01) -----------------------------------------------
+  # Die Aera traegt bislang KEINEN benannten Inhalt. Es gibt deshalb auch
+  # keinen Aera-Claim — ein Claim ohne Aussage waere schlimmer als keiner.
+  # Was hier steht, ist der eine Befund, den der Sprung selbst erzeugt hat.
+  - id: V15-ZWEI-AEREN-OHNE-RELEASE
+    statement: "Der annotierte Git-Tag auf main ist laut BRANCH_STRATEGY.md die Quelle der Wahrheit fuer die Plattform-Version, und VERSION spiegelt ihn."
+    status: WIDERLEGT
+    proofs:
+      - tests/test_version_tag_honesty.py::test_docs_flag_the_gap_when_version_ran_ahead
+      - tests/test_version_tag_honesty.py::test_branch_strategy_does_not_claim_the_tag_rule_holds_unconditionally
+    notes: "GEGENBEISPIEL 2026-08-01, verschaerft 2026-08-02: VERSION steht inzwischen auf 15.2.0, letzter veroeffentlichter Tag ist unveraendert v13.0.0 — weder v14.0.0 noch v15.0.0 noch v15.2.0 sind auf dem Remote getaggt. Aus zwei Aeren ohne Release sind drei Staende ohne Release geworden; der Abstand waechst mit jedem Sprung, statt zu schrumpfen. Die ID bleibt trotzdem stehen, weil eine Umbenennung die Historie des Befunds verwischen wuerde. Ursache fuer das Ausbleiben ist bekannt und keine Ausrede: v14.0.0 ist lokal annotiert getaggt (auf cfbb751), konnte aber nie gepusht werden, weil der Git-Proxy der Arbeitsumgebung refs/tags/* mit 403 sperrt. Die Landing Page wurde am 2026-08-02 von der nie publizierten v14.0.0 auf die tatsaechlich veroeffentlichte v13.0.0 korrigiert, damit die oeffentliche Flaeche nicht laenger eine Version nennt, die es als Release nicht gibt. Der Tag-Zustand selbst ist Server-State und in pytest nicht pruefbar; die verlinkten Tests verankern deshalb das, was IM Repo pruefbar ist: dass beide Dokumente die Luecke ausdruecklich benennen und die Tag-Regel nicht unbedingt behaupten. Behebung nur von einer Arbeitskopie mit direktem Push-Recht: git tag -a v14.0.0 cfbb751, v15.0.0 auf 93e11e4, v15.2.0 auf main, dann git push origin --tags."

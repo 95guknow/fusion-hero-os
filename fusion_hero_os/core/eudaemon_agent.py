@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Eudaemon Agent — Korridor begehen, jenseits handeln (Meister Hasch Labor).
 
@@ -20,14 +19,17 @@ import hashlib
 import json
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 MEISTER_DISK = Path(r"C:\Dissertation_95guknow\meister_hasch.png")
 MEISTER_REPO = ROOT / "docs" / "dissertation" / "assets" / "meister_hasch.png"
+MEISTER_SEAL = ROOT / "docs" / "dissertation" / "alpha_meister_hasch.seal.json"
+MEISTER_SHA256_ANCHOR = "a032b31b3f7025852528d3ce5e6f64c163345a7b50632d5447cb751213d5f81e"
 SUMMARY = ROOT / "docs" / "security" / "eudaemon_agent.summary.json"
 ALERT = Path.home() / ".fusion" / "alerts" / "eudaemon_agent.json"
 REPORT_MD = ROOT / "docs" / "security" / "EUDAEMON_KORRIDOR_REPORT.md"
@@ -55,18 +57,18 @@ EUDAIMONIA_ENERGY_CEILING = 1e6
 @dataclass
 class CorridorStep:
     path: str
-    status: Optional[int]
+    status: int | None
     bytes: int
     content_type: str
     kind: str  # spa_shell | static_asset | unknown | error
     plane_hint: str  # business | hyperraum | public | asset
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
 def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def _plane_hint(path: str) -> str:
@@ -103,9 +105,9 @@ def walk_corridor(
     base: str = CLOUD_RUN,
     paths: tuple = CORRIDOR_PATHS,
     timeout: float = 12.0,
-) -> List[CorridorStep]:
+) -> list[CorridorStep]:
     """Begehe den öffentlichen Korridor (read-only HTTP GET)."""
-    steps: List[CorridorStep] = []
+    steps: list[CorridorStep] = []
     for path in paths:
         url = base.rstrip("/") + path
         try:
@@ -152,8 +154,13 @@ def walk_corridor(
     return steps
 
 
-def meister_integrity() -> Dict[str, Any]:
-    out: Dict[str, Any] = {"binding": True, "frame": "labor_sandkasten"}
+def meister_integrity() -> dict[str, Any]:
+    """Integrity probe: disk↔repo hash, or intentional withdrawal via seal."""
+    out: dict[str, Any] = {
+        "binding": True,
+        "frame": "labor_sandkasten",
+        "sha256_anchor": MEISTER_SHA256_ANCHOR,
+    }
     for label, p in (("disk", MEISTER_DISK), ("repo", MEISTER_REPO)):
         if p.is_file():
             raw = p.read_bytes()
@@ -166,17 +173,52 @@ def meister_integrity() -> Dict[str, Any]:
             out[label] = {"path": str(p), "missing": True}
     d = out.get("disk", {})
     r = out.get("repo", {})
+
+    withdrawn = False
+    seal_id = None
+    if MEISTER_SEAL.is_file():
+        try:
+            seal = json.loads(MEISTER_SEAL.read_text(encoding="utf-8"))
+            asset = seal.get("asset") or {}
+            withdrawn = asset.get("status") == "withdrawn"
+            seal_id = seal.get("seal_id")
+            anchor = asset.get("sha256")
+            if isinstance(anchor, str) and len(anchor) == 64:
+                out["sha256_anchor"] = anchor
+        except (OSError, json.JSONDecodeError, TypeError):
+            pass
+    out["withdrawn"] = withdrawn
+    out["seal_id"] = seal_id
+    anchor = out["sha256_anchor"]
+
+    if withdrawn:
+        # Public tree must not deliver image bytes. Lab disk may still exist.
+        if not r.get("missing"):
+            out["hash_match"] = False
+            out["mode"] = "withdrawn_but_repo_present"
+            return out
+        lab_ok = d.get("missing") or d.get("sha256") == anchor
+        out["lab_disk_ok"] = lab_ok
+        out["hash_match"] = True  # public integrity: absence is intentional
+        out["mode"] = (
+            "withdrawn_absent"
+            if d.get("missing")
+            else "withdrawn_repo_absent_disk_lab"
+        )
+        return out
+
     out["hash_match"] = (
         not d.get("missing")
         and not r.get("missing")
         and d.get("sha256") == r.get("sha256")
     )
+    out["mode"] = "disk_repo_hash"
     return out
 
 
-def eudaimonia_corridor_check(energy: float = 0.0) -> Dict[str, Any]:
+def eudaimonia_corridor_check(energy: float = 0.0) -> dict[str, Any]:
     """Local EudaimoniaGuard-style corridor: energy must stay inside bounds."""
-    alerts: List[str] = []
+    alerts: list[str] = []
     if energy > EUDAIMONIA_ENERGY_CEILING:
         alerts.append("Divergenter Energiewert außerhalb des eudaimonischen Korridors.")
     return {
@@ -188,11 +230,11 @@ def eudaimonia_corridor_check(energy: float = 0.0) -> Dict[str, Any]:
     }
 
 
-def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
+def act_other_side(*, seed: int = 0) -> dict[str, Any]:
     """
     Jenseits des SPA-Korridors: operator-local eudaemon actions.
     """
-    actions: List[Dict[str, Any]] = []
+    actions: list[dict[str, Any]] = []
 
     # 1) Meister Hasch integrity
     mi = meister_integrity()
@@ -200,12 +242,16 @@ def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
         {
             "id": "meister_integrity",
             "ok": bool(mi.get("hash_match")),
-            "detail": "disk↔repo hash" if mi.get("hash_match") else "hash mismatch or missing",
+            "detail": (
+                f"meister ok mode={mi.get('mode')}"
+                if mi.get("hash_match")
+                else "hash mismatch or missing"
+            ),
         }
     )
 
     # 2) Daemon self-heal field study (if available)
-    heal: Dict[str, Any] = {}
+    heal: dict[str, Any] = {}
     try:
         from fusion_hero_os.core.daemon_self_heal_field_study import run_field_study
 
@@ -286,8 +332,8 @@ def act_other_side(*, seed: int = 0) -> Dict[str, Any]:
     }
 
 
-def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> Dict[str, Any]:
-    corridor: List[CorridorStep] = []
+def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> dict[str, Any]:
+    corridor: list[CorridorStep] = []
     if walk:
         corridor = walk_corridor()
 
@@ -414,7 +460,7 @@ def run_eudaemon(*, walk: bool = True, act: bool = True, seed: int = 0) -> Dict[
     return report
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     import argparse
 
     p = argparse.ArgumentParser(description="Eudaemon: walk corridor, act on other side")

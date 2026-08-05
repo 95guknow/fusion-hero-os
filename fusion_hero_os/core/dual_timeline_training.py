@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Dual + Virtual Timeline Auto-Training — Fusion Hero OS v12.
 
@@ -22,8 +21,10 @@ import re
 import time
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+UTC = timezone.utc  # py3.10+compat (was datetime.UTC)
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any
+from collections.abc import Iterator
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -53,11 +54,11 @@ class FileEvent:
     modality: str
     bytes: int
     sha16: str
-    geltung_hits: Dict[str, int] = field(default_factory=dict)
+    geltung_hits: dict[str, int] = field(default_factory=dict)
     heroic_score: float = 0.0
-    heroic_hits: Dict[str, int] = field(default_factory=dict)
+    heroic_hits: dict[str, int] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
@@ -72,13 +73,13 @@ class TrainSample:
     layer: int
     timeline: str  # "real" | "imaginary" | "dual" | "virtual"
     sample_id: str
-    meta: Dict[str, Any] = field(default_factory=dict)
+    meta: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     path = ROOT / "training_dual_timeline.yaml"
     if not path.exists():
         return {}
@@ -90,7 +91,7 @@ def load_config() -> Dict[str, Any]:
         return {}
 
 
-def _cfg() -> Dict[str, Any]:
+def _cfg() -> dict[str, Any]:
     return load_config()
 
 
@@ -106,7 +107,7 @@ def _sha16(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()[:16]
 
 
-def _layer_for(rel: str, layers: Dict[str, int]) -> int:
+def _layer_for(rel: str, layers: dict[str, int]) -> int:
     rel_n = rel.replace("\\", "/")
     best_k, best_v = "", 2
     for prefix, rank in (layers or {}).items():
@@ -116,8 +117,8 @@ def _layer_for(rel: str, layers: Dict[str, int]) -> int:
     return best_v
 
 
-def _geltung_hits(text: str, boosts: Dict[str, float]) -> Dict[str, int]:
-    hits: Dict[str, int] = {}
+def _geltung_hits(text: str, boosts: dict[str, float]) -> dict[str, int]:
+    hits: dict[str, int] = {}
     for marker in boosts or {}:
         n = len(re.findall(re.escape(marker), text, flags=re.IGNORECASE))
         if n:
@@ -125,7 +126,7 @@ def _geltung_hits(text: str, boosts: Dict[str, float]) -> Dict[str, int]:
     return hits
 
 
-def virtual_timelines_enabled(cfg: Optional[Dict[str, Any]] = None) -> bool:
+def virtual_timelines_enabled(cfg: dict[str, Any] | None = None) -> bool:
     """BIG ALPHA gate: virtual timelines re-allowed (labor sandbox only)."""
     cfg = cfg or _cfg()
     vt = cfg.get("virtual_timelines") or {}
@@ -136,7 +137,7 @@ def virtual_timelines_enabled(cfg: Optional[Dict[str, Any]] = None) -> bool:
     return bool(virtual.get("enabled", False))
 
 
-def heroic_score_for_text(text: str, cfg: Optional[Dict[str, Any]] = None) -> Tuple[float, Dict[str, int]]:
+def heroic_score_for_text(text: str, cfg: dict[str, Any] | None = None) -> tuple[float, dict[str, int]]:
     """Heroic optimization score ∈ [0,1] for operator (SHU/dich) alignment."""
     cfg = cfg or _cfg()
     ho = cfg.get("heroic_optimization") or {}
@@ -146,7 +147,7 @@ def heroic_score_for_text(text: str, cfg: Optional[Dict[str, Any]] = None) -> Tu
     if not markers:
         return 0.0, {}
     snippet = (text or "")[:50000]
-    hits: Dict[str, int] = {}
+    hits: dict[str, int] = {}
     score = 0.0
     for marker, w in markers.items():
         # allow dotted keys as phrase alternatives
@@ -163,11 +164,11 @@ def _tau(
     layer: int,
     ext: str,
     text: str,
-    layers: Dict[str, int],
-    mod_w: Dict[str, float],
-    geltung: Dict[str, float],
+    layers: dict[str, int],
+    mod_w: dict[str, float],
+    geltung: dict[str, float],
     heroic: float = 0.0,
-    cfg: Optional[Dict[str, Any]] = None,
+    cfg: dict[str, Any] | None = None,
 ) -> float:
     """Imaginary structural time τ ∈ [0,1] — parallel to real chronology (Modell)."""
     cfg = cfg or _cfg()
@@ -197,7 +198,7 @@ def _tau(
     return round(max(0.0, min(1.0, tau)), 6)
 
 
-def iter_candidate_files(cfg: Optional[Dict[str, Any]] = None) -> Iterator[Path]:
+def iter_candidate_files(cfg: dict[str, Any] | None = None) -> Iterator[Path]:
     cfg = cfg or _cfg()
     scan = cfg.get("scan") or {}
     roots = scan.get("roots") or ["docs", "fusion_hero_os"]
@@ -228,12 +229,12 @@ def iter_candidate_files(cfg: Optional[Dict[str, Any]] = None) -> Iterator[Path]
             yield p
 
 
-def scan_files(cfg: Optional[Dict[str, Any]] = None) -> List[FileEvent]:
+def scan_files(cfg: dict[str, Any] | None = None) -> list[FileEvent]:
     cfg = cfg or _cfg()
     layers = cfg.get("layers") or {}
     mod_w = cfg.get("modality_weights") or {}
     geltung = cfg.get("geltung_boost") or {}
-    events: List[FileEvent] = []
+    events: list[FileEvent] = []
     for p in iter_candidate_files(cfg):
         try:
             st = p.stat()
@@ -242,7 +243,7 @@ def scan_files(cfg: Optional[Dict[str, Any]] = None) -> List[FileEvent]:
             continue
         rel = str(p.relative_to(ROOT)).replace("\\", "/")
         t_real = float(st.st_mtime)
-        t_iso = datetime.fromtimestamp(t_real, tz=timezone.utc).isoformat()
+        t_iso = datetime.fromtimestamp(t_real, tz=UTC).isoformat()
         layer = _layer_for(rel, layers)
         h_score, h_hits = heroic_score_for_text(text, cfg)
         tau = _tau(rel, layer, p.suffix, text, layers, mod_w, geltung, heroic=h_score, cfg=cfg)
@@ -266,13 +267,13 @@ def scan_files(cfg: Optional[Dict[str, Any]] = None) -> List[FileEvent]:
     return events
 
 
-def _chunk_text(text: str, size: int) -> List[str]:
+def _chunk_text(text: str, size: int) -> list[str]:
     text = re.sub(r"\n{3,}", "\n\n", (text or "").strip())
     if not text:
         return []
     if len(text) <= size:
         return [text]
-    chunks: List[str] = []
+    chunks: list[str] = []
     start = 0
     while start < len(text):
         end = min(start + size, len(text))
@@ -287,7 +288,7 @@ def _chunk_text(text: str, size: int) -> List[str]:
     return chunks
 
 
-def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
+def _samples_from_file(ev: FileEvent, cfg: dict[str, Any]) -> list[TrainSample]:
     train = cfg.get("training") or {}
     chunk = int(train.get("chunk_chars") or 1000)
     max_resp = int(train.get("max_response") or 800)
@@ -303,11 +304,11 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
         return []
 
     title = Path(ev.rel).stem.replace("_", " ")
-    samples: List[TrainSample] = []
+    samples: list[TrainSample] = []
     virtual_n = 0
     # Prefer markdown headers
     sections = re.split(r"\n(?=#{1,3}\s)", text) if ev.modality == ".md" else [text]
-    bodies: List[Tuple[str, str]] = []
+    bodies: list[tuple[str, str]] = []
     if ev.modality == ".md" and len(sections) > 1:
         for sec in sections:
             sec = sec.strip()
@@ -397,10 +398,10 @@ def _samples_from_file(ev: FileEvent, cfg: Dict[str, Any]) -> List[TrainSample]:
     return samples
 
 
-def build_samples(events: Optional[List[FileEvent]] = None, cfg: Optional[Dict[str, Any]] = None) -> List[TrainSample]:
+def build_samples(events: list[FileEvent] | None = None, cfg: dict[str, Any] | None = None) -> list[TrainSample]:
     cfg = cfg or _cfg()
     events = events if events is not None else scan_files(cfg)
-    samples: List[TrainSample] = []
+    samples: list[TrainSample] = []
     for ev in events:
         samples.extend(_samples_from_file(ev, cfg))
     # Sort dual: primary by t, secondary by τ (parallel traversal key)
@@ -408,13 +409,13 @@ def build_samples(events: Optional[List[FileEvent]] = None, cfg: Optional[Dict[s
     return samples
 
 
-def consistency_report(events: List[FileEvent], samples: List[TrainSample], cfg: Dict[str, Any]) -> Dict[str, Any]:
+def consistency_report(events: list[FileEvent], samples: list[TrainSample], cfg: dict[str, Any]) -> dict[str, Any]:
     """Heuristic dual-timeline consistency (Modell)."""
     cons = cfg.get("consistency") or {}
     max_jump = float(cons.get("max_tau_jump_same_day") or 0.45)
     min_roots = int(cons.get("min_coverage_roots") or 3)
 
-    by_day: Dict[str, List[float]] = {}
+    by_day: dict[str, list[float]] = {}
     for e in events:
         day = e.t_iso[:10]
         by_day.setdefault(day, []).append(e.tau)
@@ -457,13 +458,13 @@ def consistency_report(events: List[FileEvent], samples: List[TrainSample], cfg:
         "tau_min": min(tau_vals),
         "tau_max": max(tau_vals),
         "tau_mean": sum(tau_vals) / len(tau_vals),
-        "t_min_iso": datetime.fromtimestamp(min(t_vals), tz=timezone.utc).isoformat() if t_vals else None,
-        "t_max_iso": datetime.fromtimestamp(max(t_vals), tz=timezone.utc).isoformat() if t_vals else None,
+        "t_min_iso": datetime.fromtimestamp(min(t_vals), tz=UTC).isoformat() if t_vals else None,
+        "t_max_iso": datetime.fromtimestamp(max(t_vals), tz=UTC).isoformat() if t_vals else None,
         "note": "τ is structural/model time parallel to real chronology — not a physics proof",
     }
 
 
-def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
+def run_auto_train(*, write: bool = True) -> dict[str, Any]:
     t0 = time.time()
     cfg = _cfg()
     events = scan_files(cfg)
@@ -500,10 +501,10 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
             "sandbox_only": True,
             "realraum_vault_commit": False,
         },
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
     }
 
-    out: Dict[str, Any] = {
+    out: dict[str, Any] = {
         "ok": cons.get("ok", False),
         "files": len(events),
         "samples": len(samples),
@@ -538,7 +539,7 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
         docs_mirror = ROOT / "docs" / "training"
         docs_mirror.mkdir(parents=True, exist_ok=True)
         summary = {
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
             "platform": PLATFORM,
             "cycle": "BIG_ALPHA",
             "files": len(events),
@@ -590,7 +591,7 @@ def run_auto_train(*, write: bool = True) -> Dict[str, Any]:
     return out
 
 
-def status() -> Dict[str, Any]:
+def status() -> dict[str, Any]:
     od = output_dir()
     man = od / "auto_train_manifest.json"
     latest = {}

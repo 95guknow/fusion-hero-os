@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Zentrale Modul-Registry für Fusion Hero OS (v8.4 erweitert).
 
 Der Universal LLM Router ist jetzt als offizielles Core-Modul registriert.
@@ -10,7 +9,7 @@ import importlib
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger("fusion_hero_os.registry")
 
@@ -39,10 +38,10 @@ class ModuleSpec:
 
     status: ModuleStatus = field(default=ModuleStatus.NOT_LOADED, init=False)
     module: Any = field(default=None, init=False, repr=False)
-    error: Optional[str] = field(default=None, init=False)
+    error: str | None = field(default=None, init=False)
 
 
-DEFAULT_MODULES: List[ModuleSpec] = [
+DEFAULT_MODULES: list[ModuleSpec] = [
     ModuleSpec(
         "engine.mainframe", "fusion_hero_os.engine.mainframe",
         "QUBO-Solver (Parallel Simulated Annealing) + Audit-Layer",
@@ -176,8 +175,8 @@ DEFAULT_MODULES: List[ModuleSpec] = [
 class Registry:
     """Lädt und verwaltet die Teilsysteme von Fusion Hero OS."""
 
-    def __init__(self, specs: Optional[List[ModuleSpec]] = None):
-        self._specs: Dict[str, ModuleSpec] = {s.name: s for s in (specs or DEFAULT_MODULES)}
+    def __init__(self, specs: list[ModuleSpec] | None = None):
+        self._specs: dict[str, ModuleSpec] = {s.name: s for s in (specs or DEFAULT_MODULES)}
 
     def load(self, name: str) -> ModuleSpec:
         spec = self._specs[name]
@@ -207,7 +206,7 @@ class Registry:
 
         return spec
 
-    def load_all(self) -> Dict[str, ModuleSpec]:
+    def load_all(self) -> dict[str, ModuleSpec]:
         for name in self._specs:
             self.load(name)
         return dict(self._specs)
@@ -222,13 +221,13 @@ class Registry:
             )
         return spec.module
 
-    def try_get(self, name: str) -> Optional[Any]:
+    def try_get(self, name: str) -> Any | None:
         try:
             return self.get(name)
         except ModuleUnavailableError:
             return None
 
-    def status_report(self) -> List[Dict[str, Any]]:
+    def status_report(self) -> list[dict[str, Any]]:
         return [
             {
                 "name": s.name,
@@ -242,7 +241,7 @@ class Registry:
         ]
 
 
-_default_registry: Optional[Registry] = None
+_default_registry: Registry | None = None
 
 
 def get_registry() -> Registry:
@@ -252,7 +251,7 @@ def get_registry() -> Registry:
     return _default_registry
 
 
-def load_all() -> Dict[str, ModuleSpec]:
+def load_all() -> dict[str, ModuleSpec]:
     return get_registry().load_all()
 
 
@@ -260,7 +259,7 @@ def get(name: str) -> Any:
     return get_registry().get(name)
 
 
-def status_report() -> List[Dict[str, Any]]:
+def status_report() -> list[dict[str, Any]]:
     return get_registry().status_report()
 
 
