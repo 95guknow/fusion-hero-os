@@ -22,9 +22,12 @@
   "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
   "fixpunkt": "Kein Vault. Kein Seal-Theater auf reiner Public Surface. Dieses OMEGA siegelt den Lab-Bogen, nicht MSN-Wetter.",
   "open_after_omega": [
-    "post_url_v20_instagram_permalink",
+    "post_url_v20_permalink_string_optional",
     "academia_book_upload_optional",
     "site_link_optional"
+  ],
+  "closed_after_omega": [
+    "instagram_v20_manual_post_operator_confirmed_2026-08-07"
   ],
   "blocked_remains": [
     "meister_hasch_v12_instagram_copyright"

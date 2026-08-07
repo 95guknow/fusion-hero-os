@@ -1,6 +1,6 @@
 # Instagram publish · v20 · xyz out now · @95guknow
 
-**Status:** **READY TO POST** (operator phone / app)  
+**Status:** **POSTED** (operator manual · 2026-08-07) · permalink optional in `INSTAGRAM_LIVE.md`  
 **Blocked:** Meister Hasch v12 remains **BLOCKED** (copyright) — not this pack  
 **Media:** `95guknow_reel_media_trust.mp4`  
 **SHA256:** `5f0a9d4cf78a6b8a5f0ebc309da5c9a6a897388e33f65d9a2d64d993299c2758`  

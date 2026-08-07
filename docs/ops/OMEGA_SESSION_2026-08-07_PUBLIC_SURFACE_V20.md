@@ -42,7 +42,8 @@
 
 | Item | State at OMEGA |
 |------|----------------|
-| Instagram Reel *live* permalink (`post_url_v20`) | **OPEN** — operator phone post optional after OMEGA |
+| Instagram Reel *manual post* | **DONE** (operator confirmed 2026-08-07) |
+| Instagram Reel *permalink string in repo* | **OPTIONAL** — paste into `INSTAGRAM_LIVE.md` when cited |
 | Graph API auto-post | **N/A** — not in agent stack |
 | Platform VERSION → 20.0.0 | **NOT done** — `v20` is **pub/media tag**, VERSION stays 15.2.0 |
 | Meister Hasch v12 IG | **BLOCKED** (copyright) — remains blocked under OMEGA |
@@ -62,7 +63,7 @@ Offense FORBIDDEN · sandbox · public-safe
 
 ## ALPHA remains open for
 
-1. Paste IG Reel permalink → fill `post_url_v20` in `INSTAGRAM_LIVE.md`  
+1. ~~Manual IG post~~ **DONE** · optional: paste permalink into `post_url_v20`  
 2. Academia upload of book PDF (paste kit ready)  
 3. Optional: site link on `95guknow.github.io`  
 4. Optional: deliberate platform version bump (separate decision)
