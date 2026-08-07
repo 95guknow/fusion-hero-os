@@ -1,0 +1,104 @@
+# Nibelungen + Grimm → Fusion Hero OS map
+# Platform: v13.0.0 · Geltung: Modell (narrative) unless marked Spezifikation
+# Policy: labor_only · public_safe · no_vault_commit · no_external_targets
+
+version: "1.0.0"
+platform: "13.0.0"
+updated: "2026-08-07"
+organs:
+  fable5: "engineering integrity"
+  mythos5: "narrative / Geltung (same base, no dual-review fiction)"
+  hypertarnkappe: "privacy cloak on public surfaces (Spezifikation)"
+  hyperpanzerknacker: "lab-only integrity probe (Spezifikation)"
+  siegfried_moment: "public-safe spear through Drachenhaut"
+  nibelungen: "heroic epic organ"
+  grimm_khm: "folk-tale full catalog organ"
+
+siegfried_moment:
+  definition: "Harter Speer der Hypertarnkappe durchbricht Drachenhaut"
+  public_pole: "https://95guknow.github.io"
+  maps_to:
+    spear: hypertarnkappe_public_expression
+    dragon_skin: opacity_mythos_abwehr
+    blood_hardening: public_integrity_hash_seal_version_gate
+    lindenblatt: code_honesty_consent_human_confirm_gate
+    hoard: vault_masterseed_shards_never_git_public
+  geltung: Modell
+  not:
+    - realraum_violence
+    - exploit_as_dragon_slaying
+    - claim_of_invulnerability
+
+nibelungen_figures:
+  - id: siegfried
+    saga: "Held / Drachentöter / Tarnkappen-Träger"
+    stack: "Held · Heroic Core · public-safe spear carrier"
+  - id: kriemhild
+    saga: "Bindung / Rache-Ökonomie"
+    stack: "Expression membrane · injustice ledger"
+  - id: gunther
+    saga: "König / Hof"
+    stack: "Operator governance · branch/release authority"
+  - id: hagen
+    saga: "Hof-Treue / Speer auf Lindenblatt"
+    stack: "threat model · insider risk (defensive label only)"
+  - id: bruenhild
+    saga: "Probe / Ehre / Wettkampf"
+    stack: "PeerReview · Human-Confirm · probe before bond"
+  - id: alberich
+    saga: "Hort-Hüter"
+    stack: "Vault layer · fail-closed shards"
+  - id: dragon
+    saga: "Hort-Wächter / Drachenhaut"
+    stack: "Opacity before public expression"
+  - id: tarnkappe
+    saga: "Unsichtbarkeit / Stärke"
+    stack: "Hypertarnkappe (Spezifikation)"
+    geltung: Spezifikation
+  - id: hort
+    saga: "Gold / Macht / Fluch"
+    stack: "Private vault — never git-public"
+    geltung: Spezifikation
+  - id: worms
+    saga: "Öffentlicher Hof"
+    stack: "Clearweb · GitHub · 95guknow.github.io"
+
+nibelungen_boegen:
+  - { id: I, name: Initiation, saga: "Drachenkampf", os: "Siegfried-Moment" }
+  - { id: II, name: Werkzeug, saga: "Tarnkappe / Schwert", os: "Hypertarnkappe · Hyperpanzerknacker" }
+  - { id: III, name: Hof, saga: "Worms / Eide", os: "Public mesh · Coworking-KI · Branch strategy" }
+  - { id: IV, name: Riss, saga: "Doppelte Wahrheit", os: "Code Honesty · no dual-review fiction" }
+  - { id: V, name: Speer, saga: "Lindenblatt", os: "Threat model · name the weakness" }
+  - { id: VI, name: OmegaAlpha, saga: "Untergang / Nachhall", os: "BIG OMEGA sealed · BIG ALPHA open" }
+
+grimm_bridges:
+  - motif: verbotene_schwelle
+    khm_examples: [46, 66]  # Fitchers Vogel; approx — see index tags
+    stack: "Consent-Gate · Vault door · fail-closed"
+  - motif: drei_proben
+    khm_examples: [97, 63]
+    stack: "PeerReview waves · staged protocols"
+  - motif: verwandlung_haut
+    khm_examples: [1, 11]
+    stack: "Persona membrane · public vs operator"
+  - motif: wald_irregehen
+    khm_examples: [15, 26]
+    stack: "Threat surface · path hygiene"
+  - motif: list_gegen_uebermacht
+    khm_examples: [20]
+    stack: "Lab probe only · no realraum attack"
+  - motif: dornen_haut_zeit
+    khm_examples: [50]
+    stack: "Drachenhaut analog · seal / time"
+  - motif: erkenung_treue
+    khm_examples: [89]
+    stack: "Identity membrane · Klarname-Kontrakt"
+  - motif: drachenkampf_volksform
+    khm_examples: [60]
+    stack: "Siegfried-Moment echo in folk form"
+
+honesty:
+  - "Saga/Märchen are narrative organs, not code proofs."
+  - "Grimm Vollausgabe in-repo = full KHM catalog + maps; full texts optional local PD corpus."
+  - "No independent dual-review fiction for Fable5/Mythos5."
+  - "Hyperpanzerknacker never means third-party exploit."

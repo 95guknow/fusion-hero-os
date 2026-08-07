@@ -1,0 +1,205 @@
+version: "1.0.0"
+platform: "13.0.0"
+source: "Kinder- und Hausmärchen (KHM) — gemeinfreie Titelschicht; Nummern nach gängiger Zählung"
+honesty: "Titel können je nach Ausgabe leicht variieren; KHM-Nummer ist Schlüssel. Kein Verlags-Volltext-Mirror."
+tales:
+  - { khm: 1, title_de: "Der Froschkönig oder der eiserne Heinrich", tags: [verwandlung, haut, erkennung] }
+  - { khm: 2, title_de: "Katze und Maus in Gesellschaft" }
+  - { khm: 3, title_de: "Marienkind" }
+  - { khm: 4, title_de: "Märchen von einem, der auszog, das Fürchten zu lernen", tags: [probe, initiation] }
+  - { khm: 5, title_de: "Der Wolf und die sieben jungen Geißlein", tags: [threat, list] }
+  - { khm: 6, title_de: "Der treue Johannes", tags: [treue] }
+  - { khm: 7, title_de: "Der gute Handel" }
+  - { khm: 8, title_de: "Der wunderliche Spielmann" }
+  - { khm: 9, title_de: "Die zwölf Brüder" }
+  - { khm: 10, title_de: "Das Lumpengesindel" }
+  - { khm: 11, title_de: "Brüderchen und Schwesterchen", tags: [verwandlung, haut] }
+  - { khm: 12, title_de: "Rapunzel", tags: [schwelle, probe] }
+  - { khm: 13, title_de: "Die drei Männlein im Walde" }
+  - { khm: 14, title_de: "Die drei Spinnerinnen" }
+  - { khm: 15, title_de: "Hänsel und Gretel", tags: [wald, list] }
+  - { khm: 16, title_de: "Die drei Schlangenblätter" }
+  - { khm: 17, title_de: "Die weiße Schlange" }
+  - { khm: 18, title_de: "Strohhalm, Kohle und Bohne" }
+  - { khm: 19, title_de: "Von dem Fischer un syner Fru" }
+  - { khm: 20, title_de: "Das tapfere Schneiderlein", tags: [list, drachenkampf_volksform] }
+  - { khm: 21, title_de: "Aschenputtel", tags: [erkennung, probe] }
+  - { khm: 22, title_de: "Das Rätsel" }
+  - { khm: 23, title_de: "Von dem Mäuschen, Vögelchen und der Bratwurst" }
+  - { khm: 24, title_de: "Frau Holle", tags: [probe, gabe] }
+  - { khm: 25, title_de: "Die sieben Raben" }
+  - { khm: 26, title_de: "Rotkäppchen", tags: [wald, schwelle] }
+  - { khm: 27, title_de: "Die Bremer Stadtmusikanten", tags: [mesh, hilfe] }
+  - { khm: 28, title_de: "Der singende Knochen" }
+  - { khm: 29, title_de: "Der Teufel mit den drei goldenen Haaren", tags: [hort_nah, probe] }
+  - { khm: 30, title_de: "Läuschen und Flöhchen" }
+  - { khm: 31, title_de: "Das Mädchen ohne Hände" }
+  - { khm: 32, title_de: "Der gescheite Hans" }
+  - { khm: 33, title_de: "Die drei Sprachen" }
+  - { khm: 34, title_de: "Die kluge Else" }
+  - { khm: 35, title_de: "Der Schneider im Himmel" }
+  - { khm: 36, title_de: "Tischchen deck dich, Goldesel und Knüppel aus dem Sack", tags: [gabe, list] }
+  - { khm: 37, title_de: "Daumesdick" }
+  - { khm: 38, title_de: "Die Hochzeit der Frau Füchsin" }
+  - { khm: 39, title_de: "Die Wichtelmänner" }
+  - { khm: 40, title_de: "Der Räuberbräutigam", tags: [schwelle, threat] }
+  - { khm: 41, title_de: "Herr Korbes" }
+  - { khm: 42, title_de: "Der Herr Gevatter" }
+  - { khm: 43, title_de: "Frau Trude" }
+  - { khm: 44, title_de: "Der Gevatter Tod" }
+  - { khm: 45, title_de: "Daumerlings Wanderschaft" }
+  - { khm: 46, title_de: "Fitchers Vogel", tags: [verbotene_schwelle, list] }
+  - { khm: 47, title_de: "Von dem Machandelboom" }
+  - { khm: 48, title_de: "Der alte Sultan" }
+  - { khm: 49, title_de: "Die sechs Schwäne" }
+  - { khm: 50, title_de: "Dornröschen", tags: [dornen, haut, zeit, seal] }
+  - { khm: 51, title_de: "Fundevogel" }
+  - { khm: 52, title_de: "König Drosselbart" }
+  - { khm: 53, title_de: "Schneewittchen", tags: [haut, erkennung, threat] }
+  - { khm: 54, title_de: "Der Ranzen, das Hütlein und das Hörnlein" }
+  - { khm: 55, title_de: "Rumpelstilzchen", tags: [name, wahrheit] }
+  - { khm: 56, title_de: "Der Liebste Roland" }
+  - { khm: 57, title_de: "Der goldene Vogel" }
+  - { khm: 58, title_de: "Der Hund und der Sperling" }
+  - { khm: 59, title_de: "Der Frieder und das Katherlieschen" }
+  - { khm: 60, title_de: "Die zwei Brüder", tags: [drachenkampf_volksform] }
+  - { khm: 61, title_de: "Das Bürle" }
+  - { khm: 62, title_de: "Die Bienenkönigin" }
+  - { khm: 63, title_de: "Die drei Federn", tags: [drei_proben] }
+  - { khm: 64, title_de: "Die goldene Gans", tags: [gabe, list] }
+  - { khm: 65, title_de: "Allerleirauh", tags: [haut, verwandlung] }
+  - { khm: 66, title_de: "Häsichenbraut" }
+  - { khm: 67, title_de: "Die zwölf Jäger" }
+  - { khm: 68, title_de: "De Gaudeif un sien Meester" }
+  - { khm: 69, title_de: "Jorinde und Joringel", tags: [verwandlung, wald] }
+  - { khm: 70, title_de: "Die drei Glückskinder" }
+  - { khm: 71, title_de: "Sechse kommen durch die ganze Welt" }
+  - { khm: 72, title_de: "Der Wolf und der Mensch" }
+  - { khm: 73, title_de: "Der Wolf und der Fuchs" }
+  - { khm: 74, title_de: "Der Fuchs und die Frau Gevatterin" }
+  - { khm: 75, title_de: "Der Fuchs und die Katze" }
+  - { khm: 76, title_de: "Die Nelke" }
+  - { khm: 77, title_de: "Das kluge Gretel" }
+  - { khm: 78, title_de: "Der alte Großvater und der Enkel" }
+  - { khm: 79, title_de: "Die Wassernixe" }
+  - { khm: 80, title_de: "Von dem Tode des Hühnchens" }
+  - { khm: 81, title_de: "Bruder Lustig" }
+  - { khm: 82, title_de: "De Spielhansl" }
+  - { khm: 83, title_de: "Hans im Glück" }
+  - { khm: 84, title_de: "Hans heiratet" }
+  - { khm: 85, title_de: "Die Goldkinder" }
+  - { khm: 86, title_de: "Der Fuchs und die Gänse" }
+  - { khm: 87, title_de: "Der Arme und der Reiche" }
+  - { khm: 88, title_de: "Das singende springende Löweneckerchen" }
+  - { khm: 89, title_de: "Die Gänsemagd", tags: [erkennung, treue] }
+  - { khm: 90, title_de: "Der junge Riese" }
+  - { khm: 91, title_de: "Dat Erdmänneken" }
+  - { khm: 92, title_de: "Der König vom goldenen Berg" }
+  - { khm: 93, title_de: "Die Rabe" }
+  - { khm: 94, title_de: "Die kluge Bauerntochter" }
+  - { khm: 95, title_de: "Der alte Hildebrand" }
+  - { khm: 96, title_de: "De drei Vügelkens" }
+  - { khm: 97, title_de: "Das Wasser des Lebens", tags: [drei_proben] }
+  - { khm: 98, title_de: "Doktor Allwissend" }
+  - { khm: 99, title_de: "Der Geist im Glas" }
+  - { khm: 100, title_de: "Des Teufels rußiger Bruder" }
+  - { khm: 101, title_de: "Der Bärenhäuter", tags: [probe, pakt] }
+  - { khm: 102, title_de: "Der Zaunkönig und der Bär" }
+  - { khm: 103, title_de: "Der süße Brei" }
+  - { khm: 104, title_de: "Die klugen Leute" }
+  - { khm: 105, title_de: "Märchen von der Unke" }
+  - { khm: 106, title_de: "Der arme Müllerbursch und das Kätzchen" }
+  - { khm: 107, title_de: "Die beiden Wanderer" }
+  - { khm: 108, title_de: "Hans mein Igel", tags: [verwandlung, haut] }
+  - { khm: 109, title_de: "Das Totenhemdchen" }
+  - { khm: 110, title_de: "Der Jude im Dorn" }
+  - { khm: 111, title_de: "Der gelernte Jäger" }
+  - { khm: 112, title_de: "Der Dreschflegel vom Himmel" }
+  - { khm: 113, title_de: "De beiden Künigeskinner" }
+  - { khm: 114, title_de: "Vom klugen Schneiderlein" }
+  - { khm: 115, title_de: "Die klare Sonne bringt es an den Tag" }
+  - { khm: 116, title_de: "Das blaue Licht" }
+  - { khm: 117, title_de: "Das eigensinnige Kind" }
+  - { khm: 118, title_de: "Die drei Feldscherer" }
+  - { khm: 119, title_de: "Die sieben Schwaben" }
+  - { khm: 120, title_de: "Die drei Handwerksburschen" }
+  - { khm: 121, title_de: "Der Königssohn, der sich vor nichts fürchtet" }
+  - { khm: 122, title_de: "Der Krautesel" }
+  - { khm: 123, title_de: "Die Alte im Wald" }
+  - { khm: 124, title_de: "Die drei Brüder" }
+  - { khm: 125, title_de: "Der Teufel und seine Großmutter" }
+  - { khm: 126, title_de: "Ferenand getrü und Ferenand ungetrü" }
+  - { khm: 127, title_de: "Der Eisenofen" }
+  - { khm: 128, title_de: "Die faule Spinnerin" }
+  - { khm: 129, title_de: "Die vier kunstreichen Brüder" }
+  - { khm: 130, title_de: "Einäuglein, Zweiäuglein und Dreiäuglein" }
+  - { khm: 131, title_de: "Die schöne Katrinelje und Pif Paf Poltrie" }
+  - { khm: 132, title_de: "Der Fuchs und das Pferd" }
+  - { khm: 133, title_de: "Die zertanzten Schuhe", tags: [probe] }
+  - { khm: 134, title_de: "Die sechs Diener" }
+  - { khm: 135, title_de: "Die weiße und die schwarze Braut" }
+  - { khm: 136, title_de: "Der Eisenhans", tags: [initiation, wald, haut] }
+  - { khm: 137, title_de: "De drei schwatten Prinzessinnen" }
+  - { khm: 138, title_de: "Knoist un sine dre Sühne" }
+  - { khm: 139, title_de: "Dat Mäken von Brakel" }
+  - { khm: 140, title_de: "Das Hausgesinde" }
+  - { khm: 141, title_de: "Das Lämmchen und Fischchen" }
+  - { khm: 142, title_de: "Simeliberg" }
+  - { khm: 143, title_de: "Up Reisen gohn" }
+  - { khm: 144, title_de: "Das Eselein" }
+  - { khm: 145, title_de: "Der undankbare Sohn" }
+  - { khm: 146, title_de: "Die Rübe" }
+  - { khm: 147, title_de: "Das junggeglühte Männlein" }
+  - { khm: 148, title_de: "Des Herrn und des Teufels Getier" }
+  - { khm: 149, title_de: "Der Hahnenbalken" }
+  - { khm: 150, title_de: "Die alte Bettelfrau" }
+  - { khm: 151, title_de: "Die drei Faulen" }
+  - { khm: 152, title_de: "Das Hirtenbüblein" }
+  - { khm: 153, title_de: "Die Sterntaler", tags: [gabe] }
+  - { khm: 154, title_de: "Der gestohlene Heller" }
+  - { khm: 155, title_de: "Die Brautschau" }
+  - { khm: 156, title_de: "Die Schlickerlinge" }
+  - { khm: 157, title_de: "Der Sperling und seine vier Kinder" }
+  - { khm: 158, title_de: "Das Märchen vom Schlaraffenland" }
+  - { khm: 159, title_de: "Das dietmarsische Lügenmärchen" }
+  - { khm: 160, title_de: "Rätselmärchen" }
+  - { khm: 161, title_de: "Schneeweißchen und Rosenrot", tags: [treue, threat] }
+  - { khm: 162, title_de: "Der kluge Knecht" }
+  - { khm: 163, title_de: "Der gläserne Sarg" }
+  - { khm: 164, title_de: "Der faule Heinz" }
+  - { khm: 165, title_de: "Der Vogel Greif" }
+  - { khm: 166, title_de: "Der starke Hans" }
+  - { khm: 167, title_de: "Das Bürle im Himmel" }
+  - { khm: 168, title_de: "Die hagere Liese" }
+  - { khm: 169, title_de: "Das Waldhaus" }
+  - { khm: 170, title_de: "Lieb und Leid teilen" }
+  - { khm: 171, title_de: "Der Zaunkönig" }
+  - { khm: 172, title_de: "Die Scholle" }
+  - { khm: 173, title_de: "Rohrdommel und Wiedehopf" }
+  - { khm: 174, title_de: "Die Eule" }
+  - { khm: 175, title_de: "Der Mond" }
+  - { khm: 176, title_de: "Die Lebenszeit" }
+  - { khm: 177, title_de: "Die Boten des Todes" }
+  - { khm: 178, title_de: "Meister Pfriem" }
+  - { khm: 179, title_de: "Die Gänsehirtin am Brunnen" }
+  - { khm: 180, title_de: "Die ungleichen Kinder Evas" }
+  - { khm: 181, title_de: "Die Nixe im Teich" }
+  - { khm: 182, title_de: "Die Geschenke des kleinen Volkes" }
+  - { khm: 183, title_de: "Der Riese und der Schneider" }
+  - { khm: 184, title_de: "Der Nagel" }
+  - { khm: 185, title_de: "Der arme Junge im Grab" }
+  - { khm: 186, title_de: "Die wahre Braut" }
+  - { khm: 187, title_de: "Der Hase und der Igel" }
+  - { khm: 188, title_de: "Spindel, Weberschiffchen und Nadel" }
+  - { khm: 189, title_de: "Der Bauer und der Teufel" }
+  - { khm: 190, title_de: "Die Brosamen auf dem Tisch" }
+  - { khm: 191, title_de: "Das Meerhäschen" }
+  - { khm: 192, title_de: "Der Meisterdieb", tags: [list] }
+  - { khm: 193, title_de: "Der Trommler" }
+  - { khm: 194, title_de: "Die Kornähre" }
+  - { khm: 195, title_de: "Der Grabhügel" }
+  - { khm: 196, title_de: "Oll Rinkrank" }
+  - { khm: 197, title_de: "Die Kristallkugel" }
+  - { khm: 198, title_de: "Jungfrau Maleen" }
+  - { khm: 199, title_de: "Der Stiefel von Büffelleder" }
+  - { khm: 200, title_de: "Der goldene Schlüssel", tags: [schluessel, schwelle] }

@@ -1,0 +1,71 @@
+================================================================================
+ACADEMIA / PUBLIC UPLOAD PASTE — Public Surface Only Kompendium v1.0.0
+Author: Stephan Hagen Urban (=====stephanhagenurban)
+Platform: Fusion Hero OS VERSION 15.2.0
+Date: 2026-08-07
+================================================================================
+
+TITLE (DE)
+Public Surface Only. Kein Vault · Kein Seal · Nur öffentliche Surface.
+Ein additives Kompendium der Heroik (V3.3) im Fusion Hero OS.
+
+TITLE (EN)
+Public Surface Only. No Vault · No Seal · Public Surface Alone.
+An additive Compendium of Heroics (V3.3) within Fusion Hero OS.
+
+AUTHOR
+Stephan Hagen Urban
+
+AFFILIATION / ORG
+Senfkorn UG · 95guknow · Fusion Hero OS (independent / laboratory)
+
+KEYWORDS
+public surface, vault, seal, hypertarnkappe, Siegfried, Nibelungen, Grimm,
+Fusion Hero OS, AscensionOS, autopoiesis, Geltung, V3.3, 95guknow,
+Stephan Hagen Urban, software ethics, clearweb
+
+ABSTRACT (DE) — paste
+
+Dieses Kompendium fixiert eine Geltungstrennung für das Fusion Hero OS:
+„Kein Vault. Kein Seal. Nur öffentliche Surface.“ Public Surface bezeichnet
+Expression und Beobachtung ohne Vault-Commit und ohne Seal-Theater. Seal und
+Vault greifen in anderen Schichten und dürfen nicht rückwirkend auf reine
+Clearweb-Beobachtung (z. B. Wetter/AQI), öffentliche Mesh-Pole
+(95guknow.github.io) oder BIG-ALPHA-Expression geklebt werden.
+
+Struktur nach Kompendium der Heroik V3.3: Synthese, sechs Bögen (Ruf, Schwelle,
+Prüfungen, Abgrund, Wandlung, Rückkehr) und Anhang. Die Bögen verbinden den
+Siegfried-Moment (Speer der Hypertarnkappe / Drachenhaut), die Nibelungen-Saga
+als Heldenepos-Organ, den Grimm-KHM-Vollkatalog als Märchen-Organ sowie das
+BIG-ALPHA-Asset-Ledger (Platform VERSION 15.2.0). Fable5 bleibt Engineering-
+Integrität; Mythos5 bleibt Geltungsorgan derselben Basis (keine Dual-Review-
+Fiktion). Das Werk ist public-safe Labor-Expression — ohne private Vault-Shards.
+
+ABSTRACT (EN) — paste
+
+This compendium fixes a category separation for Fusion Hero OS: “No vault.
+No seal. Public surface only.” Public surface means expression and observation
+without vault commit and without seal theatre. Seal and vault operate on other
+layers and must not be retroactively applied to pure clearweb observation
+(e.g. weather/AQI), public mesh poles (95guknow.github.io), or BIG ALPHA
+expression.
+
+Structure follows Compendium of Heroics V3.3: synthesis, six arcs (call,
+threshold, trials, abyss, transformation, return), and appendix. The arcs join
+the Siegfried moment (spear of the hypertarnkappe / dragon skin), the Nibelungen
+saga as heroic-epic organ, the Grimm KHM full catalogue as folk-tale organ, and
+the BIG ALPHA asset ledger (platform VERSION 15.2.0). Fable5 remains engineering
+integrity; Mythos5 remains the sense organ on the same base (no dual-review
+fiction). The work is public-safe laboratory expression — no private vault shards.
+
+ATTACHMENT
+Public_Surface_Only_Kompendium_v1.0.0.pdf
+
+REPO
+https://github.com/95guknow/fusion-hero-os
+Tag (after release): public-surface-only-v1.0.0
+Public: https://95guknow.github.io
+
+================================================================================
+END PASTE
+================================================================================
