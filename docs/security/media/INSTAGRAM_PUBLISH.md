@@ -1,5 +1,12 @@
 # Instagram publish checklist · @95guknow
 
+## Active pack (2026-08-07): **v20 · xyz out now**
+
+→ **`INSTAGRAM_PUBLISH_v20.md`**  
+→ Caption: `IG_CAPTION_v20_xyz_out_now.txt`  
+→ Reel: `docs/kompendium/public-surface/media/95guknow_reel_media_trust.mp4`  
+→ Release: https://github.com/95guknow/fusion-hero-os/releases/tag/v20  
+
 ## Status: Meister Hasch · v12 — 🛑 BLOCKED (Copyright)
 
 Blocked since 2026-07-20: source image carried a third-party copyright
@@ -7,7 +14,7 @@ notice (found image, not original work). Assets removed from the repo —
 do not publish, even from a local phone copy. Details:
 `docs/security/media/meister_hasch_v12/INSTAGRAM_PUBLISH_MEISTER_HASCH.md`.
 
-## Active pack: Legacy x402
+## Legacy pack: x402
 
 1. Open https://www.instagram.com/95guknow/
 2. New post → select `docs/security/media/IG_x402_block_hack_lab.jpg`
