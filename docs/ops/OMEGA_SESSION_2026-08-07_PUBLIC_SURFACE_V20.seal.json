@@ -27,8 +27,14 @@
     "site_link_optional"
   ],
   "closed_after_omega": [
-    "instagram_v20_manual_post_operator_confirmed_2026-08-07"
+    "instagram_v20_manual_post_held_operator_confirmed_2026-08-07"
   ],
+  "hash_honesty": {
+    "repo_reel_sha256": "5f0a9d4cf78a6b8a5f0ebc309da5c9a6a897388e33f65d9a2d64d993299c2758",
+    "ig_upload_sha256": null,
+    "identity_repo_eq_ig": "NOT_CLAIMED",
+    "note": "Possibly other hashes on Instagram (re-export, compression, different file). Post fact = Held/Operator confirmation only."
+  },
   "blocked_remains": [
     "meister_hasch_v12_instagram_copyright"
   ],

@@ -42,7 +42,8 @@
 
 | Item | State at OMEGA |
 |------|----------------|
-| Instagram Reel *manual post* | **DONE** (operator confirmed 2026-08-07) |
+| Instagram Reel *manual post* | **DONE** — **HELD/Operator-Bestätigung** (2026-08-07) |
+| IG-Bytes == Repo-SHA `5f0a9d4c…` | **NOT CLAIMED** — möglicherweise andere Hashes (Transcode/anderes File) |
 | Instagram Reel *permalink string in repo* | **OPTIONAL** — paste into `INSTAGRAM_LIVE.md` when cited |
 | Graph API auto-post | **N/A** — not in agent stack |
 | Platform VERSION → 20.0.0 | **NOT done** — `v20` is **pub/media tag**, VERSION stays 15.2.0 |

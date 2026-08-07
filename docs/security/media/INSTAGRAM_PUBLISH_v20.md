@@ -1,10 +1,20 @@
 # Instagram publish · v20 · xyz out now · @95guknow
 
-**Status:** **POSTED** (operator manual · 2026-08-07) · permalink optional in `INSTAGRAM_LIVE.md`  
+**Status:** **POSTED** — bestätigt vom **HELD / Operator** (manual · 2026-08-07)  
+**Permalink:** optional in `INSTAGRAM_LIVE.md`  
 **Blocked:** Meister Hasch v12 remains **BLOCKED** (copyright) — not this pack  
-**Media:** `95guknow_reel_media_trust.mp4`  
-**SHA256:** `5f0a9d4cf78a6b8a5f0ebc309da5c9a6a897388e33f65d9a2d64d993299c2758`  
+**Media (repo/release kanon):** `95guknow_reel_media_trust.mp4`  
+**SHA256 (repo only):** `5f0a9d4cf78a6b8a5f0ebc309da5c9a6a897388e33f65d9a2d64d993299c2758`  
+**IG upload hash:** **unknown / possibly different** — not asserted equal to repo  
 **GitHub:** https://github.com/95guknow/fusion-hero-os/releases/tag/v20  
+
+### Geltung
+
+| Claim | Truth |
+|-------|--------|
+| Post auf @95guknow erfolgt | **Ja** — Held/Operator-Bestätigung |
+| IG-Bytes == Repo-SHA256 | **Nicht behauptet** (Re-Export/Kompression/anderes File möglich) |
+| v20 Release-Asset Hash | **Ja** — gilt nur für GitHub/repo paths |  
 
 ## Paths (pick one)
 
