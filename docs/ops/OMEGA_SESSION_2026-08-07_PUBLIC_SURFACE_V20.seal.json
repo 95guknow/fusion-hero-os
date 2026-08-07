@@ -1,0 +1,38 @@
+{
+  "seal_id": "OMEGA-PS-V20-20260807",
+  "kind": "session_omega_public_surface_v20",
+  "cycle": {
+    "BIG_OMEGA": "SEALED",
+    "BIG_ALPHA": "OPEN"
+  },
+  "platform_version_file": "15.2.0",
+  "pub_tags": [
+    "public-surface-only-v1.0.0",
+    "v20"
+  ],
+  "commits": [
+    "bd3e42e7",
+    "28b57ca1",
+    "495d5658"
+  ],
+  "operator": "=====stephanhagenurban",
+  "author_klarname": "Stephan Hagen Urban",
+  "public_safe": true,
+  "sealed": true,
+  "entry_line": "BIG OMEGA sealed. BIG ALPHA open. MasterSeed fixed. Labor only. Build.",
+  "fixpunkt": "Kein Vault. Kein Seal-Theater auf reiner Public Surface. Dieses OMEGA siegelt den Lab-Bogen, nicht MSN-Wetter.",
+  "open_after_omega": [
+    "post_url_v20_instagram_permalink",
+    "academia_book_upload_optional",
+    "site_link_optional"
+  ],
+  "blocked_remains": [
+    "meister_hasch_v12_instagram_copyright"
+  ],
+  "releases": {
+    "book": "https://github.com/95guknow/fusion-hero-os/releases/tag/public-surface-only-v1.0.0",
+    "v20": "https://github.com/95guknow/fusion-hero-os/releases/tag/v20"
+  },
+  "sealed_at": "2026-08-07T00:00:00Z",
+  "geltung": "Spezifikation (tags/paths) · not platform VERSION=20"
+}
