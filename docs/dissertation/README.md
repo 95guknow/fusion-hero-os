@@ -39,13 +39,15 @@ Siehe: [`ONTOLOGIE_DISSERTATION_IST_DAS_OS.md`](ONTOLOGIE_DISSERTATION_IST_DAS_O
 
 `Dissertation_Stephan_Hagen_Urban_Autopoiesis_Autopolitik_Fusion_Hero_OS_v1.1.docx`
 
-### Monolith Ascension-Basis (v14.0.0, Stand 2026-08-02)
+### Monolith Ascension-Basis (v14.0.0 Discharge + Nachziehen 2026-08-08)
 
 Eine **einzige** Datei führt Fundament, Manuskript, Ontologie, Modulwahrheit und
 Quellenapparat der Ascension-Basis zusammen — mit Geltungsregister und
 verifizierten Quellen:
 
 - Quelle: [`DISSERTATION_ASCENSION_MONOLITH_v14.md`](DISSERTATION_ASCENSION_MONOLITH_v14.md)
+- **§6.6** = eingefrorener Discharge-Stichtag (u. a. Claims **54 / 7**, Platform-Zeile **14.0.0**)
+- **§6.6.1** = Nachziehen **2026-08-08**: Root-`VERSION` **15.2.0**, Registry **56 BEWIESEN / 14 OFFEN** — Drift **benannt**, nicht rückwirkend umgeschrieben (Operator: Stephan Hagen Urban / `=====stephanhagenurban`)
 - Satz (Tag): [`dissertation_heroisch.pdf`](dissertation_heroisch.pdf) — 69 Seiten,
   heller Satz für Druck und Einreichung
 - Satz (Nacht): [`dissertation_heroisch_nacht.pdf`](dissertation_heroisch_nacht.pdf) —

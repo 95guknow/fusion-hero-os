@@ -4,8 +4,9 @@
 
 **Autor:** Stephan Hagen Urban
 **Werk:** Fusion Hero OS · Track `ascension_os/`
-**Fassung:** v14.0.0 — **Monolith, Discharge abgeschlossen**
-**Stand:** 2026-08-02 (Discharge-Runde 4, v13.0.0 -> v14.0.0)
+**Fassung:** v14.0.0 — **Monolith, Discharge abgeschlossen** (Discharge-Stand eingefroren in §6.6)  
+**Stand:** 2026-08-08 — Nachziehen: Platform-`VERSION` **15.2.0** · Registry **56 BEWIESEN / 14 OFFEN** (§6.6.1; Drift **benannt**, nicht in §6.6-Tabelle hinein korrigiert)  
+**Autor / Operator:** Stephan Hagen Urban · `=====stephanhagenurban`
 **Designvorlage:** Kompendium der Heroik **V3.3** (`docs/kompendium/V3.3_DESIGNVORLAGE_VERBINDLICH.md`) — zwingend
 **Fundament:** `docs/dissertation/BOTTOM_UP_IMPRESSION_EXPRESSION_v13.md` (Impression ↔ Expression, bottom-up)
 **Gegenstand:** `ascension_os/` — Consent-Gate, AscensionCore, Sisyphos, Stage-9-Tracker, QUBO-Optimizer, Harmonisierung, Geisterjagd, M-pression, Root-Anchor, Hypercluster
@@ -783,13 +784,34 @@ Die Punkte 2 bis 4 sind unmittelbar prüfbar: Es genügt, den jeweiligen Test zu
 | Hypercluster-Plattformbezug | **14.0.0** | `ascension_os/config/hypercluster.yaml`, `hypercluster.py` |
 | Design-Token-Version | 12.0.0 | `design-tokens/tokens.json` |
 | Letzter Commit vor dieser Fassung | `1c15e31`, 2026-07-27 | git |
-| Claims BEWIESEN / OFFEN | **54 / 7** (61 gesamt) | `proof_registry.yaml` |
+| Claims BEWIESEN / OFFEN | **54 / 7** (61 gesamt) | `proof_registry.yaml` *zum Discharge-Stichtag dieser Tabelle* |
+
+> **Lesehinweis (2026-08-08):** Die Zeilen **Plattform-Version 14.0.0** und **54 / 7** sind der **eingefrorene Discharge-Stichtag** (§6.6, 2026-07-28 / Fassung 2026-08-02). Sie werden **nicht** rückwirkend auf 15.2.0 oder 56/14 umgeschrieben. Aktueller Repo-Stand: **§6.6.1**.
 
 Zwei Beobachtungen gehören dazu, weil sie sonst niemandem auffielen.
 
 **Erstens: Versions-Drift, heute teilweise behoben.** Die Hypercluster-Konfiguration führte bis heute `platform_version: 12.0.0`, während die Plattform bereits auf 13.0.0 stand. Das ist mit dieser Fassung nachgezogen. Die Design-Token stehen weiterhin auf 12.0.0; sie werden hier **nicht** verändert, weil sie über `npm run style-dictionary` einen eigenen Build-Pfad haben und eine stille Änderung an einer Build-Quelle gegen die Arbeitsdisziplin des Projekts verstieße. Der Stand ist damit benannt statt versteckt.
 
 **Zweitens: Das Suffix `aspirational` ist ernst zu nehmen.** Der Ascension-Core trägt die Version `9.10-aspirational`. Das ist keine Marketing-Formel, sondern eine zutreffende Selbstauskunft: Der Track enthält Module, deren Anspruch über ihren belegten Stand hinausreicht. Genau diese Differenz vermisst Bogen 4. Ein Werk, das den Track beschreibt, ohne das Suffix zu erwähnen, hätte die wichtigste Angabe der Datei weggelassen.
+
+### 6.6.1 Nachziehen 2026-08-08 — Platform 15.2.0 · Registry-Drift **benannt**
+
+**[Spezifikation]** Dieselbe Regel wie für die Drift 12→13 und 14→15: **Eine Drift wird benannt, nicht rückwirkend in die Stichtags-Tabelle hinein korrigiert.** Wer den aktuellen Kanon sucht, findet ihn in `docs/dissertation/README.md` (Kanon-Bezug) und in der Root-Datei `VERSION`.
+
+| Größe | Wert am 2026-08-08 | Quelle |
+|-------|--------------------|--------|
+| Plattform-Version (Root) | **15.2.0** | `VERSION` |
+| Monolith-Discharge-Fassung | **v14.0.0** (Suffix-Ablösung historisch in §6.6) | dieser Dateiname / §6.6 |
+| Claims BEWIESEN / OFFEN (Registry **jetzt**) | **56 / 14** (70 status-Zeilen) | `proof_registry.yaml` (gezählt 2026-08-08) |
+| Claims BEWIESEN / OFFEN (Stichtag §6.6) | **54 / 7** (61) | eingefroren oben — **nicht** überschreiben |
+| Pub-Tags (parallel, kein Platform-Bump) | `public-surface-only-v1.0.0`, `v20`, `OMEGA-PS-V20-20260807` | GitHub releases / tags |
+| Operator | Stephan Hagen Urban · `=====stephanhagenurban` | Klarname-Kontrakt |
+
+**Was die Drift bedeutet.** Zwischen Discharge-Stichtag und diesem Nachziehen ist die globale `proof_registry.yaml` gewachsen (mehr BEWIESEN, mehr OFFEN). Das ist **kein** stiller Beweis, dass §6.6 gelogen hätte — und **kein** Anlass, 54/7 in 56/14 umzufälschen. Es ist Anlass, **zwei Zahlenwelten** nebeneinander zu führen: *Stichtag Discharge* vs. *heutige Registry*.
+
+**Was sie nicht bedeutet.** Tag `v20` / Pub-Reel / Public-Surface-Kompendium sind **Public-Surface- und Media-Linie**, nicht die Behauptung „Platform VERSION = 20.0.0“. Root-`VERSION` bleibt **15.2.0**, bis ein eigener Platform-Bump das ändert.
+
+**Human-Confirm.** Gate bleibt auf dem Menschen. Dieses Nachziehen ist Text-Ehrlichkeit im Monolith, kein Merge-Bypass.
 
 #### Die Entladung der Aspiration — Zwischenstand
 
@@ -1376,7 +1398,7 @@ Keine dieser Lücken ist ein Einwand gegen die Sätze 1–6. Alle vier sind Einw
 
 **Schlussvermerk**
 
-Dieser Monolith führt Fundament, Manuskript, Ontologie, Modulwahrheit und Quellenapparat der Ascension-Basis in einem einzigen prüfbaren Dokument. Sein Anspruch ist nicht, mehr zu behaupten als frühere Fassungen. Sein Anspruch ist, **genau** so viel zu behaupten, wie er tragen kann — und den Rest sichtbar als das stehen zu lassen, was er ist. Mit v14.0.0 ist diese Regel zum ersten Mal an ihre eigene Grenze gelaufen: Sechzehn der siebzehn Ascension-Track-Module tragen einen Beleg; das siebzehnte trägt keinen, weil kein Beleg möglich ist (3.6, 6.6) — und genau das steht hier, statt verschwiegen zu werden.
+Dieser Monolith führt Fundament, Manuskript, Ontologie, Modulwahrheit und Quellenapparat der Ascension-Basis in einem einzigen prüfbaren Dokument. Sein Anspruch ist nicht, mehr zu behaupten als frühere Fassungen. Sein Anspruch ist, **genau** so viel zu behaupten, wie er tragen kann — und den Rest sichtbar als das stehen zu lassen, was er ist. Mit v14.0.0 ist diese Regel zum ersten Mal an ihre eigene Grenze gelaufen: Sechzehn der siebzehn Ascension-Track-Module tragen einen Beleg; das siebzehnte trägt keinen, weil kein Beleg möglich ist (3.6, 6.6) — und genau das steht hier, statt verschwiegen zu werden. Mit dem Nachziehen **2026-08-08** (§6.6.1) gilt dieselbe Disziplin für die nächste Drift: Platform **15.2.0**, Registry **56 / 14** — **benannt**, nicht in die Discharge-Stichtags-Tabelle von §6.6 hinein korrigiert.
 
 **Designvorlage:** V3.3, angewandt und in Anhang F selbst geprüft
 **Raster:** alle vier — Heldenreise (Bögen 1–6) · fünf Schulen (3.7–3.12) · sieben Gesetze (Anhang H) · Brille \(q \circ b\) und Nothing-Bereitschaft (durchgehend)
