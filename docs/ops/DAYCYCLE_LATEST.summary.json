@@ -1,10 +1,9 @@
 {
   "kind": "daycycle_run_due",
-  "generated_at": "2026-08-10T07:59:06.217770+00:00",
+  "generated_at": "2026-08-10T08:00:01.582998+00:00",
   "platform": "13.0.0",
   "steps": [
-    "minute",
-    "hourly"
+    "minute"
   ],
   "ok": true
 }
