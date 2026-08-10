@@ -1,14 +1,14 @@
 {
   "kind": "HORKRUX_BOTTOM_UP",
-  "generated_at": "2026-07-21T10:53:33.827333+00:00",
+  "generated_at": "2026-08-05T16:14:21.314572+00:00",
   "platform_target": "12.1.0",
-  "platform_version_file": "12.1.0",
-  "kanon_tip": "a2ad8d1",
-  "duration_sec": 15.73,
+  "platform_version_file": "15.2.0",
+  "kanon_tip": "3897358b",
+  "duration_sec": 17.84,
   "ok": true,
   "counts": {
-    "total": 24,
-    "ok": 19,
+    "total": 26,
+    "ok": 21,
     "skipped": 5,
     "fail": 0
   },
@@ -21,7 +21,7 @@
       "layer": "L0_state",
       "ok": true,
       "exists": true,
-      "file_count": 11,
+      "file_count": 350,
       "skipped": false
     },
     {
@@ -32,7 +32,7 @@
       "layer": "L0_state",
       "ok": true,
       "exists": true,
-      "file_count": 26,
+      "file_count": 36,
       "skipped": false
     },
     {
@@ -65,7 +65,7 @@
       "layer": "L0_state",
       "ok": true,
       "exists": true,
-      "file_count": 21,
+      "file_count": 20,
       "skipped": false
     },
     {
@@ -77,12 +77,12 @@
       "layer": "L1_instances",
       "stashed": true,
       "ok": true,
-      "tip": "a2ad8d1",
-      "version": "12.1.0",
+      "tip": "3897358b",
+      "version": "15.2.0",
       "was_dirty": true,
       "stderr": "",
       "matches_kanon_tip": true,
-      "version_ok": true
+      "version_ok": false
     },
     {
       "id": "daily_plans_private",
@@ -91,10 +91,11 @@
       "branch": "main",
       "role": "mem_private",
       "layer": "L1_instances",
+      "stashed": true,
       "ok": true,
-      "tip": "b9ebcf8",
+      "tip": "9e8330c",
       "version": null,
-      "was_dirty": false,
+      "was_dirty": true,
       "stderr": "",
       "matches_kanon_tip": false,
       "version_ok": null
@@ -162,7 +163,7 @@
       "role": "public_pages",
       "layer": "L1_instances",
       "ok": true,
-      "tip": "28ead85",
+      "tip": "649495e",
       "version": null,
       "was_dirty": false,
       "stderr": "",
@@ -177,7 +178,7 @@
       "role": "worktree",
       "layer": "L2_worktrees",
       "ok": true,
-      "tip": "7d406cf",
+      "tip": "7d406cf9",
       "version": "12.0.0",
       "was_dirty": false,
       "stderr": "",
@@ -246,8 +247,8 @@
       "has_skill_md": true,
       "has_github_sync": true,
       "github_sync_platform": null,
-      "skill_mentions_v12": true,
-      "target_platform": "12.1.0"
+      "skill_mentions_v12": false,
+      "target_platform": "15.2.0"
     },
     {
       "id": "skill_alte_frau",
@@ -259,8 +260,8 @@
       "has_skill_md": true,
       "has_github_sync": false,
       "github_sync_platform": null,
-      "skill_mentions_v12": true,
-      "target_platform": "12.1.0"
+      "skill_mentions_v12": false,
+      "target_platform": "15.2.0"
     },
     {
       "id": "skill_heroic_core",
@@ -272,8 +273,8 @@
       "has_skill_md": true,
       "has_github_sync": false,
       "github_sync_platform": null,
-      "skill_mentions_v12": true,
-      "target_platform": "12.1.0"
+      "skill_mentions_v12": false,
+      "target_platform": "15.2.0"
     },
     {
       "id": "skill_mainframe_laden",
@@ -285,8 +286,8 @@
       "has_skill_md": true,
       "has_github_sync": false,
       "github_sync_platform": null,
-      "skill_mentions_v12": true,
-      "target_platform": "12.1.0"
+      "skill_mentions_v12": false,
+      "target_platform": "15.2.0"
     },
     {
       "id": "skill_fusion_hero_bundled",
@@ -298,8 +299,8 @@
       "has_skill_md": true,
       "has_github_sync": false,
       "github_sync_platform": null,
-      "skill_mentions_v12": true,
-      "target_platform": "12.1.0"
+      "skill_mentions_v12": false,
+      "target_platform": "15.2.0"
     },
     {
       "id": "github_origin_main",
@@ -309,8 +310,8 @@
       "role": "public_kanon",
       "layer": "L4_remotes",
       "ok": true,
-      "sha": "a2ad8d1a6f94487214529902088610fe7383a12f",
-      "short": "a2ad8d1",
+      "sha": "3897358b2385377b52d900b1bb0490a012d56a9a",
+      "short": "3897358",
       "matches_local_kanon": true,
       "stderr": ""
     },
@@ -322,9 +323,9 @@
       "role": "dual_org",
       "layer": "L4_remotes",
       "ok": true,
-      "sha": "a2ad8d1a6f94487214529902088610fe7383a12f",
-      "short": "a2ad8d1",
-      "matches_local_kanon": true,
+      "sha": "3b4d8384934143d95272a9e2ca825653404e6345",
+      "short": "3b4d838",
+      "matches_local_kanon": false,
       "stderr": ""
     },
     {
@@ -341,6 +342,26 @@
       "stderr": ""
     },
     {
+      "id": "tag_v13_0_0",
+      "kind": "remote_check",
+      "remote": "origin",
+      "ref": "refs/tags/v13.0.0",
+      "role": "release_tag",
+      "layer": "L4_remotes",
+      "ok": true,
+      "sha": "695c64c6c54e2641de0963821714a651dc425ecf",
+      "short": "695c64c",
+      "matches_local_kanon": null,
+      "stderr": ""
+    },
+    {
+      "id": "sync_grok_intern",
+      "kind": "script",
+      "layer": "L3_skills_horkruxe",
+      "ok": true,
+      "stdout_tail": "ace: C:\\Users\\Admin\\.config\\kilo\\fusion-hero-os.code-workspace\n  Version:   Fusion Hero OS v15.2.0 (platform 15.2.0)\n  Inherits:  v8.3 functional stack + Stage-A/B + v12 daycycle (BCG into v13)\n  Aspirat.:  v9.10 AscensionOS track (loadable)\n  Grok CLI:  v0.2.118\n  Manifest:  C:\\Users\\Admin\\.grok\\skills\\fusion-hero-os\\GITHUB_SYNC.json\n  OK:        v15.2.0 propagated to Grok skill + Kilo workspace\n"
+    },
+    {
       "id": "daycycle_fanout",
       "kind": "daycycle",
       "layer": "L1_instances",
@@ -350,7 +371,7 @@
           "id": "primary",
           "ok": true,
           "branch": "main",
-          "tip": "a2ad8d1",
+          "tip": "3897358b",
           "stderr": "",
           "role": "kanon"
         },
@@ -358,7 +379,7 @@
           "id": "daily_plans",
           "ok": true,
           "branch": "main",
-          "tip": "b9ebcf8",
+          "tip": "9e8330c",
           "stderr": "",
           "role": "mem_private"
         },
@@ -366,7 +387,7 @@
           "id": "wt_port_42069",
           "ok": true,
           "branch": "port/42069",
-          "tip": "7d406cf",
+          "tip": "7d406cf9",
           "stderr": "",
           "role": "satellite"
         }
@@ -377,8 +398,8 @@
     "ok": true,
     "store": "C:\\Users\\Admin\\.fusion\\horcrux\\bottom_up_v12",
     "result": {
-      "generation": 3,
-      "sha256": "d83ecf30f57bbb72e3c8593affb4ab02e471b36cf118e2d3f50ca33fb352c263",
+      "generation": 5,
+      "sha256": "66f3c5cc423e2db5f29cf0474c21317a3540573fc4391b9ccd3ce6beaaeea589",
       "shards": [
         "horcrux-json-c0.hx",
         "horcrux-csv-c0.hx",

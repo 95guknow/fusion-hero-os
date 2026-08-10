@@ -1,15 +1,15 @@
 # OS → Poly-Mesh Port Report
 
-**UTC:** 2026-07-16T00:45:55.185007+00:00
+**UTC:** 2026-08-10T07:50:35.686250+00:00
 **Platform:** Fusion Hero OS v10.0.0
-**Banner:** OS PORTED TO POLY-MESH | self=100.64.104.58 | tiers=L0_edge,L1_mainframe,L2_mesh_anchor,L3_cluster | organs=10
+**Banner:** OS PORTED TO POLY-MESH | self=100.64.104.58 | tiers=L1_mainframe,L2_mesh_anchor | organs=10
 
 ## Self
 
 - hostname: `desktop-kpki9e4`
 - mesh_ip: `100.64.104.58`
-- tiers_online: `L0_edge, L1_mainframe, L2_mesh_anchor, L3_cluster`
-- peers: `4`
+- tiers_online: `L1_mainframe, L2_mesh_anchor`
+- peers: `6`
 
 ## Organs
 
@@ -22,7 +22,7 @@ Count: **10**
 
 ## Steps
 
-- mesh_serve: `{"ok": true, "skipped": true}`
+- mesh_serve: `{"ok": true, "cmd": "C:\\Program Files\\Tailscale\\tailscale.exe serve --bg 8000", "stdout": "Available within your tailnet:\n\nhttps://desktop-kpki9e4.tail391adb.ts.net/\n|-- proxy http://127.0.0.1:8`
 - coordinator: ok=`True`
 - headset_mesh_only: `{'ok': True, 'mesh_only': True}`
 

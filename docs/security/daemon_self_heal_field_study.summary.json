@@ -1,6 +1,6 @@
 {
   "kind": "daemon_self_heal_field_study",
-  "generated_at": "2026-07-21T11:13:45.997571+00:00",
+  "generated_at": "2026-08-09T20:46:26.977763+00:00",
   "policy": {
     "sandbox_only": true,
     "no_external_targets": true,

@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-19T10:19:47.694995+00:00",
+  "generated_at": "2026-08-10T07:50:31.187481+00:00",
   "gke_live": false,
   "counts": {
     "total": 16,
     "cluster": 0,
-    "local_l1": 13,
+    "local_l1": 11,
     "blocked": 3
   },
   "cluster_ids": [],

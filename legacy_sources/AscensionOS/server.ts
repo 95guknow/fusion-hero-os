@@ -11,6 +11,132 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/** Env truthy helper (1/true/yes/on). */
+function envFlag(name: string, defaultValue = false): boolean {
+  const raw = process.env[name];
+  if (raw == null || raw === '') return defaultValue;
+  return /^(1|true|yes|on)$/i.test(String(raw).trim());
+}
+
+/** Comma-separated env list → trimmed non-empty unique models. */
+function envModelList(name: string, fallback: string[]): string[] {
+  const raw = process.env[name];
+  const parts = (raw && raw.trim() ? raw.split(',') : fallback)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return [...new Set(parts)];
+}
+
+/**
+ * Model matrix for AscensionOS / Fusionista Lab.
+ * Free-tier keys often return limit:0 for gemini-*-pro* — prefer flash + fallbacks.
+ *
+ * Env:
+ *   GEMINI_PREFER_FREE_TIER=1     — skip Pro first; use flash as primary (recommended free tier)
+ *   GEMINI_MODEL_PRO              — primary high-reasoning model
+ *   GEMINI_MODEL_FLASH            — free-tier / fast model
+ *   GEMINI_MODEL_LITE             — low-latency model
+ *   GEMINI_MODEL_REASONING_CHAIN  — ordered fallbacks after primary (comma-separated)
+ *   GEMINI_ENABLE_THINKING=1      — attach ThinkingLevel.HIGH on pro-like models only
+ */
+const PREFER_FREE_TIER = envFlag('GEMINI_PREFER_FREE_TIER', true);
+const ENABLE_THINKING = envFlag('GEMINI_ENABLE_THINKING', true);
+
+const MODEL_PRO = process.env.GEMINI_MODEL_PRO || 'gemini-3.1-pro-preview';
+const MODEL_FLASH =
+  process.env.GEMINI_MODEL_FLASH ||
+  process.env.FUSION_GEMINI_MODEL ||
+  'gemini-2.5-flash';
+const MODEL_LITE = process.env.GEMINI_MODEL_LITE || 'gemini-2.0-flash-lite';
+const MODEL_IMAGE = process.env.GEMINI_MODEL_IMAGE || 'gemini-3.1-flash-image';
+const MODEL_TTS = process.env.GEMINI_MODEL_TTS || 'gemini-3.1-flash-tts-preview';
+
+const REASONING_PRIMARY = PREFER_FREE_TIER ? MODEL_FLASH : MODEL_PRO;
+const REASONING_CHAIN = envModelList(
+  'GEMINI_MODEL_REASONING_CHAIN',
+  PREFER_FREE_TIER
+    ? [MODEL_FLASH, 'gemini-2.0-flash', MODEL_LITE, MODEL_PRO]
+    : [MODEL_PRO, MODEL_FLASH, 'gemini-2.0-flash', MODEL_LITE]
+);
+
+function isProLikeModel(model: string): boolean {
+  return /pro/i.test(model) && !/flash/i.test(model);
+}
+
+function isQuotaOrRateLimitError(err: any): boolean {
+  const msg = String(err?.message || err || '');
+  const status = err?.status ?? err?.code ?? err?.error?.code;
+  return (
+    status === 429 ||
+    status === 'RESOURCE_EXHAUSTED' ||
+    /RESOURCE_EXHAUSTED|exceeded your current quota|Quota exceeded|rate.?limit|limit:\s*0/i.test(msg)
+  );
+}
+
+function formatGeminiError(err: any): string {
+  const msg = String(err?.message || err || 'Unknown Gemini error');
+  if (isQuotaOrRateLimitError(err)) {
+    return (
+      'Gemini quota exhausted (429 RESOURCE_EXHAUSTED). ' +
+      'Free-tier Pro models often report limit:0 — set GEMINI_PREFER_FREE_TIER=1 (default), ' +
+      'use GEMINI_MODEL_FLASH=gemini-2.5-flash / gemini-2.0-flash, or enable billing on the API key project. ' +
+      'Details: ' + msg.slice(0, 500)
+    );
+  }
+  return msg;
+}
+
+type GenerateArgs = {
+  contents: any;
+  config?: Record<string, any>;
+};
+
+/**
+ * Try models in order; on 429/quota, drop thinking and continue chain.
+ * Returns { response, modelUsed }.
+ */
+async function generateWithFallback(
+  ai: GoogleGenAI,
+  models: string[],
+  args: GenerateArgs,
+  label = 'gemini'
+): Promise<{ response: any; modelUsed: string }> {
+  const chain = [...new Set(models.filter(Boolean))];
+  if (!chain.length) {
+    throw new Error('No Gemini models configured for generateWithFallback');
+  }
+
+  let lastError: any;
+  for (const model of chain) {
+    const config: Record<string, any> = { ...(args.config || {}) };
+
+    // ThinkingLevel.HIGH is Pro-oriented; strip on flash/lite to avoid hard failures.
+    if (config.thinkingConfig && !(ENABLE_THINKING && isProLikeModel(model))) {
+      delete config.thinkingConfig;
+    }
+
+    try {
+      console.log(`[${label}] generateContent model=${model}`);
+      const response = await ai.models.generateContent({
+        model,
+        contents: args.contents,
+        config,
+      });
+      return { response, modelUsed: model };
+    } catch (err: any) {
+      lastError = err;
+      if (isQuotaOrRateLimitError(err)) {
+        console.warn(`[${label}] quota/rate-limit on ${model}, trying next fallback…`);
+        continue;
+      }
+      console.error(`[${label}] non-quota error on ${model}:`, err?.message || err);
+      throw err;
+    }
+  }
+
+  throw new Error(formatGeminiError(lastError));
+}
+
 async function startServer() {
   const app = express();
   const port = 3000;
@@ -19,7 +145,7 @@ async function startServer() {
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Initialize Gemini Client
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   const ai = new GoogleGenAI({
     apiKey: apiKey || '',
     httpOptions: {
@@ -31,10 +157,25 @@ async function startServer() {
 
   // Helper to verify API Key
   const checkApiKey = () => {
-    if (!process.env.GEMINI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
       throw new Error('GEMINI_API_KEY is not configured. Please add your key in the Secrets panel in AI Studio.');
     }
   };
+
+  // Telemetry: active model matrix (no secrets)
+  app.get('/api/gemini/models', (_req, res) => {
+    res.json({
+      preferFreeTier: PREFER_FREE_TIER,
+      enableThinking: ENABLE_THINKING,
+      reasoningPrimary: REASONING_PRIMARY,
+      reasoningChain: REASONING_CHAIN,
+      flash: MODEL_FLASH,
+      lite: MODEL_LITE,
+      pro: MODEL_PRO,
+      image: MODEL_IMAGE,
+      tts: MODEL_TTS,
+    });
+  });
 
   // Endpoint: High-Thinking Recipe Fusion (FusionIsta)
   app.post('/api/gemini/recipe', async (req, res) => {
@@ -62,23 +203,29 @@ Provide the response in structured JSON format with the following schema:
   "chefSecrets": "A pro tip explaining why this chemical/culinary combination actually works."
 }`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
-        contents: prompt,
-        config: {
-          systemInstruction: 'You are FusionIsta, a molecular gastronomy chef who specializes in creating physical, delicious, and ground-breaking fusion recipes. You always answer in strict, valid JSON matching the requested schema.',
-          responseMimeType: 'application/json',
-          thinkingConfig: {
-            thinkingLevel: ThinkingLevel.HIGH,
+      const { response, modelUsed } = await generateWithFallback(
+        ai,
+        REASONING_CHAIN,
+        {
+          contents: prompt,
+          config: {
+            systemInstruction:
+              'You are FusionIsta, a molecular gastronomy chef who specializes in creating physical, delicious, and ground-breaking fusion recipes. You always answer in strict, valid JSON matching the requested schema.',
+            responseMimeType: 'application/json',
+            thinkingConfig: {
+              thinkingLevel: ThinkingLevel.HIGH,
+            },
           },
         },
-      });
+        'recipe'
+      );
 
       const responseText = response.text || '{}';
-      res.json(JSON.parse(responseText.trim()));
+      const recipe = JSON.parse(responseText.trim());
+      res.json({ ...recipe, _meta: { modelUsed, preferFreeTier: PREFER_FREE_TIER } });
     } catch (error: any) {
       console.error('Recipe Fusion Error:', error);
-      res.status(500).json({ error: error.message || 'An error occurred during recipe generation.' });
+      res.status(500).json({ error: formatGeminiError(error) || 'An error occurred during recipe generation.' });
     }
   });
 
@@ -94,21 +241,25 @@ You help the user solve their most complex logical, technical, or creative queri
 Since you are in Thinking Mode (HIGH), you explain your detailed line of reasoning and then present a brilliant, clear, structured solution.
 Keep your final output highly technical, clean, and styled in neat markdown with terminal-like telemetry references where appropriate.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
-        contents: message,
-        config: {
-          systemInstruction: systemInstruction,
-          thinkingConfig: {
-            thinkingLevel: ThinkingLevel.HIGH,
+      const { response, modelUsed } = await generateWithFallback(
+        ai,
+        REASONING_CHAIN,
+        {
+          contents: message,
+          config: {
+            systemInstruction: systemInstruction,
+            thinkingConfig: {
+              thinkingLevel: ThinkingLevel.HIGH,
+            },
           },
         },
-      });
+        'thinking'
+      );
 
-      res.json({ text: response.text });
+      res.json({ text: response.text, modelUsed });
     } catch (error: any) {
       console.error('Intelligence Core Error:', error);
-      res.status(500).json({ error: error.message || 'An error occurred during high-reasoning query.' });
+      res.status(500).json({ error: formatGeminiError(error) || 'An error occurred during high-reasoning query.' });
     }
   });
 
@@ -118,23 +269,23 @@ Keep your final output highly technical, clean, and styled in neat markdown with
       checkApiKey();
       const { message, mode, latitude, longitude } = req.body;
 
-      let modelName = 'gemini-3.5-flash';
+      let modelChain = [MODEL_FLASH, 'gemini-2.0-flash', MODEL_LITE];
       let config: any = {
         systemInstruction: 'You are the Fusion Hero OS Chat Intelligence Core. Answer the user accurately and beautifully in Markdown format.',
       };
 
       if (mode === 'high-thinking') {
-        modelName = 'gemini-3.1-pro-preview';
+        modelChain = REASONING_CHAIN;
         config.thinkingConfig = {
           thinkingLevel: ThinkingLevel.HIGH,
         };
       } else if (mode === 'low-latency') {
-        modelName = 'gemini-3.1-flash-lite';
+        modelChain = [MODEL_LITE, MODEL_FLASH, 'gemini-2.0-flash'];
       } else if (mode === 'search-grounding') {
-        modelName = 'gemini-3.5-flash';
+        modelChain = [MODEL_FLASH, 'gemini-2.0-flash'];
         config.tools = [{ googleSearch: {} }];
       } else if (mode === 'maps-grounding') {
-        modelName = 'gemini-3.5-flash';
+        modelChain = [MODEL_FLASH, 'gemini-2.0-flash'];
         config.tools = [{ googleMaps: {} }];
         if (latitude && longitude) {
           config.toolConfig = {
@@ -148,21 +299,23 @@ Keep your final output highly technical, clean, and styled in neat markdown with
         }
       }
 
-      const response = await ai.models.generateContent({
-        model: modelName,
-        contents: message,
-        config: config
-      });
+      const { response, modelUsed } = await generateWithFallback(
+        ai,
+        modelChain,
+        { contents: message, config },
+        'chat'
+      );
 
       const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
 
       res.json({
         text: response.text || '',
-        groundingChunks: groundingChunks || null
+        groundingChunks: groundingChunks || null,
+        modelUsed,
       });
     } catch (error: any) {
       console.error('Chat endpoint error:', error);
-      res.status(500).json({ error: error.message || 'Error occurred during chat operation.' });
+      res.status(500).json({ error: formatGeminiError(error) || 'Error occurred during chat operation.' });
     }
   });
 
@@ -217,20 +370,28 @@ Keep your final output highly technical, clean, and styled in neat markdown with
         throw new Error('Please upload an image/media file first.');
       }
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-pro-preview',
-        contents: {
-          parts: [
-            { inlineData: { data: fileBase64, mimeType: mimeType || 'image/png' } },
-            { text: prompt || 'Identify and analyze the details of this image or video screenshot inside a cyber OS telemetry report.' }
-          ]
-        }
-      });
+      const { response, modelUsed } = await generateWithFallback(
+        ai,
+        REASONING_CHAIN,
+        {
+          contents: {
+            parts: [
+              { inlineData: { data: fileBase64, mimeType: mimeType || 'image/png' } },
+              {
+                text:
+                  prompt ||
+                  'Identify and analyze the details of this image or video screenshot inside a cyber OS telemetry report.',
+              },
+            ],
+          },
+        },
+        'analyze-media'
+      );
 
-      res.json({ text: response.text || '' });
+      res.json({ text: response.text || '', modelUsed });
     } catch (error: any) {
       console.error('Analyze Media error:', error);
-      res.status(500).json({ error: error.message || 'Media analysis failed.' });
+      res.status(500).json({ error: formatGeminiError(error) || 'Media analysis failed.' });
     }
   });
 
@@ -244,20 +405,24 @@ Keep your final output highly technical, clean, and styled in neat markdown with
         throw new Error('No audio data received.');
       }
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash',
-        contents: {
-          parts: [
-            { inlineData: { data: fileBase64, mimeType: mimeType || 'audio/wav' } },
-            { text: 'Transcribe this audio precisely. Return only the transcription text.' }
-          ]
-        }
-      });
+      const { response, modelUsed } = await generateWithFallback(
+        ai,
+        [MODEL_FLASH, 'gemini-2.0-flash', MODEL_LITE],
+        {
+          contents: {
+            parts: [
+              { inlineData: { data: fileBase64, mimeType: mimeType || 'audio/wav' } },
+              { text: 'Transcribe this audio precisely. Return only the transcription text.' },
+            ],
+          },
+        },
+        'transcribe'
+      );
 
-      res.json({ text: response.text || '' });
+      res.json({ text: response.text || '', modelUsed });
     } catch (error: any) {
       console.error('Transcription error:', error);
-      res.status(500).json({ error: error.message || 'Audio transcription failed.' });
+      res.status(500).json({ error: formatGeminiError(error) || 'Audio transcription failed.' });
     }
   });
 
@@ -399,7 +564,7 @@ Keep your final output highly technical, clean, and styled in neat markdown with
       }
 
       const videoRes = await fetch(uri, {
-        headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY || '' },
+        headers: { 'x-goog-api-key': process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '' },
       });
 
       res.setHeader('Content-Type', 'video/mp4');

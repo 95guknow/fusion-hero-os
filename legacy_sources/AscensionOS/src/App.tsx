@@ -596,7 +596,7 @@ export default function App() {
       'Calibrating molecular flavor vectors...',
       'Analyzing chemical spice compatibility curves...',
       'Modeling cellular restructuring techniques...',
-      'Calling Google Gemini 3.1 Pro Intelligence (HIGH thinking active)...',
+      'Calling Gemini reasoning chain (free-tier flash first, Pro if available)...',
       'Refining gourmet geometric plating algorithms...'
     ];
 
@@ -1445,7 +1445,7 @@ export default function App() {
                     FusionIsta Lab (Molecular Cuisine)
                   </h2>
                   <p className="text-gray-400 text-xs mt-1 font-mono">
-                    Harness Gemini AI's deep high-thinking reasoning to invent realistic, delicious molecular fusion gastronomy recipes.
+                    Harness Gemini AI reasoning (flash-first free tier with Pro fallback when billed) to invent realistic, delicious molecular fusion gastronomy recipes.
                   </p>
                 </div>
 
@@ -1678,7 +1678,7 @@ export default function App() {
                     OS Neural Intelligence Core
                   </h2>
                   <p className="text-gray-400 text-xs mt-1 font-mono">
-                    Direct stream node using <strong className="text-cyan-400">gemini-3.1-pro-preview (HIGH thinking)</strong> to process heavy logic, code structures, or reasoning.
+                    Direct stream node using <strong className="text-cyan-400">Gemini reasoning chain</strong> (env-driven flash/Pro with quota fallback) to process heavy logic, code structures, or reasoning.
                   </p>
                 </div>
 
@@ -2489,7 +2489,7 @@ app.post('/api/gemini/thinking', async (req, res) => {
                       AI Capabilities (Neural Core)
                     </h4>
                     <p className="text-gray-400 text-[11px] leading-relaxed">
-                      Powered exclusively by the server-side Google GenAI SDK using <strong className="text-cyan-400">gemini-3.1-pro-preview</strong>. Backed by <strong className="text-emerald-400">ThinkingLevel.HIGH</strong> to yield absolute precision when resolving mathematical or logic puzzles.
+                      Powered by the server-side Google GenAI SDK with an <strong className="text-cyan-400">env-driven reasoning chain</strong> (flash-first free tier, optional Pro + ThinkingLevel.HIGH when billed).
                     </p>
                   </div>
 

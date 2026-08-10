@@ -1,6 +1,6 @@
 {
   "kind": "eudaemon_korridor",
-  "generated_at": "2026-07-21T11:13:46.003575+00:00",
+  "generated_at": "2026-08-09T20:46:27.177291+00:00",
   "meister_hasch_binding": true,
   "platform_version": "12.0.0",
   "policy": {
@@ -106,7 +106,7 @@
       {
         "id": "meister_integrity",
         "ok": true,
-        "detail": "disk↔repo hash"
+        "detail": "meister ok mode=withdrawn_repo_absent_disk_lab"
       },
       {
         "id": "self_heal_qubo_fixpoint",

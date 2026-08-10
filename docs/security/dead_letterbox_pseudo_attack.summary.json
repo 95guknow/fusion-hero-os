@@ -1,6 +1,6 @@
 {
   "kind": "dead_letterbox_pseudo_attack_sim",
-  "generated_at": "2026-07-21T11:13:46.001574+00:00",
+  "generated_at": "2026-08-09T20:46:27.136294+00:00",
   "policy": {
     "sandbox_only": true,
     "no_external_targets": true,

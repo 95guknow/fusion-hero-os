@@ -1,6 +1,6 @@
 # Eudaemon — Korridor begangen, jenseits gehandelt
 
-**UTC:** 2026-07-21T11:13:46.003575+00:00
+**UTC:** 2026-08-09T20:46:27.177291+00:00
 **Meister Hasch:** binding · labor
 **Cloud Run:** `https://fusion-hero-os-42426705927.europe-west2.run.app`
 
@@ -27,7 +27,7 @@ Agent handelt **operator-local**: Integrität, Self-Heal, Eudaimonia-Korridor, L
 
 | Action | OK | Detail |
 |--------|----|--------|
-| `meister_integrity` | True | disk↔repo hash |
+| `meister_integrity` | True | meister ok mode=withdrawn_repo_absent_disk_lab |
 | `self_heal_qubo_fixpoint` | True | dist 4.0→0.0 |
 | `eudaimonia_corridor` | True | within ceiling |
 | `dead_letterbox_pulse` | True | sha16=c08c3bf924788779 |

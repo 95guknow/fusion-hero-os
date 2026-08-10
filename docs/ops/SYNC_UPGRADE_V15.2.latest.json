@@ -1,0 +1,49 @@
+{
+  "kind": "SYNC_UPGRADE_V15_2",
+  "utc": "2026-08-10T07:50:00Z",
+  "platform": "15.2.0",
+  "target": "15.2.0",
+  "from": "13.0.0 skill-lag / 15.2.0 local VERSION",
+  "tip": "692d1148",
+  "tip_full": "692d1148f2897ed0fe42a751ee34b8523ae50976",
+  "branch": "main",
+  "trigger": "force upgrade sync full force full universe nD-polymesh alles",
+  "gates": {
+    "bump_version_check": true,
+    "manifests": "15.2.0",
+    "intern_sync": true,
+    "poly_mesh_status_ok": true,
+    "poly_mesh_ported": true,
+    "dashboard_http_at_sync": "listen_on_8000_but_health_hangs_under_autoload",
+    "git_pull": "wip_safe_stash_pull_pop_already_up_to_date_692d1148",
+    "activate_v12_v13_scripts": "stale_expect_old_versions_imports_ok",
+    "poly_mesh_orchestrate": true,
+    "tailscale_serve_8000": true,
+    "skill_docs_propagated": true
+  },
+  "intern": {
+    "operative_kanon": "v15.2.0",
+    "skills": [
+      "fusion-hero-os",
+      "alte-frau-95g",
+      "heroic-core-foundation",
+      "mainframe-laden"
+    ],
+    "script": "sync_grok_intern.ps1",
+    "github_sync": "C:\\Users\\Admin\\.grok\\skills\\fusion-hero-os\\GITHUB_SYNC.json"
+  },
+  "poly_mesh": {
+    "registry": "C:\\Users\\Admin\\.fusion\\mesh\\os_port\\latest.json",
+    "tiers_online": ["L1_mainframe", "L2_mesh_anchor"],
+    "organ_count": 10,
+    "self_hostname": "desktop-kpki9e4",
+    "geltung_aera14_title": "ASPIRATIONAL/OFFEN per BEST_VERSION/proof_registry",
+    "geltung_os_port_runtime": "operative status ok"
+  },
+  "geltung": "VERSION+manifests+intern_sync = Satz; dashboard boot and remote pull depend on local WIP/runtime",
+  "notes": [
+    "git pull blocked: unstaged local changes (WIP preserved)",
+    "activate_v10/v12 scripts still hard-expect older VERSION labels — imports OK under 15.2.0",
+    "force upgrade did not discard WIP and did not force-push"
+  ]
+}
