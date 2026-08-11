@@ -121,7 +121,41 @@ def _start_dashboard() -> None:
     )
 
 
+def _singleton_or_exit() -> None:
+    """Only one keep-alive process — avoids double-uvicorn storms."""
+    lock_path = LOCK_DIR / "ring_keep_alive.lock"
+    LOCK_DIR.mkdir(parents=True, exist_ok=True)
+    my_pid = os.getpid()
+    if lock_path.is_file():
+        try:
+            old = int(lock_path.read_text(encoding="utf-8").strip().split()[0])
+        except Exception:
+            old = 0
+        if old and old != my_pid:
+            # still alive?
+            alive = False
+            try:
+                if os.name == "nt":
+                    import ctypes
+
+                    k = ctypes.windll.kernel32
+                    h = k.OpenProcess(0x1000, False, old)  # PROCESS_QUERY_LIMITED_INFORMATION
+                    if h:
+                        alive = True
+                        k.CloseHandle(h)
+                else:
+                    os.kill(old, 0)
+                    alive = True
+            except Exception:
+                alive = False
+            if alive:
+                print(f"[ring-life] already running pid={old} — exit", flush=True)
+                raise SystemExit(0)
+    lock_path.write_text(f"{my_pid}\n", encoding="utf-8")
+
+
 def main() -> int:
+    _singleton_or_exit()
     fails = 0
     print(
         f"[ring-life] no-pause keep-alive url={BASE_URL} interval={INTERVAL}s "
