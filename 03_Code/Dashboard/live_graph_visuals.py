@@ -485,7 +485,9 @@ def render_webm_pair(out_dir: Path | None = None, frames: int = 48, fps: int = 1
                 "0",
                 str(webm),
             ]
-            r = subprocess.run(cmd, capture_output=True, text=True)
+            r = subprocess.run(
+                cmd, capture_output=True, text=True, encoding="utf-8", errors="replace"
+            )
             if r.returncode != 0:
                 # fallback mp4 h264
                 cmd2 = [
@@ -502,7 +504,13 @@ def render_webm_pair(out_dir: Path | None = None, frames: int = 48, fps: int = 1
                     "-an",
                     str(mp4),
                 ]
-                r2 = subprocess.run(cmd2, capture_output=True, text=True)
+                r2 = subprocess.run(
+                    cmd2,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
                 results[mode] = {
                     "ok": r2.returncode == 0,
                     "path": str(mp4 if r2.returncode == 0 else webm),

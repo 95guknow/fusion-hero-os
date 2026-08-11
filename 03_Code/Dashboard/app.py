@@ -66,8 +66,19 @@ _rate_buckets: Dict[str, deque] = defaultdict(deque)
 _rate_lock = threading.Lock()
 
 
+# Ring-Leben / liveness: never rate-limit these (event-loop must stay answerable)
+_RATE_LIMIT_EXEMPT_PREFIXES = (
+    "/api/health",
+    "/api/ring/",
+    "/api/hyperthreading",
+)
+
+
 class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        path = request.url.path or ""
+        if any(path == p or path.startswith(p) for p in _RATE_LIMIT_EXEMPT_PREFIXES):
+            return await call_next(request)
         client_ip = request.client.host if request.client else "unknown"
         now = time.monotonic()
         with _rate_lock:
@@ -557,12 +568,24 @@ async def startup_event():
         import sys
 
         sys.exit(1)
-    # Default: ALLES laden (Connectoren, Module, Frameworks, Quantizer, Mesh)
-    os.environ.setdefault("FUSION_AUTO_LOAD", "1")
-    os.environ.setdefault("FUSION_PRELOAD_ALL", "1")
-    os.environ.setdefault("FUSION_ALL_MODULES", "1")
-    os.environ.setdefault("FUSION_BOOT_PHASE", "full")
-    launcher_fast_boot = os.getenv("FUSION_AUTO_LOAD") == "0"
+    # Default: ALLES laden — but honour explicit light/fast boot (Ring-Leben keep-alive)
+    light_boot = (
+        os.getenv("FUSION_BOOT_PHASE", "").lower() == "light"
+        or os.getenv("FUSION_AUTO_LOAD", "1") == "0"
+        or os.getenv("FUSION_RING_LIFE_FAST", "0") == "1"
+    )
+    if not light_boot:
+        os.environ.setdefault("FUSION_AUTO_LOAD", "1")
+        os.environ.setdefault("FUSION_PRELOAD_ALL", "1")
+        os.environ.setdefault("FUSION_ALL_MODULES", "1")
+        os.environ.setdefault("FUSION_BOOT_PHASE", "full")
+    else:
+        os.environ.setdefault("FUSION_BOOT_PHASE", "light")
+        os.environ.setdefault("FUSION_PRELOAD_ALL", "0")
+        print("[Startup] Ring-Leben FAST/light boot — heavy preload deferred")
+    launcher_fast_boot = light_boot or os.getenv("FUSION_AUTO_LOAD") == "0"
+    _RING_LIFE["phase"] = os.getenv("FUSION_BOOT_PHASE", "full")
+    _RING_LIFE["born_at"] = time.time()
     try:
         from fusion_settings import boot_load
         boot_load()
@@ -589,18 +612,32 @@ async def startup_event():
 
     def _full_boot_sync() -> None:
         """Blocking full stack load — runs off the event loop."""
+        _boot_phase = os.getenv("FUSION_BOOT_PHASE", "full")
+        if _boot_phase == "light" or os.getenv("FUSION_AUTO_LOAD", "1") == "0":
+            try:
+                detect_input_factors()
+                detect_output_factors()
+            except Exception as e:
+                print(f"[AutoLoad/light] factor note: {e}")
+            if ht:
+                try:
+                    ht.enable(True)
+                except Exception as e:
+                    print("[AutoLoad/light] HT note:", e)
+            print("[Preload] SKIPPED (light/ring-life) — port stays responsive")
+            print("[ALTE_Frau_95g] Heroic Core Dashboard light-loaded (ring alive)")
+            return
         try:
             from core.universal_startup_preload import preload_all
 
             pr = preload_all(force=False)
             print(
                 f"[Preload] ALL {pr.get('steps_ok')}/{pr.get('steps_total')} "
-                f"ok={pr.get('ok')} phase={os.getenv('FUSION_BOOT_PHASE', 'full')}"
+                f"ok={pr.get('ok')} phase={_boot_phase}"
             )
         except Exception as _pe:
             print(f"[Preload] FAIL note: {_pe}")
         try:
-            _boot_phase = os.getenv("FUSION_BOOT_PHASE", "full")
             autoloader.run(phase=_boot_phase, attach_meta=True)
             detect_input_factors()
             detect_output_factors()
@@ -1043,33 +1080,124 @@ async def watch_party_ws(ws: WebSocket, room_id: str):
 # Mount static (keep at end)
 app.mount("/static", StaticFiles(directory=str(BASE / "static")), name="static")
 
+# Ring-Leben: process-local pulse (no I/O) — keep-alive + poly-mesh organ liveness
+_RING_LIFE: Dict[str, Any] = {
+    "born_at": time.time(),
+    "beats": 0,
+    "last_beat": 0.0,
+    "phase": os.getenv("FUSION_BOOT_PHASE", "full"),
+}
+
+
+def _ring_beat(source: str = "api") -> Dict[str, Any]:
+    now = time.time()
+    _RING_LIFE["beats"] = int(_RING_LIFE.get("beats", 0)) + 1
+    _RING_LIFE["last_beat"] = now
+    _RING_LIFE["last_source"] = source
+    _RING_LIFE["uptime_sec"] = round(now - float(_RING_LIFE.get("born_at", now)), 2)
+    _RING_LIFE["alive"] = True
+    _RING_LIFE["platform"] = "15.2.0"
+    return dict(_RING_LIFE)
+
+
+@app.get("/api/ring/heartbeat")
+@app.get("/api/ring/life")
+async def api_ring_life():
+    """Ultra-light ring pulse — must never block (no subprocess, no cloud)."""
+    return {"status": "ok", "ring": _ring_beat("heartbeat"), "backend": "online"}
+
+
 # Health endpoint (kept for compatibility + our v7.5 autonomous + HT + agents)
 @app.get("/api/health")
 async def api_health(light: bool = False, full: bool = False):
     if light and not full:
-        return {"status": "ok", "backend": "online"}
+        return {
+            "status": "ok",
+            "backend": "online",
+            "ring": _ring_beat("health_light"),
+            "boot_phase": os.getenv("FUSION_BOOT_PHASE", "full"),
+        }
 
-    ht_info = {"enabled": False, "logical_cpus": os.cpu_count() or 12, "workers": 1}
-    if ht:
+    def _heavy_health() -> Dict[str, Any]:
+        ht_info = {"enabled": False, "logical_cpus": os.cpu_count() or 12, "workers": 1}
+        if ht:
+            try:
+                ht_info = ht.status()
+            except Exception:
+                pass
+
+        agent_info = {
+            "loaded": AGENT_STATE.get("loaded", False),
+            "count": len(AGENT_STATE.get("agents", {})),
+            "auto": "auto-load on startup; assignment is manual via POST /api/agents/assign",
+        }
         try:
-            ht_info = ht.status()
+            if get_loaded_agents:
+                agent_info["count"] = len(get_loaded_agents())
         except Exception:
             pass
 
-    agent_info = {"loaded": AGENT_STATE.get("loaded", False), "count": len(AGENT_STATE.get("agents", {})), "auto": "auto-load on startup; assignment is manual via POST /api/agents/assign"}
-    try:
-        if get_loaded_agents:
-            agent_info["count"] = len(get_loaded_agents())
-    except:
-        pass
+        coupler_info: Dict[str, Any] = {"enabled": False}
+        try:
+            c = get_resource_coupler()
+            if c:
+                coupler_info = c.status().get("coupler") or {"enabled": True}
+        except Exception:
+            pass
 
+        provider_info: Dict[str, Any]
+        try:
+            if os.getenv("FUSION_PROVIDER_AUTO", "1") == "1":
+                provider_info = __import__(
+                    "core.provider_switcher", fromlist=["status"]
+                ).status()
+            else:
+                provider_info = {
+                    "auto_enabled": False,
+                    "active_backend": os.getenv("FUSION_LLM_BACKEND", "llama-local"),
+                }
+        except Exception as exc:
+            provider_info = {"error": str(exc)[:120]}
+
+        agent_ctrl: Dict[str, Any] = {"enabled": False}
+        try:
+            if os.getenv("FUSION_AGENT_CONTROL", "1") == "1":
+                agent_ctrl = __import__(
+                    "core.agent_control", fromlist=["status"]
+                ).status()
+        except Exception as exc:
+            agent_ctrl = {"enabled": False, "error": str(exc)[:120]}
+
+        supa_info = (
+            supa.status()
+            if supa
+            else {"configured": False, "error": "supabase_client module not loaded"}
+        )
+
+        return {
+            "ht": ht_info,
+            "agents": agent_info,
+            "coupler": coupler_info,
+            "provider": provider_info,
+            "agent_control": agent_ctrl,
+            "supabase": supa_info,
+            "input_factors": get_input_factors(),
+            "output_factors": get_output_factors(),
+        }
+
+    heavy = await asyncio.to_thread(_heavy_health)
     payload: Dict[str, Any] = {
         "status": "ok",
         "backend": "online",
-        "fusion_os": "v7.5 MasterSeed (merged with v7.4 WS/HT)",
-        "core": "ALTE_Frau_95g v7.4 + v7.5",
-        "mainframe": {"loaded": True, "version": "v7.4/v7.5", "boot_phase": "full"},
-        "hyperthreading": ht_info,
+        "fusion_os": "v15.2.0 platform (v8.3 operative + BCG)",
+        "core": "ALTE_Frau_95g Heroic Core",
+        "mainframe": {
+            "loaded": True,
+            "version": "v15.2.0",
+            "boot_phase": os.getenv("FUSION_BOOT_PHASE", "full"),
+        },
+        "ring": _ring_beat("health"),
+        "hyperthreading": heavy["ht"],
         "ws_endpoint": "/ws",
         "tasks": {
             "autonomous": False,
@@ -1077,33 +1205,28 @@ async def api_health(light: bool = False, full: bool = False):
             "jobs_len": len(JOBS) if "JOBS" in globals() else 0,
             "support": "POST /api/input appends to TASK_QUEUE; GET /api/jobs lists recent jobs",
         },
-        "agents": agent_info,
-        "supabase": (supa.status() if supa else {"configured": False, "error": "supabase_client module not loaded"}),
-        "input_factors": get_input_factors(),
-        "output_factors": get_output_factors(),
-        "resource_coupler": (
-            get_resource_coupler().status().get("coupler")
-            if get_resource_coupler() else {"enabled": False}
-        ),
+        "agents": heavy["agents"],
+        "supabase": heavy["supabase"],
+        "input_factors": heavy["input_factors"],
+        "output_factors": heavy["output_factors"],
+        "resource_coupler": heavy["coupler"],
         "all_modules": os.getenv("FUSION_ALL_MODULES", "1") == "1",
         "llm_backend": os.getenv("FUSION_LLM_BACKEND", "llama-local"),
-        "provider_switcher": (
-            __import__("core.provider_switcher", fromlist=["status"]).status()
-            if os.getenv("FUSION_PROVIDER_AUTO", "1") == "1"
-            else {"auto_enabled": False, "active_backend": os.getenv("FUSION_LLM_BACKEND", "llama-local")}
-        ),
-        "agent_control": (
-            __import__("core.agent_control", fromlist=["status"]).status()
-            if os.getenv("FUSION_AGENT_CONTROL", "1") == "1"
-            else {"enabled": False}
-        ),
+        "provider_switcher": heavy["provider"],
+        "agent_control": heavy["agent_control"],
     }
     if full:
         try:
             from connectivity import build_connectivity_summary, build_discovery
 
-            payload["discovery"] = build_discovery()
-            payload["connectivity"] = build_connectivity_summary()
+            def _conn():
+                return {
+                    "discovery": build_discovery(),
+                    "connectivity": build_connectivity_summary(),
+                }
+
+            conn = await asyncio.to_thread(_conn)
+            payload.update(conn)
         except Exception as exc:
             payload["connectivity_error"] = str(exc)[:200]
     return payload
@@ -1474,6 +1597,8 @@ async def api_supabase_node_health():
             cwd=str(BASE),
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=15,
             env=os.environ.copy(),
         )
