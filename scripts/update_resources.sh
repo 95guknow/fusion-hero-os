@@ -15,10 +15,27 @@ RESOURCE_FILE="resources.md"
 VERSION_STR="$(tr -d '[:space:]' < VERSION 2>/dev/null || true)"
 [ -n "$VERSION_STR" ] || VERSION_STR="0.0.0"
 
-# Datum aus dem letzten VERSION-Commit statt aus `date`: sonst erzeugt die
-# naechtliche Cron jede Nacht einen Diff, committet auf main und triggert
-# damit die CI erneut. `date` bleibt nur Fallback ohne Git-Kontext.
-STAND_DATE="$(git log -1 --format=%cs -- VERSION 2>/dev/null || true)"
+# Stand-Datum aus dem letzten VERSION-Commit statt aus `date`: sonst erzeugt
+# die naechtliche Cron (03:00 UTC, Auto-Commit auf main) jede Nacht einen
+# Diff und triggert die CI erneut.
+#
+# ACHTUNG shallow: actions/checkout klont ohne 'fetch-depth: 0' nur einen
+# Commit tief. In so einem Klon liefert 'git log -- VERSION' NICHT das Datum
+# der letzten VERSION-Aenderung, sondern das des Tip-Commits — es gibt keinen
+# Eltern-Commit zum Vergleichen, also gilt die Datei als dort angelegt. Damit
+# wanderte die Zeile bei jedem Push auf main weiter und der Churn blieb.
+# update-resources.yml holt deshalb die volle Historie; zusaetzlich wird hier
+# ein flacher Klon erkannt und dann das bereits in resources.md stehende
+# Datum beibehalten — aber nur, solange die Version unveraendert ist. Nach
+# einem Release soll das Datum mitwandern.
+STAND_DATE=""
+if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" != "true" ]; then
+  STAND_DATE="$(git log -1 --format=%cs -- VERSION 2>/dev/null || true)"
+fi
+if [ -z "$STAND_DATE" ] && [ -f "$RESOURCE_FILE" ]; then
+  STAND_DATE="$(sed -n "s/^> \*\*Stand:\*\* v${VERSION_STR} · \([0-9][0-9-]*\)\$/\1/p" \
+                "$RESOURCE_FILE" | head -1)"
+fi
 [ -n "$STAND_DATE" ] || STAND_DATE="$(date -u +%F)"
 
 {

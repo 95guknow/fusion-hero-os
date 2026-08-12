@@ -11,6 +11,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with:
+          # Volle Historie: update_resources.sh leitet das Stand-Datum aus dem
+          # letzten VERSION-Commit ab. Im flachen Standard-Klon (depth 1)
+          # liefert 'git log -- VERSION' das Datum des Tip-Commits, wodurch
+          # die Zeile bei jedem Push auf main wandert und diese Cron jede
+          # Nacht erneut committet.
+          fetch-depth: 0
 
       - name: Run resource update script
         run: scripts/update_resources.sh
