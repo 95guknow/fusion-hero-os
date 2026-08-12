@@ -1,6 +1,6 @@
 # AscensionOS / Fusion Hero OS Ressourcen
 
-> **Stand:** v15.2.0 · 2026-08-02
+> **Stand:** v15.2.0 · 2026-08-11
 
 Diese Seite wird automatisch aus festen Quellen und Repo-Metadaten generiert.
 
