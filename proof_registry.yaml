@@ -570,6 +570,44 @@ claims:
   # Die Aera traegt bislang KEINEN benannten Inhalt. Es gibt deshalb auch
   # keinen Aera-Claim — ein Claim ohne Aussage waere schlimmer als keiner.
   # Was hier steht, ist der eine Befund, den der Sprung selbst erzeugt hat.
+  # ---- Totmannschalter (2026-08-16) ---------------------------------------
+  - id: TOTMANN-SOFT-24H-START
+    statement: "Am Epoch-Anfang (u=0) ist das Soft-Intervall des Totmannschalters genau 24 Stunden."
+    status: BEWIESEN
+    proofs:
+      - tests/test_totmann_schalter.py::test_soft_interval_at_epoch_is_24_hours
+      - tests/test_totmann_schalter.py::test_repo_config_is_24h_then_monthly_and_annual_schwarzkollm
+
+  - id: TOTMANN-SOFT-MONAT-ENDE
+    statement: "Am Horizont 2027-12-31 (u=1) ist das Soft-Intervall genau 30 Tage (1 Soft-Check pro Monat); ausserhalb des Horizonts wird nicht weiter gestreckt."
+    status: BEWIESEN
+    proofs:
+      - tests/test_totmann_schalter.py::test_soft_interval_at_horizon_is_one_month
+      - tests/test_totmann_schalter.py::test_interval_holds_at_bounds_outside_horizon
+
+  - id: TOTMANN-INVLOG-PHASEN
+    statement: "Die Soft-Intervalle folgen invers-logarithmischer Interpolation i(u)=i0*(i1/i0)^u, sind streng monoton steigend, und die 8 Phasen sind dieselbe Kurve an k/(N-1)."
+    status: BEWIESEN
+    proofs:
+      - tests/test_totmann_schalter.py::test_soft_interval_is_inverse_log_and_monotone
+      - tests/test_totmann_schalter.py::test_phase_table_has_eight_log_spaced_rows
+
+  - id: TOTMANN-TRIP-OHNE-WIPE
+    statement: "Ein verpasster Soft-Check setzt tripped und schreibt eine lokale Alert-Datei; er loescht keine fremden Dateien, setzt den Schalter nicht still zurueck, und beansprucht weder Wipe noch Phone-Home."
+    status: BEWIESEN
+    proofs:
+      - tests/test_totmann_schalter.py::test_missed_soft_check_trips_and_writes_alert
+      - tests/test_totmann_schalter.py::test_late_ping_does_not_silently_reset
+      - tests/test_totmann_schalter.py::test_trip_does_not_wipe_state_or_foreign_files
+
+  - id: TOTMANN-HARD-JAEHRLICH-SCHWARZKOLLM
+    statement: "Der Hard-Check ist 1x pro 365 Tage am deklarierten Toponym Schwarzkollm; falscher Ort wird abgelehnt; Annahme ist Operator-Selbstattest, kein GPS."
+    status: BEWIESEN
+    proofs:
+      - tests/test_totmann_schalter.py::test_hard_check_accepts_schwarzkollm_as_attestation_not_gps
+      - tests/test_totmann_schalter.py::test_hard_check_rejects_wrong_site
+      - tests/test_totmann_schalter.py::test_hard_check_due_after_365_days
+
   - id: V15-ZWEI-AEREN-OHNE-RELEASE
     statement: "Der annotierte Git-Tag auf main ist laut BRANCH_STRATEGY.md die Quelle der Wahrheit fuer die Plattform-Version, und VERSION spiegelt ihn."
     status: WIDERLEGT

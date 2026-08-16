@@ -174,6 +174,11 @@ DEFAULT_MODULES: list[ModuleSpec] = [
         "fusion_hero_os.core.autoload_controller",
         "Autoload Controller status (post-reboot prepare/load orchestration)",
     ),
+    ModuleSpec(
+        "core.totmann_schalter",
+        "fusion_hero_os.core.totmann_schalter",
+        "Totmannschalter: 24h soft arm, inverse-log taper to 1/month, annual hard check",
+    ),
 ]
 
 

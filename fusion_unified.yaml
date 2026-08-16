@@ -88,6 +88,7 @@ layers:
       - proof_registry.yaml
       - hero-guide_geltungsstand.json
       - docs/v8/erkenntnisse_index.yaml
+      - totmann_schalter.yaml
     health: /erkenntnisse/status
   business:
     module: mainframe_energy_pricing_daemon

@@ -1,0 +1,55 @@
+# Totmannschalter — Fusion Hero OS
+# Operator directive 2026-08-16:
+#   1. Arm at 24h (soft / dead-man ping).
+#   2. Phase the soft interval out inverse-logarithmically
+#      (log-linear in the interval: i(u) = i0 * (i1/i0)^u).
+#   3. Streamlining target, in force through horizon_end:
+#        soft  = 1 check / calendar month
+#        hard  = 1 in-person check / year at the declared locus
+#   4. Horizon: end of next year (2027-12-31). After that date the
+#      target rates hold; they do not keep stretching.
+#
+# Honesty:
+#   * A missed soft ping trips a local alert. It does not wipe disks,
+#     push, call anyone, or shut the OS down. Those would be fake
+#     capabilities.
+#   * A hard check is operator self-attestation of presence at the
+#     declared public toponym. This module does not do GPS.
+#   * Schwarzkollm is a public place-name (village), not a street
+#     address and not a residence claim.
+#
+# Geltung: schedule math = Satz (pytest). Trip file write = Satz.
+#          "blocks merge / wipes / phones home" = not claimed.
+
+schema: fusion.totmann_schalter/1
+platform_version: "15.2.0"
+armed_by: operator
+armed_on: "2026-08-16"
+
+timezone: Europe/Berlin
+epoch: "2026-08-16"
+horizon_end: "2027-12-31"
+
+soft:
+  start_hours: 24
+  end_days: 30
+  phases: 8
+  interpolation: inverse_log   # i(u) = i0 * (i1/i0)^u , u in [0, 1]
+
+hard:
+  period_days: 365
+  site: Schwarzkollm
+  site_kind: public_toponym
+  attestation: operator_self
+  first_due: epoch_plus_period   # first hard window closes epoch+365d
+
+trip:
+  auto_reset: false
+  wipe: false
+  phone_home: false
+  notify_third_parties: false
+  persist_alert: true
+
+paths:
+  state_dir: ~/.fusion/totmann
+  alert: ~/.fusion/alerts/totmann_schalter.json
