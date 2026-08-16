@@ -1,6 +1,7 @@
 # BIG ALPHA Asset — v15.2.0 label sync
 
-**Source (canonical disk):** `C:\Dissertation_95guknow\assets\big_ALPHA.png`  
+**Source (full-force 2026-08-16):** `C:\Dissertation_95guknow\big_ALPHA.png`  
+**Assets mirror:** `C:\Dissertation_95guknow\assets\big_ALPHA.png`  
 **Versioned copy:** `C:\Dissertation_95guknow\assets\big_ALPHA_v15.2.0.png`  
 **Also in repo:** `docs/dissertation/assets/big_ALPHA_v15.png`
 
@@ -11,8 +12,8 @@
 | Title | ASCENSIONOS / BIG ALPHA |
 | Left label | `v9.10 ASPIRATIONAL` |
 | Right label | `FUSION HERO OS v15.2.0` |
-| Size | 1280×720 · ~967 KB |
-| SHA256 | `d4f00ff5d54b7928724014529580fc5562616bfddfcb5503c4d908215590c9da` |
+| Size | 1280×720 · ~893 KB |
+| SHA256 | `348ddf5cdc74d4ff4a2a7f8778fc4cd93a1d3e254fae6ab229705165affbc7ed` |
 
 ## Synced repo paths (byte-identical)
 

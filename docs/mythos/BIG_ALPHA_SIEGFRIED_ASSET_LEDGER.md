@@ -15,21 +15,22 @@
 
 ## 1. Disk-Quellen (Dissertation_95guknow)
 
+Full-force 2026-08-16: Root `C:\Dissertation_95guknow\big_ALPHA.png` wurde als Source genommen, Badges per PIL auf `v9.10 ASPIRATIONAL` / `FUSION HERO OS v15.2.0` gesetzt und in alle Spiegel geschrieben. Ein Familie, ein Hash.
+
 | Pfad | Bytes | SHA256 | Note |
 |------|------:|--------|------|
-| `C:\Dissertation_95guknow\big_ALPHA.png` | 995556 | `88dbea4b3a12ce90ff8e95f06fe1e3eb68ad94a8b8cf0e6d5318a718d1c14682` | **Älterer Root-Stand** — nicht kanonisch für v15.2.0-Badge |
-| `C:\Dissertation_95guknow\assets\big_ALPHA_v15.png` | 990736 | `d4f00ff5d54b7928724014529580fc5562616bfddfcb5503c4d908215590c9da` | **Kanonisch** · byte-identisch mit v15.2.0 |
-| `C:\Dissertation_95guknow\assets\big_ALPHA_v15.2.0.png` | 990736 | `d4f00ff5d54b7928724014529580fc5562616bfddfcb5503c4d908215590c9da` | **Kanonisch** · gleiche Bytes wie `big_ALPHA_v15.png` |
-| `C:\Dissertation_95guknow\assets\big_ALPHA.png` | 990736 | `d4f00ff5…c9da` | assets-Root · v15.2.0-Familie |
+| `C:\Dissertation_95guknow\big_ALPHA.png` | 914677 | `348ddf5cdc74d4ff4a2a7f8778fc4cd93a1d3e254fae6ab229705165affbc7ed` | **Kanonisch** · Full-Force Source + Sync |
+| `C:\Dissertation_95guknow\assets\big_ALPHA.png` | 914677 | `348ddf5c…c7ed` | byte-identisch |
+| `C:\Dissertation_95guknow\assets\big_ALPHA_v15.png` | 914677 | `348ddf5c…c7ed` | byte-identisch |
+| `C:\Dissertation_95guknow\assets\big_ALPHA_v15.2.0.png` | 914677 | `348ddf5c…c7ed` | byte-identisch |
 
-**Honesty:** `big_ALPHA_v15.png` und `big_ALPHA_v15.2.0.png` sind **dieselbe Datei** (identischer Hash).  
-Der Root-Pfad `Dissertation_95guknow\big_ALPHA.png` (ohne `assets\`) ist ein **anderer** Blob (v12-backup-Größe 995556) — nicht mit dem v15-Badge vermischen.
+**Honesty:** Vorher war der Root-Pfad ein anderer Blob (`88dbea4b…` / 995556 / v12-Badge). Der ist durch den Full-Force-Lauf **ersetzt**, nicht daneben weitergeführt. Der vorherige kanonische v15-Stand (`d4f00ff5…` / 990736) ist ebenfalls durch diesen Lauf übermalt (gleiche Komposition, neue Badge-Pixel + Re-encode). Erster Paint-Pass (`2e431c1c…`) ließ v12-Geister stehen; zweiter Pass deckt die untere Leiste vollflächig ab.
 
 ---
 
 ## 2. Repo-Spiegel (byte-identisch kanonisch)
 
-SHA256 = `d4f00ff5d54b7928724014529580fc5562616bfddfcb5503c4d908215590c9da` · 990736 bytes
+SHA256 = `348ddf5cdc74d4ff4a2a7f8778fc4cd93a1d3e254fae6ab229705165affbc7ed` · 914677 bytes
 
 - `docs/dissertation/assets/big_ALPHA_v15.png`
 - `docs/dissertation/assets/ascensionOS_big_ALPHA.png`
@@ -78,8 +79,7 @@ Doc: `docs/ops/BIG_ALPHA_ASSET_V15.md`
 
 - [x] Disk v15 / v15.2.0 exist + hash match  
 - [x] Repo mirrors match kanonischem Hash  
-- [x] Root `Dissertation_95guknow\big_ALPHA.png` als **non-canonical older** gelabelt  
-- [ ] Optional: Root-Datei auf assets-kanon re-sync (operator decision)  
+- [x] Root `Dissertation_95guknow\big_ALPHA.png` Full-Force 2026-08-16 auf denselben Hash gezogen  
 - [ ] Optional: Public site / IG pack an v15.2.0 Asset binden  
 - [ ] Optional: git tag `v15.2.0` wenn Release-Wahrheit gewollt  
 

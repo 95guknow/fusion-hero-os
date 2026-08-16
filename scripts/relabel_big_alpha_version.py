@@ -29,6 +29,7 @@ REPO_TARGETS = [
 ]
 
 CANON_CANDIDATES = [
+    Path(r"C:\Dissertation_95guknow\big_ALPHA.png"),
     Path(r"C:\Dissertation_95guknow\assets\big_ALPHA.png"),
     ROOT / "03_Code" / "Dashboard" / "static" / "big_ALPHA.png",
     ROOT / "docs" / "dissertation" / "assets" / "ascensionOS_big_ALPHA.png",
@@ -93,14 +94,16 @@ def paint_badge(
     baseline_y = h - 42
     if side == "left":
         x = margin_x
+        # Full lower-left band — old v12/v15 strings sit on different baselines
+        cover = (8, h - 110, min(w // 2 - 20, 520), h - 8)
     else:
         x = w - margin_x - tw
+        cover = (max(w // 2 + 20, w - 560), h - 110, w - 8, h - 8)
     y = baseline_y - th
 
-    # Cover rect slightly larger than text
-    pad = 10
-    cover = (max(0, x - pad), max(0, y - pad), min(w, x + tw + pad), min(h, y + th + pad + 6))
-    bg = _median_bg(im, cover)
+    # Space backdrop of this asset is near-black navy. Do not median-sample
+    # the cover box itself — leftover cyan badge pixels would tint it.
+    bg = (6, 10, 22)
     draw.rectangle(cover, fill=bg)
 
     # Soft cyan glow (offset darker layers)
@@ -170,8 +173,11 @@ def main() -> int:
         shutil.copy2(tmp, dest)
         written.append(str(dest))
 
-    # External canon + versioned copies (best-effort)
+    # External canon + versioned copies (best-effort).
+    # Root Dissertation_95guknow\big_ALPHA.png is included so a full-force
+    # run does not leave the older v12 blob sitting next to the v15 family.
     for extra in (
+        Path(r"C:\Dissertation_95guknow\big_ALPHA.png"),
         Path(r"C:\Dissertation_95guknow\assets\big_ALPHA.png"),
         Path(rf"C:\Dissertation_95guknow\assets\big_ALPHA_v{version}.png"),
         Path(r"C:\Dissertation_95guknow\assets\big_ALPHA_v15.png"),

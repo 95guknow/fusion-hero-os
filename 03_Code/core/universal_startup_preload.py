@@ -140,6 +140,7 @@ def _preload_all_body(
     def _big_alpha():
         candidates = [
             os.getenv("FUSION_BIG_ALPHA_ASSET", ""),
+            r"C:\Dissertation_95guknow\big_ALPHA.png",
             r"C:\Dissertation_95guknow\assets\big_ALPHA.png",
             str(_ROOT / "ascension_os" / "assets" / "big_ALPHA.png"),
             str(_DASH / "static" / "big_ALPHA.png"),
