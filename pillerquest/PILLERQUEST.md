@@ -1,10 +1,9 @@
 # Pillerquest — Mesh Pointer
 
+Operator: Stephan Hagen Urban · `=====stephanhagenurban`
 Home: https://github.com/95guknow/pillerquest
-Primary Horkrux: this repository
-Kanon: VERSION 15.2.0 (last published tag still v13.0.0)
-
-Pillerquest = Vier-Säulen-Quest für coevolutionären Wissens-/Code-Austausch + QUBO-Langzeitoptimierung aller aktiven Projekte.
-
-Status: `[IMPLEMENTED & VERIFIED]` Pointer. Selector im Home-Repo.
-Archivierte Repos: keine Propagation.
+This repo: primary Horkrux (P0 Kernel)
+Public: https://95guknow.github.io/pillerquest.html
+Version: 0.1.2
+Cycle: P0 → P1 → P0 (Kernel attractor, honest QUBO)
+Archived repos: no propagation.
