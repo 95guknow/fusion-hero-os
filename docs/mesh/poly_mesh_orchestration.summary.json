@@ -1,12 +1,13 @@
 {
-  "generated_at": "2026-08-10T07:50:30.006425+00:00",
+  "generated_at": "2026-08-26T09:36:00+00:00",
+  "synced_from_drive_generated_at": "2026-08-20T17:15:04.998480+00:00",
+  "sync": "poly_sync_plusplus",
+  "platform": "15.2.0",
   "score": 100,
   "grade": "perfect",
   "perfect": true,
-  "online_tiers": [
-    "L1_mainframe",
-    "L2_mesh_anchor"
-  ],
+  "perfect_means": "routing_consistency_not_live_cluster",
+  "online_tiers": ["L1_mainframe", "L2_mesh_anchor"],
   "counts": {
     "total": 16,
     "cluster": 0,
@@ -14,31 +15,12 @@
     "blocked": 3
   },
   "waves": [
-    {
-      "wave": 0,
-      "name": "control_plane_l1",
-      "n": 11
-    },
-    {
-      "wave": 1,
-      "name": "mesh_replica_l2",
-      "n": 2
-    },
-    {
-      "wave": 2,
-      "name": "force_cluster_l3",
-      "n": 3
-    },
-    {
-      "wave": 3,
-      "name": "edge_audio_l0",
-      "n": 0
-    },
-    {
-      "wave": 4,
-      "name": "general_routed",
-      "n": 0
-    }
+    {"wave": 0, "name": "control_plane_l1", "n": 11},
+    {"wave": 1, "name": "mesh_replica_l2", "n": 2},
+    {"wave": 2, "name": "force_cluster_l3", "n": 3},
+    {"wave": 3, "name": "edge_audio_l0", "n": 0},
+    {"wave": 4, "name": "general_routed", "n": 0}
   ],
-  "violations": []
+  "violations": [],
+  "parent_commit": "70eb736575699665a82bcefa087400493e2d6244"
 }

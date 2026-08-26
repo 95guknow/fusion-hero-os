@@ -1,23 +1,12 @@
 {
-  "generated_at": "2026-07-21T06:36:21.155620+00:00",
+  "generated_at": "2026-08-26T09:36:00+00:00",
   "operation": "merge",
   "alias": "fusion_musion",
   "meaning": "both_via_timeline",
-  "platform": "12.0.0",
-  "cycle": "BIG_ALPHA",
-  "public_display_id": "MS-PUB-v12-CMCFEAVV-682D",
-  "private_ref_count": 12,
-  "timeline_samples": 6906,
-  "timeline_dual_samples": 5214,
-  "timeline_virtual_samples": 1692,
-  "virtual_timelines_enabled": true,
-  "heroic_mean": 0.265948,
-  "timeline_files": 1007,
-  "axes": {
-    "t": "real_chronology",
-    "tau": "imaginary_structural_heroic",
-    "v": "virtual_heroic_scenario"
-  },
-  "link_count": 12,
-  "ok": true
+  "sync": "poly_sync_plusplus",
+  "platform": "15.2.0",
+  "cycle": "POLY_SYNC_PLUSPLUS",
+  "ok": true,
+  "note": "public half only; private vault not written; drive quota blocked write-back",
+  "parent_commit": "70eb736575699665a82bcefa087400493e2d6244"
 }
