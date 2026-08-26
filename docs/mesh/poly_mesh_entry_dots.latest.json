@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-08-26T09:33:00+00:00",
+  "operation": "merge",
+  "alias": "fusion_musion",
+  "meaning": "both_via_timeline",
+  "platform_claimed": "15.2.0",
+  "last_published_tag": "v13.0.0",
+  "phone_exif_available": false,
+  "calendar_events_25_27": 0,
+  "orchestration": {
+    "drive_generated_at": "2026-08-20T17:15:04.998480+00:00",
+    "score": 100,
+    "grade": "perfect",
+    "online_tiers": ["L1_mainframe", "L2_mesh_anchor"],
+    "counts": {"total": 16, "cluster": 0, "local_l1": 11, "blocked": 3},
+    "blocked_ids": ["qubo-anneal", "fusion-stability-train", "academia-curriculum-train"],
+    "dots": [
+      {"id": "D0", "wave": 0, "name": "control_plane_l1", "n": 11, "status": "online"},
+      {"id": "D1", "wave": 1, "name": "mesh_replica_l2", "n": 2, "status": "online"},
+      {"id": "D2", "wave": 2, "name": "force_cluster_l3", "n": 3, "status": "blocked"},
+      {"id": "D3", "wave": 3, "name": "edge_audio_l0", "n": 0, "status": "empty_no_phone_exif"},
+      {"id": "D4", "wave": 4, "name": "general_routed", "n": 0, "status": "idle"}
+    ]
+  },
+  "entry_line": "Poly-mesh fusion verified on L1+L2. L3 cluster dots remain blocked. Phone/EXIF entry-dot D3 = 0. Labor = unstick D2 + populate D3 with consented metadata, not more theory."
+}
