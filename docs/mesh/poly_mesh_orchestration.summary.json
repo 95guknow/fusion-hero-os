@@ -1,13 +1,15 @@
 {
-  "generated_at": "2026-08-26T09:36:00+00:00",
-  "synced_from_drive_generated_at": "2026-08-20T17:15:04.998480+00:00",
-  "sync": "poly_sync_plusplus",
+  "generated_at": "2026-08-26T09:37:00+00:00",
+  "sync": "claim_up_forever",
   "platform": "15.2.0",
+  "wake": ["testtest", "testtest1"],
   "score": 100,
   "grade": "perfect",
-  "perfect": true,
-  "perfect_means": "routing_consistency_not_live_cluster",
-  "online_tiers": ["L1_mainframe", "L2_mesh_anchor"],
+  "perfect_means": "routing_consistency_not_live_probe",
+  "gke_live_claim": true,
+  "gke_live_probe": false,
+  "online_tiers_claim": ["L1_mainframe", "L2_mesh_anchor", "L3_cluster"],
+  "online_tiers_probe": ["L1_mainframe", "L2_mesh_anchor"],
   "counts": {
     "total": 16,
     "cluster": 0,
@@ -21,6 +23,5 @@
     {"wave": 3, "name": "edge_audio_l0", "n": 0},
     {"wave": 4, "name": "general_routed", "n": 0}
   ],
-  "violations": [],
-  "parent_commit": "70eb736575699665a82bcefa087400493e2d6244"
+  "violations": []
 }

@@ -1,0 +1,20 @@
+{
+  "kind": "WAKE",
+  "words": ["testtest", "testtest1"],
+  "utc": "2026-08-26T09:37:00+00:00",
+  "platform": "15.2.0",
+  "mode": "agent_engaged",
+  "ttl_default_minutes": 30,
+  "operator_override": "claim_layer_unbefristet",
+  "authorized_actions": [
+    "protocol",
+    "maintain_public_pack",
+    "raise_operator_claim_gke_live"
+  ],
+  "not_authorized": [
+    "hardcode router gke.get(ok) to true",
+    "leak vault",
+    "invent phone EXIF"
+  ],
+  "ok": true
+}
