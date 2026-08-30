@@ -2,8 +2,12 @@
 """Fusion Hero OS — Regex-Validierung mit getrennten Versionsschichten.
 
 Inversionskorrektur: VERSION-Datei, Git-Tag und GitHub-Release tragen
-drei verschiedene Zahlen, nicht eine. Login, Repo-Name und Insta-Marker
-sind eigene Muster.
+drei verschiedene Zahlen, nicht eine. Login, Repo-Name, Insta-Marker
+und Flussschnittquant sind eigene Muster.
+
+Kernel-Manifest (Heroismus v8.00 / v8.10) ist eine vierte Schicht —
+nicht mit OS-Tag ``v(10|13|15)`` kollabieren, nicht mit dem Token
+``Flussschnittquant`` (steht nicht im Manifest).
 
     >>> from pyclon import validate, LOGIN
     >>> validate(LOGIN, [("95guknow", True), ("95Guknow", False)])["ok"]
@@ -40,6 +44,21 @@ INSTA = r"(Huhu|Uhu|Miau)"
 TAG_ANCHORED = r"^v(10|13|15)\.\d+\.\d+$"
 """Ganzer String = Tag. ``V15.2.0`` und ``v15.2.0-rc1`` fallen raus."""
 
+FLUSSSCHNITTQUANT = r"Flussschnittquant"
+"""Token, case-sensitiv, unangekert (wie REPO). Kein Bindestrich, kein CamelCase."""
+
+FLUSSSCHNITTQUANT_ANCHORED = r"^Flussschnittquant$"
+"""Ganzer String = Token. ``flussschnittquant`` / ``Flussquant`` fallen raus."""
+
+KERNEL_ORIGIN = r"\bv(7\.4)\b"
+"""Kernel-Schicht A: Core-Ursprung ``v7.4`` (Gruppe 1)."""
+
+KERNEL_FIELD = r"\bv(8\.00)\b"
+"""Kernel-Schicht B: Cosmological Field Synthesis ``v8.00`` (Gruppe 1)."""
+
+KERNEL_INFRA = r"\bv(8\.10)\b"
+"""Kernel-Schicht C: Infrastruktur-Stand ``v8.10`` (Gruppe 1). Nicht OS-Tag."""
+
 
 def validate(pattern: str, samples: Iterable[Sample], *, flags: int = 0) -> dict:
     """Kompiliert ``pattern`` einmal und prüft jede Probe.
@@ -70,7 +89,7 @@ def validate(pattern: str, samples: Iterable[Sample], *, flags: int = 0) -> dict
 
 
 def extract_layers(text: str) -> dict[str, str | None]:
-    """Zieht die drei Versionsschichten unabhängig aus ``text``.
+    """Zieht die drei OS-Versionsschichten unabhängig aus ``text``.
 
     Die Schichten dürfen nicht auf eine Zahl kollabieren:
 
@@ -87,6 +106,29 @@ def extract_layers(text: str) -> dict[str, str | None]:
         "version_file": vf.group(1) if vf else None,
         "tag": tg.group(1) if tg else None,
         "release": rl.group(1) if rl else None,
+    }
+
+
+def extract_kernel_layers(text: str) -> dict[str, str | None]:
+    """Zieht die drei Kernel-Manifest-Zahlen unabhängig aus ``text``.
+
+    Nicht mit OS-Tags und nicht mit ``Flussschnittquant`` mischen:
+
+    - ``origin`` → ``7.4`` (Heroic Core)
+    - ``field`` → ``8.00`` (Feldsynthese)
+    - ``infra`` → ``8.10`` (Infrastruktur-Stand)
+
+    Der Token ``Flussschnittquant`` kommt im Manifest nicht vor.
+    """
+    origin = re.search(KERNEL_ORIGIN, text)
+    field = re.search(KERNEL_FIELD, text)
+    infra = re.search(KERNEL_INFRA, text)
+    token = re.search(FLUSSSCHNITTQUANT, text)
+    return {
+        "origin": origin.group(1) if origin else None,
+        "field": field.group(1) if field else None,
+        "infra": infra.group(1) if infra else None,
+        "flussschnittquant": token.group(0) if token else None,
     }
 
 
@@ -121,6 +163,9 @@ def _selftest() -> int:
                 ("v15.2.0-rc1", False),
                 ("VERSION=15.2.0", False),
                 ("v8.3", False),
+                ("v8.00", False),
+                ("v8.10", False),
+                ("v7.4", False),
             ],
         ),
         (
@@ -130,6 +175,27 @@ def _selftest() -> int:
                 ("Miau uwu huhu", True),
                 ("UHU", False),
                 ("Saumagen", False),
+            ],
+        ),
+        (
+            FLUSSSCHNITTQUANT,
+            [
+                ("Flussschnittquant", True),
+                ("siehe Flussschnittquant README", True),
+                ("flussschnittquant", False),
+                ("FLUSSSCHNITTQUANT", False),
+                ("Fluss-Schnitt-Quant", False),
+                ("FlussschnittQuant", False),
+                ("Flussquant", False),
+                ("Flussschnitt", False),
+            ],
+        ),
+        (
+            FLUSSSCHNITTQUANT_ANCHORED,
+            [
+                ("Flussschnittquant", True),
+                ("siehe Flussschnittquant README", False),
+                ("flussschnittquant", False),
             ],
         ),
     ]
@@ -151,6 +217,24 @@ def _selftest() -> int:
     print(("OK" if layers_ok else "FAIL") + f"  layers={layers}")
     if not layers_ok:
         failed = True
+
+    manifesto = (
+        "HEROISMUS KERNEL MANIFEST v8.00 Cosmological Field Synthesis "
+        "& v8.10 Version: v7.4 → v8.10 PROD_STABLE "
+        "HEROISMUS Core Manifest v8.10 ALTE_Frau_95g Heroic Core"
+    )
+    kernel = extract_kernel_layers(manifesto)
+    kernel_expected = {
+        "origin": "7.4",
+        "field": "8.00",
+        "infra": "8.10",
+        "flussschnittquant": None,
+    }
+    kernel_ok = kernel == kernel_expected
+    print(("OK" if kernel_ok else "FAIL") + f"  kernel={kernel}")
+    if not kernel_ok:
+        failed = True
+
     return 1 if failed else 0
 
 
