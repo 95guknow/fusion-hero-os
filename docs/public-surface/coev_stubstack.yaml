@@ -1,0 +1,33 @@
+kind: coev-stubstack
+version: "2026-09-16"
+kanon: fusion-hero-os
+cloak: hypertarnkappe
+mesh: zitterpolymesh
+eudaemon: corridor-ceiling
+x_star: [1, 1, 0, 0, 0]
+public_active:
+  - {id: HORKRUX, repo: 95guknow/fusion-hero-os, y: 1}
+  - {id: LANDING, repo: 95guknow/95guknow.github.io, y: 1}
+  - {id: P1, repo: 95guknow/pillerquest, y: 1}
+  - {id: MATH, repo: 95guknow/heroische-mathematik, y: 1}
+  - {id: NORMAL, repo: 95guknow/normalOS, y: 1}
+  - {id: DASH, repo: 95guknow/dashboard, y: 1}
+private_named:
+  - {id: VAULT, repo: 95guknow/fusion-hero-vault, y: 0, note: index-only}
+  - {id: PLANS, repo: 95guknow/fusion-hero-os-daily-plans, y: 0}
+  - {id: GUI, repo: 95guknow/mister-jailbait-gui, y: 0}
+  - {id: KILO, repo: 95guknow/kilo, y: 0}
+  - {id: PROBE, repo: 95guknow/Testtest, y: 0}
+archived_y0:
+  - 95guknow/FuHOS_pub
+  - 95guknow/AscensionOS
+  - 95guknow/alte-frau-95g-heroic-core
+  - 95guknow/fusion-hero-core
+  - 95guknow/Fusion_Hero_OS_v1.1
+  - 95guknow/fusion-hero-os-v1
+rules:
+  - pointers_only
+  - no_vault_in_public_tree
+  - no_repo_merge
+  - offense_forbidden
+  - merge_requires_human_confirm_gate
